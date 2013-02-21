@@ -1,6 +1,8 @@
 #!/bin/sh
 # floppy test
 
+PATH=.:$PATH
+
 DUMPS=../Dumps
 FFSDUMP=$DUMPS/testffs.adf
 OFSDUMP=$DUMPS/testofs.adf

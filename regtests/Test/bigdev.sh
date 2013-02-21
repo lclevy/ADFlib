@@ -1,4 +1,5 @@
 #!/bin/sh
+PATH=.:$PATH
 
 #floppy test
 
