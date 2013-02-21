@@ -18,6 +18,19 @@ AC_ARG_ENABLE([examples],
 
 AM_CONDITIONAL([EXAMPLES], [test x$examples = xtrue])
 
+AC_ARG_ENABLE([regtests],
+              [  --enable-regtests    Build regression tests],
+              [case "${enableval}" in
+                yes) regtests=true ;;
+                no)  regtests=false ;;
+                *) AC_MSG_ERROR([bad value ${enableval} for --enable-regtests]) ;;
+               esac],
+              [regtests=true])
+
+AM_CONDITIONAL([REGTESTS], [test x$regtests = xtrue])
+
+
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -51,5 +64,6 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  doc/Makefile
                  examples/Makefile
+                 regtests/Test/Makefile
                  adflib.pc])
 AC_OUTPUT
