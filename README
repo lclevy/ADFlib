@@ -54,44 +54,18 @@ http://lclevy.free.fr/adflib
 COMPILATION
 -----------
 
-It had been tested on Intel/Linux with gcc 2.7.2, Solaris 2.6, and
-Win32.
+The following commands should automatically detect the system 
+configuration and build the library and examples/unadf, 
+the ADF extractor binary.
 
-Update (march 2006): 
- Makefiles has been modified to compile under Cygwin and gcc 3.4.4. (still 6 ISO C warning : normal)
-
-The size of long must be 4, the size of short 2.
-The library reads disk sectors written with the big endian (Motorola) byte
-ordering.
-
-You have to type :
-
-make clean
-make dep
-make lib
-
-A 'lidadf.a' should be created.
+	./autogen.sh
+	./configure
+	make
 
 
-* Byte ordering
 
-'make clean' remove the temporary files and the 'defendian.h'. In this file,
-LITT_ENDIAN must be defined if the target machine uses the little endian 
-byte ordering, like this :
-
-#ifndef LITT_ENDIAN
-#define LITT_ENDIAN 1
-#endif /* LITT_ENDIAN */
-
-This should be done automatically by the 'myconf' shell script. myconf 
-autocompiles a C file which detects the byte ordering. The 'defendian.h'
-is generated in 'myconf'. 'defendian.h' should be included in every .c file
-which uses the LITT_ENDIAN define is used, otherwise the compiler could think
-it is not defined, and the target machine is (always) using the big endian
-byte ordering.
-
-'myconf' is launched by 'make depend'.
-
+FEATURES NEEDING FURTHER TESTS
+------------------------------
 
 * Native driver
 
