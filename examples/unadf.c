@@ -58,6 +58,7 @@ void help()
     puts("    -r : lists directory tree contents");
     puts("    -c : use dircache data (must be used with -l)");
     puts("    -s : display entries logical block pointer (must be used with -l)");
+    puts("    -m : display file comments, if exists (must be used with -l)");
     putchar('\n');
     puts("    -v n : mount volume #n instead of default #0 volume");
     putchar('\n');
@@ -65,7 +66,8 @@ void help()
     puts("    -d dir : extract to 'dir' directory");
 }
 
-void printEnt(struct Volume *vol, struct Entry* entry, char *path, BOOL sect)
+void printEnt(struct Volume *vol, struct Entry* entry, char *path, BOOL sect,
+        BOOL comment)
 {
     /* do not print the links entries, ADFlib do not support them yet properly */
     if (entry->type==ST_LFILE || entry->type==ST_LDIR || entry->type==ST_LSOFT)
@@ -74,12 +76,12 @@ void printEnt(struct Volume *vol, struct Entry* entry, char *path, BOOL sect)
     if (entry->type==ST_DIR)
         printf("         ");
     else
-        printf("%7ld  ",entry->size);
+        printf("%7d  ",entry->size);
 
 	printf("%4d/%02d/%02d  %2d:%02d:%02d ",entry->year, entry->month, entry->days,
         entry->hour, entry->mins, entry->secs);
     if (sect)
-        printf(" %06ld ",entry->sector);
+        printf(" %06d ",entry->sector);
 
     if (strlen(path)>0)
         printf(" %s/",path);
@@ -89,7 +91,7 @@ void printEnt(struct Volume *vol, struct Entry* entry, char *path, BOOL sect)
         printf("%s/",entry->name);
     else
         printf("%s",entry->name);
-    if (entry->comment!=NULL && strlen(entry->comment)>0)
+    if (comment && entry->comment!=NULL && strlen(entry->comment)>0)
         printf(", %s",entry->comment);
     putchar('\n');
 
@@ -199,13 +201,14 @@ void extractTree(struct Volume *vol, struct List* tree, char *path, unsigned cha
 }
 
 
-void printTree(struct Volume *vol, struct List* tree, char* path, BOOL sect)
+void printTree(struct Volume *vol, struct List* tree, char* path, BOOL sect,
+        BOOL comment)
 {
     char *buf;
     struct Entry* entry;
 
     while(tree) {
-        printEnt(vol, tree->content, path, sect);
+        printEnt(vol, tree->content, path, sect, comment);
         if (tree->subdir!=NULL) {
             entry = (struct Entry*)tree->content;
             if (strlen(path)>0) {
@@ -215,11 +218,11 @@ void printTree(struct Volume *vol, struct List* tree, char* path, BOOL sect)
                     return;
                 }
                 sprintf(buf,"%s/%s", path, entry->name);
-                printTree(vol, tree->subdir, buf, sect);
+                printTree(vol, tree->subdir, buf, sect, comment);
                 free(buf);
             }
             else
-                printTree(vol, tree->subdir, entry->name, sect);
+                printTree(vol, tree->subdir, entry->name, sect, comment);
         }
         tree = tree->next;
     }
@@ -243,7 +246,7 @@ void printDev(struct Device* dev)
         printf("???"); break;
     }
 
-    printf(". Cylinders = %ld, Heads = %ld, Sectors = %ld",dev->cylinders,dev->heads,dev->sectors);
+    printf(". Cylinders = %d, Heads = %d, Sectors = %d",dev->cylinders,dev->heads,dev->sectors);
 
     printf(". Volumes = %d\n",dev->nVol);
 }
@@ -273,7 +276,7 @@ void printVol(struct Volume* vol, int volNum)
     if (vol->volName!=NULL)
         printf(" \"%s\"", vol->volName);
 
-    printf(" between sectors [%ld-%ld].",vol->firstBlock, vol->lastBlock);
+    printf(" between sectors [%d-%d].",vol->firstBlock, vol->lastBlock);
 
     printf(" %s ",isFFS(vol->dosType) ? "FFS" : "OFS");
     if (isINTL(vol->dosType))
@@ -370,12 +373,10 @@ void processFile(struct Volume *vol, char* name, char* path, unsigned char *extb
 int main(int argc, char* argv[])
 {
     int i, j;
-    BOOL rflag, lflag, xflag, cflag, vflag, sflag, dflag, pflag, qflag;
+    BOOL rflag, lflag, xflag, cflag, vflag, sflag, dflag, pflag, qflag, mflag;
     struct List* files, *rtfiles;
     char *devname, *dirname;
-    char strbuf[80];
     unsigned char *extbuf;
-    int vInd, dInd, fInd, aInd;
     BOOL nextArg;
 
     struct Device *dev;
@@ -389,8 +390,7 @@ int main(int argc, char* argv[])
         exit(0);
     }
 
-    rflag = lflag = cflag = vflag = sflag = dflag = pflag = qflag = FALSE;
-    vInd = dInd = fInd = aInd = -1;
+    rflag = lflag = cflag = vflag = sflag = dflag = pflag = qflag = mflag = FALSE;
     xflag = TRUE;
     dirname = NULL;
     devname = NULL;
@@ -429,6 +429,9 @@ int main(int argc, char* argv[])
                     break;
                 case 's': 
                     sflag = TRUE;
+                    break;
+                case 'm': 
+                    mflag = TRUE;
                     break;
                 case 'c': 
                     cflag = TRUE;
@@ -489,8 +492,7 @@ int main(int argc, char* argv[])
 
     dev = adfMountDev( devname,TRUE );
     if (!dev) {
-        sprintf(strbuf,"Can't mount the dump device '%s'.\n", devname);
-        fprintf(stderr, strbuf);
+        fprintf(stderr,"Can't mount the dump device '%s'.\n", devname);
         adfEnvCleanUp(); exit(1);
     }
     if (!qflag)
@@ -523,13 +525,13 @@ int main(int argc, char* argv[])
         if (!rflag) {
             cell = list = adfGetDirEnt(vol,vol->curDirPtr);
             while(cell) {
-                printEnt(vol,cell->content,"", sflag);
+                printEnt(vol,cell->content,"", sflag, mflag);
                 cell = cell->next;
             }
             adfFreeDirList(list);
         } else {
             cell = list = adfGetRDirEnt(vol,vol->curDirPtr,TRUE);
-            printTree(vol,cell,"", sflag);
+            printTree(vol,cell,"", sflag, mflag);
             adfFreeDirList(list);
         }
     }else if (xflag) {
