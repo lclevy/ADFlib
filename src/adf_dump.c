@@ -34,6 +34,7 @@
 #include"adf_disk.h"
 #include"adf_nativ.h"
 #include"adf_err.h"
+#include"adf_dump.h"
 
 extern struct Env adfEnv;
 
