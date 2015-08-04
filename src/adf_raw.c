@@ -303,7 +303,7 @@ adfBootSum(uint8_t *buf)
     for(i=0; i<256; i++) {
         if (i!=1) {
             d = Long(buf+i*4);
-            if ( (ULONG_MAX-newSum)<d )
+            if ( (0xffffffffU-newSum)<d )
                 newSum++;
             newSum+=d;
         }
