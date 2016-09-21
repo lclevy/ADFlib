@@ -24,6 +24,8 @@
 
 #define UNADF_VERSION "1.0"
 
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include<stdlib.h>
 #include<errno.h>
@@ -31,16 +33,14 @@
 
 #include "adflib.h"
 
-/* The portable way used to create a directory is to call the MKDIR command via the
- * system() function.
- * It is used to create the 'dir1' directory, like the 'dir1/dir11' directory
+/* The portable way used to create a directory is to call mkdir()
+ * which is defined by following standards: SVr4, BSD, POSIX.1-2001
+ * and POSIX.1-2008
  */
 
 /* the portable way to check if a directory 'dir1' already exists i'm using is to
  * do fopen('dir1','rb'). NULL is returned if 'dir1' doesn't exists yet, an handle instead
  */
-
-#define MKDIR "mkdir"
 
 #ifdef WIN32
 #define DIRSEP '\\'
@@ -50,6 +50,13 @@
 
 #define EXTBUFL 1024*8
 
+
+static void mkdirOrLogErr(const char *const path)
+{
+	if (mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO))
+		fprintf(stderr, "mkdir: cannot create directory '%s': %s\n",
+			path, strerror(errno));
+}
 
 void help()
 {
@@ -154,7 +161,6 @@ void extractTree(struct Volume *vol, struct List* tree, char *path, unsigned cha
 {
 	struct Entry* entry;
     char *buf;
-    char sysbuf[200];
 
     while(tree) {
         entry = (struct Entry*)tree->content;
@@ -164,15 +170,13 @@ void extractTree(struct Volume *vol, struct List* tree, char *path, unsigned cha
                 buf=(char*)malloc(strlen(path)+1+strlen(entry->name)+1);
                 if (!buf) return;
                 sprintf(buf,"%s%c%s",path,DIRSEP,entry->name);
-                sprintf(sysbuf,"%s %s",MKDIR,buf);
                 if (!qflag) printf("x - %s%c\n",buf,DIRSEP);
+                if (!pflag) mkdirOrLogErr(buf);
             }
             else {
-                sprintf(sysbuf,"%s %s",MKDIR,entry->name);
                 if (!qflag) printf("x - %s%c\n",entry->name,DIRSEP);
+                if (!pflag) mkdirOrLogErr(entry->name);
             }
-
-            if (!pflag) system(sysbuf);
 
 	        if (tree->subdir!=NULL) {
                 if (adfChangeDir(vol,entry->name)==RC_OK) {
@@ -304,21 +308,20 @@ void processFile(struct Volume *vol, char* name, char* path, unsigned char *extb
         extractFile(vol, name, path, extbuf, pflag, qflag);
     }
     else {
-        /* the all-in-one string : to call system(), to find the filename, the convert dir sep char ... */
-        bigstr=(char*)malloc(strlen(MKDIR)+1+strlen(path)+1+strlen(name)+1);
+        bigstr=(char*)malloc(strlen(path)+1+strlen(name)+1);
         if (!bigstr) { fprintf(stderr,"processFile : malloc"); return; }
 
         /* to build to extract path */
         if (strlen(path)>0) {
-            sprintf(bigstr,"%s %s%c%s",MKDIR,path,DIRSEP,name);
-            cdstr = bigstr+strlen(MKDIR)+1+strlen(path)+1;
+            sprintf(bigstr,"%s%c%s",path,DIRSEP,name);
+            cdstr = bigstr+strlen(path)+1;
         }
         else {
-            sprintf(bigstr,"%s %s",MKDIR,name);
-            cdstr = bigstr+strlen(MKDIR)+1;
+            sprintf(bigstr,"%s",name);
+            cdstr = bigstr;
         }
         /* the directory in which the file will be extracted */
-        fullname =  bigstr+strlen(MKDIR)+1;
+        fullname =  bigstr;
 
         /* finds the filename, and separates it from the path */
         filename = strrchr(bigstr,'/')+1;
@@ -336,7 +339,7 @@ void processFile(struct Volume *vol, char* name, char* path, unsigned char *extb
                     return;
                 tfile = fopen(fullname,"r"); /* the only portable way to test if the dir exists */
                 if (tfile==NULL) { /* does't exist : create it */
-                    if (!pflag) system(bigstr);
+                    if (!pflag) mkdirOrLogErr(bigstr);
                     if (!qflag) printf("x - %s%c\n",fullname,DIRSEP);
                 }
                 else
@@ -353,7 +356,7 @@ void processFile(struct Volume *vol, char* name, char* path, unsigned char *extb
                     return;
                 tfile = fopen(fullname,"r");
                 if (tfile==NULL) {
-                    if (!pflag) system(bigstr);
+                    if (!pflag) mkdirOrLogErr(bigstr);
                     if (!qflag) printf("x - %s%c\n",fullname,DIRSEP);
                 }
                 else
