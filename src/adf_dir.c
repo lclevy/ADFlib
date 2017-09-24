@@ -225,7 +225,8 @@ RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name)
 
     if (entry.secType==ST_FILE) {
         adfFreeFileBlocks(vol, (struct bFileHeaderBlock*)&entry);
-        if (adfEnv.useNotify)
+    	adfSetBlockFree(vol, nSect); //marks the FileHeaderBlock as free in BitmapBlock
+    	if (adfEnv.useNotify)
              (*adfEnv.notifyFct)(pSect,ST_FILE);
     }
     else if (entry.secType==ST_DIR) {
@@ -615,7 +616,7 @@ SECTNUM adfNameToEntryBlk(struct Volume *vol, int32_t ht[], char* name,
     nSect = ht[hashVal];
 /*printf("name=%s ht[%d]=%d upper=%s len=%d\n",name,hashVal,nSect,upperName,nameLen);
 printf("hashVal=%d\n",adfGetHashValue(upperName, intl ));
-if (!strcmp("españa.country",name)) {
+if (!strcmp("espaÃ±a.country",name)) {
 int i;
 for(i=0; i<HT_SIZE; i++) printf("ht[%d]=%d    ",i,ht[i]);
 }*/
