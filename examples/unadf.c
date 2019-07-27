@@ -1,8 +1,7 @@
 /*
- * unadf 1.0
+ * unadf 1.1
  *
- *
- * tested under Linux and Win32
+ * tested under Linux and Windows
  *
  *  This file is part of ADFLib.
  *
@@ -22,551 +21,509 @@
  *
  */
 
-#define UNADF_VERSION "1.0"
-
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
-#include<stdlib.h>
-#include<errno.h>
-#include<string.h>
-
+#include <time.h>
 #include "adflib.h"
 
-/* The portable way used to create a directory is to call mkdir()
- * which is defined by following standards: SVr4, BSD, POSIX.1-2001
- * and POSIX.1-2008
- */
-
-/* the portable way to check if a directory 'dir1' already exists i'm using is to
- * do fopen('dir1','rb'). NULL is returned if 'dir1' doesn't exists yet, an handle instead
- */
-
 #ifdef WIN32
-#define DIRSEP '\\'
+typedef uint32_t mode_t;
+# define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+# include <sys/utime.h>
+# define DIRSEP '\\'
 #else
-#define DIRSEP '/'
-#endif /* WIN32 */
+# include <sys/time.h>
+# include <unistd.h>
+# define DIRSEP '/'
+#endif
 
-#define EXTBUFL 1024*8
+#define UNADF_VERSION "1.1"
+#define EXTRACT_BUFFER_SIZE 8192
 
+/* command-line arguments */
+BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
+     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE;
+char *adf_file = NULL, *extract_dir = NULL;
+int vol_number = 0;
+struct List *file_list = NULL;
 
-static void mkdirOrLogErr(const char *const path)
-{
-	if (mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO))
-		fprintf(stderr, "mkdir: cannot create directory '%s': %s\n",
-			path, strerror(errno));
-}
-
-void help()
-{
-    puts("unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]");
-    puts("    -l : lists root directory contents");
-    puts("    -r : lists directory tree contents");
-    puts("    -c : use dircache data (must be used with -l)");
-    puts("    -s : display entries logical block pointer (must be used with -l)");
-    puts("    -m : display file comments, if exists (must be used with -l)");
-    putchar('\n');
-    puts("    -v n : mount volume #n instead of default #0 volume");
-    putchar('\n');
-    puts("    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)");
-    puts("    -d dir : extract to 'dir' directory");
-}
-
-void printEnt(struct Volume *vol, struct Entry* entry, char *path, BOOL sect,
-        BOOL comment)
-{
-    /* do not print the links entries, ADFlib do not support them yet properly */
-    if (entry->type==ST_LFILE || entry->type==ST_LDIR || entry->type==ST_LSOFT)
-        return;
-
-    if (entry->type==ST_DIR)
-        printf("         ");
-    else
-        printf("%7d  ",entry->size);
-
-	printf("%4d/%02d/%02d  %2d:%02d:%02d ",entry->year, entry->month, entry->days,
-        entry->hour, entry->mins, entry->secs);
-    if (sect)
-        printf(" %06d ",entry->sector);
-
-    if (strlen(path)>0)
-        printf(" %s/",path);
-    else
-        printf(" ");
-    if (entry->type==ST_DIR)
-        printf("%s/",entry->name);
-    else
-        printf("%s",entry->name);
-    if (comment && entry->comment!=NULL && strlen(entry->comment)>0)
-        printf(", %s",entry->comment);
-    putchar('\n');
-
-}
+/* prototypes */
+void parse_args(int argc, char *argv[]);
+void help();
+void print_device(struct Device *dev);
+void print_volume(struct Volume *vol);
+void print_tree(struct List *node, char *path);
+void print_entry(struct Entry *e, char *path);
+void extract_tree(struct Volume *vol, struct List *node, char *path);
+void extract_filepath(struct Volume *vol, char *filepath);
+void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms);
+char *output_name(char *path, char *name);
+char *join_path(char *path, char *name);
+void set_file_date(char *out, struct Entry *e);
+void mkdir_if_needed(char *path, mode_t perms);
+mode_t permissions(struct Entry *e);
 
 
-void extractFile(struct Volume *vol, char* name, char* path, unsigned char *extbuf,
-    BOOL pflag, BOOL qflag)
-{
-    struct File *file;
-    FILE* out;
-    long n;
-    char *filename;
+int main(int argc, char *argv[]) {
+    struct Device *dev = NULL;
+    struct Volume *vol = NULL;
+    struct List *list, *node;
 
-    filename = NULL;
-    if (pflag)
-        out = stdout;
-    else {
-        if (strlen(path)>0) {
-            filename=(char*)malloc(sizeof(char)* (strlen(path)+1+strlen(name)+1) );
-            if (!filename) return;
-            sprintf(filename,"%s%c%s",path,DIRSEP,name);
-            out = fopen(filename, "wb");
-        }
-        else
-            out = fopen(name, "wb");
-        if (!out) return;
-    }
+    fprintf(stderr, "unADF v%s : a unzip like for .ADF files, powered by ADFlib (v%s - %s)\n\n",
+        UNADF_VERSION, adfGetVersionNumber(), adfGetVersionDate());
 
-    file = adfOpenFile(vol, name, "r");
-    if (!file) { fclose(out); return; }
-
-    n = adfReadFile(file, EXTBUFL, extbuf);
-    while(!adfEndOfFile(file)) {
-        fwrite(extbuf, sizeof(unsigned char), n, out);
-        n = adfReadFile(file, EXTBUFL, extbuf);
-    }
-    if (n>0)
-        fwrite(extbuf, sizeof(unsigned char), n, out);
-
-    if (!pflag)
-        fclose(out);
-
-    adfCloseFile(file);
-
-    if (!qflag) {
-        if (filename!=NULL)
-            printf("x - %s\n", filename);
-        else
-            printf("x - %s\n", name);
-    }
-	
-    if (filename!=NULL)
-        free(filename);
-}
-
-
-void extractTree(struct Volume *vol, struct List* tree, char *path, unsigned char *extbuf,
-    BOOL pflag, BOOL qflag)
-{
-	struct Entry* entry;
-    char *buf;
-
-    while(tree) {
-        entry = (struct Entry*)tree->content;
-        if (entry->type==ST_DIR) {
-            buf = NULL;
-            if (strlen(path)>0) {
-                buf=(char*)malloc(strlen(path)+1+strlen(entry->name)+1);
-                if (!buf) return;
-                sprintf(buf,"%s%c%s",path,DIRSEP,entry->name);
-                if (!qflag) printf("x - %s%c\n",buf,DIRSEP);
-                if (!pflag) mkdirOrLogErr(buf);
-            }
-            else {
-                if (!qflag) printf("x - %s%c\n",entry->name,DIRSEP);
-                if (!pflag) mkdirOrLogErr(entry->name);
-            }
-
-	        if (tree->subdir!=NULL) {
-                if (adfChangeDir(vol,entry->name)==RC_OK) {
-                    if (buf!=NULL)
-                        extractTree(vol,tree->subdir,buf,extbuf, pflag, qflag);
-                    else
-                        extractTree(vol,tree->subdir,entry->name,extbuf, pflag, qflag);
-                    adfParentDir(vol);
-                }
-                else {
-                    if (strlen(path)>0)
-                        fprintf(stderr,"ExtractTree : dir \"%s/%s\" not found.\n",path,entry->name);
-                    else
-                        fprintf(stderr,"ExtractTree : dir \"%s\" not found.\n",entry->name);
-                }
-            }
-
-            if (buf!=NULL)
-                free(buf);
-        }
-        else if (entry->type==ST_FILE) {
-            extractFile(vol,entry->name,path,extbuf, pflag, qflag);
-        }
-        tree = tree->next;
-    }
-}
-
-
-void printTree(struct Volume *vol, struct List* tree, char* path, BOOL sect,
-        BOOL comment)
-{
-    char *buf;
-    struct Entry* entry;
-
-    while(tree) {
-        printEnt(vol, tree->content, path, sect, comment);
-        if (tree->subdir!=NULL) {
-            entry = (struct Entry*)tree->content;
-            if (strlen(path)>0) {
-                buf=(char*)malloc(sizeof(char)* (strlen(path)+1+strlen(entry->name)+1) );
-                if (!buf) {
-                    fprintf(stderr,"printTree : malloc error\n");
-                    return;
-                }
-                sprintf(buf,"%s/%s", path, entry->name);
-                printTree(vol, tree->subdir, buf, sect, comment);
-                free(buf);
-            }
-            else
-                printTree(vol, tree->subdir, entry->name, sect, comment);
-        }
-        tree = tree->next;
-    }
-}
-
-
-void printDev(struct Device* dev)
-{
-    printf("Device : ");
-
-    switch(dev->devType){
-    case DEVTYPE_FLOPDD:
-        printf("Floppy DD"); break;
-    case DEVTYPE_FLOPHD:
-        printf("Floppy HD"); break;
-    case DEVTYPE_HARDDISK:
-        printf("Harddisk"); break;
-    case DEVTYPE_HARDFILE:
-        printf("Hardfile"); break;
-    default:
-        printf("???"); break;
-    }
-
-    printf(". Cylinders = %d, Heads = %d, Sectors = %d",dev->cylinders,dev->heads,dev->sectors);
-
-    printf(". Volumes = %d\n",dev->nVol);
-}
-
-
-void printVol(struct Volume* vol, int volNum)
-{
-    printf("Volume : ");
-	
-    switch(vol->dev->devType) {
-    case DEVTYPE_FLOPDD:
-        printf ("Floppy 880 KBytes,");
-        break;
-    case DEVTYPE_FLOPHD:
-        printf ("Floppy 1760 KBytes,");
-        break;
-    case DEVTYPE_HARDDISK:
-        printf ("HD partition #%d %3.1f KBytes,", volNum, (vol->lastBlock - vol->firstBlock +1) * 512.0/1024.0);
-        break;
-    case DEVTYPE_HARDFILE:
-        printf ("HardFile %3.1f KBytes,", (vol->lastBlock - vol->firstBlock +1) * 512.0/1024.0);
-        break;
-    default:
-        printf ("???,");
-    }
-
-    if (vol->volName!=NULL)
-        printf(" \"%s\"", vol->volName);
-
-    printf(" between sectors [%d-%d].",vol->firstBlock, vol->lastBlock);
-
-    printf(" %s ",isFFS(vol->dosType) ? "FFS" : "OFS");
-    if (isINTL(vol->dosType))
-        printf ("INTL ");
-    if (isDIRCACHE(vol->dosType))
-        printf ("DIRCACHE ");
-
-    printf(". Filled at %2.1f%%.\n", 100.0-
-	(adfCountFreeBlocks(vol)*100.0)/(vol->lastBlock - vol->firstBlock +1) );
-
-}
-
-
-void processFile(struct Volume *vol, char* name, char* path, unsigned char *extbuf,
-    BOOL pflag, BOOL qflag)
-{
-	char *sepptr, *cdstr, *fullname, *filename;
-	char *bigstr;
-    FILE *tfile;
-
-    adfToRootDir(vol);
-
-    sepptr = strchr(name, '/');
-    if (sepptr==NULL) {
-        extractFile(vol, name, path, extbuf, pflag, qflag);
-    }
-    else {
-        bigstr=(char*)malloc(strlen(path)+1+strlen(name)+1);
-        if (!bigstr) { fprintf(stderr,"processFile : malloc"); return; }
-
-        /* to build to extract path */
-        if (strlen(path)>0) {
-            sprintf(bigstr,"%s%c%s",path,DIRSEP,name);
-            cdstr = bigstr+strlen(path)+1;
-        }
-        else {
-            sprintf(bigstr,"%s",name);
-            cdstr = bigstr;
-        }
-        /* the directory in which the file will be extracted */
-        fullname =  bigstr;
-
-        /* finds the filename, and separates it from the path */
-        filename = strrchr(bigstr,'/')+1;
-        filename[-1]='\0';
-
-        sepptr = cdstr;
-        /* find the end of the first dir to create */
-        while(sepptr[0]!='/' && sepptr[0]!='\0')
-            sepptr++;
-
-        while(strlen(cdstr)>0) {
-            if (sepptr[0]=='/') { /* not the last one */
-                sepptr[0]='\0';
-                if (adfChangeDir(vol,cdstr)!=RC_OK)
-                    return;
-                tfile = fopen(fullname,"r"); /* the only portable way to test if the dir exists */
-                if (tfile==NULL) { /* does't exist : create it */
-                    if (!pflag) mkdirOrLogErr(bigstr);
-                    if (!qflag) printf("x - %s%c\n",fullname,DIRSEP);
-                }
-                else
-                    fclose(tfile);
-                sepptr[0] = DIRSEP; /* converts the '/' to '/' or '\' */
-                cdstr = sepptr+1; /* next beginning of the next dir to create */
-                /* to find the end of the next dir */
-                sepptr++;
-                while(sepptr[0]!='/' && sepptr[0]!='\0')
-                    sepptr++;
-            }
-            else { /* the last one */
-                if (adfChangeDir(vol,cdstr)!=RC_OK)
-                    return;
-                tfile = fopen(fullname,"r");
-                if (tfile==NULL) {
-                    if (!pflag) mkdirOrLogErr(bigstr);
-                    if (!qflag) printf("x - %s%c\n",fullname,DIRSEP);
-                }
-                else
-                    fclose(tfile);
-                cdstr = cdstr+strlen(cdstr); /* at the end, ends the while loop */
-            }
-        }
-        extractFile(vol, filename, fullname, extbuf, pflag, qflag);
-
-        free(bigstr);
-    }
-
-
-}
-
-
-int main(int argc, char* argv[])
-{
-    int i, j;
-    BOOL rflag, lflag, xflag, cflag, vflag, sflag, dflag, pflag, qflag, mflag;
-    struct List* files, *rtfiles;
-    char *devname, *dirname;
-    unsigned char *extbuf;
-    BOOL nextArg;
-
-    struct Device *dev;
-    struct Volume *vol;
-    struct List *list, *cell;
-    int volNum;
-    BOOL true = TRUE;
-
-    if (argc<2) {
-        help();
-        exit(0);
-    }
-
-    rflag = lflag = cflag = vflag = sflag = dflag = pflag = qflag = mflag = FALSE;
-    xflag = TRUE;
-    dirname = NULL;
-    devname = NULL;
-    files = rtfiles = NULL;
-    volNum = 0;
-
-    fprintf(stderr,"unADF v%s : a unzip like for .ADF files, powered by ADFlib (v%s - %s)\n\n",
-        UNADF_VERSION, adfGetVersionNumber(),adfGetVersionDate());
-
-    /* parse options */
-    i=1;
-    while(i<argc) {
-        if (argv[i][0]=='-') {
-            j=1;
-            nextArg = FALSE;
-            while(j<(int)strlen(argv[i]) && !nextArg) {
-                switch(argv[i][j]) {
-                case 'v':
-                    vflag = TRUE;
-                    if ((i+1)<(argc-1)) {
-                        i++;
-                        nextArg = TRUE;
-                        errno = 0;
-                        volNum = atoi(argv[i]);
-                        if (errno!=0 || volNum<0) {
-                            fprintf(stderr,"invalid volume number, aborting.\n");
-                            exit(1);
-                        }
-                    }
-                    else
-                        fprintf(stderr,"no volume number, -v option ignored.\n");
-                    break;
-                case 'l': 
-                    lflag = TRUE;
-                    xflag = FALSE;
-                    break;
-                case 's': 
-                    sflag = TRUE;
-                    break;
-                case 'm': 
-                    mflag = TRUE;
-                    break;
-                case 'c': 
-                    cflag = TRUE;
-                    break;
-                case 'r':
-                    rflag = TRUE;
-                    break;
-                case 'd':
-                    if (devname!=NULL && xflag && (i+1)==(argc-1)) {
-                        i++;
-                        dirname = argv[i];
-                        if (dirname[strlen(dirname)-1]==DIRSEP)
-                            dirname[strlen(dirname)-1]='\0';
-                        nextArg = TRUE;
-                        dflag = TRUE;
-                    }
-                    break;
-                case 'p':
-                    if (xflag) {
-                        fprintf(stderr,"sending files to pipe.\n");
-                        pflag = TRUE;
-                        qflag = TRUE;
-                    }
-                    else
-                        fprintf(stderr,"-p option must be used with extraction, ignored.\n");
-                    break;
-                case 'h':
-                default:
-                    help();
-                    exit(0);
-                } /* switch */
-            j++;
-            } /* while */
-        } /* if */
-        else {
-			/* the last non option string is taken as a filename */
-            if (devname==NULL) /* if the device name has been already given */
-                devname = argv[i];
-            else {
-                if (xflag) {
-                    if (rtfiles==NULL)
-                        rtfiles = files = newCell(NULL, (void*)argv[i]);
-                    else
-                        files = newCell(files, (void*)argv[i]);
-                }
-                else
-                    fprintf(stderr,"Must be used with extraction, ignored.\n");
-            }
-        }
-        i++;
-    } /* while */
-
-    extbuf =(unsigned char*)malloc(EXTBUFL*sizeof(char));
-    if (!extbuf) { fprintf(stderr,"malloc error\n"); exit(1); }
-
-    /* initialize the library */
     adfEnvInitDefault();
+    parse_args(argc, argv);
 
-    dev = adfMountDev( devname,TRUE );
-    if (!dev) {
-        fprintf(stderr,"Can't mount the dump device '%s'.\n", devname);
-        adfEnvCleanUp(); exit(1);
+    /* mount device */
+    if (!(dev = adfMountDev(adf_file, TRUE))) {
+        fprintf(stderr, "%s: can't mount as device\n", adf_file);
+        goto error_handler;
     }
-    if (!qflag)
-        printDev(dev);
+    if (!pipe_mode) {
+        print_device(dev);
+    }
 
-    if (volNum>=dev->nVol) {
-        fprintf(stderr,"This device has only %d volume(s), aborting.\n",dev->nVol);
+    /* mount volume */
+    if (vol_number < 0 || vol_number >= dev->nVol) {
+        fprintf(stderr, "%s: volume %d is invalid (device has %d volume(s))\n",
+            adf_file, vol_number, dev->nVol);
+        goto error_handler;
+    }
+    if (!(vol = adfMount(dev, vol_number, TRUE))) {
+        fprintf(stderr, "%s: can't mount volume %d\n",
+            adf_file, vol_number);
+        goto error_handler;
+    }
+    if (!pipe_mode) {
+        print_volume(vol);
+    }
+
+    if (list_mode || list_all) {
+        /* list files */
+        if (use_dircache && isDIRCACHE(vol->dosType)) {
+            BOOL true = TRUE;
+            adfChgEnvProp(PR_USEDIRC, &true);
+            puts("Using dir cache blocks.");
+        }
+        if (list_all) {
+            /* list all files recursively */
+            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            print_tree(list, "");
+        }
+        else {
+            /* list contents of root directory */
+            list = adfGetDirEnt(vol, vol->curDirPtr);
+            for (node = list; node; node = node->next) {
+                print_entry(node->content, "");
+            }
+        }
+        adfFreeDirList(list);
+    }
+    else {
+        /* extract files */
+        if (file_list) {
+            /* extract list of files given on command line */
+            for (node = file_list; node; node = node->next) {
+                extract_filepath(vol, node->content);
+            }
+        }
+        else {
+            /* extract all files */
+            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            extract_tree(vol, list, "");
+            adfFreeDirList(list);
+        }
+    }
+
+error_handler:
+    if (vol) adfUnMount(vol);
+    if (dev) adfUnMountDev(dev);
+    if (file_list) freeList(file_list);
+    adfEnvCleanUp();
+    return 0;
+}
+
+/* parses the command line arguments into global variables */
+void parse_args(int argc, char *argv[]) {
+    struct List *list = NULL;
+    int i, j;
+
+    /* parse flags */
+    for (i = 1; i < argc && argv[i][0] == '-'; i++) {
+        for (j = 1; argv[i][j]; j++) {
+            switch (argv[i][j]) {
+            case 'l': list_mode     = TRUE; break;
+            case 'r': list_all      = TRUE; break;
+            case 'c': use_dircache  = TRUE; break;
+            case 's': show_sectors  = TRUE; break;
+            case 'm': show_comments = TRUE; break;
+            case 'p':
+                pipe_mode = TRUE;
+                fprintf(stderr, list_mode
+                    ? "-p option must be used with extraction, ignored\n"
+                    : "sending files to pipe\n");
+                break;
+            case 'v':
+                vol_number = atoi((i + 1) < argc ? argv[i + 1] : "0");
+                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
+                break;
+            case 'd':
+                extract_dir = (i + 1) < argc ? argv[i + 1] : NULL;
+                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
+                break;
+            default: /* unknown option - show help and exit */
+                help();
+                exit(1);
+            }
+        }
+    }
+
+    /* ADF filename must come after options */
+    if (i < argc) {
+        adf_file = argv[i++];
+    }
+    else {
+        help();
         exit(1);
     }
 
-    vol = adfMount(dev, volNum, TRUE);
-    if (!vol) {
-        adfUnMountDev(dev);
-        fprintf(stderr, "Can't mount the volume\n");
-        adfEnvCleanUp(); exit(1);
-    }
-
-    if (!qflag) {
-        printVol(vol, volNum);
-        putchar('\n');
-    }
-
-    if (cflag && isDIRCACHE(vol->dosType) && lflag) {
-        adfChgEnvProp(PR_USEDIRC,&true);
-        if (!qflag)
-            puts("Using dir cache blocks.");
-    }
-
-    if (lflag) {
-        if (!rflag) {
-            cell = list = adfGetDirEnt(vol,vol->curDirPtr);
-            while(cell) {
-                printEnt(vol,cell->content,"", sflag, mflag);
-                cell = cell->next;
-            }
-            adfFreeDirList(list);
-        } else {
-            cell = list = adfGetRDirEnt(vol,vol->curDirPtr,TRUE);
-            printTree(vol,cell,"", sflag, mflag);
-            adfFreeDirList(list);
+    /* list of files to extract can follow ADF filename */
+    for (; i < argc; i++) {
+        list = newCell(list, argv[i]);
+        if (!file_list) {
+            file_list = list;
         }
-    }else if (xflag) {
-        if (rtfiles!=NULL) {
-            files = rtfiles;
-            while(files!=NULL) {
-                if (dirname!=NULL)
-                    processFile(vol, (char*)files->content, dirname, extbuf, pflag, qflag);
-                else
-                    processFile(vol, (char*)files->content, "", extbuf, pflag, qflag);
-                files = files->next;
+    }
+}
+
+void help() {
+    fprintf(stderr,
+        "unadf [-lrcsmp] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
+        "    -l : lists root directory contents\n"
+        "    -r : lists directory tree contents\n"
+        "    -c : use dircache data (must be used with -l)\n"
+        "    -s : display entries logical block pointer (must be used with -l)\n"
+        "    -m : display file comments, if exists (must be used with -l)\n"
+        "    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)\n\n"
+        "    -v n : mount volume #n instead of default #0 volume\n\n"
+        "    -d dir : extract to 'dir' directory\n");
+}
+
+/* prints one line of information about a device */
+void print_device(struct Device *dev) {
+    printf("Device : %s. Cylinders = %d, Heads = %d, Sectors = %d. Volumes = %d\n",
+        dev->devType == DEVTYPE_FLOPDD   ? "Floppy DD" :
+        dev->devType == DEVTYPE_FLOPHD   ? "Floppy HD" :
+        dev->devType == DEVTYPE_HARDDISK ? "Harddisk"  :
+        dev->devType == DEVTYPE_HARDFILE ? "Hardfile"  : "???",
+        dev->cylinders, dev->heads, dev->sectors, dev->nVol);
+}
+
+/* prints one line of information about a volume */
+void print_volume(struct Volume *vol) {
+    SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
+
+    switch (vol->dev->devType) {
+    case DEVTYPE_FLOPDD:
+        printf("Volume : Floppy 880 KBytes,");
+        break;
+    case DEVTYPE_FLOPHD:
+        printf("Volume : Floppy 1760 KBytes,");
+        break;
+    case DEVTYPE_HARDDISK:
+        printf("Volume : HD partition #%d %3.1f KBytes,", vol_number, num_blocks / 2.0);
+        break;
+    case DEVTYPE_HARDFILE:
+        printf("Volume : HardFile %3.1f KBytes,", num_blocks / 2.0);
+        break;
+    default:
+        printf("???,");
+    }
+
+    if (vol->volName) {
+        printf(" \"%s\"", vol->volName);
+    }
+
+    printf(" between sectors [%d-%d]. %s%s%s. Filled at %2.1f%%.\n",
+        vol->firstBlock,
+        vol->lastBlock,
+        isFFS(vol->dosType) ? "FFS" : "OFS",
+        isINTL(vol->dosType) ? " INTL" : "",
+        isDIRCACHE(vol->dosType) ? " DIRCACHE" : "",
+        100.0 - ((adfCountFreeBlocks(vol) * 100.0) / num_blocks));
+}
+
+/* recurses through all directories/files and calls print_entry() on them */
+void print_tree(struct List *node, char *path) {
+    for (; node; node = node->next) {
+        print_entry(node->content, path);
+        if (node->subdir) {
+            struct Entry *e = (struct Entry *) node->content;
+            char *newpath = join_path(path, e->name);
+            print_tree(node->subdir, newpath);
+            free(newpath);
+        }
+    }
+}
+
+/* prints one line of information about a directory/file entry */
+void print_entry(struct Entry *e, char *path) {
+    BOOL is_dir = e->type == ST_DIR;
+    BOOL print_comment = show_comments && e->comment && *e->comment;
+
+    /* do not print the links entries, ADFlib do not support them yet properly */
+    if (e->type == ST_LFILE || e->type == ST_LDIR || e->type == ST_LSOFT) {
+        return;
+    }
+
+    /* print "size date time [ sector ] path/filename [, comment]" */
+    printf(is_dir ? "       " : "%7d", e->size);
+    printf("  %4d/%02d/%02d  %2d:%02d:%02d ",
+        e->year, e->month, e->days, e->hour, e->mins, e->secs);
+    if (show_sectors) {
+        printf(" %06d ", e->sector);
+    }
+    printf(" %s%s%s%s%s%s\n",
+        path,
+        *path ? "/" : "",
+        e->name,
+        is_dir ? "/" : "",
+        print_comment ? ", " : "",
+        print_comment ? e->comment : "");
+}
+
+/* extracts all files, recursing into directories */
+void extract_tree(struct Volume *vol, struct List *node, char *path) {
+    for (; node; node = node->next) {
+        struct Entry *e = node->content;
+
+        /* extract file or create directory */
+        char *out = output_name(path, e->name);
+        if (e->type == ST_DIR) {
+            if (!pipe_mode) {
+                printf("x - %s/\n", out);
             }
-            freeList(rtfiles);
+            mkdir_if_needed(out, permissions(e));
+        }
+        else if (e->type == ST_FILE) {
+            extract_file(vol, e->name, out, permissions(e));
+        }
+        set_file_date(out, e);
+        free(out);
+
+        /* recurse into subdirectories */
+        if (node->subdir) {
+            char *newpath = join_path(path, e->name);
+            if (adfChangeDir(vol, e->name) == RC_OK) {
+                extract_tree(vol, node->subdir, newpath);
+                adfParentDir(vol);
+            }
+            else {
+                fprintf(stderr, "%s: can't find directory %s in volume\n",
+                    adf_file, newpath);
+            }
+            free(newpath);
+        }
+    }
+}
+
+/* follows a path to a file on disk and extracts just that file */
+void extract_filepath(struct Volume *vol, char *filepath) {
+    char *p, *element, *out;
+
+    /* skip any leading slashes */
+    for (p = filepath; *p == '/';) p++;
+
+    /* switch to root directory */
+    adfToRootDir(vol);
+
+    /* find each path element and adfChangeDir() to each element */
+    for (element = p; *p; p++) {
+        if (*p == '/') {
+            *p = 0;
+            if (*element) {
+                if (adfChangeDir(vol, element) != RC_OK) {
+                    fprintf(stderr, "%s: can't find directory %s in volume\n",
+                        adf_file, filepath);
+                    return;
+                }
+            }
+            *p = '/';
+            element = p + 1;
+        }
+    }
+
+    /* extract the file using the final path element */
+    if (*element) {
+        if (element == filepath) {
+            /* no directory parts, just a filename */
+            out = output_name("", element);
         }
         else {
-            cell = list = adfGetRDirEnt(vol,vol->curDirPtr,TRUE);
-            if (dirname==NULL)
-                extractTree(vol, cell, "", extbuf, pflag, qflag);
-            else
-                extractTree(vol, cell, dirname, extbuf, pflag, qflag);
-            adfFreeDirList(list);
+            element[-1] = 0; /* split path and file */
+            out = output_name(filepath, element);
+        }
+        extract_file(vol, element, out, 0666); /* assume rw permissions */
+        free(out);
+    }
+}
+
+/* copies a file from the volume to a given output filename */
+void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
+    struct File *f = NULL;
+    uint8_t buf[EXTRACT_BUFFER_SIZE];
+    int fd = 0;
+
+    if (!(f = adfOpenFile(vol, filename, "r"))) {
+        fprintf(stderr, "%s: can't find file %s in volume\n", adf_file, filename);
+        goto error_handler;
+    }
+
+    /* open local file for writing */
+    if (pipe_mode) {
+        fd = 1; /* stdout */
+    }
+    else {
+        printf("x - %s\n", out);
+        fd = open(out, O_CREAT | O_WRONLY, perms);
+        if (fd < 0) {
+            perror(out);
+            goto error_handler;
         }
     }
-    else
-        help();
 
-    free(extbuf);
+    /* copy from volume to local file until EOF */
+    while (!adfEndOfFile(f)) {
+        int32_t n = adfReadFile(f, sizeof(buf), buf);
+        if (write(fd, buf, n) != n) {
+            perror(out);
+            goto error_handler;
+        }
+    }
 
-    adfUnMount(vol);
-    adfUnMountDev(dev);
+error_handler:
+    if (fd && !pipe_mode) close(fd);
+    if (f) adfCloseFile(f);
+}
 
-    adfEnvCleanUp();
+/* combines path and file to "path/file", or just "file" if path is blank */
+char *join_path(char *path, char *file) {
+    char *newpath = malloc(strlen(path) + strlen(file) + 2);
+    if (!newpath) {
+        perror(adf_file);
+        exit(1);
+    }
+    sprintf(newpath, "%s%s%s", path, *path ? "/" : "", file);
+    return newpath;
+}
 
-    return(0);
+/* creates a suitable output filename from the amiga filename */
+char *output_name(char *path, char *name) {
+    int dirlen = extract_dir ? strlen(extract_dir) + 1 : 0;
+    char *out = malloc(dirlen + strlen(path) + strlen(name) + 2), *s, *o;
+    if (!out) {
+        perror(adf_file);
+        exit(1);
+    }
+
+    /* copy user's extract directory if needed */
+    if (dirlen) {
+        strcpy(out, extract_dir);
+        out[dirlen - 1] = DIRSEP;
+    }
+
+    /* copy path and name, translating '/' to platform's separator */
+    for (s = path, o = &out[dirlen]; *s; s++) {
+        *o++ = (*s == '/') ? DIRSEP : *s;
+    }
+    if (*path) {
+        *o++ = DIRSEP;
+    }
+    strcpy(o, name);
+
+    /* search for "../" and change to "xx" to stop directory traversal */
+    for (o = &out[dirlen]; *o; o++) {
+        if (o[0] == '.' && o[1] == '.' && (o[2] == '/' || o[2] == '\\')) {
+            o[0] = o[1] = 'x';
+            o += 2;
+        }
+    }
+
+#ifdef WIN32
+    /* TODO: remove characters : * " ? < > | from names (not allowed in Win32)
+     * and remove any trailing dot or space (breaks Windows File Explorer)
+     */
+#endif
+
+    /* create directories leading up to name, if needed */
+    for (o = out; *o; o++) {
+        if (*o == DIRSEP) {
+            *o = 0;
+            mkdir_if_needed(out, 0777);
+            *o = DIRSEP;
+        }
+    }
+
+    return out;
+}
+
+/* set amiga file date on output file */
+void set_file_date(char *out, struct Entry *e) {
+    time_t time;
+#ifdef WIN32
+    struct utimbuf times;
+#else
+    struct timeval times[2];
+#endif
+
+    struct tm tm;
+    tm.tm_sec = e->secs;
+    tm.tm_min = e->mins;
+    tm.tm_hour = e->hour;
+    tm.tm_mday = e->days;
+    tm.tm_mon = e->month - 1;
+    tm.tm_year = e->year - 1900;
+    tm.tm_isdst = -1;
+    time = mktime(&tm);
+
+#ifdef WIN32
+    /* on Windows, don't allow dates earlier than 1 Jan 1980 */
+    if (time < 315532800) {
+        time = 315532800;
+    }
+    times.actime = times.modtime = time;
+    if (utime(out, &times) != 0) {
+        perror(out);
+    }
+#else
+    times[0].tv_sec = times[1].tv_sec = time;
+    times[0].tv_usec = times[1].tv_usec = 0;
+    if (utimes(out, times) != 0) {
+        perror(out);
+    }
+#endif
+}
+
+/* creates directory, if it does not already exist */
+void mkdir_if_needed(char *path, mode_t perms) {
+    struct stat st;
+    if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        if (mkdir(path, perms) != 0) {
+            perror(path);
+        }
+    }
+}
+
+/* convert amiga permissions to unix permissions */
+mode_t permissions(struct Entry *e) {
+    return (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
+        (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
+        ((e->access >> 13) & 0007) | /* rwx for others */
+        ((e->access >> 5) & 0070); /* rwx for group */
 }
