@@ -39,6 +39,6 @@ include_HEADERS = adf_defs.h \
                   $(NATIVE_DIR)/adf_nativ.h
 
 libadf_la_LDFLAGS = -version-info 0:12:0
-AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE -I$(srcdir) -I$(srcdir)/$(NATIVE_DIR)
+AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_GNU_SOURCE -I$(srcdir) -I$(srcdir)/$(NATIVE_DIR)
 AM_CFLAGS = -std=c99 -pedantic -Wall
 
