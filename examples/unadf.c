@@ -104,6 +104,11 @@ int main(int argc, char *argv[]) {
         print_volume(vol);
     }
 
+    if (pipe_mode && !file_list) {
+        fprintf(stderr, "can't use pipe mode without giving a file name to extract\n");
+        goto error_handler;
+    }
+
     if (list_mode || list_all) {
         /* list files */
         if (use_dircache && isDIRCACHE(vol->dosType)) {
@@ -131,6 +136,11 @@ int main(int argc, char *argv[]) {
             /* extract list of files given on command line */
             for (node = file_list; node; node = node->next) {
                 extract_filepath(vol, node->content);
+
+                if (pipe_mode) {
+                    /* only extract one file in pipe mode */
+                    break;
+                }
             }
         }
         else {
@@ -308,13 +318,15 @@ void extract_tree(struct Volume *vol, struct List *node, char *path) {
         if (e->type == ST_DIR) {
             if (!pipe_mode) {
                 printf("x - %s/\n", out);
+                mkdir_if_needed(out, permissions(e));
             }
-            mkdir_if_needed(out, permissions(e));
         }
         else if (e->type == ST_FILE) {
             extract_file(vol, e->name, out, permissions(e));
         }
-        set_file_date(out, e);
+        if (!pipe_mode) {
+            set_file_date(out, e);
+        }
         free(out);
 
         /* recurse into subdirectories */
@@ -461,12 +473,14 @@ char *output_name(char *path, char *name) {
      */
 #endif
 
-    /* create directories leading up to name, if needed */
-    for (o = out; *o; o++) {
-        if (*o == DIRSEP) {
-            *o = 0;
-            mkdir_if_needed(out, 0777);
-            *o = DIRSEP;
+    if (!pipe_mode) {
+        /* create directories leading up to name, if needed */
+        for (o = out; *o; o++) {
+            if (*o == DIRSEP) {
+                *o = 0;
+                mkdir_if_needed(out, 0777);
+                *o = DIRSEP;
+            }
         }
     }
 
