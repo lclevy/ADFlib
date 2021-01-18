@@ -544,7 +544,7 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
 	fshd.segListBlock = j+1;
     if (adfWriteFSHDblock(dev, j, &fshd)!=RC_OK)
         return RC_ERROR;
-	j++;
+    j++;
 	
 	/* LSEG */
 	lseg.next = -1;
