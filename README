@@ -2,6 +2,8 @@
 
 The ADFlib is a free, portable and open implementation of the Amiga filesystem.
 
+initial release in 1999
+
 It supports :
 - floppy dumps
 - multiple partitions harddisk dumps
@@ -19,7 +21,10 @@ It supports :
 It is written in portable C, and support the WinNT platform to access
 real drives.
 
-See also : https://packages.debian.org/source/sid/unadf
+See also : 
+https://packages.debian.org/source/sid/unadf
+https://www.cvedetails.com/cve/CVE-2016-1243/
+https://www.cvedetails.com/cve/CVE-2016-1244/
 
 ---
 
