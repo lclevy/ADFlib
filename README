@@ -19,6 +19,8 @@ It supports :
 It is written in portable C, and support the WinNT platform to access
 real drives.
 
+See also : https://packages.debian.org/source/sid/unadf
+
 ---
 
 unADF is a unzip like for .ADF files :
