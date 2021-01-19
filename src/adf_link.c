@@ -36,29 +36,6 @@ extern struct Env adfEnv;
  *
  *
  */
-char* path(struct Volume *vol, SECTNUM parent)
-{
-    struct bEntryBlock entryBlk;
-    char *tmpPath;
-    int len;
-
-    tmpPath = NULL;
-    adfReadEntryBlock(vol, parent, &entryBlk);
-    len = min(entryBlk.nameLen, MAXNAMELEN);
-    memcpy(tmpPath,entryBlk.name,len);
-    tmpPath[len]='\0';
-/*    if (entryBlk.parent!=vol->rootBlock) {
-        return(strcat(path(vol,entryBlk.parent), tmpPath));
-    }
-    else
-   */     return(tmpPath);
-}
-
-
-/*
- *
- *
- */
 RETCODE adfBlockPtr2EntryName(struct Volume *vol, SECTNUM nSect, SECTNUM lPar, 
 	char **name, int32_t *size)
 {

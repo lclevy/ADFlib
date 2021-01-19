@@ -165,54 +165,45 @@ void adfEnvCleanUp()
 /*
  * adfChgEnvProp
  *
- * compilation warnings
- * adf_env.c: In function adfChgEnvProp:
- * adf_env.c:176: warning: ISO C forbids conversion of object pointer to function pointer type
- * adf_env.c:179: warning: ISO C forbids conversion of object pointer to function pointer type
- * adf_env.c:182: warning: ISO C forbids conversion of object pointer to function pointer type
- * adf_env.c:185: warning: ISO C forbids conversion of object pointer to function pointer type
- * adf_env.c:192: warning: ISO C forbids conversion of object pointer to function pointer type
- * adf_env.c:203: warning: ISO C forbids conversion of object pointer to function pointer type
- *
  */
-void adfChgEnvProp(int prop, void *new)
+void adfChgEnvProp(int prop, void *newval)
 {
 	BOOL *newBool;
 /*    int *newInt;*/
 
     switch(prop) {
     case PR_VFCT:
-        adfEnv.vFct = (void(*)(char*))new;
+        *(void **) (&adfEnv.vFct) = newval;
         break;
     case PR_WFCT:
-        adfEnv.wFct = (void(*)(char*))new;
+        *(void **) (&adfEnv.wFct) = newval;
         break;
     case PR_EFCT:
-        adfEnv.eFct = (void(*)(char*))new;
+        *(void **) (&adfEnv.eFct) = newval;
         break;
     case PR_NOTFCT:
-        adfEnv.notifyFct = (void(*)(SECTNUM,int))new;
+        *(void **) (&adfEnv.notifyFct) = newval;
         break;
     case PR_USE_NOTFCT:
-        newBool = (BOOL*)new;
+        newBool = (BOOL*)newval;
 		adfEnv.useNotify = *newBool;        
         break;
     case PR_PROGBAR:
-        adfEnv.progressBar = (void(*)(int))new;
+        *(void **) (&adfEnv.progressBar) = newval;
         break;
     case PR_USE_PROGBAR:
-        newBool = (BOOL*)new;
+        newBool = (BOOL*)newval;
 		adfEnv.useProgressBar = *newBool;        
         break;
     case PR_USE_RWACCESS:
-        newBool = (BOOL*)new;
+        newBool = (BOOL*)newval;
 		adfEnv.useRWAccess = *newBool;        
         break;
     case PR_RWACCESS:
-        adfEnv.rwhAccess = (void(*)(SECTNUM,SECTNUM,BOOL))new;
+        *(void **) (&adfEnv.rwhAccess) = newval;
         break;
     case PR_USEDIRC:
-        newBool = (BOOL*)new;
+        newBool = (BOOL*)newval;
 		adfEnv.useDirCache = *newBool;
         break;
     }
