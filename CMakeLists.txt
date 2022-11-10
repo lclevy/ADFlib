@@ -16,5 +16,5 @@ set ( CMAKE_BUILD_TYPE Release )
 enable_testing()
 
 ADD_SUBDIRECTORY( src )
+ADD_SUBDIRECTORY( examples )
 ADD_SUBDIRECTORY( regtests/Test )
-#ADD_SUBDIRECTORY( tests )
