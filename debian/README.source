@@ -1,0 +1,12 @@
+ADFlib for Debian
+-------------------
+
+The source package is being created from the same directory, excluding
+files for Debian (like debian/ directory).
+
+TODO:
+- make the files/scripts generic, add patches for Debian
+
+
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Thu, 10 Nov 2022 22:01:30 +0100
+
