@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Execute tests for the shared library
+#
+
+CUR_DIR=`pwd`
+
+#[ ! -e build/shared/tests/testdata ] && { ln -vs -t build/shared/tests ${CUR_DIR}/tests/testdata ; }
+
+cd build/shared
+make test
+cd ${CUR_DIR}

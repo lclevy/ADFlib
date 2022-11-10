@@ -1,0 +1,2 @@
+
+The scripts must be called in the main project directory !!!

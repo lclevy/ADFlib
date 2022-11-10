@@ -1,0 +1,2 @@
+
+cmake --install build/shared --prefix install
