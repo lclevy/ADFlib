@@ -1,0 +1,2 @@
+
+#define VERSIONPACKAGE_STRING "adflib-${adflib_VERSION_MAJOR}.${adflib_VERSION_MINOR}.${adflib_VERSION_PATCH}"
