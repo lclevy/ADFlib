@@ -40,23 +40,23 @@ fl_test2 $HDDUMP
 echo "-----"
 
 file_test $FFSDUMP $OFSDUMP
-diff mod.distant $CHECK/mod.And.DistantCall
-diff moon_gif $CHECK/MOON.GIF
+#diff mod.distant $CHECK/mod.And.DistantCall
+#diff moon_gif $CHECK/MOON.GIF
 rm mod.distant moon_gif
 echo "-----"
 
-cp $FFSDUMP testffs_adf
-file_test2 testffs_adf $CHECK/MOON.GIF
-diff moon__gif $CHECK/MOON.GIF
-rm moon__gif
-rm testffs_adf
+#cp $FFSDUMP testffs_adf
+#file_test2 testffs_adf $CHECK/MOON.GIF
+#diff moon__gif $CHECK/MOON.GIF
+#rm moon__gif
+#rm testffs_adf
 echo "-----"
 
-cp $OFSDUMP testofs_adf
-file_test3 testofs_adf $CHECK/MOON.GIF
-diff moon__gif $CHECK/MOON.GIF
-rm moon__gif
-rm testofs_adf
+#cp $OFSDUMP testofs_adf
+#file_test3 testofs_adf $CHECK/MOON.GIF
+#diff moon__gif $CHECK/MOON.GIF
+#rm moon__gif
+#rm testofs_adf
 echo "-----"
 
 rename
@@ -72,12 +72,12 @@ echo "-----"
 
 cp $FFSDUMP testffs_adf
 undel2 testffs_adf
-diff mod.distant $CHECK/mod.And.DistantCall
+#diff mod.distant $CHECK/mod.And.DistantCall
 rm mod.distant testffs_adf
 echo "-----"
 
 cp $OFSDUMP testofs_adf
 undel3 testofs_adf
-diff moon_gif $CHECK/MOON.GIF
+#diff moon_gif $CHECK/MOON.GIF
 rm moon_gif testofs_adf
 echo "-----"
