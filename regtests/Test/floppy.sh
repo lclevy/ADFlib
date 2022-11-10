@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # floppy test
 
 PATH=.:$PATH
@@ -13,6 +13,7 @@ BOOTBLK=$BOOTDIR/stdboot3.bbk
 
 CHECK=../Check
 
+set -e
 
 bootdisk $BOOTBLK
 rm newdev

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 PATH=.:$PATH
 
 #floppy test
@@ -12,6 +12,8 @@ BOOTDIR=../Boot
 BOOTBLK=$BOOTDIR/stdboot3.bbk
 
 CHECK=../Check
+
+set -e
 
 hd_test /home/root/hd.adf /home/root/idh2.adf
 echo "-----"
