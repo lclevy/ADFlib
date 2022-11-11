@@ -1,4 +1,4 @@
 #usr/lib/*/*.so.*
 src/*.h				usr/include/adf
-#usr/lib/*/pkgconfig/
+usr/lib/*/pkgconfig/
 #usr/share/pkgconfig/*.pc
