@@ -1,0 +1,5 @@
+#usr/lib/*/*.so.*
+src/*.h				usr/include/adf
+src/generic/*.h			usr/include/adf/generic
+usr/lib/*/pkgconfig/
+#usr/share/pkgconfig/*.pc

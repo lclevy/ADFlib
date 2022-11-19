@@ -1,7 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@
+includedir=@includedir@/adf
 
 Name: adflib
 Description: The ADFlib is a portable C library designed to manage Amiga formatted devices like harddisks and ZIP disks, or dump files of this kind of media via the .ADF format.

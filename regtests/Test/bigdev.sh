@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 PATH=.:$PATH
 
 #floppy test
@@ -13,7 +13,9 @@ BOOTBLK=$BOOTDIR/stdboot3.bbk
 
 CHECK=../Check
 
-hd_test /home/root/hd.adf /home/root/idh2.adf
+set -e
+
+#hd_test /home/root/hd.adf /home/root/idh2.adf
 echo "-----"
 
 hd_test2
@@ -24,4 +26,4 @@ hd_test3
 rm newdev
 echo "-----"
 
-hardfile /home/root/hardfile.hdf
+#hardfile /home/root/hardfile.hdf

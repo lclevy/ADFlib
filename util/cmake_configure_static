@@ -1,0 +1,10 @@
+
+# Generate configuration to build a static library
+#
+# Related discussion and info:
+# https://stackoverflow.com/questions/2152077/is-it-possible-to-get-cmake-to-build-both-a-static-and-shared-library-at-the-sam
+#
+
+#cmake -DBUILD_SHARED_LIBS:BOOL=OFF -B build/static -S .
+# -> static is the default so the same result as above:
+cmake -B build/static -S .

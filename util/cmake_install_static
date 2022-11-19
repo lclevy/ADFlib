@@ -1,0 +1,2 @@
+
+cmake --install build/static --prefix install

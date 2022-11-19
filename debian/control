@@ -1,0 +1,47 @@
+Source: libadf
+Section: libs
+Priority: optional
+Maintainer: Tomasz Wolak <tomas.wolak@gmail.com>
+Build-Depends: dh-autoreconf,
+               debhelper (>= 9),
+               autotools-dev
+Standards-Version: 4.3.0
+Homepage: https://gitlab.com/lclevy/ADFlib
+Vcs-Git: https://gitlab.com/lclevy/ADFlib
+Vcs-Browser: https://gitlab.com/lclevy/ADFlib/tree/master
+
+Package: libadf
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: ADFlib - shared library.
+ ADFlib is a a free, portable and open implementation of the Amiga filesystem.
+ .
+ This package contains the shared library.
+
+Package: libadf-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: libadf (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: ADFlib - development files
+ ADFlib is a a free, portable and open implementation of the Amiga filesystem.
+ .
+ This package contains the development files.
+
+Package: unadf
+Architecture: any
+Multi-Arch: same
+Section: utils
+Depends: libadf (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Description: an unzip like utility for .ADF (Amiga disk image) files
+ unADF is an utility for list and extracting files from .ADF files (Amiga disk images).

@@ -1,0 +1,5 @@
+libadf (0.7.12-1) unstable; urgency=medium
+
+  * Initial release for Debian.
+
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Thu, 10 Nov 2022 22:02:05 +0100
