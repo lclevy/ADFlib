@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # floppy test
 
 PATH=.:$PATH
@@ -57,6 +57,12 @@ echo "-----"
 #diff moon__gif $CHECK/MOON.GIF
 #rm moon__gif
 #rm testofs_adf
+echo "-----"
+
+echo "Executing file_seek_test..."
+cp $OFSDUMP testofs_adf
+file_seek_test testofs_adf
+rm testofs_adf
 echo "-----"
 
 rename

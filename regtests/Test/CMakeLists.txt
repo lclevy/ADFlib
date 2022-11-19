@@ -41,6 +41,9 @@ TARGET_LINK_LIBRARIES ( file_test2 adf )
 add_executable ( file_test3 file_test3.c )
 TARGET_LINK_LIBRARIES ( file_test3 adf )
 
+add_executable ( file_seek_test file_seek_test.c )
+TARGET_LINK_LIBRARIES ( file_seek_test adf )
+
 add_executable ( del_test del_test.c )
 TARGET_LINK_LIBRARIES ( del_test adf )
 
