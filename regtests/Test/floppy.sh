@@ -61,8 +61,9 @@ echo "-----"
 
 echo "Executing file_seek_test..."
 cp $OFSDUMP testofs_adf
-file_seek_test testofs_adf
-rm testofs_adf
+cp $FFSDUMP testffs_adf
+file_seek_test testofs_adf testffs_adf
+rm testofs_adf testffs_adf
 echo "-----"
 
 rename
