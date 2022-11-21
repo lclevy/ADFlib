@@ -244,6 +244,15 @@ void adfFileSeek(struct File *file, uint32_t pos)
             file->currentData);
     }
     else {
+        if ( ! file->currentExt ) {
+            file->currentExt = ( struct bFileExtBlock * )
+                malloc ( sizeof ( struct bFileExtBlock ) );
+            if ( ! file->currentExt ) {
+                (*adfEnv.eFct)( "adfFileSeek : malloc" );
+                return;
+            }
+        }
+
         nSect = file->fileHdr->extension;
         i = 0;
         while( i<extBlock && nSect!=0 ) {
