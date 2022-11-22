@@ -66,6 +66,14 @@ file_seek_test testofs_adf testffs_adf
 rm testofs_adf testffs_adf
 echo "-----"
 
+echo "Executing file_seek_test2..."
+cp $OFSDUMP testofs_adf
+cp $FFSDUMP testffs_adf
+file_seek_test2 testofs_adf testffs_adf
+rm testofs_adf testffs_adf
+echo "-----"
+
+
 rename
 rm newdev
 echo "-----"
