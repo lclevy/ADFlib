@@ -229,24 +229,26 @@ RETCODE adfWriteFileHdrBlock(struct Volume *vol, SECTNUM nSect, struct bFileHead
  *
  */
 
+static void adfFileSeekStart ( struct File * file )
+{
+    file->pos = 0;
+    file->posInExtBlk = 0;
+    file->posInDataBlk = 0;
+    file->nDataBlock = 0;
+
+    adfReadNextFileBlock ( file );
+}
+
+
 static void adfFileSeekOFS ( struct File * file,
                              uint32_t      pos )
 {
+    adfFileSeekStart ( file );
+
     int blockSize = file->volume->datablockSize;
 
     if ( file->pos + pos > file->fileHdr->byteSize )
         pos = file->fileHdr->byteSize - file->pos;
-
-    uint8_t * dataPtr;
-//    if ( isOFS ( file->volume->dosType ) )
-        dataPtr = (uint8_t*)( file->currentData ) + 24;
-//    else
-//        dataPtr = file->currentData;
-
-    if ( file->pos==0 || file->posInDataBlk == blockSize ) {
-        adfReadNextFileBlock ( file );
-        file->posInDataBlk = 0;
-    }
 
     int32_t offset = 0;
     while ( offset < pos ) {
