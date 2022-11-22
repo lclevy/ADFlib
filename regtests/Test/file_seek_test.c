@@ -72,6 +72,14 @@ int test_reading_data_after_seek_ofs ( char * adf_image_fname )
 
 // test reading data after a seek
     status += test_reading_data_after_seek ( vol, large_file,
+                                             0,
+                                             0x47 );
+
+    status += test_reading_data_after_seek ( vol, large_file,
+                                             1,
+                                             0x49 );
+
+    status += test_reading_data_after_seek ( vol, large_file,
                                              highest_not_failing_pos,
                                              0x5 );
 
@@ -142,6 +150,14 @@ int test_reading_data_after_seek_ffs ( char * adf_image_fname )
 
 
 // test reading data after a seek
+    status += test_reading_data_after_seek ( vol, large_file,
+                                             0,
+                                             0x64 );
+
+    status += test_reading_data_after_seek ( vol, large_file,
+                                             1,
+                                             0x69 );
+
     status += test_reading_data_after_seek ( vol, large_file,
                                              highest_not_failing_pos_ofs,
                                              0x28 );
