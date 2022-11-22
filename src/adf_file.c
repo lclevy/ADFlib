@@ -265,6 +265,9 @@ static void adfFileSeekOFS ( struct File * file,
 
 void adfFileSeek(struct File *file, uint32_t pos)
 {
+    if ( file->pos == pos )
+        return;
+
     if ( isOFS ( file->volume->dosType ) )  {
         adfFileSeekOFS ( file, pos );
         return;
