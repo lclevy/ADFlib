@@ -59,10 +59,10 @@ reading_test_t test_ffs = {
 };
 
 
-int test_single_seek ( reading_test_t * test_data );
-int check_single_seek ( struct File *       file,
-                        unsigned int        offset,
-                        const unsigned char expected_value );
+int run_single_seek_tests ( reading_test_t * test_data );
+int test_single_seek ( struct File *       file,
+                       unsigned int        offset,
+                       const unsigned char expected_value );
 
 
 int main ( int argc, char * argv[] )
@@ -73,10 +73,10 @@ int main ( int argc, char * argv[] )
     int status = 0;
 
     test_ofs.image_filename = argv[1];
-    status += test_single_seek ( &test_ofs );
+    status += run_single_seek_tests ( &test_ofs );
 
     test_ffs.image_filename = argv[2];
-    status += test_single_seek ( &test_ffs );
+    status += run_single_seek_tests ( &test_ffs );
 
     adfEnvCleanUp();
 
@@ -85,7 +85,7 @@ int main ( int argc, char * argv[] )
 
 
 
-int test_single_seek ( reading_test_t * test_data )
+int run_single_seek_tests ( reading_test_t * test_data )
 {
     printf ( "\n*** Test file seeking on image: %s, filename: %s\n",
              test_data->image_filename, test_data->filename );
@@ -116,9 +116,9 @@ int test_single_seek ( reading_test_t * test_data )
             goto cleanup;
         }
 
-        status += check_single_seek ( file,
-                                      test_data->checks[i].offset,
-                                      test_data->checks[i].value );
+        status += test_single_seek ( file,
+                                     test_data->checks[i].offset,
+                                     test_data->checks[i].value );
         adfCloseFile ( file );
     }
 
@@ -130,9 +130,9 @@ cleanup:
 }
 
 
-int check_single_seek ( struct File *       file,
-                        unsigned int        offset,
-                        const unsigned char expected_value )
+int test_single_seek ( struct File *       file,
+                       unsigned int        offset,
+                       const unsigned char expected_value )
 {
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
