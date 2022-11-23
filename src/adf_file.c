@@ -283,13 +283,10 @@ static RETCODE adfFileSeekExt ( struct File * file,
                                uint32_t      pos )
 {
     RETCODE status = RC_OK;
-    SECTNUM extBlock, nSect;
-    uint32_t nPos;
-    int i;
+    SECTNUM extBlock;
     
-    nPos = min(pos, file->fileHdr->byteSize);
-    file->pos = nPos;
-    extBlock = adfPos2DataBlock(nPos, file->volume->datablockSize,
+    file->pos = min(pos, file->fileHdr->byteSize);
+    extBlock = adfPos2DataBlock(file->pos, file->volume->datablockSize,
         &(file->posInExtBlk), &(file->posInDataBlk), &(file->curDataPtr) );
     if (extBlock==-1) {
         adfReadDataBlock(file->volume,
