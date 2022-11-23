@@ -695,21 +695,27 @@ SECTNUM adfCreateNextFileBlock(struct File* file)
 int32_t adfPos2DataBlock(int32_t pos, int blockSize, 
     int *posInExtBlk, int *posInDataBlk, int32_t *curDataN )
 {
-    int32_t extBlock;
-
-    *posInDataBlk = pos%blockSize;
-    *curDataN = pos/blockSize;
-    if (*posInDataBlk==0)
-        (*curDataN)++;
-    if (*curDataN<72) {
+    *posInDataBlk = pos % blockSize;   // offset in the data block
+    *curDataN     = pos / blockSize;   // number of the data block
+    if ( *curDataN < MAX_DATABLK ) {
         *posInExtBlk = 0;
         return -1;
     }
     else {
-        *posInExtBlk = (pos-72*blockSize)%blockSize;
-        extBlock = (pos-72*blockSize)/blockSize;
-        if (*posInExtBlk==0)
-            extBlock++;
+        // size of data allocated in file header or by a single ext. block
+        int32_t dataSizeByExtBlock = //72 * blockSize;
+            blockSize * MAX_DATABLK;
+
+        // data offset starting from the 1st allocation done in ext. blocks
+        // (without data allocated in the file header)
+        int32_t offsetInExt = pos - dataSizeByExtBlock;
+
+        // ext. block number
+        int32_t extBlock = offsetInExt / dataSizeByExtBlock;
+
+        // data block index in ext. block
+        *posInExtBlk = ( offsetInExt / blockSize ) % MAX_DATABLK;
+
         return extBlock;
     }
 }
