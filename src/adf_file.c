@@ -40,6 +40,20 @@
 
 extern struct Env adfEnv;
 
+// debugging
+//#define DEBUG_ADF_FILE
+
+#ifdef DEBUG_ADF_FILE
+
+static void show_File ( const struct File * const file );
+
+static void show_bFileHeaderBlock (
+    const struct bFileHeaderBlock * const block );
+
+static void show_bFileExtBlock (
+    const struct bFileExtBlock * const block );
+#endif
+
 void adfFileTruncate(struct Volume *vol, SECTNUM nParent, char *name)
 {
 
@@ -833,3 +847,145 @@ RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtB
     return rc;
 }
 /*###########################################################################*/
+
+#ifdef DEBUG_ADF_FILE
+
+static void show_File ( const struct File * const file )
+{
+    printf ( "\nstruct File:\n"
+             //"volume:\t0x%x
+             //fileHdr;
+             //currentData;
+             //struct bFileExtBlock* currentExt;
+             "  nDataBlock:\t0x%x\t\t%u\n"
+             "  curDataPtr:\t0x%x\t\t%u\n"
+             "  pos:\t\t0x%x\t\t%u\n"
+             "  posInDataBlk:\t0x%x\t\t%u\n"
+             "  posInExtBlk:\t0x%x\t\t%u\n"
+             "  eof:\t\t0x%x\t\t%u\n"
+             "  writeMode:\t0x%x\t\t%u\n",
+             //volume;
+             //fileHdr;
+             //currentData;
+             //struct bFileExtBlock* currentExt;
+             file->nDataBlock,
+             file->nDataBlock,
+             file->curDataPtr,
+             file->curDataPtr,
+             file->pos,
+             file->pos,
+             file->posInDataBlk,
+             file->posInDataBlk,
+             file->posInExtBlk,
+             file->posInExtBlk,
+             file->eof,
+             file->eof,
+             file->writeMode,
+             file->writeMode );
+}
+
+static void show_bFileHeaderBlock (
+    const struct bFileHeaderBlock * const block )
+{
+    printf ( "\nbFileHeaderBlock:\n"
+             "  type:\t\t%d\n"
+             "  headerKey:\t%d\n"
+             "  highSeq:\t%d\n"
+             "  dataSize:\t%d\n"
+             "  firstData:\t%d\n"
+             "  checkSum:\t%d\n"
+             //"	dataBlocks[MAX_DATABLK]:\n"
+             "  r1:\t\t%d\n"
+             "  r2:\t\t%d\n"
+             "  access:\t%d\n"
+             "  byteSize:\t%d\n"
+             "  commLen:\t%d\n"
+             "  comment:\t%s\n"
+             "  r3:\t\t%s\n"
+             "  days:\t\t%d\n"
+             "  mins:\t\t%d\n"
+             "  ticks:\t%d\n"
+             "  nameLen:\t%d\n"
+             "  fileName:\t%s\n"
+             "  r4:\t\t%d\n"
+             "  real:\t\t%d\n"
+             "  nextLink:\t%d\n"
+             "  r5[5]:\t%d\n"
+             "  nextSameHash:\t%d\n"
+             "  parent:\t%d\n"
+             "  extension:\t%d\n"
+             "  secType:\t%d\n",
+             block->type,		/* == 2 */
+             block->headerKey,	/* current block number */
+             block->highSeq,	/* number of data block in this hdr block */
+             block->dataSize,	/* == 0 */
+             block->firstData,
+             block->checkSum,
+             //dataBlocks[MAX_DATABLK],
+             block->r1,
+             block->r2,
+             block->access,	/* bit0=del, 1=modif, 2=write, 3=read */
+             block->byteSize,
+             block->commLen,
+             block->comment,
+             block->r3,
+             block->days,
+             block->mins,
+             block->ticks,
+             block->nameLen,
+             block->fileName,
+             block->r4,
+             block->real,		/* unused == 0 */
+             block->nextLink,	/* link chain */
+             block->r5,
+             block->nextSameHash,	/* next entry with sane hash */
+             block->parent,		/* parent directory */
+             block->extension,	/* pointer to extension block */
+             block->secType );	/* == -3 */
+}
+
+static void show_bFileExtBlock (
+    const struct bFileExtBlock * const block )
+{
+    printf ( "\nbFileExtBlock:\n"
+             "  type:\t\t0x%x\t\t%u\n"
+             "  headerKey:\t0x%x\t\t%u\n"
+             "  highSeq:\t0x%x\t\t%u\n"
+             "  dataSize:\t0x%x\t\t%u\n"
+             "  firstData:\t0x%x\t\t%u\n"
+             "  checkSum:\t0x%x\t%u\n"
+             //"dataBlocks[MAX_DATABLK]:\t%d\n""
+             "  r[45]:\t0x%x\t%u\n"
+             "  info:\t\t0x%x\t\t%u\n"
+             "  nextSameHash:\t0x%x\t\t%u\n"
+             "  parent:\t0x%x\t\t%u\n"
+             "  extension:\t0x%x\t\t%u\n"
+             "  secType:\t0x%x\t%d\n",
+
+             block->type,		/* == 0x10 */
+             block->type,
+             block->headerKey,
+             block->headerKey,
+             block->highSeq,
+             block->highSeq,
+             block->dataSize,	/* == 0 */
+             block->dataSize,
+             block->firstData,	/* == 0 */
+             block->firstData,
+             block->checkSum,
+             block->checkSum,
+//block->dataBlocks[MAX_DATABLK],
+             block->r,
+             block->r,
+             block->info,		/* == 0 */
+             block->info,
+             block->nextSameHash,	/* == 0 */
+             block->nextSameHash,
+             block->parent,		/* header block */
+             block->parent,
+             block->extension,	/* next header extension block */
+             block->extension,
+             block->secType,	/* -3 */
+             block->secType );
+}
+#endif
