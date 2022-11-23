@@ -301,20 +301,14 @@ static RETCODE adfFileSeekExt ( struct File * file,
             file->currentExt = ( struct bFileExtBlock * )
                 malloc ( sizeof ( struct bFileExtBlock ) );
             if ( ! file->currentExt ) {
-                (*adfEnv.eFct)( "adfFileSeek : malloc" );
+                (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
                 return RC_ERROR;
             }
         }
 
-        nSect = file->fileHdr->extension;
-        i = 0;
-        while( i<extBlock && nSect!=0 ) {
-            adfReadFileExtBlock(file->volume, nSect, file->currentExt );
-            nSect = file->currentExt->extension;
-        }
-        if (i!=extBlock) {
-            (*adfEnv.wFct)("error");
-            status = RC_ERROR;
+        status = adfReadFileExtBlockN ( file, extBlock, file->currentExt );
+        if ( status != RC_OK ) {
+            (*adfEnv.wFct)("adfFileSeekExt: error");
         }
         adfReadDataBlock(file->volume,
             file->currentExt->dataBlocks[file->posInExtBlk], file->currentData);
@@ -830,6 +824,35 @@ RETCODE adfReadFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBl
         (*adfEnv.wFct)("adfReadFileExtBlock : extension out of range");
 
     return rc;
+}
+
+/*
+ * adfReadFileExtBlockN
+ *
+ */
+RETCODE adfReadFileExtBlockN ( struct File *          file,
+                               int32_t                extBlock,
+                               struct bFileExtBlock * fext )
+{
+    // add checking if extBlock value is valid (?)
+
+    // traverse the ext. blocks until finding (and reading)
+    // the requested one
+    SECTNUM nSect = file->fileHdr->extension;
+    int32_t i = -1;
+    while ( i < extBlock && nSect != 0 ) {
+        adfReadFileExtBlock ( file->volume, nSect, fext );
+#ifdef DEBUG_ADF_FILE
+        show_bFileExtBlock ( file->currentExt );
+#endif
+        nSect = file->currentExt->extension;
+        i++;
+    }
+    if ( i != extBlock ) {
+        (*adfEnv.wFct)("adfReadFileExtBlockN: error");
+        return RC_ERROR;
+    }
+    return RC_OK;
 }
 
 
