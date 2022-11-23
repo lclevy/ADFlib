@@ -279,16 +279,10 @@ static void adfFileSeekOFS ( struct File * file,
 }
 
 
-void adfFileSeek(struct File *file, uint32_t pos)
+static RETCODE adfFileSeekExt ( struct File * file,
+                               uint32_t      pos )
 {
-    if ( file->pos == pos )
-        return;
-
-    if ( isOFS ( file->volume->dosType ) )  {
-        adfFileSeekOFS ( file, pos );
-        return;
-    }
-
+    RETCODE status = RC_OK;
     SECTNUM extBlock, nSect;
     uint32_t nPos;
     int i;
@@ -308,7 +302,7 @@ void adfFileSeek(struct File *file, uint32_t pos)
                 malloc ( sizeof ( struct bFileExtBlock ) );
             if ( ! file->currentExt ) {
                 (*adfEnv.eFct)( "adfFileSeek : malloc" );
-                return;
+                return RC_ERROR;
             }
         }
 
@@ -318,11 +312,25 @@ void adfFileSeek(struct File *file, uint32_t pos)
             adfReadFileExtBlock(file->volume, nSect, file->currentExt );
             nSect = file->currentExt->extension;
         }
-        if (i!=extBlock)
+        if (i!=extBlock) {
             (*adfEnv.wFct)("error");
+            status = RC_ERROR;
+        }
         adfReadDataBlock(file->volume,
             file->currentExt->dataBlocks[file->posInExtBlk], file->currentData);
     }
+    return status;
+}
+
+void adfFileSeek(struct File *file, uint32_t pos)
+{
+    if ( file->pos == pos )
+        return;
+
+    RETCODE status = adfFileSeekExt ( file, pos );
+
+    if ( status != RC_OK && isOFS ( file->volume->dosType ) )
+        adfFileSeekOFS ( file, pos );
 }
 
 
