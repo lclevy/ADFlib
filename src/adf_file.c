@@ -280,18 +280,20 @@ static void adfFileSeekOFS ( struct File * file,
 
 
 static RETCODE adfFileSeekExt ( struct File * file,
-                               uint32_t      pos )
+                                uint32_t      pos )
 {
     RETCODE status = RC_OK;
-    SECTNUM extBlock;
-    
-    file->pos = min(pos, file->fileHdr->byteSize);
-    extBlock = adfPos2DataBlock(file->pos, file->volume->datablockSize,
-        &(file->posInExtBlk), &(file->posInDataBlk), &(file->curDataPtr) );
-    if (extBlock==-1) {
-        adfReadDataBlock(file->volume,
-            file->fileHdr->dataBlocks[MAX_DATABLK-1-file->curDataPtr],
-            file->currentData);
+    file->pos = min ( pos, file->fileHdr->byteSize );
+
+    SECTNUM extBlock = adfPos2DataBlock ( file->pos,
+                                          file->volume->datablockSize,
+                                          &(file->posInExtBlk),
+                                          &(file->posInDataBlk),
+                                          &(file->curDataPtr) );
+    if ( extBlock == -1 ) {
+        adfReadDataBlock ( file->volume,
+                           file->fileHdr->dataBlocks[ MAX_DATABLK - 1 - file->curDataPtr ],
+                           file->currentData );
     }
     else {
         if ( ! file->currentExt ) {
@@ -307,8 +309,9 @@ static RETCODE adfFileSeekExt ( struct File * file,
         if ( status != RC_OK ) {
             (*adfEnv.wFct)("adfFileSeekExt: error");
         }
-        adfReadDataBlock(file->volume,
-            file->currentExt->dataBlocks[file->posInExtBlk], file->currentData);
+        adfReadDataBlock ( file->volume,
+                           file->currentExt->dataBlocks[ file->posInExtBlk ],
+                           file->currentData );
     }
     return status;
 }
