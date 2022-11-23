@@ -282,20 +282,17 @@ static void adfFileSeekOFS ( struct File * file,
 static RETCODE adfFileSeekExt ( struct File * file,
                                 uint32_t      pos )
 {
-    RETCODE status = RC_OK;
     file->pos = min ( pos, file->fileHdr->byteSize );
 
     SECTNUM extBlock = adfPos2DataBlock ( file->pos,
                                           file->volume->datablockSize,
-                                          &(file->posInExtBlk),
-                                          &(file->posInDataBlk),
-                                          &(file->curDataPtr) );
+                                          &file->posInExtBlk,
+                                          &file->posInDataBlk,
+                                          &file->nDataBlock );
     if ( extBlock == -1 ) {
-        adfReadDataBlock ( file->volume,
-                           file->fileHdr->dataBlocks[ MAX_DATABLK - 1 - file->curDataPtr ],
-                           file->currentData );
-    }
-    else {
+        file->curDataPtr = file->fileHdr->dataBlocks [
+            MAX_DATABLK - 1 - file->nDataBlock ];
+    } else {
         if ( ! file->currentExt ) {
             file->currentExt = ( struct bFileExtBlock * )
                 malloc ( sizeof ( struct bFileExtBlock ) );
@@ -305,15 +302,20 @@ static RETCODE adfFileSeekExt ( struct File * file,
             }
         }
 
-        status = adfReadFileExtBlockN ( file, extBlock, file->currentExt );
-        if ( status != RC_OK ) {
+        if ( adfReadFileExtBlockN ( file, extBlock, file->currentExt ) != RC_OK ) {
             (*adfEnv.wFct)("adfFileSeekExt: error");
+            return RC_ERROR;
         }
-        adfReadDataBlock ( file->volume,
-                           file->currentExt->dataBlocks[ file->posInExtBlk ],
-                           file->currentData );
+
+        file->curDataPtr = file->currentExt->dataBlocks [
+            MAX_DATABLK - 1 - file->posInExtBlk ];
     }
-    return status;
+
+    adfReadDataBlock ( file->volume,
+                       file->curDataPtr,
+                       file->currentData );
+
+    return RC_OK;
 }
 
 void adfFileSeek(struct File *file, uint32_t pos)
