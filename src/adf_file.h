@@ -54,7 +54,8 @@ PREFIX int32_t adfWriteFile(struct File *file, int32_t n, uint8_t *buffer);
 SECTNUM adfCreateNextFileBlock(struct File* file);
 PREFIX void adfFlushFile(struct File *file);
 
-
-
+RETCODE adfReadFileExtBlockN ( struct File *          file,
+                               int32_t                extBlock,
+                               struct bFileExtBlock * fext );
 #endif /* ADF_FILE_H */
 

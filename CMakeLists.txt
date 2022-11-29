@@ -18,3 +18,7 @@ enable_testing()
 ADD_SUBDIRECTORY( src )
 ADD_SUBDIRECTORY( examples )
 ADD_SUBDIRECTORY( regtests/Test )
+
+# unit tests (comment out if not needed)
+# (requires check framework!)
+ADD_SUBDIRECTORY( tests )

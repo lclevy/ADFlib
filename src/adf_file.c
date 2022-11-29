@@ -40,6 +40,20 @@
 
 extern struct Env adfEnv;
 
+// debugging
+//#define DEBUG_ADF_FILE
+
+#ifdef DEBUG_ADF_FILE
+
+static void show_File ( const struct File * const file );
+
+static void show_bFileHeaderBlock (
+    const struct bFileHeaderBlock * const block );
+
+static void show_bFileExtBlock (
+    const struct bFileExtBlock * const block );
+#endif
+
 void adfFileTruncate(struct Volume *vol, SECTNUM nParent, char *name)
 {
 
@@ -228,33 +242,91 @@ RETCODE adfWriteFileHdrBlock(struct Volume *vol, SECTNUM nSect, struct bFileHead
  * adfFileSeek
  *
  */
+
+static void adfFileSeekStart ( struct File * file )
+{
+    file->pos = 0;
+    file->posInExtBlk = 0;
+    file->posInDataBlk = 0;
+    file->nDataBlock = 0;
+
+    adfReadNextFileBlock ( file );
+}
+
+
+static void adfFileSeekOFS ( struct File * file,
+                             uint32_t      pos )
+{
+    adfFileSeekStart ( file );
+
+    int blockSize = file->volume->datablockSize;
+
+    if ( file->pos + pos > file->fileHdr->byteSize )
+        pos = file->fileHdr->byteSize - file->pos;
+
+    int32_t offset = 0;
+    while ( offset < pos ) {
+        int size = min ( pos - offset, blockSize - file->posInDataBlk );
+        file->pos += size;
+        offset += size;
+        file->posInDataBlk += size;
+        if ( file->posInDataBlk == blockSize && offset < pos ) {
+            adfReadNextFileBlock ( file );
+            file->posInDataBlk = 0;
+        }
+    }
+    file->eof = ( file->pos == file->fileHdr->byteSize );
+}
+
+
+static RETCODE adfFileSeekExt ( struct File * file,
+                                uint32_t      pos )
+{
+    file->pos = min ( pos, file->fileHdr->byteSize );
+
+    SECTNUM extBlock = adfPos2DataBlock ( file->pos,
+                                          file->volume->datablockSize,
+                                          &file->posInExtBlk,
+                                          &file->posInDataBlk,
+                                          &file->nDataBlock );
+    if ( extBlock == -1 ) {
+        file->curDataPtr = file->fileHdr->dataBlocks [
+            MAX_DATABLK - 1 - file->nDataBlock ];
+    } else {
+        if ( ! file->currentExt ) {
+            file->currentExt = ( struct bFileExtBlock * )
+                malloc ( sizeof ( struct bFileExtBlock ) );
+            if ( ! file->currentExt ) {
+                (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
+                return RC_ERROR;
+            }
+        }
+
+        if ( adfReadFileExtBlockN ( file, extBlock, file->currentExt ) != RC_OK ) {
+            (*adfEnv.wFct)("adfFileSeekExt: error");
+            return RC_ERROR;
+        }
+
+        file->curDataPtr = file->currentExt->dataBlocks [
+            MAX_DATABLK - 1 - file->posInExtBlk ];
+    }
+
+    adfReadDataBlock ( file->volume,
+                       file->curDataPtr,
+                       file->currentData );
+
+    return RC_OK;
+}
+
 void adfFileSeek(struct File *file, uint32_t pos)
 {
-    SECTNUM extBlock, nSect;
-    uint32_t nPos;
-    int i;
-    
-    nPos = min(pos, file->fileHdr->byteSize);
-    file->pos = nPos;
-    extBlock = adfPos2DataBlock(nPos, file->volume->datablockSize,
-        &(file->posInExtBlk), &(file->posInDataBlk), &(file->curDataPtr) );
-    if (extBlock==-1) {
-        adfReadDataBlock(file->volume,
-            file->fileHdr->dataBlocks[MAX_DATABLK-1-file->curDataPtr],
-            file->currentData);
-    }
-    else {
-        nSect = file->fileHdr->extension;
-        i = 0;
-        while( i<extBlock && nSect!=0 ) {
-            adfReadFileExtBlock(file->volume, nSect, file->currentExt );
-            nSect = file->currentExt->extension;
-        }
-        if (i!=extBlock)
-            (*adfEnv.wFct)("error");
-        adfReadDataBlock(file->volume,
-            file->currentExt->dataBlocks[file->posInExtBlk], file->currentData);
-    }
+    if ( file->pos == pos )
+        return;
+
+    RETCODE status = adfFileSeekExt ( file, pos );
+
+    if ( status != RC_OK && isOFS ( file->volume->dosType ) )
+        adfFileSeekOFS ( file, pos );
 }
 
 
@@ -627,21 +699,27 @@ SECTNUM adfCreateNextFileBlock(struct File* file)
 int32_t adfPos2DataBlock(int32_t pos, int blockSize, 
     int *posInExtBlk, int *posInDataBlk, int32_t *curDataN )
 {
-    int32_t extBlock;
-
-    *posInDataBlk = pos%blockSize;
-    *curDataN = pos/blockSize;
-    if (*posInDataBlk==0)
-        (*curDataN)++;
-    if (*curDataN<72) {
+    *posInDataBlk = pos % blockSize;   // offset in the data block
+    *curDataN     = pos / blockSize;   // number of the data block
+    if ( *curDataN < MAX_DATABLK ) {
         *posInExtBlk = 0;
         return -1;
     }
     else {
-        *posInExtBlk = (pos-72*blockSize)%blockSize;
-        extBlock = (pos-72*blockSize)/blockSize;
-        if (*posInExtBlk==0)
-            extBlock++;
+        // size of data allocated in file header or by a single ext. block
+        int32_t dataSizeByExtBlock = //72 * blockSize;
+            blockSize * MAX_DATABLK;
+
+        // data offset starting from the 1st allocation done in ext. blocks
+        // (without data allocated in the file header)
+        int32_t offsetInExt = pos - dataSizeByExtBlock;
+
+        // ext. block number
+        int32_t extBlock = offsetInExt / dataSizeByExtBlock;
+
+        // data block index in ext. block
+        *posInExtBlk = ( offsetInExt / blockSize ) % MAX_DATABLK;
+
         return extBlock;
     }
 }
@@ -750,6 +828,35 @@ RETCODE adfReadFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBl
     return rc;
 }
 
+/*
+ * adfReadFileExtBlockN
+ *
+ */
+RETCODE adfReadFileExtBlockN ( struct File *          file,
+                               int32_t                extBlock,
+                               struct bFileExtBlock * fext )
+{
+    // add checking if extBlock value is valid (?)
+
+    // traverse the ext. blocks until finding (and reading)
+    // the requested one
+    SECTNUM nSect = file->fileHdr->extension;
+    int32_t i = -1;
+    while ( i < extBlock && nSect != 0 ) {
+        adfReadFileExtBlock ( file->volume, nSect, fext );
+#ifdef DEBUG_ADF_FILE
+        show_bFileExtBlock ( file->currentExt );
+#endif
+        nSect = file->currentExt->extension;
+        i++;
+    }
+    if ( i != extBlock ) {
+        (*adfEnv.wFct)("adfReadFileExtBlockN: error");
+        return RC_ERROR;
+    }
+    return RC_OK;
+}
+
 
 /*
  * adfWriteFileExtBlock
@@ -779,3 +886,145 @@ RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtB
     return rc;
 }
 /*###########################################################################*/
+
+#ifdef DEBUG_ADF_FILE
+
+static void show_File ( const struct File * const file )
+{
+    printf ( "\nstruct File:\n"
+             //"volume:\t0x%x
+             //fileHdr;
+             //currentData;
+             //struct bFileExtBlock* currentExt;
+             "  nDataBlock:\t0x%x\t\t%u\n"
+             "  curDataPtr:\t0x%x\t\t%u\n"
+             "  pos:\t\t0x%x\t\t%u\n"
+             "  posInDataBlk:\t0x%x\t\t%u\n"
+             "  posInExtBlk:\t0x%x\t\t%u\n"
+             "  eof:\t\t0x%x\t\t%u\n"
+             "  writeMode:\t0x%x\t\t%u\n",
+             //volume;
+             //fileHdr;
+             //currentData;
+             //struct bFileExtBlock* currentExt;
+             file->nDataBlock,
+             file->nDataBlock,
+             file->curDataPtr,
+             file->curDataPtr,
+             file->pos,
+             file->pos,
+             file->posInDataBlk,
+             file->posInDataBlk,
+             file->posInExtBlk,
+             file->posInExtBlk,
+             file->eof,
+             file->eof,
+             file->writeMode,
+             file->writeMode );
+}
+
+static void show_bFileHeaderBlock (
+    const struct bFileHeaderBlock * const block )
+{
+    printf ( "\nbFileHeaderBlock:\n"
+             "  type:\t\t%d\n"
+             "  headerKey:\t%d\n"
+             "  highSeq:\t%d\n"
+             "  dataSize:\t%d\n"
+             "  firstData:\t%d\n"
+             "  checkSum:\t%d\n"
+             //"	dataBlocks[MAX_DATABLK]:\n"
+             "  r1:\t\t%d\n"
+             "  r2:\t\t%d\n"
+             "  access:\t%d\n"
+             "  byteSize:\t%d\n"
+             "  commLen:\t%d\n"
+             "  comment:\t%s\n"
+             "  r3:\t\t%s\n"
+             "  days:\t\t%d\n"
+             "  mins:\t\t%d\n"
+             "  ticks:\t%d\n"
+             "  nameLen:\t%d\n"
+             "  fileName:\t%s\n"
+             "  r4:\t\t%d\n"
+             "  real:\t\t%d\n"
+             "  nextLink:\t%d\n"
+             "  r5[5]:\t%d\n"
+             "  nextSameHash:\t%d\n"
+             "  parent:\t%d\n"
+             "  extension:\t%d\n"
+             "  secType:\t%d\n",
+             block->type,		/* == 2 */
+             block->headerKey,	/* current block number */
+             block->highSeq,	/* number of data block in this hdr block */
+             block->dataSize,	/* == 0 */
+             block->firstData,
+             block->checkSum,
+             //dataBlocks[MAX_DATABLK],
+             block->r1,
+             block->r2,
+             block->access,	/* bit0=del, 1=modif, 2=write, 3=read */
+             block->byteSize,
+             block->commLen,
+             block->comment,
+             block->r3,
+             block->days,
+             block->mins,
+             block->ticks,
+             block->nameLen,
+             block->fileName,
+             block->r4,
+             block->real,		/* unused == 0 */
+             block->nextLink,	/* link chain */
+             block->r5,
+             block->nextSameHash,	/* next entry with sane hash */
+             block->parent,		/* parent directory */
+             block->extension,	/* pointer to extension block */
+             block->secType );	/* == -3 */
+}
+
+static void show_bFileExtBlock (
+    const struct bFileExtBlock * const block )
+{
+    printf ( "\nbFileExtBlock:\n"
+             "  type:\t\t0x%x\t\t%u\n"
+             "  headerKey:\t0x%x\t\t%u\n"
+             "  highSeq:\t0x%x\t\t%u\n"
+             "  dataSize:\t0x%x\t\t%u\n"
+             "  firstData:\t0x%x\t\t%u\n"
+             "  checkSum:\t0x%x\t%u\n"
+             //"dataBlocks[MAX_DATABLK]:\t%d\n""
+             "  r[45]:\t0x%x\t%u\n"
+             "  info:\t\t0x%x\t\t%u\n"
+             "  nextSameHash:\t0x%x\t\t%u\n"
+             "  parent:\t0x%x\t\t%u\n"
+             "  extension:\t0x%x\t\t%u\n"
+             "  secType:\t0x%x\t%d\n",
+
+             block->type,		/* == 0x10 */
+             block->type,
+             block->headerKey,
+             block->headerKey,
+             block->highSeq,
+             block->highSeq,
+             block->dataSize,	/* == 0 */
+             block->dataSize,
+             block->firstData,	/* == 0 */
+             block->firstData,
+             block->checkSum,
+             block->checkSum,
+//block->dataBlocks[MAX_DATABLK],
+             block->r,
+             block->r,
+             block->info,		/* == 0 */
+             block->info,
+             block->nextSameHash,	/* == 0 */
+             block->nextSameHash,
+             block->parent,		/* header block */
+             block->parent,
+             block->extension,	/* next header extension block */
+             block->extension,
+             block->secType,	/* -3 */
+             block->secType );
+}
+#endif

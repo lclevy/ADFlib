@@ -102,8 +102,8 @@ struct File {
     void *currentData;
     struct bFileExtBlock* currentExt;
 
-    int32_t nDataBlock;
-    SECTNUM curDataPtr;
+    int32_t nDataBlock;  /* current data block number */
+    SECTNUM curDataPtr;  /* sector number of current data block */
     uint32_t pos;
 
     int posInDataBlk;
