@@ -315,6 +315,8 @@ static RETCODE adfFileSeekExt ( struct File * file,
                        file->curDataPtr,
                        file->currentData );
 
+    file->eof = ( file->pos == file->fileHdr->byteSize );
+
     return RC_OK;
 }
 
