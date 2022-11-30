@@ -24,15 +24,15 @@ const unsigned int ofs_first_pos_using_extension = 0x8940;  // 35136
 
 reading_test_t test_ofs = {
     .filename = "moon.gif",
-    .nchecks = 7,
+    .nchecks = 8,
     .checks = { { 0, 0x47 },
                 { 1, 0x49 },
                 { ofs_first_pos_using_extension - 1,    5 },
                 { ofs_first_pos_using_extension,     0x2d },
                 { ofs_first_pos_using_extension + 1, 0x6c },
                 { 0x2a708, 3 },
-                { 0x2a716, 0x3b }  // the last byte of the test file
-                // add checking beyond the file ?
+                { 0x2a716, 0x3b },  // the last byte of the test file
+                { 0x2a717, 0x00 }   // EOF
     }
 };
 
@@ -43,7 +43,7 @@ const unsigned int
 
 reading_test_t test_ffs = {
     .filename = "mod.And.DistantCall",
-    .nchecks = 21,
+    .nchecks = 22,
     .checks = { { 0, 0x64 },
                 { 1, 0x69 },
 
@@ -70,7 +70,7 @@ reading_test_t test_ffs = {
                 { 0x237c0, 0xfc },
                 { 0x237ce, 0xea },
                 { 0x237cf, 0x00 },  // the last byte of the file
-                // add checking beyond the file ?
+                { 0x237d0, 0x00 }   // EOF
     }
 };
 
@@ -79,6 +79,8 @@ int run_single_seek_tests ( reading_test_t * test_data );
 int test_single_seek ( struct File *       file,
                        unsigned int        offset,
                        const unsigned char expected_value );
+int test_seek_eof ( struct File * file,
+                    unsigned int  offset );
 
 
 int main ( int argc, char * argv[] )
@@ -123,7 +125,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     adfVolumeInfo ( vol );
 
     int status = 0;
-    for ( int i = 0 ; i < test_data->nchecks ; ++i ) {
+    for ( int i = 0 ; i < test_data->nchecks - 1; ++i ) {
 
         struct File * file = adfOpenFile ( vol, test_data->filename, "r" );
         if ( ! file ) {
@@ -137,6 +139,18 @@ int run_single_seek_tests ( reading_test_t * test_data )
                                      test_data->checks[i].value );
         adfCloseFile ( file );
     }
+
+    // test EOF
+    struct File * file = adfOpenFile ( vol, test_data->filename, "r" );
+    if ( ! file ) {
+        printf ("Cannot open file %s - aborting...\n", test_data->filename );
+        status = 1;
+        goto cleanup;
+    }
+
+    int check_eof = test_data->nchecks - 1;
+    status += test_seek_eof ( file, test_data->checks[ check_eof ].offset );
+    adfCloseFile ( file );
 
 cleanup:
     adfUnMount ( vol );
@@ -172,3 +186,50 @@ int test_single_seek ( struct File *       file,
     printf ( " -> OK.\n" );
     return 0;
 }
+
+
+int test_seek_eof ( struct File * file,
+                    unsigned int  offset )
+{
+    printf ( "  Seeking to EOF position 0x%x (%d)...", offset, offset );
+
+    // seek to and check EOF status
+    adfFileSeek ( file, offset );
+    if ( file->eof == FALSE ) {
+        fprintf ( stderr, " -> EOF flag not set after seeking to 0x%x (%d)!!!\n",
+                  offset, offset );
+        return 1;
+    }
+
+    uint32_t fsize = file->fileHdr->byteSize;
+    if ( file->pos != fsize ) {
+        fprintf ( stderr, " -> Incorrect file position at EOF: pos 0x%x (%d), size 0x%x (%d)\n",
+                  file->pos, fsize );
+        return 1;
+    }
+    printf ( " -> OK.\n" );
+
+    // try to read at EOF
+    printf ( "  Reading at EOF position 0x%x (%d)...", file->pos, file->pos );
+    unsigned char c;
+    int n = adfReadFile ( file, 1, &c );
+    if ( n != 0 ) {
+        fprintf ( stderr, " -> Length of data read at EOF not zero (%d)!!!\n", n );
+        return 1;
+    }
+
+    if ( file->eof == FALSE ) {
+        fprintf ( stderr, " -> EOF flag not set (after reading at EOF)!!!\n" );
+        return 1;
+    }
+
+    if ( file->pos != fsize ) {
+        fprintf ( stderr, " -> Incorrect file position at EOF: pos 0x%x (%d), size 0x%x (%d)\n",
+                  file->pos, fsize );
+        return 1;
+    }
+
+    printf ( " -> OK.\n" );
+    return 0;
+}
+
