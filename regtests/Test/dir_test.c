@@ -10,6 +10,11 @@
 #include"adflib.h"
 
 
+int test_chdir_hlink ( struct Volume * vol,
+                       char *          hlink,
+                       int             num_entries );
+
+
 void MyVer(char *msg)
 {
     fprintf(stderr,"Verbose [%s]\n",msg);
@@ -80,6 +85,14 @@ int main(int argc, char *argv[])
     }
     freeList(list);
 
+    int status = 0;
+
+    /* cd hlink_dir1 (hardlink to dir_1) */
+    status += test_chdir_hlink ( vol, "hlink_dir1", 1 );
+
+    /* cd hlink_dir2 (hardlink to dir_2) */
+    status += test_chdir_hlink ( vol, "hlink_dir2", 2 );
+
 
     adfUnMount(vol);
     adfUnMountDev(hd);
@@ -87,5 +100,41 @@ int main(int argc, char *argv[])
 
     adfEnvCleanUp();
 
-    return 0;
+    return status;
+}
+
+
+int test_chdir_hlink ( struct Volume * vol,
+                       char *          hlink,
+                       int             num_entries )
+{
+    int status = 0;
+
+    adfToRootDir ( vol );
+
+    printf ("*** Test entering hard link %s\n", hlink );
+    RETCODE rc = adfChangeDir ( vol, hlink );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, "adfChangeDir error entering hard link %s.\n",
+                  hlink );
+        status++;
+    }
+
+    struct List * list = adfGetDirEnt ( vol, vol->curDirPtr );
+    int count = 0;
+    while ( list ) {
+        //printEntry ( list->content );
+        list = list->next;
+        count++;
+    }
+
+    if ( count != num_entries ) {
+        fprintf ( stderr, "Incorrect number of entries (%d) after chdir to hard link %s.\n",
+                  count, hlink );
+        status++;
+    }
+
+    adfToRootDir ( vol );
+
+    return status;
 }
