@@ -73,6 +73,12 @@ file_seek_test2 testofs_adf testffs_adf
 rm testofs_adf testffs_adf
 echo "-----"
 
+echo "Executing file_read_hard_link_test..."
+cp $FFSDUMP testffs_adf
+file_read_hard_link_test testffs_adf
+rm testffs_adf
+echo "-----"
+
 
 rename
 rm newdev

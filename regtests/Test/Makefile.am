@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
 bin_PROGRAMS =fl_test fl_test2 dir_test dir_test2 hd_test hd_test2 hd_test3 \
         file_test file_test2 file_test3 file_seek_test file_seek_test2 \
-        del_test bootdisk \
+        file_read_hard_link_test del_test bootdisk \
         rename hardfile rename2 hardfile2 access comment undel readonly \
 	undel2 dispsect progbar undel3
 
@@ -52,6 +52,10 @@ file_seek_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
 file_seek_test2_SOURCES = file_seek_test2.c
 file_seek_test2_LDADD = $(top_builddir)/src/libadf.la
 file_seek_test2_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+file_read_hard_link_test_SOURCES = file_read_hard_link_test.c
+file_read_hard_link_test_LDADD = $(top_builddir)/src/libadf.la
+file_read_hard_link_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 del_test_SOURCES = del_test.c
 del_test_LDADD = $(top_builddir)/src/libadf.la
