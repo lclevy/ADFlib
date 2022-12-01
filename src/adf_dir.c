@@ -496,6 +496,14 @@ RETCODE adfChangeDir(struct Volume* vol, char *name)
     if (adfReadEntryBlock( vol, vol->curDirPtr, &entry )!=RC_OK)
 		return RC_ERROR;
     nSect = adfNameToEntryBlk(vol, entry.hashTable, name, &entry, NULL);
+
+    // if current entry is a hard-link - load entry of the hard-linked directory
+    if ( adfReadEntryBlock ( vol, nSect, &entry ) != RC_OK )
+        return RC_ERROR;
+    if ( entry.realEntry )  {
+        nSect = entry.realEntry;
+    }
+
 /*printf("adfChangeDir=%d\n",nSect);*/
     if (nSect!=-1) {
         vol->curDirPtr = nSect;
