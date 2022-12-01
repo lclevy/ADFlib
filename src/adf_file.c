@@ -369,6 +369,15 @@ struct File* adfOpenFile(struct Volume *vol, char* name, char *mode)
 */    if (write && nSect!=-1) {
         (*adfEnv.wFct)("adfFileOpen : file already exists"); return NULL; }  
 
+    // if current entry is a hard-link - load entry of the hard-linked file
+    if ( entry.realEntry )  {
+        adfReadEntryBlock ( vol, entry.realEntry, &entry );
+        adfReadEntryBlock ( vol, entry.parent, &parent );
+    }
+    if ( entry.realEntry != 0 ) {   // entry should be a real file now
+        return NULL;                //... so if it is still a (hard)link - error...
+    }
+
     file = (struct File*)malloc(sizeof(struct File));
     if (!file) { (*adfEnv.wFct)("adfFileOpen : malloc"); return NULL; }
     file->fileHdr = (struct bFileHeaderBlock*)malloc(sizeof(struct bFileHeaderBlock));
