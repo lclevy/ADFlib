@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include"adflib.h"
 
+#define TEST_VERBOSITY 0
 
 typedef struct check_s {
     unsigned int  offset;
@@ -51,6 +52,7 @@ int test_single_read ( struct File * const file_adf,
 
 int main ( int argc, char * argv[] )
 { 
+    (void) argc;
     adfEnvInitDefault();
 
 //	adfSetEnvFct(0,0,MyVer,0);
@@ -73,7 +75,9 @@ int main ( int argc, char * argv[] )
         adfUnMountDev ( dev );
         return 1;
     }
-    //adfVolumeInfo ( vol );    
+#if TEST_VERBOSITY > 0
+    adfVolumeInfo ( vol );
+#endif
 
     // run tests
     status += test_simple_hlink_read ( vol, &test_hlink );
@@ -91,11 +95,13 @@ int main ( int argc, char * argv[] )
 int test_simple_hlink_read ( struct Volume * const vol,
                              reading_test_t * test_data )
 {
+#if TEST_VERBOSITY > 0
     printf ( "\n*** Testing single hard link file reads"
              "\n\timage file:\t%s\n\thlink:\t%s\n\treal file:\t%s\n",
              test_data->image_filename,
              test_data->hlink_name,
              test_data->file_name );
+#endif
 
     int status = 0;
     struct File * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
@@ -105,7 +111,7 @@ int test_simple_hlink_read ( struct Volume * const vol,
         return 1;
     }
 
-    for ( int i = 0 ; i < test_data->nchecks ; ++i ) {
+    for ( unsigned int i = 0 ; i < test_data->nchecks ; ++i ) {
         status += test_single_read ( file_adf,
                                      test_data->checks[i].offset,
                                      test_data->checks[i].value );
@@ -121,8 +127,10 @@ int test_single_read ( struct File * const file_adf,
                        unsigned int        offset,
                        unsigned char       expected_value )
 {
+#if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
+#endif
 
     adfFileSeek ( file_adf, offset );
 
@@ -130,16 +138,19 @@ int test_single_read ( struct File * const file_adf,
     int n = adfReadFile ( file_adf, 1, &c );
 
     if ( n != 1 ) {
-        printf ( " -> Reading data failed!!!\n" );
+        fprintf ( stderr, " -> Reading data failed!!!\n" );
         return 1;
     }
     
     if ( c != expected_value ) {
-        printf ( " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
+        fprintf ( stderr, " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
                  (int) expected_value, (int) c );
         return 1;
     }
 
+#if TEST_VERBOSITY > 0
     printf ( " -> OK.\n" );
+#endif
+
     return 0;
 }
