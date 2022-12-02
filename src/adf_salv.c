@@ -44,8 +44,11 @@ extern struct Env adfEnv;
  */
 void adfFreeGenBlock(struct GenBlock* block)
 {
-    if (block->name!=NULL)
-        free(block->name);
+    if ( block != NULL ) {
+        if ( block->name != NULL )
+            free ( block->name );
+        free ( block );
+    }
 }
 
 
