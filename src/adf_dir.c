@@ -971,7 +971,15 @@ RETCODE adfReadEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock 
 
     memcpy(ent, buf, 512);
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)ent, SWBL_ENTRY);
+    int32_t secType = swapLong ( ( uint8_t * ) &ent->secType );
+    if ( secType == ST_LFILE ||
+         secType == ST_LDIR ||
+         secType == ST_LSOFT  )
+    {
+        swapEndian((uint8_t*)ent, SWBL_LINK);
+    } else {
+        swapEndian((uint8_t*)ent, SWBL_ENTRY);
+    }
 #endif
 /*printf("readentry=%d\n",nSect);*/
     if (ent->checkSum!=adfNormalSum((uint8_t*)buf,20,512)) {
