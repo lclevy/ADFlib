@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include"adflib.h"
 
+#define TEST_VERBOSITY 0
 
 typedef struct check_s {
     unsigned int  offset;
@@ -105,27 +106,31 @@ int main ( int argc, char * argv[] )
 
 int run_single_seek_tests ( reading_test_t * test_data )
 {
+#if TEST_VERBOSITY > 0
     printf ( "\n*** Test file seeking on image: %s, filename: %s\n",
              test_data->image_filename, test_data->filename );
+#endif
 
     struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
-        printf ( "Cannot mount image %s - aborting the test...\n",
-                 test_data->image_filename );
+        fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
+                  test_data->image_filename );
         return 1;
     }
 
     struct Volume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
-        printf ( "Cannot mount volume 0 from image %s - aborting the test...\n",
+        fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
         adfUnMountDev ( dev );
         return 1;
     }
+#if TEST_VERBOSITY > 0
     adfVolumeInfo ( vol );
+#endif
 
     int status = 0;
-    for ( int i = 0 ; i < test_data->nchecks - 1; ++i ) {
+    for ( unsigned int i = 0 ; i < test_data->nchecks - 1; ++i ) {
 
         struct File * file = adfOpenFile ( vol, test_data->filename, "r" );
         if ( ! file ) {
@@ -148,7 +153,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
         goto cleanup;
     }
 
-    int check_eof = test_data->nchecks - 1;
+    unsigned int check_eof = test_data->nchecks - 1;
     status += test_seek_eof ( file, test_data->checks[ check_eof ].offset );
     adfCloseFile ( file );
 
@@ -164,26 +169,31 @@ int test_single_seek ( struct File *       file,
                        unsigned int        offset,
                        const unsigned char expected_value )
 {
+#if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
-
+#endif
     adfFileSeek ( file, offset );
 
     unsigned char c;
     int n = adfReadFile ( file, 1, &c );
 
     if ( n != 1 ) {
-        printf ( " -> Reading data failed!!!\n" );
+        fprintf ( stderr, "Reading data failed after seeking to position 0x%x (%d)!!!\n",
+                  offset, offset );
         return 1;
     }
 
     if ( c != expected_value ) {
-        printf ( " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
-                 (int) expected_value, (int) c );
+        fprintf ( stderr, "Incorrect data read after seeking to position 0x%x (%d):\n"
+                  "\texpected 0x%x != read 0x%x\n",
+                  offset, offset, (int) expected_value, (int) c );
         return 1;
     }
 
+#if TEST_VERBOSITY > 0
     printf ( " -> OK.\n" );
+#endif
     return 0;
 }
 
@@ -191,7 +201,9 @@ int test_single_seek ( struct File *       file,
 int test_seek_eof ( struct File * file,
                     unsigned int  offset )
 {
+#if TEST_VERBOSITY > 0
     printf ( "  Seeking to EOF position 0x%x (%d)...", offset, offset );
+#endif
 
     // seek to and check EOF status
     adfFileSeek ( file, offset );
@@ -204,13 +216,17 @@ int test_seek_eof ( struct File * file,
     uint32_t fsize = file->fileHdr->byteSize;
     if ( file->pos != fsize ) {
         fprintf ( stderr, " -> Incorrect file position at EOF: pos 0x%x (%d), size 0x%x (%d)\n",
-                  file->pos, fsize );
+                  file->pos, file->pos, fsize, fsize );
         return 1;
     }
+#if TEST_VERBOSITY > 0
     printf ( " -> OK.\n" );
+#endif
 
     // try to read at EOF
+#if TEST_VERBOSITY > 0
     printf ( "  Reading at EOF position 0x%x (%d)...", file->pos, file->pos );
+#endif
     unsigned char c;
     int n = adfReadFile ( file, 1, &c );
     if ( n != 0 ) {
@@ -225,11 +241,13 @@ int test_seek_eof ( struct File * file,
 
     if ( file->pos != fsize ) {
         fprintf ( stderr, " -> Incorrect file position at EOF: pos 0x%x (%d), size 0x%x (%d)\n",
-                  file->pos, fsize );
+                  file->pos, file->pos, fsize, fsize );
         return 1;
     }
 
+#if TEST_VERBOSITY > 0
     printf ( " -> OK.\n" );
+#endif
     return 0;
 }
 
