@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     struct Device *hd;
     struct Volume *vol;
-    struct List *list;
+    struct List *list, *cell;
  
     adfEnvInitDefault();
 
@@ -46,11 +46,11 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
-    while(list) {
-        printEntry(list->content);
-        adfFreeEntry(list->content);
-        list = list->next;
+    cell = list = adfGetDirEnt(vol,vol->curDirPtr);
+    while(cell) {
+        printEntry(cell->content);
+        adfFreeEntry(cell->content);
+        cell = cell->next;
     }
     freeList(list);
 
