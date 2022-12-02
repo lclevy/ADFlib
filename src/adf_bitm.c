@@ -25,6 +25,7 @@
  *
  */
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -184,10 +185,11 @@ RETCODE adfReadBitmap(struct Volume* vol, int32_t nBlock, struct bRootBlock* roo
  */
 BOOL adfIsBlockFree(struct Volume* vol, SECTNUM nSect)
 {
+    assert ( nSect >= 2 );
     int sectOfMap = nSect-2;
     int block = sectOfMap/(127*32);
     int indexInMap = (sectOfMap/32)%127;
-	
+
 /*printf("sect=%d block=%d ind=%d,  ",sectOfMap,block,indexInMap);
 printf("bit=%d,  ",sectOfMap%32);
 printf("bitm=%x,  ",bitMask[ sectOfMap%32]);
