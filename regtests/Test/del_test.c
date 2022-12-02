@@ -8,7 +8,7 @@
 #include <string.h>
 
 #include"adflib.h"
-
+#include "adf_dir.h"
 
 void MyVer(char *msg)
 {
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     struct Device *hd;
     struct Volume *vol;
-    struct List *list;
+    struct List *list, *head;
     SECTNUM nSect;
  
     adfEnvInitDefault();
@@ -45,13 +45,13 @@ int main(int argc, char *argv[])
 	
     adfVolumeInfo(vol);
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
+    head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
         printEntry(list->content);
-        adfFreeEntry(list->content);
+        //adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfFreeDirList(head);
 
     putchar('\n');
 
@@ -59,13 +59,13 @@ int main(int argc, char *argv[])
     /* cd dir_2 */
     nSect = adfChangeDir(vol, "same_hash");
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
+    head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
         printEntry(list->content);
-        adfFreeEntry(list->content);
+        //adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfFreeDirList(head);
 
     putchar('\n');
 
@@ -79,13 +79,13 @@ int main(int argc, char *argv[])
     /* last */
     adfRemoveEntry(vol, vol->curDirPtr, "dir_1a");
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
+    head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
         printEntry(list->content);
-        adfFreeEntry(list->content);
+        //adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfFreeDirList(head);
 
     putchar('\n');
 
@@ -93,13 +93,13 @@ int main(int argc, char *argv[])
 
     adfRemoveEntry(vol, vol->curDirPtr, "mod.And.DistantCall");
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
+    head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
         printEntry(list->content);
-        adfFreeEntry(list->content);
+        //adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfFreeDirList(head);
 
     putchar('\n');
 
