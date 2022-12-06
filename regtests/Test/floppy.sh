@@ -33,6 +33,14 @@ dir_test2 testffs_adf
 rm testffs_adf
 echo "-----"
 
+echo "Executing dir_test_chdir..."
+cp $FFSDUMP testffs_adf
+cp $LINK_CHAINS_DUMP link_chains_adf
+dir_test_chdir testffs_adf link_chains_adf
+rm testffs_adf link_chains_adf
+echo "-----"
+
+
 fl_test $FFSDUMP $BOOTBLK
 rm newdev
 echo "-----"
