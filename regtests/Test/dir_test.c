@@ -8,11 +8,15 @@
 #include <string.h>
 
 #include"adflib.h"
-
+#include "adf_dir.h"
 
 int test_chdir_hlink ( struct Volume * vol,
                        char *          hlink,
                        int             num_entries );
+
+int test_softlink_realname ( struct Volume * vol,
+                             char *          slink,
+                             char *          expected_dest_name );
 
 
 void MyVer(char *msg)
@@ -93,6 +97,8 @@ int main(int argc, char *argv[])
     /* cd hlink_dir2 (hardlink to dir_2) */
     status += test_chdir_hlink ( vol, "hlink_dir2", 2 );
 
+    /* test getting real name from a softlink */
+    status += test_softlink_realname ( vol, "slink_dir1", "dir_1" );
 
     adfUnMount(vol);
     adfUnMountDev(hd);
@@ -137,4 +143,44 @@ int test_chdir_hlink ( struct Volume * vol,
     adfToRootDir ( vol );
 
     return status;
+}
+
+
+int test_softlink_realname ( struct Volume * vol,
+                             char *          slink,
+                             char *          expected_dest_name )
+{
+    adfToRootDir ( vol );
+
+    printf ("*** Test getting destination name for soft link %s\n", slink );
+
+    // get block of the directory (as parent)
+    struct bEntryBlock parent;
+    if ( adfReadEntryBlock( vol, vol->curDirPtr, &parent ) != RC_OK ) {
+        return 1;
+    }
+
+    struct bLinkBlock entry;
+    SECTNUM nUpdSect;
+    SECTNUM sectNum = adfNameToEntryBlk ( vol,
+                                          parent.hashTable,
+                                          slink,
+                                          ( struct bEntryBlock * ) &entry,
+                                          &nUpdSect );
+    if ( sectNum == -1 ) {
+        return 1;
+    }
+
+    if ( entry.secType != ST_LSOFT ) {
+        return 1;
+    }
+
+    if ( strncmp ( expected_dest_name, entry.realName, 6 ) != 0 ) {
+        fprintf ( stderr,
+                  "Name of the softlink %s incorrect: read '%s' != expected '%s'\n",
+                  slink, entry.realName, expected_dest_name );
+        return 1;
+    }
+    printf (" -> OK!\n");
+    return 0;
 }
