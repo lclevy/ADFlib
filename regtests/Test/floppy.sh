@@ -7,6 +7,7 @@ DUMPS=../Dumps
 FFSDUMP=$DUMPS/testffs.adf
 OFSDUMP=$DUMPS/testofs.adf
 HDDUMP=$DUMPS/testhd.adf
+LINK_CHAINS_DUMP=$DUMPS/test_link_chains.adf
 
 BOOTDIR=../Boot
 BOOTBLK=$BOOTDIR/stdboot3.bbk
@@ -31,6 +32,14 @@ cp $FFSDUMP testffs_adf
 dir_test2 testffs_adf
 rm testffs_adf
 echo "-----"
+
+echo "Executing dir_test_chdir..."
+cp $FFSDUMP testffs_adf
+cp $LINK_CHAINS_DUMP link_chains_adf
+dir_test_chdir testffs_adf link_chains_adf
+rm testffs_adf link_chains_adf
+echo "-----"
+
 
 fl_test $FFSDUMP $BOOTBLK
 rm newdev
@@ -71,6 +80,13 @@ cp $OFSDUMP testofs_adf
 cp $FFSDUMP testffs_adf
 file_seek_test2 testofs_adf testffs_adf
 rm testofs_adf testffs_adf
+echo "-----"
+
+echo "Executing file_read_hard_link_test..."
+cp $FFSDUMP testffs_adf
+cp $LINK_CHAINS_DUMP link_chains_adf
+file_read_hard_link_test testffs_adf link_chains_adf
+rm testffs_adf link_chains_adf
 echo "-----"
 
 

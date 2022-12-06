@@ -23,6 +23,9 @@ TARGET_LINK_LIBRARIES ( dir_test adf )
 add_executable ( dir_test2 dir_test2.c )
 TARGET_LINK_LIBRARIES ( dir_test2 adf )
 
+add_executable ( dir_test_chdir dir_test_chdir.c )
+TARGET_LINK_LIBRARIES ( dir_test_chdir adf )
+
 add_executable ( hd_test hd_test.c )
 TARGET_LINK_LIBRARIES ( hd_test adf )
 
@@ -46,6 +49,9 @@ TARGET_LINK_LIBRARIES ( file_seek_test adf )
 
 add_executable ( file_seek_test2 file_seek_test2.c )
 TARGET_LINK_LIBRARIES ( file_seek_test2 adf )
+
+add_executable ( file_read_hard_link_test file_read_hard_link_test.c )
+TARGET_LINK_LIBRARIES ( file_read_hard_link_test adf )
 
 add_executable ( del_test del_test.c )
 TARGET_LINK_LIBRARIES ( del_test adf )
