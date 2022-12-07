@@ -1,12 +1,9 @@
-/*
- * file_seek_test2.c
- */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include"adflib.h"
 
-#define TEST_VERBOSITY 0
+#define TEST_VERBOSITY 1
 
 typedef struct check_s {
     unsigned int  offset;
@@ -14,36 +11,20 @@ typedef struct check_s {
 } check_t;
 
 typedef struct reading_test_s {
+    char *       info;
     char *       image_filename;
+
+    char *       hlink_dir;
     char *       hlink_name;
-    char *       file_name;
+
+    char *       real_file;
 
     unsigned int nchecks;
-    check_t      checks[];
+    check_t      checks[100];
 } reading_test_t;
 
 
-reading_test_t test_hlink = {
-    .hlink_name = "hlink_blue",
-    .file_name  = "dir_2/blue2c.gif",
-    .nchecks    = 8,
-    .checks     = {
-        { 0, 0x47 },
-        { 1, 0x49 },
-        { 2, 0x46 },
-        { 3, 0x38 },
-                    
-        // the last 4 bytes of the file
-        { 0xcfe, 0x42 },
-        { 0xcff, 0x04 },
-        { 0xd00, 0x00 },
-        { 0xd01, 0x3B }
-    }
-};
-
-
-int test_simple_hlink_read ( struct Volume * const vol,
-                             reading_test_t * test_data );
+int test_hlink_read ( reading_test_t * test_data );
 
 int test_single_read ( struct File * const file_adf,
                        unsigned int        offset,
@@ -53,62 +34,123 @@ int test_single_read ( struct File * const file_adf,
 int main ( int argc, char * argv[] )
 { 
     (void) argc;
+
     adfEnvInitDefault();
 
 //	adfSetEnvFct(0,0,MyVer,0);
     int status = 0;
 
     // setup
+    reading_test_t test_hlink = {
+        .info       = "hard link file reads",
+        .hlink_dir  = NULL, //"dir_1",
+        .hlink_name = "hlink_blue",
+        .real_file  = "dir_2/blue2c.gif",
+        .nchecks    = 8,
+        .checks     = {
+            { 0, 0x47 },
+            { 1, 0x49 },
+            { 2, 0x46 },
+            { 3, 0x38 },
+
+            // the last 4 bytes of the file
+            { 0xcfe, 0x42 },
+            { 0xcff, 0x04 },
+            { 0xd00, 0x00 },
+            { 0xd01, 0x3B }
+        }
+    };
+
+    reading_test_t test_chained_hlink = {
+        .info       = "chained hard link file reads",
+        .hlink_dir  = "hardlinks_file",
+        .hlink_name = "hl2hl2hl2testfile1",
+        .real_file  = "dir1/dir1_1/testfile.txt",
+        .nchecks    = 8,
+        .checks     = {
+            { 0, 'T' },
+            { 1, 'h' },
+            { 2, 'i' },
+            { 3, 's' },
+
+            // the last 4 bytes of the file
+            { 0x3e, '.' },  // 0x2e
+            { 0x3f, '.' },
+            { 0x40, '\n' },  // 0x0a
+            { 0x41, '\n' }
+        }
+    };
+
     test_hlink.image_filename = argv[1];
-
-    struct Device * const dev = adfMountDev ( test_hlink.image_filename, TRUE );
-    if ( ! dev ) {
-        printf ( "Cannot mount image %s - aborting the test...\n",
-                 test_hlink.image_filename );
-        return 1;
-    }
-
-    struct Volume * const vol = adfMount ( dev, 0, TRUE );
-    if ( ! vol ) {
-        printf ( "Cannot mount volume 0 from image %s - aborting the test...\n",
-                 test_hlink.image_filename );
-        adfUnMountDev ( dev );
-        return 1;
-    }
-#if TEST_VERBOSITY > 0
-    adfVolumeInfo ( vol );
-#endif
+    test_chained_hlink.image_filename = argv[2];
 
     // run tests
-    status += test_simple_hlink_read ( vol, &test_hlink );
+    printf ("*** %s: test reading a file opened using its hardlinks\n" );
+    status += test_hlink_read ( &test_hlink );
+    status += test_hlink_read ( &test_chained_hlink );
+    printf ( status ? " -> ERROR\n" : " -> PASSED\n" );
 
     // clean-up
-    adfUnMount ( vol );
-    adfUnMountDev ( dev );
-    
     adfEnvCleanUp();
 
     return status;
 }
 
 
-int test_simple_hlink_read ( struct Volume * const vol,
-                             reading_test_t * test_data )
+int test_hlink_read ( reading_test_t * test_data )
 {
 #if TEST_VERBOSITY > 0
-    printf ( "\n*** Testing single hard link file reads"
-             "\n\timage file:\t%s\n\thlink:\t%s\n\treal file:\t%s\n",
+    printf ( "\n*** Testing %s"
+             "\n\timage file:\t%s\n\tdirectory:\t%s\n\thlink:\t\t%s\n\treal file:\t%s\n",
+             test_data->info,
              test_data->image_filename,
+             test_data->hlink_dir,
              test_data->hlink_name,
-             test_data->file_name );
+             test_data->real_file );
+#endif
+
+    struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    if ( ! dev ) {
+        fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
+                  test_data->image_filename );
+        return 1;
+    }
+
+    struct Volume * const vol = adfMount ( dev, 0, TRUE );
+    if ( ! vol ) {
+        fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
+                  test_data->image_filename );
+        adfUnMountDev ( dev );
+        return 1;
+    }
+
+#if TEST_VERBOSITY > 0
+    //adfVolumeInfo ( vol );
 #endif
 
     int status = 0;
+    adfToRootDir ( vol );
+    char * dir = test_data->hlink_dir;
+    if ( dir ) {
+#if TEST_VERBOSITY > 0
+        printf ("Entering directory %s...\n", dir );
+#endif
+        int chdir_st = adfChangeDir ( vol, dir );
+        if ( chdir_st != RC_OK ) {
+            fprintf ( stderr, " -> Cannot chdir to %s, status %d - aborting...\n",
+                      dir, chdir_st );
+            adfToRootDir ( vol );
+            status = 1;
+            goto clean_up;
+        }
+    }
+
     struct File * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
     if ( ! file_adf ) {
-        fprintf ( stderr, "Cannot open hard link file %s - aborting...\n",
+        fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );
-        return 1;
+        status = 1;
+        goto clean_up;
     }
 
     for ( unsigned int i = 0 ; i < test_data->nchecks ; ++i ) {
@@ -118,6 +160,12 @@ int test_simple_hlink_read ( struct Volume * const vol,
     }
 
     adfCloseFile ( file_adf );
+
+    // clean-up
+clean_up:
+    //adfToRootDir ( vol );
+    adfUnMount ( vol );
+    adfUnMountDev ( dev );
 
     return status;
 }
