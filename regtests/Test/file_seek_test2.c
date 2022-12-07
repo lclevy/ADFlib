@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include"adflib.h"
 
+#define TEST_VERBOSITY 0
 
 #define NUM_TESTS  1000
 #define MAX_ERRORS 10
@@ -48,6 +49,8 @@ int test_single_seek ( struct File * const file_adf,
 
 int main ( int argc, char * argv[] )
 { 
+    (void) argc;
+
     adfEnvInitDefault();
 
 //	adfSetEnvFct(0,0,MyVer,0);
@@ -67,16 +70,18 @@ int main ( int argc, char * argv[] )
 
 int run_multiple_seek_tests ( test_file_t * test_data )
 {
+#if TEST_VERBOSITY > 0
     printf ( "\n*** Testing multiple file seeking"
              "\n\timage file:\t%s\n\tfilename:\t%s\n\tlocal file:\t%s\n",
              test_data->image_filename,
              test_data->filename_adf,
              test_data->filename_local );
+#endif
 
     struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
-        printf ( "Cannot mount image %s - aborting the test...\n",
-                 test_data->image_filename );
+        fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
+                  test_data->image_filename );
         return 1;
     }
 
@@ -87,7 +92,9 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         adfUnMountDev ( dev );
         return 1;
     }
+#if TEST_VERBOSITY > 0
     adfVolumeInfo ( vol );
+#endif
 
     int status = 0;
     struct File * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
@@ -127,8 +134,10 @@ int test_single_seek ( struct File * const file_adf,
                        FILE * const        file_local,
                        unsigned int        offset )
 {
+#if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
+#endif
 
     adfFileSeek ( file_adf, offset );
 
@@ -136,7 +145,7 @@ int test_single_seek ( struct File * const file_adf,
     int n = adfReadFile ( file_adf, 1, &c );
 
     if ( n != 1 ) {
-        printf ( " -> Reading data failed!!!\n" );
+        fprintf ( stderr, " -> Reading data failed!!!\n" );
         return 1;
     }
 
@@ -145,11 +154,14 @@ int test_single_seek ( struct File * const file_adf,
     fread ( &expected_value, 1, 1, file_local );
     
     if ( c != expected_value ) {
-        printf ( " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
+        fprintf ( stderr, " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
                  (int) expected_value, (int) c );
         return 1;
     }
 
+#if TEST_VERBOSITY > 0
     printf ( " -> OK.\n" );
+#endif
+
     return 0;
 }

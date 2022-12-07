@@ -81,11 +81,11 @@ int main(int argc, char *argv[])
     /* cd .. */
     adfParentDir(vol);
 
-    list = adfGetDirEnt(vol,vol->curDirPtr);
-    while(list) {
-        printEntry(list->content);
-        adfFreeEntry(list->content);
-        list = list->next;
+    cell = list = adfGetDirEnt(vol,vol->curDirPtr);
+    while(cell) {
+        printEntry(cell->content);
+        adfFreeEntry(cell->content);
+        cell = cell->next;
     }
     freeList(list);
 
@@ -126,13 +126,15 @@ int test_chdir_hlink ( struct Volume * vol,
         status++;
     }
 
-    struct List * list = adfGetDirEnt ( vol, vol->curDirPtr );
+    struct List * list, * cell;
+    list = cell = adfGetDirEnt ( vol, vol->curDirPtr );
     int count = 0;
-    while ( list ) {
+    while ( cell ) {
         //printEntry ( list->content );
-        list = list->next;
+        cell = cell->next;
         count++;
     }
+    adfFreeDirList ( list );
 
     if ( count != num_entries ) {
         fprintf ( stderr, "Incorrect number of entries (%d) after chdir to hard link %s.\n",
