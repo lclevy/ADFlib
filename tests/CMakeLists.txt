@@ -18,10 +18,26 @@ add_executable ( test_adfPos2DataBlock
   test_adfPos2DataBlock.c
 )
 
+add_executable ( test_adfDays2Date
+  test_adfDays2Date.c
+)
+
 
 add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
+add_test ( test_adfDays2Date test_adfDays2Date )
+
 
 target_link_libraries ( test_adfPos2DataBlock PUBLIC
+  adf
+  ${CHECK_LIBRARIES}
+  # -lcheck_pic
+  -pthread
+  #-lrt
+  #-lm
+  #-lsubunit
+)
+
+target_link_libraries ( test_adfDays2Date PUBLIC
   adf
   ${CHECK_LIBRARIES}
   # -lcheck_pic
