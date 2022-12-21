@@ -263,33 +263,35 @@ SECTNUM adfGet1FreeBlock(struct Volume *vol) {
  */
 BOOL adfGetFreeBlocks(struct Volume* vol, int nbSect, SECTNUM* sectList)
 {
-	int i, j;
+    int i, j;
     BOOL diskFull;
     int32_t block = vol->rootBlock;
 
     i = 0;
     diskFull = FALSE;
 /*printf("lastblock=%ld\n",vol->lastBlock);*/
-	while( i<nbSect && !diskFull ) {
+    while ( i < nbSect && !diskFull ) {
         if ( adfIsBlockFree(vol, block) ) {
             sectList[i] = block;
-			i++;
+            i++;
         }
 /*        if ( block==vol->lastBlock )
             block = vol->firstBlock+2;*/
-        if ( (block+vol->firstBlock)==vol->lastBlock )
+        if ( ( block + vol->firstBlock ) == vol->lastBlock ) {
             block = 2;
-        else if (block==vol->rootBlock-1)
-            diskFull = TRUE;
-        else
+        } else {
             block++;
+            if ( block == vol->rootBlock )
+                diskFull = TRUE;
+        }
     }
 
-    if (!diskFull)
+    BOOL gotAllBlocks = ( i == nbSect );
+    if ( gotAllBlocks )
         for(j=0; j<nbSect; j++)
             adfSetBlockUsed( vol, sectList[j] );
 
-    return (i==nbSect);
+    return gotAllBlocks;
 }
 
 

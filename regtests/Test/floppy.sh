@@ -112,3 +112,9 @@ undel3 testofs_adf
 #diff moon_gif $CHECK/MOON.GIF
 rm moon_gif testofs_adf
 echo "-----"
+
+
+echo "Running over-filling test..."
+floppy_overfilling_test
+rm test.adf
+echo "-----"
