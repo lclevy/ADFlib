@@ -92,6 +92,9 @@ TARGET_LINK_LIBRARIES ( progbar adf )
 add_executable ( undel3 undel3.c )
 TARGET_LINK_LIBRARIES ( undel3 adf )
 
+add_executable ( floppy_overfilling_test floppy_overfilling_test.c )
+TARGET_LINK_LIBRARIES ( floppy_overfilling_test adf )
+
 configure_file(floppy.sh floppy.sh COPYONLY)
 configure_file(bigdev.sh bigdev.sh COPYONLY)
 

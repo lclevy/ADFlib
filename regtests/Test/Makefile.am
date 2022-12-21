@@ -3,7 +3,7 @@ bin_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
         hd_test2 hd_test3 file_test file_test2 file_test3 file_seek_test \
         file_seek_test2 file_read_hard_link_test del_test bootdisk \
         rename hardfile rename2 hardfile2 access comment undel readonly \
-	undel2 dispsect progbar undel3
+	undel2 dispsect progbar undel3 floppy_overfilling_test
 
 fl_test_SOURCES = fl_test.c
 fl_test_LDADD = $(top_builddir)/src/libadf.la
@@ -117,3 +117,6 @@ undel3_SOURCES = undel3.c
 undel3_LDADD = $(top_builddir)/src/libadf.la
 undel3_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
+floppy_overfilling_test_SOURCES = floppy_overfilling_test.c
+floppy_overfilling_test_LDADD = $(top_builddir)/src/libadf.la
+floppy_overfilling_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
