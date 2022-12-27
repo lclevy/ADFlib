@@ -9,5 +9,7 @@ Contributors are:
    (bug fixes and W32 support)
  Dan Sutherland 
    (bug fixes and W32 support)
+ Tomasz Wolak
+   (improvements, bug fixes, additional unit and reg. tests)
 
 See CHANGES.txt for detailed contributions.
