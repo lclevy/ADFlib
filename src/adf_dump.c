@@ -44,12 +44,9 @@ extern struct Env adfEnv;
  */
 RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
 {
-    struct nativeDevice* nDev;
-    int32_t size;
+    struct nativeDevice * nDev = (struct nativeDevice *) malloc
+        (sizeof(struct nativeDevice));
 
-    nDev = (struct nativeDevice*)dev->nativeDev;
-
-    nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
     if (!nDev) {
         (*adfEnv.eFct)("adfInitDumpDevice : malloc");
         return RC_MALLOC;
@@ -80,11 +77,9 @@ RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
 
     /* determines size */
     fseek(nDev->fd, 0, SEEK_END);
-	size = ftell(nDev->fd);
+    dev->size = ftell(nDev->fd);
     fseek(nDev->fd, 0, SEEK_SET);
 
-    dev->size = size;
-	
     return RC_OK;
 }
 
