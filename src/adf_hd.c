@@ -348,8 +348,10 @@ RETCODE adfMountFlop(struct Device* dev)
     vol->blockSize = 512;
     vol->dev = dev;
  
-	if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK)
-		return RC_ERROR;
+    if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
+        free ( vol );
+        return RC_ERROR;
+    }
 	memset(diskName, 0, 35);
 	memcpy(diskName, root.diskName, root.nameLen);
 
