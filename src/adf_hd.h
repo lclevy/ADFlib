@@ -37,6 +37,9 @@
 int adfDevType(struct Device *dev);
 PREFIX void adfDeviceInfo(struct Device *dev);
 
+PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
+PREFIX void adfCloseDev ( struct Device * dev );
+
 RETCODE adfMountHd(struct Device *dev);
 RETCODE adfMountFlop(struct Device* dev);
 PREFIX struct Device* adfMountDev( char* filename,BOOL);

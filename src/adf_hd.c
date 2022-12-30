@@ -45,6 +45,107 @@
 
 extern struct Env adfEnv;
 
+
+/*
+ * adfOpenDev
+ *
+ * open a device without mounting it, used by adfMountDev() or
+ * for partitioning/formatting with adfCreateFlop/Hd
+ *
+ * Note that:
+ * - an opened device must be closed with adfCloseDev()
+ *   before mounting it with adfMountDev()
+ *
+ * WARNING: IT IS NOT CHECKING WHETHER THERE IS ANY EXISTING FILESYSTEM
+ *          ON THE DEVICE, IT DOES NOT LOAD ROOTBLOCK ETC.
+ *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
+ *          EXIST ALREADY ON THE DEVICE(!)
+ */
+struct Device * adfOpenDev ( char * filename, BOOL ro )
+{
+    struct Device * dev = ( struct Device * ) malloc ( sizeof ( struct Device ) );
+    if ( ! dev ) {
+        (*adfEnv.eFct)("adfOpenDev : malloc error");
+        return NULL;
+    }
+
+    dev->readOnly = ro;
+
+    /* switch between dump files and real devices */
+    struct nativeFunctions * nFct = adfEnv.nativeFct;
+    dev->isNativeDev = ( *nFct->adfIsDevNative )( filename );
+
+    RETCODE rc;
+    if ( dev->isNativeDev )
+        rc = ( *nFct->adfInitDevice )( dev, filename, ro );
+    else
+        rc = adfInitDumpDevice ( dev, filename, ro );
+    if ( rc != RC_OK ) {
+        ( *adfEnv.eFct )( "adfOpenDev : device init error" );
+        free ( dev );
+        return NULL;
+    }
+
+    dev->devType = adfDevType ( dev );
+    dev->nVol    = 0;
+    dev->volList = NULL;
+
+    /*
+    if ( dev->devType == DEVTYPE_FLOPDD ) {
+        device->sectors = 11;
+        device->heads = 2;
+        fdtype = "DD";
+    } else if ( dev->devType == DEVTYPE_FLOPHD ) {
+        device->sectors = 22;
+        device->heads = 2;
+        fdtype = "HD";
+    } else if ( dev->devType == DEVTYPE_HARDDISK ) {
+        fprintf ( stderr, "adfOpenDev(): harddisk devices not implemented - aborting...\n" );
+        return 1;
+    } else {
+        fprintf ( stderr, "adfOpenDev(): unknown device type - aborting...\n" );
+        return 1;
+    }
+    device->cylinders = device->size / ( device->sectors * device->heads * 512 );
+    */
+
+    return dev;
+}
+
+
+/*
+ * adfCloseDev
+ *
+ * Closes/releases an opened device.
+ * Called by adfUnMountDev()
+ */
+void adfCloseDev ( struct Device * dev )
+{
+    if ( ! dev )
+        return;
+
+    // free volume list
+    //if ( dev->volList ) {
+    if ( dev->nVol > 0 ) {
+        for ( int i = 0 ; i < dev->nVol ; i++ ) {
+            free ( dev->volList[i]->volName );
+            free ( dev->volList[i] );
+        }
+        free ( dev->volList );
+        dev->nVol = 0;
+    }
+
+    struct nativeFunctions * const nFct = adfEnv.nativeFct;
+
+    if ( dev->isNativeDev )
+        ( *nFct->adfReleaseDevice )( dev );
+    else
+        adfReleaseDumpDevice ( dev );
+
+    free ( dev );
+}
+
+
 /*
  * adfDevType
  *
@@ -380,31 +481,17 @@ RETCODE adfMountFlop(struct Device* dev)
  */
 struct Device* adfMountDev( char* filename, BOOL ro)
 {
-    struct Device* dev;
     struct nativeFunctions *nFct;
     RETCODE rc;
     uint8_t buf[512];
 
-    dev = (struct Device*)malloc(sizeof(struct Device));
-    if (!dev) {
-		(*adfEnv.eFct)("adfMountDev : malloc error");
+    struct Device * dev = adfOpenDev ( filename, ro );
+    if ( ! dev ) {
+        //(*adfEnv.eFct)("adfMountDev : malloc error");
         return NULL;
     }
 
-    dev->readOnly = ro;
-
-    /* switch between dump files and real devices */
     nFct = adfEnv.nativeFct;
-    dev->isNativeDev = (*nFct->adfIsDevNative)(filename);
-    if (dev->isNativeDev)
-        rc = (*nFct->adfInitDevice)(dev, filename,ro);
-    else
-        rc = adfInitDumpDevice(dev,filename,ro);
-    if (rc!=RC_OK) {
-        free(dev); return(NULL);
-    }
-
-    dev->devType = adfDevType(dev);
 
     switch( dev->devType ) {
 
@@ -649,27 +736,7 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  */
 void adfUnMountDev( struct Device* dev)
 {
-    int i;
-    struct nativeFunctions *nFct;
-
-	if (dev==0)
-	   return;
-
-    for(i=0; i<dev->nVol; i++) {
-        free(dev->volList[i]->volName);
-        free(dev->volList[i]);
-    }
-    if (dev->nVol>0)
-        free(dev->volList);
-    dev->nVol = 0;
-
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        (*nFct->adfReleaseDevice)(dev);
-    else
-        adfReleaseDumpDevice(dev);
-
-    free(dev);
+    adfCloseDev ( dev );
 }
 
 
