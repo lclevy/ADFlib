@@ -497,12 +497,9 @@ struct Device* adfMountDev( char* filename, BOOL ro)
 
     case DEVTYPE_FLOPDD:
     case DEVTYPE_FLOPHD:
-        if (adfMountFlop(dev)!=RC_OK) {
-	         if (dev->isNativeDev)					/* BV */
-		         (*nFct->adfReleaseDevice)(dev);	/* BV */
-	         else									/* BV */
-		         adfReleaseDumpDevice(dev);     	/* BV */       
-            free(dev); return NULL;
+        if ( adfMountFlop ( dev ) != RC_OK ) {
+            adfCloseDev ( dev );
+            return NULL;
         }
         break;
 
@@ -512,42 +509,29 @@ struct Device* adfMountDev( char* filename, BOOL ro)
             rc = (*nFct->adfNativeReadSector)(dev, 0, 512, buf);
         else
             rc = adfReadDumpSector(dev, 0, 512, buf);
-        if( rc!=RC_OK ) {
-	         nFct = adfEnv.nativeFct;
-	         if (dev->isNativeDev)
-		         (*nFct->adfReleaseDevice)(dev);
-	         else
-		         adfReleaseDumpDevice(dev);            
+        if( rc != RC_OK ) {
+            adfCloseDev ( dev );
             (*adfEnv.eFct)("adfMountDev : adfReadDumpSector failed");
-            free(dev); return NULL;
+            return NULL;
         }
 
         /* a file with the first three bytes equal to 'DOS' */
     	if (!dev->isNativeDev && strncmp("DOS",(char*)buf,3)==0) {
-            if (adfMountHdFile(dev)!=RC_OK) {
-	            if (dev->isNativeDev)
-		            (*nFct->adfReleaseDevice)(dev);
-	            else
-		            adfReleaseDumpDevice(dev);            
-                free(dev); return NULL;
+            if ( adfMountHdFile ( dev ) != RC_OK ) {
+                adfCloseDev ( dev );
+                return NULL;
             }
         }
-        else if (adfMountHd(dev)!=RC_OK) {
-	         if (dev->isNativeDev)
-		         (*nFct->adfReleaseDevice)(dev);
-	         else
-		         adfReleaseDumpDevice(dev);            
-            free(dev); return NULL;								/* BV ...to here.*/
+        else if ( adfMountHd ( dev ) != RC_OK ) {
+            adfCloseDev ( dev );
+            return NULL;								/* BV ...to here.*/
         }
 	    break;
 
     default:
         (*adfEnv.eFct)("adfMountDev : unknown device type");
-	      if (dev->isNativeDev)									/* BV */
-		      (*nFct->adfReleaseDevice)(dev);					/* BV */
-	      else													/* BV */
-		      adfReleaseDumpDevice(dev);						/* BV */
-         free(dev); return NULL;								/* BV */
+        adfCloseDev ( dev );
+        return NULL;								/* BV */
     }
 
 	return dev;
