@@ -1,6 +1,6 @@
 
 The main developper is 
- Laurent Clévy (laurent.clevy@club-internet.fr)
+ Laurent Clévy
 
 Contributors are:
  Bjarne Viksoe 
