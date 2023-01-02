@@ -1,10 +1,10 @@
-# ADFlib
+# ADFlib (Amiga Disk File library)
 
 ## Introduction
 
 The ADFlib is a free, portable and open implementation of the Amiga filesystem.
 
-Initial release in 1999
+Initial release in 1999.
 
 It supports :
 - floppy dumps
