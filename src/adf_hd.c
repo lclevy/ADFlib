@@ -135,11 +135,10 @@ void adfCloseDev ( struct Device * dev )
         dev->nVol = 0;
     }
 
-    struct nativeFunctions * const nFct = adfEnv.nativeFct;
-
-    if ( dev->isNativeDev )
+    if ( dev->isNativeDev ) {
+        struct nativeFunctions * const nFct = adfEnv.nativeFct;
         ( *nFct->adfReleaseDevice )( dev );
-    else
+    } else
         adfReleaseDumpDevice ( dev );
 
     free ( dev );
