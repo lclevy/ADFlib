@@ -44,41 +44,31 @@ extern struct Env adfEnv;
  */
 RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
 {
-    struct nativeDevice * nDev = (struct nativeDevice *) malloc
-        (sizeof(struct nativeDevice));
-
-    if (!nDev) {
-        (*adfEnv.eFct)("adfInitDumpDevice : malloc");
-        return RC_MALLOC;
-    }
-    dev->nativeDev = nDev;
-
     dev->readOnly = ro;
     errno = 0;
     if (!ro) {
-        nDev->fd = fopen(name,"rb+");
+        dev->fd = fopen ( name, "rb+" );
         /* force read only */
-        if (!nDev->fd && (errno==EACCES || errno==EROFS) ) {
-            nDev->fd = fopen(name,"rb");
+        if ( ! dev->fd && ( errno == EACCES || errno == EROFS ) ) {
+            dev->fd = fopen ( name, "rb" );
             dev->readOnly = TRUE;
-            if (nDev->fd)
+            if ( dev->fd )
                 (*adfEnv.wFct)("myInitDevice : fopen, read-only mode forced");
         }
     }
     else
         /* read only requested */
-        nDev->fd = fopen(name,"rb");
+        dev->fd = fopen ( name, "rb" );
 
-    if (!nDev->fd) {
-        free(nDev);
+    if ( ! dev->fd ) {
         (*adfEnv.eFct)("myInitDevice : fopen");
         return RC_ERROR;
     }
 
     /* determines size */
-    fseek(nDev->fd, 0, SEEK_END);
-    dev->size = ftell(nDev->fd);
-    fseek(nDev->fd, 0, SEEK_SET);
+    fseek ( dev->fd, 0, SEEK_END );
+    dev->size = ftell ( dev->fd );
+    fseek ( dev->fd, 0, SEEK_SET );
 
     return RC_OK;
 }
@@ -93,13 +83,12 @@ RETCODE adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
     struct nativeDevice* nDev;
     int r;
 /*puts("adfReadDumpSector");*/
-    nDev = (struct nativeDevice*)dev->nativeDev;
-    r = fseek(nDev->fd, 512*n, SEEK_SET);
+    r = fseek ( dev->fd, 512 * n, SEEK_SET );
 /*printf("nnn=%ld size=%d\n",n,size);*/
     if (r==-1)
         return RC_ERROR;
 /*puts("123");*/
-    if ((r=fread(buf, 1, size, nDev->fd))!=size) {
+    if ( ( r = fread ( buf, 1, size, dev->fd ) ) != size ) {
 /*printf("rr=%d\n",r);*/
         return RC_ERROR;
 }
@@ -115,16 +104,11 @@ RETCODE adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
  */
 RETCODE adfWriteDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
 {
-    struct nativeDevice* nDev;
-    int r;
-
-    nDev = (struct nativeDevice*)dev->nativeDev;
-
-    r=fseek(nDev->fd, 512*n, SEEK_SET);
+    int r = fseek ( dev->fd, 512 * n, SEEK_SET );
     if (r==-1)
         return RC_ERROR;
 
-    if ( fwrite(buf, 1, size, nDev->fd)!=(unsigned int)(size) )
+    if ( fwrite ( buf, 1, size, dev->fd ) != (unsigned int) size )
         return RC_ERROR;
 /*puts("adfWriteDumpSector");*/
     return RC_OK;
@@ -137,15 +121,9 @@ RETCODE adfWriteDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf
  */
 RETCODE adfReleaseDumpDevice(struct Device *dev)
 {
-    struct nativeDevice* nDev;
+    fclose ( dev->fd );
 
-    if (!dev->nativeDev)
-		return RC_ERROR;
-
-    nDev = (struct nativeDevice*)dev->nativeDev;
-    fclose(nDev->fd);
-
-    free(nDev);
+    //free ( dev );  // this is done externally - maybe should be moved here?
 
     return RC_OK;
 }
@@ -191,7 +169,6 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
 {
     struct Device* dev;
     uint8_t buf[LOGICAL_BLOCK_SIZE];
-    struct nativeDevice* nDev;
 /*    int32_t i;*/
     int r;
 	
@@ -200,17 +177,10 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
         (*adfEnv.eFct)("adfCreateDumpDevice : malloc dev");
         return NULL;
     }
-    nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
-    if (!nDev) {
-        free(dev); 
-        (*adfEnv.eFct)("adfCreateDumpDevice : malloc nDev");
-        return NULL;
-    }
-    dev->nativeDev = nDev;
 
-    nDev->fd = (FILE*)fopen(filename,"wb");
-    if (!nDev->fd) {
-        free(nDev); free(dev);
+    dev->fd = (FILE *) fopen ( filename, "wb" );
+    if ( ! dev->fd ) {
+        free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
         return NULL;
     }
@@ -218,20 +188,23 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
 /*    for(i=0; i<cylinders*heads*sectors; i++)
         fwrite(buf, sizeof(uint8_t), 512 , nDev->fd);
 */
-    r=fseek(nDev->fd, ((cylinders*heads*sectors)-1)*LOGICAL_BLOCK_SIZE, SEEK_SET);
+    long lastBlockOffset = ( ( cylinders * heads * sectors ) - 1 ) *
+        LOGICAL_BLOCK_SIZE;
+    r = fseek ( dev->fd, lastBlockOffset, SEEK_SET );
     if (r==-1) {
-        fclose(nDev->fd); free(nDev); free(dev);
+        fclose ( dev->fd );
+        free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fseek");
         return NULL;
     }
 
-    fwrite(buf, LOGICAL_BLOCK_SIZE, 1, nDev->fd);
+    fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, dev->fd );
 
-    fclose(nDev->fd);
+    fclose ( dev->fd );
 
-    nDev->fd=(FILE*)fopen(filename,"rb+");
-    if (!nDev->fd) {
-        free(nDev); free(dev);
+    dev->fd = (FILE *) fopen ( filename, "rb+" );
+    if ( ! dev->fd ) {
+        free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
         return NULL;
     }
@@ -255,4 +228,3 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
 }
 
 /*##################################################################################*/
-
