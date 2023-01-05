@@ -1,9 +1,18 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
-bin_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
+
+
+AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
+    -D_GNU_SOURCE
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -I$(top_srcdir)/src
+
+check_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
         hd_test2 hd_test3 file_test file_test2 file_test3 file_seek_test \
         file_seek_test2 file_read_hard_link_test del_test bootdisk \
         rename hardfile rename2 hardfile2 access comment undel readonly \
 	undel2 dispsect progbar undel3 floppy_overfilling_test
+
+#TESTS = $(check_PROGRAMS)
+TESTS = floppy.sh bigdev.sh test_chdir.sh test_hard_links.sh
+#EXTRA_DIST = $(TESTS)
 
 fl_test_SOURCES = fl_test.c
 fl_test_LDADD = $(top_builddir)/src/libadf.la
