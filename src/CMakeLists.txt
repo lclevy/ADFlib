@@ -4,6 +4,8 @@ configure_file (config.h.cmake.in config.h)
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/src/generic
+#  ${PROJECT_SOURCE_DIR}/src/linux
+#  ${PROJECT_SOURCE_DIR}/src/win32
   ${PROJECT_BINARY_DIR}/src
 )
 
@@ -22,6 +24,10 @@ add_library ( adf
   adf_util.c
   generic/adf_nativ.c
   generic/adf_nativ.h
+#  linux/adf_nativ.c
+#  linux/adf_nativ.h
+#  win32/adf_nativ.c
+#  win32/adf_nativ.h
 )
 
 #install(TARGETS adf DESTINATION /usr/local/lib)
