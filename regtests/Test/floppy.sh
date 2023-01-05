@@ -14,105 +14,102 @@ CHECK=../Check
 
 set -e
 
+echo "----- bootdisk"
 ./bootdisk $BOOTBLK
-rm newdev
-echo "-----"
+rm -v newdev
 
-cp $FFSDUMP testffs_adf
+echo "----- del_test"
+cp -v $FFSDUMP testffs_adf
 ./del_test testffs_adf
-rm testffs_adf
-echo "-----"
+rm -v testffs_adf
 
+echo "----- dir_test"
+cp -v $FFSDUMP testffs_adf
 ./dir_test $FFSDUMP
-echo "-----"
+rm -v testffs_adf
 
-cp $FFSDUMP testffs_adf
+echo "----- dir_test2"
+cp -v $FFSDUMP testffs_adf
 ./dir_test2 testffs_adf
-rm testffs_adf
-echo "-----"
+rm -v testffs_adf
 
-echo "Executing dir_test_chdir..."
-cp $FFSDUMP testffs_adf
-cp $LINK_CHAINS_DUMP link_chains_adf
+echo "----- dir_test_chdir"
+cp -v $FFSDUMP testffs_adf
+cp -v $LINK_CHAINS_DUMP link_chains_adf
 ./dir_test_chdir testffs_adf link_chains_adf
-rm testffs_adf link_chains_adf
-echo "-----"
+rm -v testffs_adf link_chains_adf
 
-
+echo "----- fl_test"
 ./fl_test $FFSDUMP $BOOTBLK
-rm newdev
-echo "-----"
+rm -v newdev
 
+echo "----- fl_test2"
 ./fl_test2 $HDDUMP
-echo "-----"
 
+echo "----- file_test"
 ./file_test $FFSDUMP $OFSDUMP
 #diff mod.distant $CHECK/mod.And.DistantCall
 #diff moon_gif $CHECK/MOON.GIF
-rm mod.distant moon_gif
-echo "-----"
+rm -v mod.distant moon_gif
 
-#cp $FFSDUMP testffs_adf
+#echo "----- file_test2"
+#cp -v $FFSDUMP testffs_adf
 #./file_test2 testffs_adf $CHECK/MOON.GIF
 #diff moon__gif $CHECK/MOON.GIF
-#rm moon__gif
-#rm testffs_adf
-echo "-----"
+#rm -v moon__gif
+#rm -v testffs_adf
 
-#cp $OFSDUMP testofs_adf
+#echo "----- file_test3"
+#cp -v $OFSDUMP testofs_adf
 #./file_test3 testofs_adf $CHECK/MOON.GIF
 #diff moon__gif $CHECK/MOON.GIF
-#rm moon__gif
-#rm testofs_adf
-echo "-----"
+#rm -v moon__gif
+#rm -v testofs_adf
 
-echo "Executing file_seek_test..."
-cp $OFSDUMP testofs_adf
-cp $FFSDUMP testffs_adf
+echo "----- file_seek_test"
+cp -v $OFSDUMP testofs_adf
+cp -v $FFSDUMP testffs_adf
 ./file_seek_test testofs_adf testffs_adf
-rm testofs_adf testffs_adf
-echo "-----"
+rm -v testofs_adf testffs_adf
 
-echo "Executing file_seek_test2..."
-cp $OFSDUMP testofs_adf
-cp $FFSDUMP testffs_adf
+echo "----- file_seek_test2"
+cp -v $OFSDUMP testofs_adf
+cp -v $FFSDUMP testffs_adf
 ./file_seek_test2 testofs_adf testffs_adf
-rm testofs_adf testffs_adf
-echo "-----"
+rm -v testofs_adf testffs_adf
 
-echo "Executing file_read_hard_link_test..."
-cp $FFSDUMP testffs_adf
-cp $LINK_CHAINS_DUMP link_chains_adf
+echo "----- file_read_hard_link_test"
+cp -v $FFSDUMP testffs_adf
+cp -v $LINK_CHAINS_DUMP link_chains_adf
 ./file_read_hard_link_test testffs_adf link_chains_adf
-rm testffs_adf link_chains_adf
-echo "-----"
+rm -v testffs_adf link_chains_adf
 
-
+echo "----- rename"
 ./rename
-rm newdev
-echo "-----"
+rm -v newdev
 
+echo "----- rename2"
 ./rename2
-rm newdev
+rm -v newdev
 
+echo "----- undel"
 ./undel
-rm newdev
-echo "-----"
+rm -v newdev
 
-cp $FFSDUMP testffs_adf
+echo "----- undel2"
+cp -v $FFSDUMP testffs_adf
 ./undel2 testffs_adf
 #diff mod.distant $CHECK/mod.And.DistantCall
-rm mod.distant testffs_adf
-echo "-----"
+rm -v mod.distant testffs_adf
 
-cp $OFSDUMP testofs_adf
+echo "----- undel3"
+cp -v $OFSDUMP testofs_adf
 ./undel3 testofs_adf
 #diff moon_gif $CHECK/MOON.GIF
-rm moon_gif testofs_adf
-echo "-----"
+rm -v moon_gif testofs_adf
 
-
-echo "Running over-filling test..."
+echo "----- floppy_over_filling"
 ./floppy_overfilling_test
-rm test.adf
+rm -v test.adf
+
 echo "-----"

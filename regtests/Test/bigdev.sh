@@ -13,15 +13,16 @@ CHECK=../Check
 
 set -e
 
+#echo "----- hd_test"
 #./hd_test /home/root/hd.adf /home/root/idh2.adf
-echo "-----"
 
+echo "----- hd_test2"
 ./hd_test2
-rm newdev
-echo "-----"
+rm -v newdev
 
+echo "----- hd_test3"
 ./hd_test3
-rm newdev
-echo "-----"
+rm -v newdev
 
+#echo "----- hardfile"
 #./hardfile /home/root/hardfile.hdf
