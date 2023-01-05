@@ -1,4 +1,5 @@
-NATIVE_DIR = generic
+
+SUBDIRS = $(NATIVE_DIR)
 
 lib_LTLIBRARIES = libadf.la
 
@@ -9,7 +10,6 @@ libadf_la_SOURCES = adf_hd.c \
                     adf_dump.c \
                     adf_util.c \
                     adf_env.c \
-                    $(NATIVE_DIR)/adf_nativ.c \
                     adf_dir.c \
                     adf_file.c \
                     adf_cache.c \
@@ -35,10 +35,13 @@ include_HEADERS = adf_defs.h \
                   adf_util.h \
                   defendian.h \
                   hd_blk.h \
-                  prefix.h \
-                  $(NATIVE_DIR)/adf_nativ.h
+                  prefix.h
 
-libadf_la_LDFLAGS = -version-info 0:12:0
-AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_GNU_SOURCE -I$(srcdir) -I$(srcdir)/$(NATIVE_DIR)
-AM_CFLAGS = -std=c99 -pedantic -Wall
+libadf_la_LDFLAGS = -version-info 0:12:0 -L$(NATIVE_DIR) -ladfnative
 
+AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
+    -D_GNU_SOURCE
+
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
+    -I$(srcdir) \
+    -I$(srcdir)/$(NATIVE_DIR)
