@@ -43,3 +43,6 @@ config.log
 config.status
 libtool
 stamp-h1
+
+# temp / backup files
+*~
