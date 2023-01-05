@@ -639,9 +639,13 @@ RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType )
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");
         return RC_ERROR;
     }
+    if ( volName == NULL ) {
+        (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
+        return RC_ERROR;
+    }
     dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
     if (!dev->volList) { 
-		(*adfEnv.eFct)("adfCreateFlop : unknown device type");
+        (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;
     }
     dev->volList[0] = adfCreateVol( dev, 0L, 80L, volName, volType );
