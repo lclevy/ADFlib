@@ -80,7 +80,6 @@ RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
  */
 RETCODE adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
 {
-    struct nativeDevice* nDev;
     int r;
 /*puts("adfReadDumpSector");*/
     r = fseek ( dev->fd, 512 * n, SEEK_SET );
@@ -178,7 +177,7 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
         return NULL;
     }
 
-    dev->fd = (FILE *) fopen ( filename, "wb" );
+    dev->fd = fopen ( filename, "wb" );
     if ( ! dev->fd ) {
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
@@ -202,7 +201,7 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
 
     fclose ( dev->fd );
 
-    dev->fd = (FILE *) fopen ( filename, "rb+" );
+    dev->fd = fopen ( filename, "rb+" );
     if ( ! dev->fd ) {
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
