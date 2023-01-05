@@ -1,7 +1,5 @@
 #!/bin/sh
-PATH=.:$PATH
 
-#floppy test
 
 DUMPS=../Dumps
 FFSDUMP=$DUMPS/testffs.adf
@@ -15,15 +13,15 @@ CHECK=../Check
 
 set -e
 
-#hd_test /home/root/hd.adf /home/root/idh2.adf
+#./hd_test /home/root/hd.adf /home/root/idh2.adf
 echo "-----"
 
-hd_test2
+./hd_test2
 rm newdev
 echo "-----"
 
-hd_test3
+./hd_test3
 rm newdev
 echo "-----"
 
-#hardfile /home/root/hardfile.hdf
+#./hardfile /home/root/hardfile.hdf
