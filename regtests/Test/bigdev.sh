@@ -1,15 +1,25 @@
 #!/bin/sh
 
 
-DUMPS=../Dumps
+
+# autotools uses $srcdir
+if [ "x$srcdir" != "x" ]
+then
+    TESTS_DIR=${srcdir}/regtests
+else
+    TESTS_DIR=".."
+fi
+
+DUMPS=${TESTS_DIR}/Dumps
+
 FFSDUMP=$DUMPS/testffs.adf
 OFSDUMP=$DUMPS/testofs.adf
 HDDUMP=$DUMPS/testhd.adf
 
-BOOTDIR=../Boot
+BOOTDIR=${TESTS_DIR}/Boot
 BOOTBLK=$BOOTDIR/stdboot3.bbk
 
-CHECK=../Check
+CHECK=${TESTS_DIR}/Check
 
 set -e
 
