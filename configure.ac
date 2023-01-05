@@ -41,6 +41,7 @@ AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -65,5 +66,6 @@ AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  examples/Makefile
                  regtests/Test/Makefile
+                 tests/Makefile
                  adflib.pc])
 AC_OUTPUT
