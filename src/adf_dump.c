@@ -27,6 +27,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include <string.h>
 #include<errno.h>
 
 #include"adf_defs.h"
@@ -197,7 +198,14 @@ adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t se
         return NULL;
     }
 
-    fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, dev->fd );
+    memset ( buf, 0, LOGICAL_BLOCK_SIZE );
+    size_t blocksWritten = fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, dev->fd );
+    if ( blocksWritten != 1 ) {
+        fclose ( dev->fd );
+        free ( dev );
+        (*adfEnv.eFct)("adfCreateDumpDevice : fwrite");
+        return NULL;
+    }
 
     fclose ( dev->fd );
 
