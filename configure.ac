@@ -5,6 +5,7 @@ AC_PREREQ(2.61)
 AC_INIT(adflib, 0.7.12, lclevy_AT_club-internet.fr)
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
 
 AC_ARG_ENABLE([examples],
