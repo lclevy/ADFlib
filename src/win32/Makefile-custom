@@ -1,0 +1,31 @@
+
+#.SUFFIXES: .c
+
+CC = i686-w64-mingw32-gcc
+CFLAGS = -std=c99 -Wall -Wextra -pedantic -I..
+
+SRC = $(wildcard *.c)
+OBJ = $(SRC:.c=.o)
+#LIBRARY = adf_native_win32.a
+LIBRARY = libadfnative.a
+
+all: $(LIBRARY)
+
+#$(LIBRARY): %.a: %.o
+$(LIBRARY): $(OBJ)
+#	$(CC) $< -o $@
+	ar rs $(LIBRARY) $(OBJ)
+
+$(OBJ): %.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+show:
+	@echo "SRC:     $(SRC)"
+	@echo "OBJ:     $(OBJ)"
+	@echo "TARGET:  $(LIBRARY)"
+
+clean:
+	rm -f $(OBJ) $(LIBRARY)
+
+
+.PHONY: clean show
