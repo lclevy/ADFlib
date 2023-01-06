@@ -7,12 +7,17 @@ check_PROGRAMS = \
 
 TESTS = $(check_PROGRAMS)
 
+ADFLIBS = $(top_builddir)/src/libadf.la
+if HOSTOSCYGWIN
+    ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
+endif
+
 test_adfDays2Date_SOURCES = test_adfDays2Date.c
 test_adfDays2Date_CFLAGS = $(CHECK_FLAGS)
-test_adfDays2Date_LDADD = $(top_builddir)/src/libadf.la $(CHECK_LIBS)
+test_adfDays2Date_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfDays2Date_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 test_adfPos2DataBlock_SOURCES = test_adfPos2DataBlock.c
 test_adfPos2DataBlock_CFLAGS = $(CHECK_FLAGS)
-test_adfPos2DataBlock_LDADD = $(top_builddir)/src/libadf.la $(CHECK_LIBS)
+test_adfPos2DataBlock_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfPos2DataBlock_DEPENDENCIES = $(top_builddir)/src/libadf.la

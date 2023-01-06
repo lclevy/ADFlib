@@ -36,11 +36,15 @@ AM_CONDITIONAL([REGTESTS], [test x$regtests = xtrue])
 AC_CANONICAL_HOST
 
 # detect first
+echo "Host OS: ${host_os}"
 case "${host_os}" in
      linux*)
 	NATIVE_DIR=linux
 	;;
      win32*)
+	NATIVE_DIR=win32
+	;;
+     cygwin*)
 	NATIVE_DIR=win32
 	;;
      *)
@@ -75,11 +79,13 @@ AC_ARG_ENABLE([native_win32],
                 *) AC_MSG_ERROR([bad value ${enableval} for --enable-native-win32]) ;;
                esac],
               [])
+echo "NATIVE_DIR: ${NATIVE_DIR}"
 
 #AM_CONDITIONAL([NATIVE_GENERIC], [test x${devnative} = xgeneric])
 #AM_CONDITIONAL([NATIVE_LINUX],   [test x${devnative} = xlinux])
 #AM_CONDITIONAL([NATIVE_WIN32],   [test x${devnative} = xwin32])
 
+AM_CONDITIONAL([HOSTOSCYGWIN], [test x${host_os} = xcygwin])
 
 # Checks for programs.
 AC_PROG_CXX

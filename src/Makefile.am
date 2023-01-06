@@ -37,7 +37,15 @@ include_HEADERS = adf_defs.h \
                   hd_blk.h \
                   prefix.h
 
-libadf_la_LDFLAGS = -version-info 0:12:0 -L$(NATIVE_DIR) -ladfnative
+libadf_la_LDFLAGS = -version-info 0:12:0
+
+# Link adfnative
+if HOSTOSCYGWIN
+    # CygWin autotools links adfnative by itself
+else
+    # Link adfnative to libadf
+    libadf_la_LDFLAGS += -L$(NATIVE_DIR) -ladfnative
+endif
 
 AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
     -D_GNU_SOURCE
