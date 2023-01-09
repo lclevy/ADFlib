@@ -28,6 +28,8 @@
 #ifndef _ADF_DEFS_H
 #define _ADF_DEFS_H 1
 
+#include <stdint.h>
+
 #define ADFLIB_VERSION "0.7.11a"
 #define ADFLIB_DATE "January 20th, 2007"
 
@@ -37,7 +39,6 @@
 #define TRUE    1
 #define FALSE   0
 
-#include <stdint.h>
 #define ULONG   uint32_t
 #define USHORT  uint16_t
 #define UCHAR   uint8_t
@@ -45,7 +46,6 @@
 
 
 /* defines max and min */
-
 #ifndef max
 #define max(a,b)        (a)>(b) ? (a) : (b)
 #endif
