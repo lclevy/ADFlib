@@ -51,7 +51,7 @@ struct nativeFunctions{
     /* called by adfMount() */
     BOOL (*adfIsDevNative)(char*);
     /* called by adfUnMount() */
-    RETCODE (*adfReleaseDevice)();
+    RETCODE (*adfReleaseDevice)(struct Device* dev);
 };
 
 void adfInitNativeFct();
