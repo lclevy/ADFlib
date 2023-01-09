@@ -47,10 +47,29 @@
 
 /* defines max and min */
 #ifndef max
-#define max(a,b)        (a)>(b) ? (a) : (b)
+#if defined(__clang__) || defined(__GNUC__)
+#define max(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b;       \
+})
+#else
+#define max(a,b)        ((a)>(b) ? (a) : (b))
 #endif
+#endif
+
 #ifndef min
-#define min(a,b)        (a)<(b) ? (a) : (b)
+#if defined(__clang__) || defined(__GNUC__)
+#define min(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b;       \
+})
+#else
+#define min(a,b)        ((a)<(b) ? (a) : (b))
+#endif
 #endif
 
 
