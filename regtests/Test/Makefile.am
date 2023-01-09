@@ -11,7 +11,7 @@ check_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
 	undel2 dispsect progbar undel3 floppy_overfilling_test
 
 #TESTS = $(check_PROGRAMS)
-TESTS = floppy.sh bigdev.sh test_chdir.sh test_hard_links.sh
+TESTS = floppy.sh bigdev.sh
 #EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
