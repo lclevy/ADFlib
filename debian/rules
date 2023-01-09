@@ -18,3 +18,6 @@ export DH_VERBOSE = 1
 #	dh $@ --parallel
 #	dh $@ --parallel --with autotools_dev
 	dh $@ --with autoreconf
+
+override_dh_auto_configure:
+	dh_auto_configure -- --enable-native-generic
