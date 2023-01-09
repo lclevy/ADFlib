@@ -25,7 +25,7 @@ set -e
 
 echo "----- bootdisk"
 ./bootdisk $BOOTBLK
-rm -v newdev
+rm -v bootdisk-newdev
 
 echo "----- del_test"
 cp -v $FFSDUMP testffs_adf
@@ -50,7 +50,7 @@ rm -v testffs_adf link_chains_adf
 
 echo "----- fl_test"
 ./fl_test $FFSDUMP $BOOTBLK
-rm -v newdev
+rm -v fl_test-newdev
 
 echo "----- fl_test2"
 ./fl_test2 $HDDUMP
@@ -95,15 +95,15 @@ rm -v testffs_adf link_chains_adf
 
 echo "----- rename"
 ./rename
-rm -v newdev
+rm -v rename-newdev
 
 echo "----- rename2"
 ./rename2
-rm -v newdev
+rm -v rename2-newdev
 
 echo "----- undel"
 ./undel
-rm -v newdev
+rm -v undel-newdev
 
 echo "----- undel2"
 cp -v $FFSDUMP testffs_adf

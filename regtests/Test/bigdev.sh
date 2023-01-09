@@ -28,11 +28,11 @@ set -e
 
 echo "----- hd_test2"
 ./hd_test2
-rm -v newdev
+rm -v hd_test2-newdev
 
 echo "----- hd_test3"
 ./hd_test3
-rm -v newdev
+rm -v hd_test3-newdev
 
 #echo "----- hardfile"
 #./hardfile /home/root/hardfile.hdf

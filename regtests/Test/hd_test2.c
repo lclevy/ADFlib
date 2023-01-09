@@ -29,9 +29,10 @@ int main(int argc, char *argv[])
 
     adfEnvInitDefault();
 
+    const char tmpdevname[] = "hd_test2-newdev";
 
     /* a zip disk */
-    hd = adfCreateDumpDevice("newdev",2891,1,68);
+    hd = adfCreateDumpDevice ( tmpdevname, 2891, 1, 68 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
 
     /* mount the created device */
 
-    hd = adfMountDev("newdev",FALSE);
+    hd = adfMountDev ( tmpdevname, FALSE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
