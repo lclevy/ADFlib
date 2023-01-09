@@ -33,7 +33,11 @@ int main (void)
 {
     adfEnvInitDefault();
 
+#ifdef _MSC_VER   // visual studio do not understand that const is const...
+#define BUF_SIZE 1024 * 1024
+#else
     const unsigned BUF_SIZE = 1024 * 1024;
+#endif
     unsigned char buf [ BUF_SIZE ];
 
     //pattern_AMIGAMIG ( buf, BUFSIZE );
@@ -143,7 +147,11 @@ int verify_file_data ( struct Volume * const vol,
     if ( ! output )
         return 1;
 
+#ifdef _MSC_VER   // visual studio do not understand that const is const...
+#define READ_BUFSIZE 1024
+#else
     const unsigned READ_BUFSIZE = 1024;
+#endif
     unsigned char readbuf [ READ_BUFSIZE ];
 
     unsigned bytes_read = 0,
@@ -193,6 +201,6 @@ void pattern_random ( unsigned char * buf,
                       const unsigned  BUFSIZE )
 {
     for ( unsigned i = 0 ; i < BUFSIZE ; ++i ) {
-        buf[i]   = (unsigned char) ( random() & 0xff );
+        buf[i]   = (unsigned char) ( rand() & 0xff );
     }
 }

@@ -21,7 +21,11 @@ typedef struct reading_test_s {
 } reading_test_t;
 
 
+#ifdef _MSC_VER   // visual studio do not understand that const is const...
+#define ofs_first_pos_using_extension 0x8940
+#else
 const unsigned int ofs_first_pos_using_extension = 0x8940;  // 35136
+#endif
 
 reading_test_t test_ofs = {
     .filename = "moon.gif",
@@ -38,9 +42,14 @@ reading_test_t test_ofs = {
 };
 
 
+#ifdef _MSC_VER   // visual studio do not understand that const is const...
+#define ffs_first_pos_using_extension     0x9000   // 36863
+#define ffs_first_pos_using_2nd_extension 0x12000  // 73728
+#else
 const unsigned int
     ffs_first_pos_using_extension     = 0x9000,   // 36863
     ffs_first_pos_using_2nd_extension = 0x12000;  // 73728
+#endif
 
 reading_test_t test_ffs = {
     .filename = "mod.And.DistantCall",
