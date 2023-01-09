@@ -19,7 +19,7 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
- 
+
 
 /* Modified 29/8/00 by Gary Harris.
 ** - Added a third, Boolean argument to Win32InitDevice() to avoid a compilation warning
