@@ -37,7 +37,6 @@
 #endif
 
 struct nativeDevice{
-	FILE *fd; /* needed by adf_dump.c */
 	void *hDrv;
 };
 
