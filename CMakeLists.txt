@@ -1,5 +1,5 @@
 
-cmake_minimum_required ( VERSION 2.6 )
+cmake_minimum_required ( VERSION 3.11 )
 project ( adflib C )
 
 set( CMAKE_MODULE_PATH
@@ -16,23 +16,30 @@ set ( adflib_VERSION_PATCH 12 )
 
 add_compile_options(
   -Wall
-  -Wextra
-  -Wconversion
-  -Wsign-conversion
-  -pedantic
-#  -pedantic-errors
-#  $<$<CONFIG:DEBUG>:-g3>
-#  $<$<CONFIG:DEBUG>:-Og>
-  $<$<CONFIG:DEBUG>:-ggdb>
-  $<$<CONFIG:DEBUG>:-fsanitize=address>
   $<$<CONFIG:RELEASE>:-O3>
 )
 
-add_link_options(
-#  $<$<CONFIG:DEBUG>:-lasan>
-  $<$<CONFIG:DEBUG>:-fsanitize=address>
-)
+if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+    message(${CMAKE_C_COMPILER_ID})
+    message("here2")
+    add_compile_options(
+      -Wextra
+      -Wconversion
+      -Wsign-conversion
+      -pedantic
+    #  -pedantic-errors
+    #  $<$<CONFIG:DEBUG>:-g3>
+    #  $<$<CONFIG:DEBUG>:-Og>
+      $<$<CONFIG:DEBUG>:-ggdb>
+      $<$<CONFIG:DEBUG>:-fsanitize=address>
 
+    )
+
+    add_link_options(
+    #  $<$<CONFIG:DEBUG>:-lasan>
+      $<$<CONFIG:DEBUG>:-fsanitize=address>
+    )
+endif()
 
 enable_testing()
 
@@ -42,4 +49,9 @@ ADD_SUBDIRECTORY( regtests/Test )
 
 # unit tests (comment out if not needed)
 # (requires check framework!)
+#if (${CMAKE_C_COMPILER_ID} STREQUAL "MSVC")
+    # Visual Studio most likely do not have check - place sources in extern/check
+#    ADD_SUBDIRECTORY( extern/check )
+#endif()
 ADD_SUBDIRECTORY( tests )
+

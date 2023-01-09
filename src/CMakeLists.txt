@@ -28,6 +28,8 @@ add_library ( adf
 #  linux/adf_nativ.h
 #  win32/adf_nativ.c
 #  win32/adf_nativ.h
+#  win32/nt4_dev.c
+#  win32/nt4_dev.h
 )
 
 #install(TARGETS adf DESTINATION /usr/local/lib)
