@@ -20,8 +20,6 @@ add_compile_options(
 )
 
 if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
-    message(${CMAKE_C_COMPILER_ID})
-    message("here2")
     add_compile_options(
       -Wextra
       -Wconversion
