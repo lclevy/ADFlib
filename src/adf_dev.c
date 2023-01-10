@@ -286,3 +286,43 @@ void adfUnMountDev( struct Device* dev)
 {
     adfCloseDev ( dev );
 }
+
+
+RETCODE adfReadBlockDev ( struct Device * dev,
+                          int32_t         pSect,
+                          int32_t         size,
+                          uint8_t *       buf )
+{
+    RETCODE rc;
+    struct nativeFunctions * const nFct = adfEnv.nativeFct;
+/*printf("pSect R =%ld\n",pSect);*/
+    if ( dev->isNativeDev )
+        rc = (*nFct->adfNativeReadSector)( dev, pSect, size, buf );
+    else
+        rc = adfReadDumpSector( dev, pSect, size, buf );
+/*printf("rc=%ld\n",rc);*/
+    if ( rc != RC_OK )
+        return RC_ERROR;
+    else
+        return RC_OK;
+}
+
+RETCODE adfWriteBlockDev ( struct Device * dev,
+                           int32_t         pSect,
+                           int32_t         size,
+                           uint8_t *       buf )
+{
+    RETCODE rc;
+    struct nativeFunctions * const nFct = adfEnv.nativeFct;
+
+/*printf("nativ=%d\n",dev->isNativeDev);*/
+    if ( dev->isNativeDev )
+        rc = (*nFct->adfNativeWriteSector)( dev, pSect, size, buf );
+    else
+        rc = adfWriteDumpSector ( dev, pSect, size, buf );
+
+    if ( rc != RC_OK )
+        return RC_ERROR;
+    else
+        return RC_OK;
+}

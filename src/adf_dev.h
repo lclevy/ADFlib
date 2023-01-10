@@ -16,8 +16,13 @@ PREFIX void adfUnMountDev ( struct Device * dev );
 
 //struct Device* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
 
-//RETCODE adfReadBlockDev( struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
-//RETCODE adfWriteBlockDev(struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
+RETCODE adfReadBlockDev ( struct Device * dev,
+                          int32_t         pSect,
+                          int32_t         size,
+                          uint8_t *       buf );
 
-
+RETCODE adfWriteBlockDev ( struct Device * dev,
+                           int32_t         pSect,
+                           int32_t         size,
+                           uint8_t *       buf );
 #endif
