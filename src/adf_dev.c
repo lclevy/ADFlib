@@ -221,7 +221,6 @@ void adfDeviceInfo(struct Device *dev)
  */
 struct Device* adfMountDev( char* filename, BOOL ro)
 {
-    struct nativeFunctions *nFct;
     RETCODE rc;
     uint8_t buf[512];
 
@@ -230,8 +229,6 @@ struct Device* adfMountDev( char* filename, BOOL ro)
         //(*adfEnv.eFct)("adfMountDev : malloc error");
         return NULL;
     }
-
-    nFct = adfEnv.nativeFct;
 
     switch( dev->devType ) {
 
@@ -244,11 +241,9 @@ struct Device* adfMountDev( char* filename, BOOL ro)
         break;
 
     case DEVTYPE_HARDDISK:
-        /* to choose between hardfile or harddisk (real or dump) */
-        if (dev->isNativeDev)									/* BV ...from here*/
-            rc = (*nFct->adfNativeReadSector)(dev, 0, 512, buf);
-        else
-            rc = adfReadDumpSector(dev, 0, 512, buf);
+        rc = adfReadBlockDev ( dev, 0, 512, buf );
+
+       /* BV ...from here*/
         if( rc != RC_OK ) {
             adfCloseDev ( dev );
             (*adfEnv.eFct)("adfMountDev : adfReadDumpSector failed");
