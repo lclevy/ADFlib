@@ -47,7 +47,7 @@
  * adfFreeTmpVolList
  *
  */
-void adfFreeTmpVolList(struct List *root)
+static void adfFreeTmpVolList(struct List *root)
 {
     struct List *cell;
     struct Volume *vol;
