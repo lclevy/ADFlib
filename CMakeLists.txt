@@ -20,6 +20,7 @@ add_compile_options(
 )
 
 if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+    message("Enable extra compiler options (mainly gcc and clang)")
     add_compile_options(
       -Wextra
       -Wconversion
@@ -29,14 +30,17 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     #  $<$<CONFIG:DEBUG>:-g3>
     #  $<$<CONFIG:DEBUG>:-Og>
       $<$<CONFIG:DEBUG>:-ggdb>
-      $<$<CONFIG:DEBUG>:-fsanitize=address>
-
     )
+endif()
 
+# no address sanitizer for Visual Studio or MinGW
+if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT ${MINGW})
+    message("Enable address sanitizer")
+
+    add_compile_options( $<$<CONFIG:DEBUG>:-fsanitize=address> )
     add_link_options(
     #  $<$<CONFIG:DEBUG>:-lasan>
-      $<$<CONFIG:DEBUG>:-fsanitize=address>
-    )
+      $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
 enable_testing()
@@ -51,5 +55,6 @@ ADD_SUBDIRECTORY( regtests/Test )
     # Visual Studio most likely do not have check - place sources in extern/check
 #    ADD_SUBDIRECTORY( extern/check )
 #endif()
-ADD_SUBDIRECTORY( tests )
-
+if (NOT MINGW)
+  add_subdirectory( tests )
+endif()
