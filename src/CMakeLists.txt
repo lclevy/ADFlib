@@ -12,6 +12,8 @@ include_directories (
 add_library ( adf
   adf_bitm.c
   adf_cache.c
+  adf_dev.c
+  adf_dev_flop.c
   adf_dir.c
   adf_disk.c
   adf_dump.c

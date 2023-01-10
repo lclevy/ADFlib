@@ -26,8 +26,6 @@
  */
 
 
-
-#include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
@@ -39,186 +37,10 @@
 #include"adf_disk.h"
 #include"adf_nativ.h"
 #include"adf_dump.h"
-#include"adf_err.h"
 #include "adf_env.h"
+#include "adf_err.h"
 
 #include"defendian.h"
-
-
-
-/*
- * adfOpenDev
- *
- * open a device without mounting it, used by adfMountDev() or
- * for partitioning/formatting with adfCreateFlop/Hd
- *
- * Note that:
- * - an opened device must be closed with adfCloseDev()
- *   before mounting it with adfMountDev()
- *
- * WARNING: IT IS NOT CHECKING WHETHER THERE IS ANY EXISTING FILESYSTEM
- *          ON THE DEVICE, IT DOES NOT LOAD ROOTBLOCK ETC.
- *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
- *          EXIST ALREADY ON THE DEVICE(!)
- */
-struct Device * adfOpenDev ( char * filename, BOOL ro )
-{
-    struct Device * dev = ( struct Device * ) malloc ( sizeof ( struct Device ) );
-    if ( ! dev ) {
-        (*adfEnv.eFct)("adfOpenDev : malloc error");
-        return NULL;
-    }
-
-    dev->readOnly = ro;
-
-    /* switch between dump files and real devices */
-    struct nativeFunctions * nFct = adfEnv.nativeFct;
-    dev->isNativeDev = ( *nFct->adfIsDevNative )( filename );
-
-    RETCODE rc;
-    if ( dev->isNativeDev )
-        rc = ( *nFct->adfInitDevice )( dev, filename, ro );
-    else
-        rc = adfInitDumpDevice ( dev, filename, ro );
-    if ( rc != RC_OK ) {
-        ( *adfEnv.eFct )( "adfOpenDev : device init error" );
-        free ( dev );
-        return NULL;
-    }
-
-    dev->devType = adfDevType ( dev );
-    dev->nVol    = 0;
-    dev->volList = NULL;
-
-    /*
-    if ( dev->devType == DEVTYPE_FLOPDD ) {
-        device->sectors = 11;
-        device->heads = 2;
-        fdtype = "DD";
-    } else if ( dev->devType == DEVTYPE_FLOPHD ) {
-        device->sectors = 22;
-        device->heads = 2;
-        fdtype = "HD";
-    } else if ( dev->devType == DEVTYPE_HARDDISK ) {
-        fprintf ( stderr, "adfOpenDev(): harddisk devices not implemented - aborting...\n" );
-        return 1;
-    } else {
-        fprintf ( stderr, "adfOpenDev(): unknown device type - aborting...\n" );
-        return 1;
-    }
-    device->cylinders = device->size / ( device->sectors * device->heads * 512 );
-    */
-
-    return dev;
-}
-
-
-/*
- * adfCloseDev
- *
- * Closes/releases an opened device.
- * Called by adfUnMountDev()
- */
-void adfCloseDev ( struct Device * dev )
-{
-    if ( ! dev )
-        return;
-
-    // free volume list
-    //if ( dev->volList ) {
-    if ( dev->nVol > 0 ) {
-        for ( int i = 0 ; i < dev->nVol ; i++ ) {
-            free ( dev->volList[i]->volName );
-            free ( dev->volList[i] );
-        }
-        free ( dev->volList );
-        dev->nVol = 0;
-    }
-
-    if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
-        ( *nFct->adfReleaseDevice )( dev );
-    } else
-        adfReleaseDumpDevice ( dev );
-
-    free ( dev );
-}
-
-
-/*
- * adfDevType
- *
- * returns the type of a device
- * only based of the field 'dev->size'
- */
-int adfDevType(struct Device* dev)
-{
-    if( (dev->size==512*11*2*80) ||		/* BV */
-        (dev->size==512*11*2*81) ||		/* BV */
-        (dev->size==512*11*2*82) || 	/* BV */
-        (dev->size==512*11*2*83) )		/* BV */
-        return(DEVTYPE_FLOPDD);
-    else if (dev->size==512*22*2*80)
-        return(DEVTYPE_FLOPHD);
-    else if (dev->size>512*22*2*80)
-        return(DEVTYPE_HARDDISK);
-    else {
-		(*adfEnv.eFct)("adfDevType : unknown device type");
-		return(-1);
-	}
-}
-
-
-/*
- * adfDeviceInfo
- *
- * display information about the device and its volumes
- * for demonstration purpose only since the output is stdout !
- *
- * can be used before adfCreateVol() or adfMount()
- */
-void adfDeviceInfo(struct Device *dev)
-{
-	int i;
-	
-	printf("Cylinders   = %d\n",dev->cylinders);
-    printf("Heads       = %d\n",dev->heads);
-    printf("Sectors/Cyl = %d\n\n",dev->sectors);
-	if (!dev->isNativeDev)
-        printf("Dump device\n\n");
-    else
-        printf("Real device\n\n");
-    printf("Volumes     = %d\n\n",dev->nVol);
-/*
-    switch(dev->devType){
-    case DEVTYPE_FLOPDD:
-        printf("floppy dd\n"); break;
-    case DEVTYPE_FLOPHD:
-        printf("floppy hd\n"); break;
-    case DEVTYPE_HARDDISK:
-        printf("harddisk\n"); break;
-    case DEVTYPE_HARDFILE:
-        printf("hardfile\n"); break;
-    default:
-        printf("unknown devType!\n"); break;
-    }
-*/
-
-    for(i=0; i<dev->nVol; i++) {
-        if (dev->volList[i]->volName)
-            printf("%2d :  %7d ->%7d, \"%s\"", i,
-			dev->volList[i]->firstBlock,
-			dev->volList[i]->lastBlock,
-			dev->volList[i]->volName);
-        else
-            printf("%2d :  %7d ->%7d\n", i,
-			dev->volList[i]->firstBlock,
-			dev->volList[i]->lastBlock);
-        if (dev->volList[i]->mounted)
-			printf(", mounted");
-        putchar('\n');
-    }
-}
 
 
 /*
@@ -415,129 +237,6 @@ RETCODE adfMountHd(struct Device *dev)
 
 
 /*
- * adfMountFlop
- *
- * normaly not used directly, called directly by adfMount()
- *
- * use dev->devType to choose between DD and HD
- * fills geometry and the volume list with one volume
- */
-RETCODE adfMountFlop(struct Device* dev)
-{
-	struct Volume *vol;
-	struct bRootBlock root;
-	char diskName[35];
-	
-    dev->cylinders = 80;
-    dev->heads = 2;
-    if (dev->devType==DEVTYPE_FLOPDD)
-        dev->sectors = 11;
-    else 
-        dev->sectors = 22;
-
-    vol=(struct Volume*)malloc(sizeof(struct Volume));
-    if (!vol) { 
-		(*adfEnv.eFct)("adfMount : malloc");
-        return RC_ERROR;
-    }
-
-    vol->mounted = TRUE;
-    vol->firstBlock = 0;
-    vol->lastBlock =(dev->cylinders * dev->heads * dev->sectors)-1;
-    vol->rootBlock = (vol->lastBlock+1 - vol->firstBlock)/2;
-    vol->blockSize = 512;
-    vol->dev = dev;
- 
-    if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
-        free ( vol );
-        return RC_ERROR;
-    }
-	memset(diskName, 0, 35);
-	memcpy(diskName, root.diskName, root.nameLen);
-
-    vol->volName = strdup(diskName);
-	
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
-    if (!dev->volList) {
-        free(vol);
-		(*adfEnv.eFct)("adfMount : malloc");
-        return RC_ERROR;
-    }
-    dev->volList[0] = vol;
-    dev->nVol = 1;
-
-/*printf("root=%d\n",vol->rootBlock);	    */
-    return RC_OK;
-}
-
-
-/*
- * adfMountDev
- *
- * mount a dump file (.adf) or a real device (uses adf_nativ.c and .h)
- *
- * adfInitDevice() must fill dev->size !
- */
-struct Device* adfMountDev( char* filename, BOOL ro)
-{
-    struct nativeFunctions *nFct;
-    RETCODE rc;
-    uint8_t buf[512];
-
-    struct Device * dev = adfOpenDev ( filename, ro );
-    if ( ! dev ) {
-        //(*adfEnv.eFct)("adfMountDev : malloc error");
-        return NULL;
-    }
-
-    nFct = adfEnv.nativeFct;
-
-    switch( dev->devType ) {
-
-    case DEVTYPE_FLOPDD:
-    case DEVTYPE_FLOPHD:
-        if ( adfMountFlop ( dev ) != RC_OK ) {
-            adfCloseDev ( dev );
-            return NULL;
-        }
-        break;
-
-    case DEVTYPE_HARDDISK:
-        /* to choose between hardfile or harddisk (real or dump) */
-        if (dev->isNativeDev)									/* BV ...from here*/
-            rc = (*nFct->adfNativeReadSector)(dev, 0, 512, buf);
-        else
-            rc = adfReadDumpSector(dev, 0, 512, buf);
-        if( rc != RC_OK ) {
-            adfCloseDev ( dev );
-            (*adfEnv.eFct)("adfMountDev : adfReadDumpSector failed");
-            return NULL;
-        }
-
-        /* a file with the first three bytes equal to 'DOS' */
-    	if (!dev->isNativeDev && strncmp("DOS",(char*)buf,3)==0) {
-            if ( adfMountHdFile ( dev ) != RC_OK ) {
-                adfCloseDev ( dev );
-                return NULL;
-            }
-        }
-        else if ( adfMountHd ( dev ) != RC_OK ) {
-            adfCloseDev ( dev );
-            return NULL;								/* BV ...to here.*/
-        }
-	    break;
-
-    default:
-        (*adfEnv.eFct)("adfMountDev : unknown device type");
-        adfCloseDev ( dev );
-        return NULL;								/* BV */
-    }
-
-	return dev;
-}
-
-
-/*
  * adfCreateHdHeader
  *
  * create PARTIALLY the sectors of the header of one harddisk : can not be mounted
@@ -628,43 +327,6 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
 
 
 /*
- * adfCreateFlop
- *
- * create a filesystem on a floppy device
- * fills dev->volList[]
- */
-RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType )
-{
-    if (dev==NULL) {
-        (*adfEnv.eFct)("adfCreateFlop : dev==NULL");
-        return RC_ERROR;
-    }
-    if ( volName == NULL ) {
-        (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
-        return RC_ERROR;
-    }
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
-    if (!dev->volList) { 
-        (*adfEnv.eFct)("adfCreateFlop : malloc");
-        return RC_ERROR;
-    }
-    dev->volList[0] = adfCreateVol( dev, 0L, 80L, volName, volType );
-    if (dev->volList[0]==NULL) {
-        free(dev->volList);
-        return RC_ERROR;
-    }
-    dev->nVol = 1;
-    dev->volList[0]->blockSize = 512;
-    if (dev->sectors==11)
-        dev->devType=DEVTYPE_FLOPDD;
-    else
-        dev->devType=DEVTYPE_FLOPHD;
-
-    return RC_OK;
-}
-
-
-/*
  * adfCreateHd
  *
  * create a filesystem one an harddisk device (partitions==volumes, and the header)
@@ -715,17 +377,6 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
         return RC_ERROR;
     return RC_OK;
 }
-
-
-/*
- * adfUnMountDev
- *
- */
-void adfUnMountDev( struct Device* dev)
-{
-    adfCloseDev ( dev );
-}
-
 
 
 /*

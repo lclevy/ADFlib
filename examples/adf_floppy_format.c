@@ -1,6 +1,7 @@
 
 #include <adflib.h>
-#include "adf_hd.h"
+#include "adf_dev.h"
+#include "adf_dev_flop.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>

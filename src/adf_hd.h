@@ -32,21 +32,11 @@
 
 #include "adf_str.h"
 #include "hd_blk.h"
-#include "adf_err.h"
-
-int adfDevType(struct Device *dev);
-PREFIX void adfDeviceInfo(struct Device *dev);
-
-PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
-PREFIX void adfCloseDev ( struct Device * dev );
 
 RETCODE adfMountHd(struct Device *dev);
-RETCODE adfMountFlop(struct Device* dev);
-PREFIX struct Device* adfMountDev( char* filename,BOOL);
-PREFIX void adfUnMountDev( struct Device* dev);
+RETCODE adfMountHdFile(struct Device *dev);
 
 RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList );
-PREFIX RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType );
 PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );
 PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
 
