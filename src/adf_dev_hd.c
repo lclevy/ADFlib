@@ -1,7 +1,7 @@
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_hd.c
+ *  adf_dev_hd.c
  *
  *  $Id$
  *
@@ -32,7 +32,7 @@
 #include"adf_str.h"
 #include"hd_blk.h"
 #include"adf_raw.h"
-#include"adf_hd.h"
+#include"adf_dev_hd.h"
 #include"adf_util.h"
 #include"adf_disk.h"
 #include"adf_nativ.h"

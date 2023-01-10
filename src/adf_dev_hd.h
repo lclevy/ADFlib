@@ -1,14 +1,14 @@
-#ifndef _ADF_HD_H
-#define _ADF_HD_H 1
+#ifndef _ADF_DEV_HD_H
+#define _ADF_DEV_HD_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_hd.h
+ *  adf_dev_hd.h
  *
  *  $Id$
  *
- * Harddisk and devices code
+ *  Harddisk devices code
  *
  *  This file is part of ADFLib.
  *

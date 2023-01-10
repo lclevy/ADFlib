@@ -14,12 +14,12 @@ add_library ( adf
   adf_cache.c
   adf_dev.c
   adf_dev_flop.c
+  adf_dev_hd.c
   adf_dir.c
   adf_disk.c
   adf_dump.c
   adf_env.c
   adf_file.c
-  adf_hd.c
   adf_link.c
   adf_raw.c
   adf_salv.c

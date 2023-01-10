@@ -3,9 +3,9 @@ SUBDIRS = $(NATIVE_DIR)
 
 lib_LTLIBRARIES = libadf.la
 
-libadf_la_SOURCES = adf_hd.c \
-                    adf_dev.c \
+libadf_la_SOURCES = adf_dev.c \
                     adf_dev_flop.c \
+                    adf_dev_hd.c \
                     adf_disk.c \
                     adf_raw.c \
                     adf_bitm.c \
@@ -21,6 +21,7 @@ libadf_la_SOURCES = adf_hd.c \
 include_HEADERS = adf_defs.h \
                   adf_dev.h \
                   adf_dev_flop.h \
+                  adf_dev_hd.h \
                   adf_blk.h \
                   adf_err.h \
                   adf_str.h \
@@ -32,7 +33,6 @@ include_HEADERS = adf_defs.h \
                   adf_dump.h \
                   adf_env.h \
                   adf_file.h \
-                  adf_hd.h \
                   adf_link.h \
                   adf_raw.h \
                   adf_salv.h \
