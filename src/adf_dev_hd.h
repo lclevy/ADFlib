@@ -40,10 +40,6 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
 PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );
 PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
 
-struct Device* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
-
-RETCODE adfReadBlockDev( struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
-RETCODE adfWriteBlockDev(struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
 RETCODE adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk );
 RETCODE adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk);
 RETCODE adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk );
