@@ -433,7 +433,6 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    RETCODE rc2, rc = RC_OK;
 
     if (dev->readOnly) {
         (*adfEnv.wFct)("adfWriteRDSKblock : can't write block, read only device");
@@ -459,11 +458,7 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
     swLong(buf+8, newSum);
 
-    rc2 = adfWriteBlockDev ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
-    if (rc2!=RC_OK)
-       return RC_ERROR;
-
-    return rc;
+    return adfWriteBlockDev ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -516,7 +511,6 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    RETCODE rc2, rc = RC_OK;
 	
     if (dev->readOnly) {
         (*adfEnv.wFct)("adfWritePARTblock : can't write block, read only device");
@@ -542,11 +536,7 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    rc2 = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
-    if (rc2!=RC_OK)
-        return RC_ERROR;
-
-    return rc;
+    return adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*
@@ -592,7 +582,6 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    RETCODE rc = RC_OK;
 
     if (dev->readOnly) {
         (*adfEnv.wFct)("adfWriteFSHDblock : can't write block, read only device");
@@ -613,11 +602,7 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    rc = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
-    if (rc!=RC_OK)
-        return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -664,7 +649,6 @@ adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    RETCODE rc;
 
     if (dev->readOnly) {
         (*adfEnv.wFct)("adfWriteLSEGblock : can't write block, read only device");
@@ -685,11 +669,7 @@ adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
     swLong(buf+8,newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    rc = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
-    if (rc!=RC_OK)
-        return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*##########################################################################*/
