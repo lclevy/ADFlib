@@ -68,7 +68,29 @@ RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
 		return RC_ERROR;													/* BV */
 	}
 
-	dev->size = NT4GetDriveSize(nDev->hDrv);
+        NT4DriveGeometry_t geometry;
+        if ( ! NT4GetDriveGeometry ( nDev->hDrv, &geometry ) ) {
+            (*adfEnv.eFct)("Win32InitDevice : error getting drive geometry");
+            Win32ReleaseDevice ( dev );
+            return RC_ERROR;
+        }
+
+        // no support for disks with non 512-byte sectors (-> to improve?)
+        if ( geometry.bytesPerSector != 512 ) {
+            (*adfEnv.eFct)("Win32InitDevice : non 512-byte sector size");
+            Win32ReleaseDevice ( dev );
+            return RC_ERROR;
+        }
+
+        dev->cylinders = geometry.cylinders;
+        dev->heads     = geometry.tracksPerCylinder;
+        dev->sectors   = geometry.sectorsPerTrack;
+
+	//dev->size = NT4GetDriveSize(nDev->hDrv);
+        dev->size = geometry.cylinders *
+                    geometry.tracksPerCylinder *
+                    geometry.sectorsPerTrack *
+                    geometry.bytesPerSector;
 
 	dev->nativeDev = nDev;
 

@@ -138,3 +138,24 @@ ULONG NT4GetDriveSize(HANDLE hDrv)
 */
 	return size;
 }
+
+
+BOOL NT4GetDriveGeometry ( HANDLE                     hDrv,
+                           NT4DriveGeometry_t * const geometry )
+{
+    DWORD dwActual;
+    DISK_GEOMETRY dgGeom;
+
+    BOOL status = DeviceIoControl (
+        hDrv, IOCTL_DISK_GET_DRIVE_GEOMETRY, NULL, 0,
+        &dgGeom, sizeof(DISK_GEOMETRY), &dwActual, NULL );
+    if ( ! status )
+        return FALSE;
+
+    geometry->cylinders         = dgGeom.Cylinders.LowPart;
+    geometry->tracksPerCylinder = dgGeom.TracksPerCylinder;
+    geometry->sectorsPerTrack   = dgGeom.SectorsPerTrack;
+    geometry->bytesPerSector    = dgGeom.BytesPerSector;
+
+    return TRUE;
+}
