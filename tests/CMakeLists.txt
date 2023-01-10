@@ -12,6 +12,7 @@ if (NOT CHECK_FOUND)
     # Automatic fetching external dependency
     # ( https://cmake.org/cmake/help/latest/module/FetchContent.html
     #   https://cmake.org/cmake/help/latest/guide/using-dependencies/ )
+    message("Fetching Check library")
     include(FetchContent)
     FetchContent_Declare(
       CHECK
