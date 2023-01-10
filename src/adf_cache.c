@@ -38,9 +38,9 @@
 #include"adf_bitm.h"
 #include"adf_util.h"
 #include"adf_dir.h"
+#include "adf_env.h"
 
 
-extern struct Env adfEnv;
 /*
 freeEntCache(struct CacheEntry *cEntry)
 {

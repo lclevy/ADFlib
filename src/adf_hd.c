@@ -40,10 +40,10 @@
 #include"adf_nativ.h"
 #include"adf_dump.h"
 #include"adf_err.h"
+#include "adf_env.h"
 
 #include"defendian.h"
 
-extern struct Env adfEnv;
 
 
 /*

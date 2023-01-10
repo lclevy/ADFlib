@@ -37,8 +37,8 @@
 #include"adf_dir.h"
 #include"adf_bitm.h"
 #include"adf_cache.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 // debugging
 //#define DEBUG_ADF_FILE

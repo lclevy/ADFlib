@@ -35,8 +35,8 @@
 #include "adf_dir.h"
 #include "adf_file.h"
 #include "adf_cache.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 /*
  * adfFreeGenBlock

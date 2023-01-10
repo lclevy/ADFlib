@@ -39,8 +39,8 @@
 #include "adf_dump.h"
 #include "adf_err.h"
 #include "adf_cache.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 uint32_t bitMask[32] = { 
     0x1, 0x2, 0x4, 0x8,

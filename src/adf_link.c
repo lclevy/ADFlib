@@ -29,8 +29,8 @@
 #include"adf_str.h"
 #include"adf_link.h"
 #include"adf_dir.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 /*
  *

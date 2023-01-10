@@ -27,8 +27,8 @@
 #include"adf_str.h"
 #include"adf_nativ.h"
 #include"adf_err.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 /*
  * myInitDevice

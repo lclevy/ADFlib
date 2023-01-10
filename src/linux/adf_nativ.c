@@ -34,9 +34,7 @@
 
 #include "adf_err.h"
 #include "adf_nativ.h"
-
-
-extern struct Env adfEnv;
+#include "adf_env.h"
 
 
 /*

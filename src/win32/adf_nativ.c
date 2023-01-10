@@ -34,9 +34,9 @@
 #include "adf_err.h"
 
 #include "adf_nativ.h"
+#include "adf_env.h"
 #include "nt4_dev.h"
 
-extern struct Env adfEnv;
 
 RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
 {

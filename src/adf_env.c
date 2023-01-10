@@ -40,7 +40,7 @@ union u{
     char c[4];
     };
 
-ENV_DECLARATION;
+struct Env adfEnv;
 
 void rwHeadAccess(SECTNUM physical, SECTNUM logical, BOOL write)
 {
