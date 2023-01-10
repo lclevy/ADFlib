@@ -30,8 +30,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../adf_str.h"
-#include "../adf_err.h"
+#include "adf_str.h"
+#include "adf_err.h"
 
 #include "adf_nativ.h"
 #include "nt4_dev.h"
