@@ -31,8 +31,12 @@
 #include <time.h>
 #include "adflib.h"
 
+
 #ifdef WIN32
+//#if !defined(__GNUC__)
+#if !defined(__MINGW32__)
 typedef uint32_t mode_t;
+#endif
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 # include <sys/utime.h>
 # define DIRSEP '\\'
@@ -528,7 +532,11 @@ void set_file_date(char *out, struct Entry *e) {
 void mkdir_if_needed(char *path, mode_t perms) {
     struct stat st;
     if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) {
+#if defined(__MINGW32__)
+        if (mkdir(path) != 0) {
+#else
         if (mkdir(path, perms) != 0) {
+#endif
             perror(path);
         }
     }
