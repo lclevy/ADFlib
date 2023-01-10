@@ -32,6 +32,7 @@
 #include"adf_str.h"
 #include"hd_blk.h"
 #include"adf_raw.h"
+#include"adf_dev.h"
 #include"adf_dev_hd.h"
 #include"adf_util.h"
 #include"adf_disk.h"
@@ -386,18 +387,10 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
 	RETCODE
 adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk )
 {
-
     UCHAR buf[256];
-    struct nativeFunctions *nFct;
-    RETCODE rc2;
     RETCODE rc = RC_OK;
-	
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc2 =(*nFct->adfNativeReadSector)(dev, 0, 256, buf);
-    else
-        rc2 = adfReadDumpSector(dev, 0, 256, buf);
 
+    RETCODE rc2 = adfReadBlockDev ( dev, 0, 256, buf );
     if (rc2!=RC_OK)
        return(RC_ERROR);
 
@@ -440,7 +433,6 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    struct nativeFunctions *nFct;
     RETCODE rc2, rc = RC_OK;
 
     if (dev->readOnly) {
@@ -467,12 +459,7 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
     swLong(buf+8, newSum);
 
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc2=(*nFct->adfNativeWriteSector)(dev, 0, LOGICAL_BLOCK_SIZE, buf);
-    else
-        rc2=adfWriteDumpSector(dev, 0, LOGICAL_BLOCK_SIZE, buf);
-
+    rc2 = adfWriteBlockDev ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
     if (rc2!=RC_OK)
        return RC_ERROR;
 
@@ -488,15 +475,9 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
 adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk )
 {
     UCHAR buf[ sizeof(struct bPARTblock) ];
-    struct nativeFunctions *nFct;
     RETCODE rc2, rc = RC_OK;
-	
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc2=(*nFct->adfNativeReadSector)(dev, nSect, sizeof(struct bPARTblock), buf);
-    else
-        rc2=adfReadDumpSector(dev, nSect, sizeof(struct bPARTblock), buf);
 
+    rc2 = adfReadBlockDev ( dev, nSect, sizeof(struct bPARTblock), buf );
     if (rc2!=RC_OK)
        return RC_ERROR;
 
@@ -535,7 +516,6 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    struct nativeFunctions *nFct;
     RETCODE rc2, rc = RC_OK;
 	
     if (dev->readOnly) {
@@ -562,11 +542,7 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc2=(*nFct->adfNativeWriteSector)(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
-    else
-        rc2=adfWriteDumpSector(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
+    rc2 = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
     if (rc2!=RC_OK)
         return RC_ERROR;
 
@@ -581,14 +557,8 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
 adfReadFSHDblock( struct Device* dev, int32_t nSect, struct bFSHDblock* blk)
 {
     UCHAR buf[sizeof(struct bFSHDblock)];
-    struct nativeFunctions *nFct;
-    RETCODE rc;
-	
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc = (*nFct->adfNativeReadSector)(dev, nSect, sizeof(struct bFSHDblock), buf);
-    else
-        rc = adfReadDumpSector(dev, nSect, sizeof(struct bFSHDblock), buf);
+
+    RETCODE rc = adfReadBlockDev ( dev, nSect, sizeof(struct bFSHDblock), buf );
     if (rc!=RC_OK)
         return RC_ERROR;
 		
@@ -622,7 +592,6 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    struct nativeFunctions *nFct;
     RETCODE rc = RC_OK;
 
     if (dev->readOnly) {
@@ -644,11 +613,7 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc=(*nFct->adfNativeWriteSector)(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
-    else
-        rc=adfWriteDumpSector(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
+    rc = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
     if (rc!=RC_OK)
         return RC_ERROR;
 
@@ -664,14 +629,8 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
 adfReadLSEGblock(struct Device* dev, int32_t nSect, struct bLSEGblock* blk)
 {
     UCHAR buf[sizeof(struct bLSEGblock)];
-    struct nativeFunctions *nFct;
-    RETCODE rc;
-	
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc=(*nFct->adfNativeReadSector)(dev, nSect, sizeof(struct bLSEGblock), buf);
-    else
-        rc=adfReadDumpSector(dev, nSect, sizeof(struct bLSEGblock), buf);
+
+    RETCODE rc = adfReadBlockDev ( dev, nSect, sizeof(struct bLSEGblock), buf );
     if (rc!=RC_OK)
         return RC_ERROR;
 		
@@ -705,7 +664,6 @@ adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
-    struct nativeFunctions *nFct;
     RETCODE rc;
 
     if (dev->readOnly) {
@@ -727,12 +685,7 @@ adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
     swLong(buf+8,newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    nFct = adfEnv.nativeFct;
-    if (dev->isNativeDev)
-        rc=(*nFct->adfNativeWriteSector)(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
-    else
-        rc=adfWriteDumpSector(dev, nSect, LOGICAL_BLOCK_SIZE, buf);
-
+    rc = adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
     if (rc!=RC_OK)
         return RC_ERROR;
 
