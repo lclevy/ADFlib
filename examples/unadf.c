@@ -71,7 +71,7 @@ char *join_path(char *path, char *name);
 void set_file_date(char *out, struct Entry *e);
 void mkdir_if_needed(char *path, mode_t perms);
 mode_t permissions(struct Entry *e);
-
+int replace_not_allowed_chars ( char * const path );
 
 int main(int argc, char *argv[]) {
     struct Device *dev = NULL;
@@ -471,9 +471,12 @@ char *output_name(char *path, char *name) {
         }
     }
 
+    replace_not_allowed_chars ( out );
 #ifdef WIN32
     /* TODO: remove characters : * " ? < > | from names (not allowed in Win32)
      * and remove any trailing dot or space (breaks Windows File Explorer)
+     * Edit: most done above with replace_not_allowed_chars()
+     *       so only trailing dots or spaces are left to do
      */
 #endif
 
@@ -548,4 +551,19 @@ mode_t permissions(struct Entry *e) {
         (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */
         ((e->access >> 5) & 0070); /* rwx for group */
+}
+
+/* replace all special characters (forbidden on most systems) with an underscore ('_') */
+int replace_not_allowed_chars ( char * const path )
+{
+    const char not_allowed_chars[] = ":*\"?<>|\0";
+    int replace_count = 0;
+    for ( const char *c = not_allowed_chars ; *c ; ++c ) {
+        char *pathc = path;
+        while ( ( pathc = strchr ( pathc, *c ) ) ) {
+            *pathc = '_';
+            replace_count++;
+        }
+    }
+    return replace_count;
 }
