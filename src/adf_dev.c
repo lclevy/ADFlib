@@ -297,11 +297,9 @@ RETCODE adfReadBlockDev ( struct Device * dev,
     } else
         rc = adfReadDumpSector( dev, pSect, size, buf );
 /*printf("rc=%ld\n",rc);*/
-    if ( rc != RC_OK )
-        return RC_ERROR;
-    else
-        return RC_OK;
+    return rc;
 }
+
 
 RETCODE adfWriteBlockDev ( struct Device * dev,
                            int32_t         pSect,
@@ -317,8 +315,5 @@ RETCODE adfWriteBlockDev ( struct Device * dev,
     } else
         rc = adfWriteDumpSector ( dev, pSect, size, buf );
 
-    if ( rc != RC_OK )
-        return RC_ERROR;
-    else
-        return RC_OK;
+    return rc;
 }
