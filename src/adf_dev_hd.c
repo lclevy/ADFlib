@@ -80,7 +80,7 @@ RETCODE adfMountHdFile(struct Device *dev)
     dev->nVol = 0;
     dev->volList = (struct Volume**)malloc(sizeof(struct Volume*));
     if (!dev->volList) { 
-		(*adfEnv.eFct)("adfMountHdFile : malloc");
+        (*adfEnv.eFct)("adfMountHdFile : malloc");
         return RC_ERROR;
     }
 
@@ -109,7 +109,7 @@ RETCODE adfMountHdFile(struct Device *dev)
         found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
         if (!found)
             (vol->rootBlock)--;
-    }while (vol->rootBlock>1 && !found);
+    } while (vol->rootBlock>1 && !found);
 
     if (vol->rootBlock==1) {
         (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
@@ -133,8 +133,8 @@ RETCODE adfMountHd(struct Device *dev)
     struct bRDSKblock rdsk;
     struct bPARTblock part;
     struct bFSHDblock fshd;
-	struct bLSEGblock lseg;
-	int32_t next;
+    struct bLSEGblock lseg;
+    int32_t next;
     struct List *vList, *listRoot;
     int i;
     struct Volume* vol;
@@ -177,9 +177,9 @@ RETCODE adfMountHd(struct Device *dev)
         vol->volName = (char*)malloc(len+1);
         if (!vol->volName) { 
             adfFreeTmpVolList(listRoot);
-			(*adfEnv.eFct)("adfMount : malloc");
+            (*adfEnv.eFct)("adfMount : malloc");
             return RC_ERROR;
-		}
+        }
         memcpy(vol->volName,part.name,len);
         vol->volName[len] = '\0';
 
@@ -193,7 +193,7 @@ RETCODE adfMountHd(struct Device *dev)
 
         if (vList==NULL) {
             adfFreeTmpVolList(listRoot);
-			(*adfEnv.eFct)("adfMount : newCell() malloc");
+            (*adfEnv.eFct)("adfMount : newCell() malloc");
             return RC_ERROR;
         }
 
@@ -204,7 +204,7 @@ RETCODE adfMountHd(struct Device *dev)
     dev->volList = (struct Volume**)malloc(sizeof(struct Volume*) * dev->nVol);
     if (!dev->volList) { 
         adfFreeTmpVolList(listRoot);
-		(*adfEnv.eFct)("adfMount : unknown device type");
+        (*adfEnv.eFct)("adfMount : unknown device type");
         return RC_ERROR;
     }
     vList = listRoot;
@@ -297,8 +297,8 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
 
         part.surfaces = dev->heads;
         part.blocksPerTrack = dev->sectors;
-		part.lowCyl = partList[i]->startCyl;
-		part.highCyl = partList[i]->startCyl + partList[i]->lenCyl -1;
+        part.lowCyl = partList[i]->startCyl;
+        part.highCyl = partList[i]->startCyl + partList[i]->lenCyl -1;
         strncpy(part.dosType, "DOS", 3);
 
         part.dosType[3] = partList[i]->volType & 0x01;
@@ -312,14 +312,14 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
 
     strncpy(fshd.dosType,"DOS",3);
     fshd.dosType[3] = partList[0]->volType;
-	fshd.next = -1;
-	fshd.segListBlock = j+1;
+    fshd.next = -1;
+    fshd.segListBlock = j+1;
     if (adfWriteFSHDblock(dev, j, &fshd)!=RC_OK)
         return RC_ERROR;
     j++;
 	
-	/* LSEG */
-	lseg.next = -1;
+    /* LSEG */
+    lseg.next = -1;
     if (adfWriteLSEGblock(dev, j, &lseg)!=RC_OK)
         return RC_ERROR;
 
@@ -348,7 +348,7 @@ RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList )
 
     dev->volList =(struct Volume**) malloc(sizeof(struct Volume*)*n);
     if (!dev->volList) {
-		(*adfEnv.eFct)("adfCreateFlop : malloc");
+        (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;
     }
     for(i=0; i<n; i++) {
@@ -384,7 +384,7 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  * ReadRDSKblock
  *
  */
-	RETCODE
+RETCODE
 adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk )
 {
     UCHAR buf[256];
@@ -428,7 +428,7 @@ adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk )
  * adfWriteRDSKblock
  *
  */
-    RETCODE
+RETCODE
 adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
@@ -466,7 +466,7 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
  * ReadPARTblock
  *
  */
-    RETCODE
+RETCODE
 adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk )
 {
     UCHAR buf[ sizeof(struct bPARTblock) ];
@@ -506,7 +506,7 @@ adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk )
  * adfWritePARTblock
  *
  */
-    RETCODE
+RETCODE
 adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
@@ -523,9 +523,9 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
     part->size = sizeof(struct bPARTblock)/sizeof(int32_t);
     part->blockSize = LOGICAL_BLOCK_SIZE;
     part->vectorSize = 16;
-	part->blockSize = 128;
+    part->blockSize = 128;
     part->sectorsPerBlock = 1;
-	part->dosReserved = 2;
+    part->dosReserved = 2;
 
     memcpy(buf, part, sizeof(struct bPARTblock));
 #ifdef LITT_ENDIAN
@@ -543,7 +543,7 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
  * ReadFSHDblock
  *
  */
-    RETCODE
+RETCODE
 adfReadFSHDblock( struct Device* dev, int32_t nSect, struct bFSHDblock* blk)
 {
     UCHAR buf[sizeof(struct bFSHDblock)];
@@ -644,7 +644,7 @@ adfReadLSEGblock(struct Device* dev, int32_t nSect, struct bLSEGblock* blk)
  * adfWriteLSEGblock
  *
  */
-    RETCODE
+RETCODE
 adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
