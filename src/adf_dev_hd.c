@@ -57,7 +57,7 @@ static void adfFreeTmpVolList(struct List *root)
     while(cell!=NULL) {
         vol = (struct Volume *)cell->content;
         if (vol->volName!=NULL)
-			free(vol->volName);  
+            free(vol->volName);  
         cell = cell->next;
     }
     freeList(root);
@@ -217,7 +217,8 @@ RETCODE adfMountHd(struct Device *dev)
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         if (adfReadFSHDblock( dev, next, &fshd )!=RC_OK) {
-            for(i=0;i<dev->nVol;i++) free(dev->volList[i]);
+            for ( i = 0 ; i < dev->nVol ; i++ )
+                free ( dev->volList[i] );
             free(dev->volList);
             (*adfEnv.eFct)("adfMount : adfReadFSHDblock");
             return RC_ERROR;
@@ -258,24 +259,23 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
     SECTNUM j;
     int len;
 
-
     /* RDSK */ 
  
     memset((uint8_t*)&rdsk,0,sizeof(struct bRDSKblock));
 
     rdsk.rdbBlockLo = 0;
-	rdsk.rdbBlockHi = (dev->sectors*dev->heads*2)-1;
-	rdsk.loCylinder = 2;
-	rdsk.hiCylinder = dev->cylinders-1;
-	rdsk.cylBlocks = dev->sectors*dev->heads;
+    rdsk.rdbBlockHi = (dev->sectors*dev->heads*2)-1;
+    rdsk.loCylinder = 2;
+    rdsk.hiCylinder = dev->cylinders-1;
+    rdsk.cylBlocks  = dev->sectors*dev->heads;
 
     rdsk.cylinders = dev->cylinders;
-	rdsk.sectors = dev->sectors;
-	rdsk.heads = dev->heads;
+    rdsk.sectors   = dev->sectors;
+    rdsk.heads     = dev->heads;
 	
-	rdsk.badBlockList = -1;
-	rdsk.partitionList = 1;
-	rdsk.fileSysHdrList = 1 + dev->nVol;
+    rdsk.badBlockList = -1;
+    rdsk.partitionList = 1;
+    rdsk.fileSysHdrList = 1 + dev->nVol;
 	
     if (adfWriteRDSKblock(dev, &rdsk)!=RC_OK)
         return RC_ERROR;
@@ -289,7 +289,7 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
         if (i<dev->nVol-1)
             part.next = j+1;
         else
-			part.next = -1;
+            part.next = -1;
 
         len = min(MAXNAMELEN,strlen(partList[i]->volName));
         part.nameLen = len;
