@@ -289,11 +289,12 @@ RETCODE adfReadBlockDev ( struct Device * dev,
                           uint8_t *       buf )
 {
     RETCODE rc;
-    struct nativeFunctions * const nFct = adfEnv.nativeFct;
+
 /*printf("pSect R =%ld\n",pSect);*/
-    if ( dev->isNativeDev )
+    if ( dev->isNativeDev ) {
+        struct nativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeReadSector)( dev, pSect, size, buf );
-    else
+    } else
         rc = adfReadDumpSector( dev, pSect, size, buf );
 /*printf("rc=%ld\n",rc);*/
     if ( rc != RC_OK )
@@ -308,12 +309,12 @@ RETCODE adfWriteBlockDev ( struct Device * dev,
                            uint8_t *       buf )
 {
     RETCODE rc;
-    struct nativeFunctions * const nFct = adfEnv.nativeFct;
 
 /*printf("nativ=%d\n",dev->isNativeDev);*/
-    if ( dev->isNativeDev )
+    if ( dev->isNativeDev ) {
+        struct nativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeWriteSector)( dev, pSect, size, buf );
-    else
+    } else
         rc = adfWriteDumpSector ( dev, pSect, size, buf );
 
     if ( rc != RC_OK )
