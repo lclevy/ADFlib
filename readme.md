@@ -22,10 +22,6 @@ It supports :
 
 It is written in portable C, and support the WinNT platform to access real drives.
 
-Please note that CVEs has been found (CVE-2016-1243 and CVE-2016-1244), well ADFlib was designed before year 2000.
-Found in version Debian unadf/0.7.11a-3, fixed in versions unadf/0.7.11a-4, unadf/0.7.11a-3+deb8u1
-- https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=838248
-
 
 ## unADF
 
@@ -55,6 +51,12 @@ unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
 
 
 New versions and contact e-mail can be found at : https://github.com/lclevy/ADFlib
+
+## Security
+
+Please note that CVEs has been found (CVE-2016-1243 and CVE-2016-1244, fixed in [8e973d7](https://github.com/lclevy/ADFlib/commit/8e973d7b894552c3a3de0ccd2d1e9cb0b8e618dd)), well ADFlib was designed before year 2000. Found in version Debian unadf/0.7.11a-3, fixed in versions unadf/0.7.11a-4, unadf/0.7.11a-3+deb8u1. See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=838248
+
+Stuart Caie fixed arbitrary directory traversal in [4ce14b2](https://github.com/lclevy/ADFlib/commit/4ce14b2a8b6db84954cf9705459eafebabecf3e4) lines 450-455
 
 
 ## Compilation
@@ -106,6 +108,7 @@ prototypes in the 'adflib.h' library include file.
 
 ## Possible bugs
 
+- write support
 - in dircache updates
 - lost memory releases
 
