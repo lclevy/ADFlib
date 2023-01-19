@@ -85,7 +85,7 @@ int main ( int argc, char * argv[] )
     test_chained_hlink.image_filename = argv[2];
 
     // run tests
-    printf ("*** %s: test reading a file opened using its hardlinks\n" );
+    printf ("*** Test reading a file opened using a hardlink\n" );
     status += test_hlink_read ( &test_hlink );
     status += test_hlink_read ( &test_chained_hlink );
     printf ( status ? " -> ERROR\n" : " -> PASSED\n" );

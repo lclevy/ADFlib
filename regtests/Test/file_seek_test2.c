@@ -114,7 +114,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 
     for ( int i = 0 ; i < NUM_TESTS && status < MAX_ERRORS ; ++i ) {
         status += test_single_seek ( file_adf, file_local,
-                                     random() % test_data->len );
+                                     rand() % test_data->len );
     }
 
     fclose ( file_local );

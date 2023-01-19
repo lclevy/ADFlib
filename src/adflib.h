@@ -81,6 +81,8 @@ PREFIX void adfVolumeInfo(struct Volume *vol);
 
 /* device */
 PREFIX void adfDeviceInfo(struct Device *dev);
+PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
+PREFIX void adfCloseDev ( struct Device * dev );
 PREFIX struct Device* adfMountDev( char* filename,BOOL ro);
 PREFIX void adfUnMountDev( struct Device* dev);
 PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );

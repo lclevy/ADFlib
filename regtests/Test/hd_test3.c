@@ -30,10 +30,11 @@ int main(int argc, char *argv[])
 
     adfEnvInitDefault();
 
+    const char tmpdevname[] = "hd_test3-newdev";
 
     /* an harddisk, "b"=7.5Mb, "h"=74.5mb */
 
-    hd = adfCreateDumpDevice("newdev",980,10,17);
+    hd = adfCreateDumpDevice ( tmpdevname, 980, 10, 17 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -86,7 +87,7 @@ int main(int argc, char *argv[])
 
     /* mount the created device */
 	
-	hd = adfMountDev("newdev",FALSE);
+    hd = adfMountDev ( tmpdevname, FALSE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    hd = adfCreateDumpDevice("newdev", 80, 2, 11);
+    hd = adfCreateDumpDevice("bootdisk-newdev", 80, 2, 11);
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

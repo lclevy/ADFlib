@@ -89,7 +89,10 @@ struct Device {
     int32_t sectors;
 
     BOOL isNativeDev;
-    void *nativeDev;
+    union {
+        void *nativeDev;
+        FILE *fd;
+    };
 };
 
 

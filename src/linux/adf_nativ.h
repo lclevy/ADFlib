@@ -24,8 +24,8 @@
 #ifndef ADF_NATIV_H
 #define ADF_NATIV_H
 
-#include<stdio.h>
-#include"adf_str.h"
+#include <stdio.h>
+#include "adf_str.h"
 
 #define NATIVE_FILE  8001
 
@@ -37,32 +37,38 @@
 #define RETCODE int32_t
 #endif
 
-struct nativeDevice{
-    FILE* fd;
+struct nativeDevice {    
+    //FILE * fd;
+    int fd;
 };
 
-struct nativeFunctions{
-    /* called by adfMount() */
-    RETCODE (*adfInitDevice)(struct Device*, char*,BOOL);
-    /* called by adfReadBlock() */
-    RETCODE (*adfNativeReadSector)(struct Device*, int32_t, int, uint8_t*);
-    /* called by adfWriteBlock() */
-    RETCODE (*adfNativeWriteSector)(struct Device*, int32_t, int, uint8_t*);
-    /* called by adfMount() */
+struct nativeFunctions {
+    RETCODE (*adfInitDevice)( struct Device *, char *, BOOL );
+    RETCODE (*adfNativeReadSector)( struct Device *, int32_t, int, uint8_t * );
+    RETCODE (*adfNativeWriteSector)( struct Device *, int32_t, int, uint8_t * );
     BOOL (*adfIsDevNative)(char*);
-    /* called by adfUnMount() */
     RETCODE (*adfReleaseDevice)(struct Device* dev);
 };
 
 void adfInitNativeFct();
 
 
-RETCODE myReadSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-RETCODE myWriteSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-RETCODE myInitDevice(struct Device *dev, char* name,BOOL);
-RETCODE myReleaseDevice(struct Device *dev);
-BOOL myIsDevNative(char*);
+RETCODE adfLinuxReadSector ( struct Device * dev,
+                             int32_t         n,
+                             int             size,
+                             uint8_t *       buf );
+
+RETCODE adfLinuxWriteSector ( struct Device * dev,
+                              int32_t         n,
+                              int             size,
+                              uint8_t *       buf );
+
+RETCODE adfLinuxInitDevice ( struct Device * dev,
+                             char *          name,
+                             BOOL            ro );
+
+RETCODE adfLinuxReleaseDevice ( struct Device * dev );
+
+BOOL adfLinuxIsDevNative ( char * );
 
 #endif /* ADF_NATIV_H */
-
-/*#######################################################################################*/

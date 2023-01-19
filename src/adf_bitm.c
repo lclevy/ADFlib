@@ -35,10 +35,10 @@
 #include"adf_disk.h"
 #include"adf_util.h"
 #include"defendian.h"
+#include "adf_env.h"
 
 extern uint32_t bitMask[32];
 
-extern struct Env adfEnv;
 
 /*
  * adfUpdateBitmap

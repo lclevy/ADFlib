@@ -23,9 +23,10 @@
  *
  */
 
-
-#include "../ADF_raw.h"
-#include "../ADF_Util.h"
+#include <windows.h>
+#include "adf_bitm.h"
+#include "adf_raw.h"
+#include "adf_util.h"
 
 
 void adfVolumeInfoWin(HWND hWnd, struct Volume *vol)

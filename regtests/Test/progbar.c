@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
  
     /* create and mount one device */
 puts("\ncreate dumpdevice");
-    hd = adfCreateDumpDevice("newdev", 80, 2, 11);
+    hd = adfCreateDumpDevice("progbar-newdev", 80, 2, 11);
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

@@ -1,14 +1,14 @@
-#ifndef _ADF_HD_H
-#define _ADF_HD_H 1
+#ifndef _ADF_DEV_HD_H
+#define _ADF_DEV_HD_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_hd.h
+ *  adf_dev_hd.h
  *
  *  $Id$
  *
- * Harddisk and devices code
+ *  Harddisk devices code
  *
  *  This file is part of ADFLib.
  *
@@ -32,25 +32,14 @@
 
 #include "adf_str.h"
 #include "hd_blk.h"
-#include "adf_err.h"
-
-int adfDevType(struct Device *dev);
-PREFIX void adfDeviceInfo(struct Device *dev);
 
 RETCODE adfMountHd(struct Device *dev);
-RETCODE adfMountFlop(struct Device* dev);
-PREFIX struct Device* adfMountDev( char* filename,BOOL);
-PREFIX void adfUnMountDev( struct Device* dev);
+RETCODE adfMountHdFile(struct Device *dev);
 
 RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList );
-PREFIX RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType );
 PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );
 PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
 
-struct Device* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
-
-RETCODE adfReadBlockDev( struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
-RETCODE adfWriteBlockDev(struct Device* dev, int32_t nSect, int32_t size, uint8_t* buf );
 RETCODE adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk );
 RETCODE adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk);
 RETCODE adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk );

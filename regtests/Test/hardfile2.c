@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device : 4194304 bytes */
-    hd = adfCreateDumpDevice("newdev", 256, 2, 32);
+    hd = adfCreateDumpDevice("hardfile2-newdev", 256, 2, 32);
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

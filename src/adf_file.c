@@ -37,8 +37,8 @@
 #include"adf_dir.h"
 #include"adf_bitm.h"
 #include"adf_cache.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 // debugging
 //#define DEBUG_ADF_FILE
@@ -369,13 +369,21 @@ struct File* adfOpenFile(struct Volume *vol, char* name, char *mode)
 */    if (write && nSect!=-1) {
         (*adfEnv.wFct)("adfFileOpen : file already exists"); return NULL; }  
 
-    // if current entry is a hard-link - load entry of the hard-linked file
-    if ( entry.realEntry )  {
-        adfReadEntryBlock ( vol, entry.realEntry, &entry );
-        adfReadEntryBlock ( vol, entry.parent, &parent );
-    }
-    if ( entry.realEntry != 0 ) {   // entry should be a real file now
-        return NULL;                //... so if it is still a (hard)link - error...
+
+    // if the file already exists...
+    if ( nSect != -1 ) {
+        // ... and it is a hard-link...
+        if ( entry.realEntry )  {
+            // ... load entry of the hard-linked file
+            adfReadEntryBlock ( vol, entry.realEntry, &entry );
+            adfReadEntryBlock ( vol, entry.parent, &parent );
+        }
+
+        // entry should be a real file now
+        if ( entry.realEntry != 0 ) {
+            //... so if it is still a (hard)link - error...
+            return NULL;
+        }
     }
 
     file = (struct File*)malloc(sizeof(struct File));

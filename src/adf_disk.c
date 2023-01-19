@@ -32,15 +32,16 @@
 #include "adf_str.h"
 #include "adf_disk.h"
 #include "adf_raw.h"
-#include "adf_hd.h"
+#include "adf_dev.h"
+#include "adf_dev_hd.h"
 #include "adf_bitm.h"
 #include "adf_util.h"
 #include "adf_nativ.h"
 #include "adf_dump.h"
 #include "adf_err.h"
 #include "adf_cache.h"
+#include "adf_env.h"
 
-extern struct Env adfEnv;
 
 uint32_t bitMask[32] = { 
     0x1, 0x2, 0x4, 0x8,
@@ -370,8 +371,6 @@ adfReadBlock(struct Volume* vol, int32_t nSect, uint8_t* buf)
 {
   /*    char strBuf[80];*/
     int32_t pSect;
-    struct nativeFunctions *nFct;
-    RETCODE rc;
 
     if (!vol->mounted) {
         (*adfEnv.eFct)("the volume isn't mounted, adfReadBlock not possible");
@@ -392,17 +391,8 @@ adfReadBlock(struct Volume* vol, int32_t nSect, uint8_t* buf)
         (*adfEnv.wFct)("adfReadBlock : nSect out of range");
         
     }
-/*printf("pSect R =%ld\n",pSect);*/
-    nFct = adfEnv.nativeFct;
-    if (vol->dev->isNativeDev)
-        rc = (*nFct->adfNativeReadSector)(vol->dev, pSect, 512, buf);
-    else
-        rc = adfReadDumpSector(vol->dev, pSect, 512, buf);
-/*printf("rc=%ld\n",rc);*/
-    if (rc!=RC_OK)
-        return RC_ERROR;
-    else
-        return RC_OK;
+
+    return adfReadBlockDev ( vol->dev, pSect, 512, buf );
 }
 
 
@@ -413,8 +403,6 @@ adfReadBlock(struct Volume* vol, int32_t nSect, uint8_t* buf)
 RETCODE adfWriteBlock(struct Volume* vol, int32_t nSect, uint8_t *buf)
 {
     int32_t pSect;
-    struct nativeFunctions *nFct;
-    RETCODE rc;
 
     if (!vol->mounted) {
         (*adfEnv.eFct)("the volume isn't mounted, adfWriteBlock not possible");
@@ -436,17 +424,7 @@ RETCODE adfWriteBlock(struct Volume* vol, int32_t nSect, uint8_t *buf)
         (*adfEnv.wFct)("adfWriteBlock : nSect out of range");
     }
 
-    nFct = adfEnv.nativeFct;
-/*printf("nativ=%d\n",vol->dev->isNativeDev);*/
-    if (vol->dev->isNativeDev)
-        rc = (*nFct->adfNativeWriteSector)(vol->dev, pSect, 512, buf);
-    else
-        rc = adfWriteDumpSector(vol->dev, pSect, 512, buf);
-
-    if (rc!=RC_OK)
-        return RC_ERROR;
-    else
-        return RC_OK;
+    return adfWriteBlockDev ( vol->dev, pSect, 512, buf );
 }
 
 

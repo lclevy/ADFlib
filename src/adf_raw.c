@@ -35,9 +35,9 @@
 #include "adf_disk.h"
 #include "adf_util.h"
 #include "adf_err.h"
+#include "adf_env.h"
 #include "defendian.h"
 
-extern struct Env adfEnv;
 
 int swapTable[MAX_SWTYPE+1][15]={
     { 4, SW_CHAR, 2, SW_LONG, 1012, SW_CHAR, 0, 1024 },     /* first bytes of boot */

@@ -24,7 +24,7 @@
 #ifndef ADF_NATIV_H
 #define ADF_NATIV_H
 
-#include "../adf_str.h"
+#include "adf_str.h"
 
 #define NATIVE_FILE  8001
 
@@ -37,7 +37,6 @@
 #endif
 
 struct nativeDevice{
-	FILE *fd; /* needed by adf_dump.c */
 	void *hDrv;
 };
 
@@ -46,7 +45,7 @@ struct nativeFunctions{
 	RETCODE (*adfNativeReadSector)(struct Device*, long, int, unsigned char*);
 	RETCODE (*adfNativeWriteSector)(struct Device*, long, int, unsigned char*);
 	BOOL (*adfIsDevNative)(char*);
-	RETCODE (*adfReleaseDevice)();
+	RETCODE (*adfReleaseDevice)(struct Device* dev);
 };
 
 void adfInitNativeFct();

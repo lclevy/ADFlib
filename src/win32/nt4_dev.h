@@ -19,8 +19,24 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef __NT4_DEV_H__
+#define __NT4_DEV_H__
+
+typedef struct NT4DriveGeometry_s {
+    unsigned
+        cylinders,
+        tracksPerCylinder,
+        sectorsPerTrack,
+        bytesPerSector;
+} NT4DriveGeometry_t;
+
 HANDLE NT4OpenDrive(char *strDrive);
 BOOL NT4CloseDrive(HANDLE hDrv);
 BOOL NT4ReadSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf);
 BOOL NT4WriteSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf);
 ULONG NT4GetDriveSize(HANDLE hDrv);
+BOOL NT4GetDriveGeometry ( HANDLE                     hDrv,
+                           NT4DriveGeometry_t * const geometry );
+
+#endif
+

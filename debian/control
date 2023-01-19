@@ -35,7 +35,7 @@ Description: ADFlib - development files
  .
  This package contains the development files.
 
-Package: unadf
+Package: libadf-utils
 Architecture: any
 Multi-Arch: same
 Section: utils
@@ -43,5 +43,9 @@ Depends: libadf (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
-Description: an unzip like utility for .ADF (Amiga disk image) files
- unADF is an utility for list and extracting files from .ADF files (Amiga disk images).
+Description: Utilities for Amiga disk image files (ADF).
+ Utilities for ADF disk images:
+ .
+ unadf - list and extract files from .ADF files (Amiga disk images)
+ adf_floppy_create - create a new floppy disk image file
+ adf_floppy_format - format a floppy disk (an image or a device)
