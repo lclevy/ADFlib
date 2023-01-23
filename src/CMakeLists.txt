@@ -16,7 +16,6 @@ add_library ( adf
   adf_dev_flop.c
   adf_dev_hd.c
   adf_dir.c
-  adf_disk.c
   adf_dump.c
   adf_env.c
   adf_file.c
@@ -24,6 +23,7 @@ add_library ( adf
   adf_raw.c
   adf_salv.c
   adf_util.c
+  adf_vol.c
   generic/adf_nativ.c
   generic/adf_nativ.h
 #  linux/adf_nativ.c

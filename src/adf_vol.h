@@ -1,10 +1,10 @@
-#ifndef _ADF_DISK_H
-#define _ADF_DISK_H 1
+#ifndef _ADF_VOL_H
+#define _ADF_VOL_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_disk.h
+ *  adf_vol.h
  *
  *  $Id$
  *
@@ -47,6 +47,6 @@ void adfUpdateBitmap(struct Volume*);
 PREFIX RETCODE adfReadBlock(struct Volume* , int32_t nSect, uint8_t* buf);
 PREFIX RETCODE adfWriteBlock(struct Volume* , int32_t nSect, uint8_t* buf);
 
-#endif /* _ADF_DISK_H */
+#endif /* _ADF_VOL_H */
 
 /*##########################################################################*/

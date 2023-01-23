@@ -30,9 +30,9 @@
 
 #include "adf_dev_flop.h"
 
-#include "adf_disk.h"
 #include "adf_env.h"
 #include "adf_raw.h"
+#include "adf_vol.h"
 
 
 

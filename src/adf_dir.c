@@ -35,7 +35,7 @@
 #include"defendian.h"
 #include"adf_blk.h"
 #include"adf_raw.h"
-#include"adf_disk.h"
+#include "adf_vol.h"
 #include"adf_bitm.h"
 #include"adf_file.h"
 #include"adf_err.h"

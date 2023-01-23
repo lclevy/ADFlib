@@ -32,7 +32,7 @@
 #include "adf_str.h"
 #include "adf_raw.h"
 #include "adf_blk.h"
-#include "adf_disk.h"
+#include "adf_vol.h"
 #include "adf_util.h"
 #include "adf_err.h"
 #include "adf_env.h"

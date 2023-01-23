@@ -6,7 +6,6 @@ lib_LTLIBRARIES = libadf.la
 libadf_la_SOURCES = adf_dev.c \
                     adf_dev_flop.c \
                     adf_dev_hd.c \
-                    adf_disk.c \
                     adf_raw.c \
                     adf_bitm.c \
                     adf_dump.c \
@@ -16,7 +15,8 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_file.c \
                     adf_cache.c \
                     adf_link.c \
-                    adf_salv.c
+                    adf_salv.c \
+                    adf_vol.c
 
 include_HEADERS = adf_defs.h \
                   adf_dev.h \
@@ -29,7 +29,6 @@ include_HEADERS = adf_defs.h \
                   adf_bitm.h \
                   adf_cache.h \
                   adf_dir.h \
-                  adf_disk.h \
                   adf_dump.h \
                   adf_env.h \
                   adf_file.h \
@@ -37,6 +36,7 @@ include_HEADERS = adf_defs.h \
                   adf_raw.h \
                   adf_salv.h \
                   adf_util.h \
+                  adf_vol.h \
                   defendian.h \
                   hd_blk.h \
                   prefix.h

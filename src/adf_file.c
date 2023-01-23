@@ -33,7 +33,7 @@
 #include"adf_str.h"
 #include"defendian.h"
 #include"adf_raw.h"
-#include"adf_disk.h"
+#include "adf_vol.h"
 #include"adf_dir.h"
 #include"adf_bitm.h"
 #include"adf_cache.h"

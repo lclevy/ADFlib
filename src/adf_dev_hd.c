@@ -35,7 +35,7 @@
 #include"adf_dev.h"
 #include"adf_dev_hd.h"
 #include"adf_util.h"
-#include"adf_disk.h"
+#include "adf_vol.h"
 #include"adf_nativ.h"
 #include"adf_dump.h"
 #include "adf_env.h"

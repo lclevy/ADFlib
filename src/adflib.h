@@ -48,7 +48,7 @@ extern "C" {
 #include "adf_file.h"
 
 /* volume */
-#include "adf_disk.h"
+#include "adf_vol.h"
 
 /* device */
 #include "adf_dev.h"

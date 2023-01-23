@@ -31,7 +31,7 @@
 #include "adf_salv.h"
 #include "adf_bitm.h"
 #include "adf_util.h"
-#include "adf_disk.h"
+#include "adf_vol.h"
 #include "adf_dir.h"
 #include "adf_file.h"
 #include "adf_cache.h"
