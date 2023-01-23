@@ -26,6 +26,7 @@
  *
  */
 
+#include "adf_blk.h"
 #include"adf_str.h"
 #include"adf_err.h"
 #include"adf_defs.h"

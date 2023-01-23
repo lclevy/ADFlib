@@ -27,7 +27,8 @@
  *
  */
 
-#include"adf_str.h"
+#include "adf_blk.h"
+#include "adf_vol.h"
 #include"prefix.h"
 
 RETCODE adfReadBitmapBlock(struct Volume*, SECTNUM nSect, struct bBitmapBlock*);

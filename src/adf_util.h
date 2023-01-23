@@ -26,9 +26,8 @@
  *
  */
 
-#include"prefix.h"
-
-#include "adf_str.h"
+#include "adf_defs.h"
+#include "prefix.h"
 
 
 struct DateTime {

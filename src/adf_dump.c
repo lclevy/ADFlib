@@ -30,6 +30,7 @@
 #include <string.h>
 #include<errno.h>
 
+#include "adf_blk.h"
 #include"adf_defs.h"
 #include"adf_str.h"
 #include "adf_vol.h"

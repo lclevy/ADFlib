@@ -36,7 +36,6 @@ extern "C" {
 #include "prefix.h"
 
 #include "adf_defs.h"
-#include "adf_str.h"
 
 /* util */
 #include "adf_util.h"

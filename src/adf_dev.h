@@ -2,6 +2,8 @@
 #ifndef __ADF_DEV_H__
 #define __ADF_DEV_H__
 
+#include <stdio.h>
+
 #include "adf_defs.h"
 #include "adf_vol.h"
 #include "prefix.h"

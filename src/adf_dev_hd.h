@@ -30,7 +30,7 @@
 
 #include"prefix.h"
 
-#include "adf_str.h"
+#include "adf_dev.h"
 #include "hd_blk.h"
 
 RETCODE adfMountHd(struct Device *dev);

@@ -28,6 +28,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#include "adf_blk.h"
 #include"adf_defs.h"
 #include"adf_str.h"
 #include"adf_nativ.h"

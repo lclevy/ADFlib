@@ -28,12 +28,6 @@
  *
  */
 
-#include<stdio.h>
-
-#include"adf_defs.h"
-#include"adf_blk.h"
-#include"adf_err.h"
-
 
 struct List{         /* generic linked tree */
     void *content;

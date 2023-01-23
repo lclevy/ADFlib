@@ -31,6 +31,7 @@
 #include "adf_dev_flop.h"
 
 #include "adf_env.h"
+#include "adf_err.h"
 #include "adf_raw.h"
 #include "adf_vol.h"
 
