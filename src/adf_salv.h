@@ -28,7 +28,8 @@
 
 #include"prefix.h"
 
-#include "adf_str.h"
+#include "adf_defs.h"
+#include "adf_vol.h"
 
 RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *block);
 PREFIX RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level);
