@@ -28,7 +28,8 @@
  */
 
 
-#include "adf_str.h"
+#include "adf_blk.h"
+#include "adf_vol.h"
 
 void adfGetCacheEntry(struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
 int adfPutCacheEntry( struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
