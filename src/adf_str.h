@@ -42,8 +42,5 @@ struct List{         /* generic linked tree */
 };
 
 
-#define ENV_DECLARATION struct Env adfEnv
-
-
 #endif /* _ADF_STR_H */
 /*##########################################################################*/
