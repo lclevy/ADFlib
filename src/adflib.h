@@ -39,80 +39,39 @@ extern "C" {
 #include "adf_str.h"
 
 /* util */
-PREFIX struct List* newCell(struct List* list, void* content);
-PREFIX void freeList(struct List* list);
+#include "adf_util.h"
 
 /* dir */
-PREFIX RETCODE adfToRootDir(struct Volume *vol);
-PREFIX RETCODE adfCreateDir(struct Volume* vol, SECTNUM parent, char* name);
-PREFIX RETCODE adfChangeDir(struct Volume* vol, char *name);
-PREFIX RETCODE adfParentDir(struct Volume* vol);
-PREFIX RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);
-PREFIX struct List* adfGetDirEnt(struct Volume* vol, SECTNUM nSect );
-PREFIX struct List* adfGetRDirEnt(struct Volume* vol, SECTNUM nSect, BOOL recurs );
-PREFIX void printEntry(struct Entry* entry);
-PREFIX void adfFreeDirList(struct List* list);
-PREFIX void adfFreeEntry(struct Entry *);
-PREFIX RETCODE adfRenameEntry(struct Volume *vol, SECTNUM, char *old,SECTNUM,char *pNew);	/* BV */
-PREFIX RETCODE adfSetEntryAccess(struct Volume*, SECTNUM, char*, int32_t);
-PREFIX RETCODE adfSetEntryComment(struct Volume*, SECTNUM, char*, char*);
+#include "adf_dir.h"
 
 /* file */
-PREFIX int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *extN);
-PREFIX struct File* adfOpenFile(struct Volume *vol, char* name, char *mode);
-PREFIX void adfCloseFile(struct File *file);
-PREFIX int32_t adfReadFile(struct File* file, int32_t n, uint8_t *buffer);
-PREFIX BOOL adfEndOfFile(struct File* file);
-PREFIX int32_t adfWriteFile(struct File *file, int32_t n, uint8_t *buffer);
-PREFIX void adfFlushFile(struct File *file);
-PREFIX void adfFileSeek(struct File *file, uint32_t pos);
+#include "adf_file.h"
 
 /* volume */
-PREFIX RETCODE adfInstallBootBlock(struct Volume *vol,uint8_t*);
-PREFIX struct Volume* adfMount( struct Device *dev, int nPart, BOOL readOnly );
-PREFIX void adfUnMount(struct Volume *vol);
-PREFIX void adfVolumeInfo(struct Volume *vol);
+#include "adf_disk.h"
 
 /* device */
-PREFIX void adfDeviceInfo(struct Device *dev);
-PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
-PREFIX void adfCloseDev ( struct Device * dev );
-PREFIX struct Device* adfMountDev( char* filename,BOOL ro);
-PREFIX void adfUnMountDev( struct Device* dev);
-PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );
-PREFIX RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType );
-PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
+#include "adf_dev.h"
+#include "adf_dev_flop.h"
+#include "adf_dev_hd.h"
 
 /* dump device */
-PREFIX struct Device* adfCreateDumpDevice(char* filename, int32_t cyl, int32_t heads, int32_t sec);
+#include "adf_dump.h"
 
 /* env */
-PREFIX void adfEnvInitDefault();
-PREFIX void adfEnvCleanUp();
-PREFIX void adfChgEnvProp(int prop, void *pNew);											/* BV */
-PREFIX char* adfGetVersionNumber();
-PREFIX char* adfGetVersionDate();
-/* obsolete */
-PREFIX void adfSetEnvFct( void(*e)(char*), void(*w)(char*), void(*v)(char*) );
+#include "adf_env.h"
 
 /* link */
-PREFIX RETCODE adfBlockPtr2EntryName(struct Volume *, SECTNUM, SECTNUM,char **, int32_t *);
+#include "adf_link.h"
 
 /* salv */
-PREFIX struct List* adfGetDelEnt(struct Volume *vol);
-PREFIX RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect);
-PREFIX void adfFreeDelList(struct List* list);
-PREFIX RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level);
+#include "adf_salv.h"
 
 /* middle level API */
 
-PREFIX BOOL isSectNumValid(struct Volume *vol, SECTNUM nSect);
-
 /* low level API */
 
-PREFIX RETCODE adfReadBlock(struct Volume* , int32_t nSect, uint8_t* buf);
-PREFIX RETCODE adfWriteBlock(struct Volume* , int32_t nSect, uint8_t* buf);
-PREFIX int32_t adfCountFreeBlocks(struct Volume* vol);
+#include "adf_bitm.h"
 
 
 #ifdef __cplusplus
