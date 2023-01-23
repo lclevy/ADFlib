@@ -30,6 +30,26 @@
 
 #include"adf_str.h"
 
+
+/* ----- FILE ----- */
+
+struct File {
+    struct Volume *volume;
+
+    struct bFileHeaderBlock* fileHdr;
+    void *currentData;
+    struct bFileExtBlock* currentExt;
+
+    int32_t nDataBlock;  /* current data block number */
+    SECTNUM curDataPtr;  /* sector number of current data block */
+    uint32_t pos;
+
+    int posInDataBlk;
+    int posInExtBlk;
+    BOOL eof, writeMode;
+};
+
+
 RETCODE adfGetFileBlocks(struct Volume* vol, struct bFileHeaderBlock* entry,
     struct FileBlocks* );
 RETCODE adfFreeFileBlocks(struct Volume* vol, struct bFileHeaderBlock *entry);
