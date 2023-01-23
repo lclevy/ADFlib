@@ -31,6 +31,15 @@
 #include "adf_defs.h"
 #include "adf_vol.h"
 
+struct GenBlock {
+    SECTNUM sect;
+    SECTNUM parent;
+    int type;
+    int secType;
+    char *name;	/* if (type == 2 and (secType==2 or secType==-3)) */
+};
+
+
 RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *block);
 PREFIX RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level);
 PREFIX RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect);

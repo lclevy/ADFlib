@@ -41,14 +41,6 @@ struct List{         /* generic linked tree */
     struct List* next;
 };
 
-struct GenBlock{
-    SECTNUM sect;
-    SECTNUM parent;
-    int type;
-    int secType;
-    char *name;	/* if (type == 2 and (secType==2 or secType==-3)) */
-};
-
 struct FileBlocks{
     SECTNUM header;
     int32_t nbExtens;
