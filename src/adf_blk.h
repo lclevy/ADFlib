@@ -142,6 +142,34 @@ struct bRootBlock {
 };
 
 
+struct bEntryBlock {
+/*000*/	int32_t	 type;		/* T_HEADER == 2 */
+/*004*/	int32_t	 headerKey;	/* current block number */
+        int32_t	 r1[3];
+/*014*/	uint32_t checkSum;
+/*018*/	int32_t	 hashTable[HT_SIZE];
+        int32_t	 r2[2];
+/*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
+/*144*/	int32_t	 byteSize;
+/*148*/	char	 commLen;
+/*149*/	char	 comment[MAXCMMTLEN + 1];
+        char	 r3[91 - ( MAXCMMTLEN + 1 )];
+/*1a4*/	int32_t	 days;
+/*1a8*/	int32_t	 mins;
+/*1ac*/	int32_t	 ticks;
+/*1b0*/	char	 nameLen;
+/*1b1*/	char	 name[MAXNAMELEN + 1];
+        int32_t	 r4;
+/*1d4*/	int32_t	 realEntry;
+/*1d8*/	int32_t	 nextLink;
+        int32_t	 r5[5];
+/*1f0*/	int32_t	 nextSameHash;
+/*1f4*/	int32_t	 parent;
+/*1f8*/	int32_t	 extension;
+/*1fc*/	int32_t	 secType;
+};
+
+
 struct bFileHeaderBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* current block number */
