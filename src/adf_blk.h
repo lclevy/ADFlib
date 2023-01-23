@@ -31,9 +31,6 @@
 
 #include "adf_defs.h"
 
-#define ULONG   uint32_t
-#define USHORT  uint16_t
-#define UCHAR   uint8_t
 
 #define LOGICAL_BLOCK_SIZE    512
 
