@@ -35,40 +35,6 @@
 #include"adf_err.h"
 
 
-/* ----- ENVIRONMENT ----- */
-
-#define PR_VFCT			1
-#define PR_WFCT			2
-#define PR_EFCT			3
-#define PR_NOTFCT		4
-#define PR_USEDIRC		5
-#define PR_USE_NOTFCT 	6
-#define PR_PROGBAR 		7
-#define PR_USE_PROGBAR 	8
-#define PR_RWACCESS 	9
-#define PR_USE_RWACCESS 10
-
-struct Env{
-    void (*vFct)(char*);       /* verbose callback function */
-    void (*wFct)(char*);       /* warning callback function */
-    void (*eFct)(char*);       /* error callback function */
-
-    void (*notifyFct)(SECTNUM, int);
-    BOOL useNotify;
-
-    void (*rwhAccess)(SECTNUM,SECTNUM,BOOL);
-    BOOL useRWAccess;
-
-    void (*progressBar)(int);
-    BOOL useProgressBar;
-
-    BOOL useDirCache;
-	
-    void *nativeFct;
-};
-
-
-
 struct List{         /* generic linked tree */
     void *content;
     struct List* subdir;
