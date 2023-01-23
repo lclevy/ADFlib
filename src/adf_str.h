@@ -35,10 +35,6 @@
 #include"adf_err.h"
 
 
-struct DateTime{
-    int year,mon,day,hour,min,sec;
-};
-
 /* ----- ENVIRONMENT ----- */
 
 #define PR_VFCT			1

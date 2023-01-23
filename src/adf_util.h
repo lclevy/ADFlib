@@ -31,6 +31,11 @@
 #include "adf_str.h"
 
 
+struct DateTime {
+    int year, mon, day, hour, min, sec;
+};
+
+
 void swLong(uint8_t* buf, uint32_t val);
 void swShort(uint8_t* buf, uint16_t val);
 
