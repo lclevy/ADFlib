@@ -27,10 +27,23 @@
  *
  */ 
 
-#ifdef WIN32DLL
-#define PREFIX __declspec(dllexport)
+//#ifdef WIN32DLL
+#ifdef _WIN32
+
+/* define declaration prefix for exporing symbols compiling a DLL library,
+   and importing when compiling a client code
+
+   more info:
+   https://learn.microsoft.com/en-us/cpp/build/importing-into-an-application-using-declspec-dllimport?view=msvc-170
+*/
+#ifdef _EXPORTING
+   #define PREFIX    __declspec(dllexport)
+#else
+   #define PREFIX    __declspec(dllimport)
+#endif
+
 #else
 #define PREFIX 
-#endif /* WIN32DLL */
+#endif
 
 #endif /* _PREFIX_H */

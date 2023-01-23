@@ -32,14 +32,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-
-/* Visual C++ DLL specific, define  WIN32DLL or not in the makefile */
-
-#ifdef WIN32DLL
-#define PREFIX __declspec(dllimport)
-#else
-#define PREFIX 
-#endif /* WIN32DLL */
+/* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
+#include "prefix.h"
 
 #include "adf_defs.h"
 #include "adf_str.h"
