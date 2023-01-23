@@ -96,60 +96,65 @@ BOOL isSectNumValid(struct Volume *vol, SECTNUM nSect)
  */
 void adfVolumeInfo(struct Volume *vol)
 {
-	struct bRootBlock root;
-	char diskName[35];
-	int days,month,year;
+    struct bRootBlock root;
+    char diskName[35];
+    int days,month,year;
 	
-	if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK)
-		return;
+    if ( adfReadRootBlock(vol, vol->rootBlock, &root) != RC_OK )
+        return;
 	
-	memset(diskName, 0, 35);
-	memcpy(diskName, root.diskName, root.nameLen);
+    memset(diskName, 0, 35);
+    memcpy(diskName, root.diskName, root.nameLen);
 	
-	printf ("Name : %-30s\n",vol->volName);
-	printf ("Type : ");
-	switch(vol->dev->devType) {
-		case DEVTYPE_FLOPDD:
-			printf ("Floppy Double Density : 880 KBytes\n");
-			break;
-		case DEVTYPE_FLOPHD:
-			printf ("Floppy High Density : 1760 KBytes\n");
-			break;
-		case DEVTYPE_HARDDISK:
-			printf ("Hard Disk partition : %3.1f KBytes\n", 
-				(vol->lastBlock - vol->firstBlock +1) * 512.0/1024.0);
-			break;
-		case DEVTYPE_HARDFILE:
-			printf ("HardFile : %3.1f KBytes\n", 
-				(vol->lastBlock - vol->firstBlock +1) * 512.0/1024.0);
-			break;
-		default:
-			printf ("Unknown devType!\n");
-	}
-	printf ("Filesystem : ");
-	printf("%s ",isFFS(vol->dosType) ? "FFS" : "OFS");
-	if (isINTL(vol->dosType))
-		printf ("INTL ");
-	if (isDIRCACHE(vol->dosType))
-		printf ("DIRCACHE ");
-	putchar('\n');
+    printf ( "\nADF volume info:\n  Name:\t\t%-30s\n", vol->volName );
+    printf ("  Type:\t\t");
+    switch ( vol->dev->devType) {
+    case DEVTYPE_FLOPDD:
+        printf ("Floppy Double Density, 880 KBytes\n");
+        break;
+    case DEVTYPE_FLOPHD:
+        printf ("Floppy High Density, 1760 KBytes\n");
+        break;
+    case DEVTYPE_HARDDISK:
+        printf ("Hard Disk partition, %3.1f KBytes\n",
+                ( vol->lastBlock - vol->firstBlock + 1 ) * 512.0 / 1024.0 );
+        break;
+    case DEVTYPE_HARDFILE:
+        printf ("HardFile : %3.1f KBytes\n",
+                ( vol->lastBlock - vol->firstBlock + 1 ) * 512.0 / 1024.0 );
+        break;
+    default:
+        printf ("Unknown devType!\n");
+    }
+    printf ("  Filesystem:\t%s %s %s\n",
+            isFFS(vol->dosType) ? "FFS" : "OFS",
+            isINTL(vol->dosType) ? "INTL " : "",
+            isDIRCACHE(vol->dosType) ? "DIRCACHE " : "");
 
-    printf("Free blocks = %d\n", adfCountFreeBlocks(vol));
-    if (vol->readOnly)
-        printf("Read only\n");
-    else
-        printf("Read/Write\n");
+    printf("  Free blocks:\t%d\n", adfCountFreeBlocks(vol));
+    printf ("  R/W:\t\t%s\n", vol->readOnly ? "Read only" : "Read/Write");
  	
     /* created */
-	adfDays2Date(root.coDays, &year, &month, &days);
-    printf ("created %d/%02d/%02d %d:%02d:%02d\n",days,month,year,
-	    root.coMins/60,root.coMins%60,root.coTicks/50);	
-	adfDays2Date(root.days, &year, &month, &days);
-    printf ("last access %d/%02d/%02d %d:%02d:%02d,   ",days,month,year,
-	    root.mins/60,root.mins%60,root.ticks/50);	
-	adfDays2Date(root.cDays, &year, &month, &days);
-    printf ("%d/%02d/%02d %d:%02d:%02d\n",days,month,year,
-	    root.cMins/60,root.cMins%60,root.cTicks/50);	
+    adfDays2Date(root.coDays, &year, &month, &days);
+    printf ( "  Created:\t%d/%02d/%02d %d:%02d:%02d\n",
+             days, month, year,
+             root.coMins / 60,
+             root.coMins % 60,
+             root.coTicks / 50 );
+
+    adfDays2Date(root.days, &year, &month, &days);
+    printf ( "  Last access:\t%d/%02d/%02d %d:%02d:%02d",
+             days, month, year,
+             root.mins / 60,
+             root.mins % 60,
+             root.ticks / 50 );
+
+    adfDays2Date(root.cDays, &year, &month, &days);
+    printf ( "\n\t\t%d/%02d/%02d %d:%02d:%02d\n",
+             days, month, year,
+             root.cMins / 60,
+             root.cMins % 60,
+             root.cTicks / 50 );
 }
 
 
