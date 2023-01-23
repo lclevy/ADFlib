@@ -28,7 +28,8 @@
 #ifndef _ADF_RAW_H
 #define _ADF_RAW_H 1
 
-#include "adf_str.h"
+#include "adf_blk.h"
+#include "adf_vol.h"
 
 #define SW_LONG  4
 #define SW_SHORT 2
