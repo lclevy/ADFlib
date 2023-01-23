@@ -33,6 +33,23 @@
 
 #include"prefix.h"
 
+
+/* ----- ENTRY ---- */
+
+struct Entry{
+    int type;
+    char* name;
+    SECTNUM sector;
+    SECTNUM real;
+    SECTNUM parent;
+    char* comment;
+    uint32_t size;
+    int32_t access;
+    int year, month, days;
+    int hour, mins, secs;
+};
+
+
 PREFIX RETCODE adfToRootDir(struct Volume *vol);
 BOOL isDirEmpty(struct bDirBlock *dir);
 PREFIX RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);

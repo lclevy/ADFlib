@@ -35,21 +35,6 @@
 #include"adf_err.h"
 
 
-/* ----- ENTRY ---- */
-
-struct Entry{
-    int type;
-    char* name;
-    SECTNUM sector;
-    SECTNUM real;
-    SECTNUM parent;
-    char* comment;
-    uint32_t size;
-    int32_t access;
-    int year, month, days;
-    int hour, mins, secs;
-};
-
 struct CacheEntry{
     int32_t header, size, protect;
     short days, mins, ticks;
