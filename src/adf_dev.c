@@ -171,45 +171,52 @@ int adfDevType(struct Device* dev)
  */
 void adfDeviceInfo(struct Device *dev)
 {
-    int i;
-	
-    printf("Cylinders   = %d\n",dev->cylinders);
-    printf("Heads       = %d\n",dev->heads);
-    printf("Sectors/Cyl = %d\n\n",dev->sectors);
-    if (!dev->isNativeDev)
-        printf("Dump device\n\n");
-    else
-        printf("Real device\n\n");
-    printf("Volumes     = %d\n\n",dev->nVol);
-/*
-    switch(dev->devType){
+    const char * devTypeInfo = NULL;
+    switch ( dev->devType ) {
     case DEVTYPE_FLOPDD:
-        printf("floppy dd\n"); break;
+        devTypeInfo = "floppy dd";
+        break;
     case DEVTYPE_FLOPHD:
-        printf("floppy hd\n"); break;
+        devTypeInfo = "floppy hd";
+        break;
     case DEVTYPE_HARDDISK:
-        printf("harddisk\n"); break;
+        devTypeInfo = "harddisk";
+        break;
     case DEVTYPE_HARDFILE:
-        printf("hardfile\n"); break;
+        devTypeInfo = "hardfile";
+        break;
     default:
-        printf("unknown devType!\n"); break;
+        devTypeInfo = "unknown device type!";
     }
-*/
 
-    for(i=0; i<dev->nVol; i++) {
-        if (dev->volList[i]->volName)
-            printf("%2d :  %7d ->%7d, \"%s\"", i,
+    printf ( "\nADF device info:\n  Type:\t\t%s, %s\n", devTypeInfo,
+             dev->isNativeDev ? "real (native device!)" : "file (image)" );
+
+    printf ( "  Geometry:\n"
+             "    Cylinders\t%d\n"
+             "    Heads\t%d\n"
+             "    Sectors\t%d\n\n",
+             dev->cylinders, dev->heads, dev->sectors );
+
+    printf ( "  Volumes (%d):\n"
+             "   idx  first bl.     last bl.    name\n",
+             dev->nVol );
+
+    for ( int i = 0 ; i < dev->nVol ; i++ ) {
+        if ( dev->volList[i]->volName )
+            printf("    %2d    %7d      %7d    \"%s\"", i,
                    dev->volList[i]->firstBlock,
                    dev->volList[i]->lastBlock,
                    dev->volList[i]->volName);
         else
-            printf("%2d :  %7d ->%7d\n", i,
+            printf("    %2d    %7d      %7d\n", i,
                    dev->volList[i]->firstBlock,
                    dev->volList[i]->lastBlock);
-        if (dev->volList[i]->mounted)
-            printf(", mounted");
+        if ( dev->volList[i]->mounted )
+            printf("    mounted");
         putchar('\n');
     }
+    putchar('\n');
 }
 
 
