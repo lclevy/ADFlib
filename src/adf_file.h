@@ -49,6 +49,13 @@ struct File {
     BOOL eof, writeMode;
 };
 
+struct FileBlocks {
+    SECTNUM header;
+    int32_t nbExtens;
+    SECTNUM* extens;
+    int32_t nbData;
+    SECTNUM* data;
+};
 
 RETCODE adfGetFileBlocks(struct Volume* vol, struct bFileHeaderBlock* entry,
     struct FileBlocks* );

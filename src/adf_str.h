@@ -41,14 +41,6 @@ struct List{         /* generic linked tree */
     struct List* next;
 };
 
-struct FileBlocks{
-    SECTNUM header;
-    int32_t nbExtens;
-    SECTNUM* extens;
-    int32_t nbData;
-    SECTNUM* data;
-};
-
 struct bEntryBlock {
 /*000*/	int32_t	type;		/* T_HEADER == 2 */
 /*004*/	int32_t	headerKey;	/* current block number */
