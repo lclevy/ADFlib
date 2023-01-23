@@ -35,19 +35,6 @@
 #include"adf_err.h"
 
 
-struct CacheEntry{
-    int32_t header, size, protect;
-    short days, mins, ticks;
-    signed char type;
-    char nLen, cLen;
-    char name[MAXNAMELEN+1], comm[MAXCMMTLEN+1];
-/*    char *name, *comm;*/
-
-};
-
-
-
-
 struct DateTime{
     int year,mon,day,hour,min,sec;
 };

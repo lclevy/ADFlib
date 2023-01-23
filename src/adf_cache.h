@@ -31,6 +31,23 @@
 #include "adf_blk.h"
 #include "adf_vol.h"
 
+
+struct CacheEntry {
+    int32_t header,
+            size,
+            protect;
+    short days,
+          mins,
+          ticks;
+    signed char type;
+    char nLen,
+         cLen;
+    char name[MAXNAMELEN+1],
+         comm[MAXCMMTLEN+1];
+/*    char *name, *comm;*/
+};
+
+
 void adfGetCacheEntry(struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
 int adfPutCacheEntry( struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
 
