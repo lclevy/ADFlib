@@ -28,10 +28,8 @@ endif()
 
 #add_compile_options(-pthread)
 
-#configure_file (config.h.cmake.in config.h)
-#include_directories(${PROJECT_BINARY_DIR}/src)
-
 include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_BINARY_DIR}/src)
 
 #message ("Check include dir: ${CHECK_INCLUDE_DIR}, libraries: ${CHECK_LIBRARIES}")
 include_directories(${CHECK_INCLUDE_DIR})

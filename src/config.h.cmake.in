@@ -1,2 +1,11 @@
 
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
 #define VERSIONPACKAGE_STRING "adflib-${adflib_VERSION_MAJOR}.${adflib_VERSION_MINOR}.${adflib_VERSION_PATCH}"
+
+#define ADFLIB_VERSION "${adflib_VERSION_MAJOR}.${adflib_VERSION_MINOR}.${adflib_VERSION_PATCH}"
+
+//#define ADFLIB_DATE "January 20th, 2022"
+
+#endif

@@ -41,7 +41,8 @@ include_HEADERS = adf_defs.h \
                   hd_blk.h \
                   prefix.h
 
-libadf_la_LDFLAGS = -version-info 0:12:0
+libadf_la_LDFLAGS = \
+    -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 # Link adfnative
 if HOSTOSCYGWIN

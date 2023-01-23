@@ -30,8 +30,15 @@
 
 #include <stdint.h>
 
-#define ADFLIB_VERSION "0.7.11a"
+#include "config.h"
+/* autotools defines this */
+#ifdef PACKAGE_VERSION
+#define ADFLIB_VERSION PACKAGE_VERSION
+#endif
+
 #define ADFLIB_DATE "January 20th, 2007"
+
+
 
 #define SECTNUM int32_t
 #define RETCODE int32_t
