@@ -31,6 +31,34 @@
 #include "adf_str.h"
 #include "adf_defs.h"
 
+/* ----- VOLUME ----- */
+
+struct Volume {
+    struct Device* dev;
+
+    SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
+    SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
+    SECTNUM rootBlock;      /* root block (from firstBlock) */
+
+    char dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
+    BOOL bootCode;
+    BOOL readOnly;
+    int datablockSize;      /* 488 or 512 */
+    int blockSize;			/* 512 */
+
+    char *volName;
+
+    BOOL mounted;
+
+    int32_t bitmapSize;             /* in blocks */
+    SECTNUM *bitmapBlocks;       /* bitmap blocks pointers */
+    struct bBitmapBlock **bitmapTable;
+    BOOL *bitmapBlocksChg;
+
+    SECTNUM curDirPtr;
+};
+
+
 PREFIX RETCODE adfInstallBootBlock(struct Volume *vol,uint8_t*);
 
 PREFIX BOOL isSectNumValid(struct Volume *vol, SECTNUM nSect);

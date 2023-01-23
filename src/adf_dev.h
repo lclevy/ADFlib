@@ -3,6 +3,7 @@
 #define __ADF_DEV_H__
 
 #include "adf_defs.h"
+#include "adf_vol.h"
 #include "prefix.h"
 
 PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
