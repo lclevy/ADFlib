@@ -24,7 +24,7 @@
 #ifndef ADF_NATIV_H
 #define ADF_NATIV_H
 
-#include "adf_str.h"
+#include "adf_dev.h"
 
 #define NATIVE_FILE  8001
 
