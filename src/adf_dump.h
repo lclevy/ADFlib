@@ -26,6 +26,8 @@
  *
  */
 
+#include "adf_dev.h"
+
 PREFIX     struct Device*
 adfCreateDumpDevice(char* filename, int32_t cyl, int32_t heads, int32_t sec);
 PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);

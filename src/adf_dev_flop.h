@@ -3,7 +3,7 @@
 #define __ADF_DEV_FLOP_H__
 
 #include "adf_defs.h"
-#include "adf_str.h"
+#include "adf_dev.h"
 #include "prefix.h"
 
 RETCODE adfMountFlop ( struct Device * dev );
