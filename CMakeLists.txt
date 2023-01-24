@@ -7,7 +7,7 @@ set( CMAKE_MODULE_PATH
 
 set ( adflib_VERSION_MAJOR 0 )
 set ( adflib_VERSION_MINOR 7 )
-set ( adflib_VERSION_PATCH 12 )
+set ( adflib_VERSION_PATCH 13 )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )

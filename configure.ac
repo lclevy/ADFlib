@@ -6,7 +6,7 @@ AC_PREREQ(2.61)
 # Version info
 m4_define([adflib_version_major],[0])
 m4_define([adflib_version_minor],[7])
-m4_define([adflib_version_micro],[12])
+m4_define([adflib_version_micro],[13])
 m4_define([adflib_version],[adflib_version_major.adflib_version_minor.adflib_version_micro])
 
 AC_INIT(adflib,[adflib_version],lclevy_AT_club-internet.fr)

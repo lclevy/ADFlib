@@ -23,7 +23,7 @@ License: GPL-2.0+
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
-Files: debian/* util/* */CMakeLists.txt
+Files: debian/* examples/adf_* tests/* util/* */CMakeLists.txt
 Copyright: 2022 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
 
