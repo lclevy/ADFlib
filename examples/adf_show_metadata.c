@@ -16,7 +16,11 @@ static void show_dentry_metadata ( struct Volume * const vol,
 
 void usage ( void )
 {
-    printf ( "Usage:  adf_show_metadata filename.adf/device filename/dirname\n\n" );
+    printf ( "adf_show_metadata - show metadata of an adf device or a file/directory\n\n"
+             "Usage:  adf_show_metadata adf_device [path]\n\n"
+             "where:\n  adf_device - an adf file (image) or a native (real) device\n"
+             "  path       - (optional) a file/directory inside the ADF device\n\n"
+             "(using adflib version %s)\n", adfGetVersionNumber() );
 }
 
 
