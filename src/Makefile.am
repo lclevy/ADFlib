@@ -46,7 +46,8 @@ libadf_la_LDFLAGS = \
 
 # Link adfnative to libadf
 if ADFLIB_OS_CYGWIN
-    # CygWin autotools links adfnative by itself
+    # for some reason CygWin require full path(?)
+    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
 endif
 if ADFLIB_OS_DARWIN
     # for some reason Darwin require full path(?)

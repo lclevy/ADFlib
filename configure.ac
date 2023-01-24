@@ -56,7 +56,7 @@ case "${host_os}" in
 	;;
      cygwin*)
 	NATIVE_DIR=win32
-	ADFLIB_OS=win32
+	ADFLIB_OS=cygwin
 	;;
      darwin*)
 	NATIVE_DIR=generic
