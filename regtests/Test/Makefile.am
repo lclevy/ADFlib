@@ -15,7 +15,7 @@ TESTS = floppy.sh bigdev.sh
 #EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if HOSTOSCYGWIN
+if ADFLIB_OS_CYGWIN
     ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
 endif
 

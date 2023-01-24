@@ -1,7 +1,7 @@
 bin_PROGRAMS = unadf adf_floppy_create adf_floppy_format adf_show_metadata
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if HOSTOSCYGWIN
+if ADFLIB_OS_CYGWIN
     ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
 endif
 

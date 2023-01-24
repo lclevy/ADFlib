@@ -44,11 +44,15 @@ include_HEADERS = adf_defs.h \
 libadf_la_LDFLAGS = \
     -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
-# Link adfnative
-if HOSTOSCYGWIN
+# Link adfnative to libadf
+if ADFLIB_OS_CYGWIN
     # CygWin autotools links adfnative by itself
-else
-    # Link adfnative to libadf
+endif
+if ADFLIB_OS_DARWIN
+    # for some reason Darwin require full path(?)
+    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
+endif
+if ADFLIB_OS_LINUX
     libadf_la_LDFLAGS += -L$(NATIVE_DIR) -ladfnative
 endif
 

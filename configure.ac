@@ -48,15 +48,23 @@ echo "Host OS: ${host_os}"
 case "${host_os}" in
      linux*)
 	NATIVE_DIR=linux
+	ADFLIB_OS=linux
 	;;
      win32*)
 	NATIVE_DIR=win32
+	ADFLIB_OS=win32
 	;;
      cygwin*)
 	NATIVE_DIR=win32
+	ADFLIB_OS=win32
+	;;
+     darwin*)
+	NATIVE_DIR=generic
+	ADFLIB_OS=darwin
 	;;
      *)
         NATIVE_DIR=generic
+	ADFLIB_OS=generic
 	;;
 esac
 
@@ -88,12 +96,15 @@ AC_ARG_ENABLE([native_win32],
                esac],
               [])
 echo "NATIVE_DIR: ${NATIVE_DIR}"
+echo "ADFLIB_OS: ${ADFLIB_OS}"
 
 #AM_CONDITIONAL([NATIVE_GENERIC], [test x${devnative} = xgeneric])
 #AM_CONDITIONAL([NATIVE_LINUX],   [test x${devnative} = xlinux])
 #AM_CONDITIONAL([NATIVE_WIN32],   [test x${devnative} = xwin32])
 
-AM_CONDITIONAL([HOSTOSCYGWIN], [test x${host_os} = xcygwin])
+AM_CONDITIONAL([ADFLIB_OS_CYGWIN], [test x${ADFLIB_OS} = xcygwin])
+AM_CONDITIONAL([ADFLIB_OS_DARWIN], [test x${ADFLIB_OS} = xdarwin])
+AM_CONDITIONAL([ADFLIB_OS_LINUX],  [test x${ADFLIB_OS} = xlinux])
 
 # Checks for programs.
 AC_PROG_CXX
