@@ -474,6 +474,27 @@ void adfFreeEntry(struct Entry *entry)
 
 
 /*
+ * adfDirCountEntries
+ *
+ */
+int adfDirCountEntries ( struct Volume * const vol,
+                         SECTNUM               dirPtr )
+{
+    struct List * list, * cell;
+
+    int nentries = 0;
+    cell = list = adfGetDirEnt ( vol, dirPtr );
+    while ( cell ) {
+        //printEntry ( cell->content );
+        cell = cell->next;
+        nentries++;
+    }
+    adfFreeDirList ( list );
+    return nentries;
+}
+
+
+/*
  * adfToRootDir
  *
  */

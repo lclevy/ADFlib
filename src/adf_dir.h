@@ -57,6 +57,7 @@ PREFIX RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);
 PREFIX struct List* adfGetDirEnt(struct Volume* vol, SECTNUM nSect );
 PREFIX struct List* adfGetRDirEnt(struct Volume* vol, SECTNUM nSect, BOOL recurs );
 PREFIX void adfFreeDirList(struct List* list);
+PREFIX int adfDirCountEntries ( struct Volume * const vol, SECTNUM dirPtr );
 
 RETCODE adfEntBlock2Entry(struct bEntryBlock *entryBlk, struct Entry *entry);
 PREFIX void adfFreeEntry(struct Entry *entry);
