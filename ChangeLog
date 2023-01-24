@@ -1,3 +1,29 @@
+24JAN2022
+ADFlib 0.7.13
+- files: fixed seek
+- directories: added a function for counting entries
+- hardlinks: added support (can open a file or enter a dir using a hardlink)
+- softlinks: added basic support (can get path where it points to)
+- devices: added functions to open/close a device without mounting (eg. for formatting)
+- native devices:
+  - getting geometry directly from the device (if possible)
+  - added support for Linux native devices (experimental, assume testing only
+    and use with care!)
+- command-line utilities:
+  - added creating and formatting devices/images
+  - added showing device and file/directory metadata
+  - unadf: replacing special characters in paths when extracting
+- numerous bugfixes, among them
+  - some mem. leaks (adfFreeGenBlock, tests, ...)
+  - a buffer overflow (in adfGetDelEnt())
+  - problems when filling up the disk
+- testing: added more tests, some improvements and bugfixes in existing ones
+- code quality: some refactoring and tidying up
+- building: added support for building wirh CMake (besides existing autotools),
+            can be build easier eg. with Visual Studio
+- packaging: added basic Debian support (should work on other systems with deb packages)
+- issues found:
+  - file write support has many problems (consider it experimental(!) until fixed)
 20MAR08
 ADFlib 0.7.12
 - use GNU autotools build system
