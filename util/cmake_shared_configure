@@ -5,4 +5,10 @@
 # https://stackoverflow.com/questions/2152077/is-it-possible-to-get-cmake-to-build-both-a-static-and-shared-library-at-the-sam
 #
 
-cmake -DBUILD_SHARED_LIBS:BOOL=ON -B build/shared -S .
+BUILD_DLL=
+if [ x"${OSTYPE}" == x"cygwin" ]
+then
+    BUILD_DLL=-DADFLIB_BUILD_DLL=ON
+fi
+
+cmake -DBUILD_SHARED_LIBS:BOOL=ON ${BUILD_DLL} -B build/shared -S .
