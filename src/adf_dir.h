@@ -68,7 +68,7 @@ SECTNUM adfCreateEntry(struct Volume *vol, struct bEntryBlock *dir, char *name, 
 PREFIX RETCODE adfRenameEntry(struct Volume *vol, SECTNUM, char *old,SECTNUM,char *new);
 
 
-RETCODE adfReadEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock* ent);
+PREFIX RETCODE adfReadEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock* ent);
 RETCODE adfWriteDirBlock(struct Volume* vol, SECTNUM nSect, struct bDirBlock *dir);
 RETCODE adfWriteEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock *ent);
 
@@ -80,7 +80,7 @@ PREFIX RETCODE adfChangeDir(struct Volume* vol, char *name);
 PREFIX RETCODE adfParentDir(struct Volume* vol);
 PREFIX RETCODE adfSetEntryAccess(struct Volume*, SECTNUM, char*, int32_t);
 PREFIX RETCODE adfSetEntryComment(struct Volume*, SECTNUM, char*, char*);
-SECTNUM adfNameToEntryBlk(struct Volume *vol, int32_t ht[], char* name, 
+PREFIX SECTNUM adfNameToEntryBlk(struct Volume *vol, int32_t ht[], char* name,
     struct bEntryBlock *entry, SECTNUM *);
 
 PREFIX void printEntry(struct Entry* entry);

@@ -46,7 +46,7 @@ struct Device {
 PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
 PREFIX void adfCloseDev ( struct Device * dev );
 
-int adfDevType ( struct Device * dev );
+PREFIX int adfDevType ( struct Device * dev );
 PREFIX void adfDeviceInfo ( struct Device * dev );
 
 PREFIX struct Device* adfMountDev ( char* filename, BOOL ro );

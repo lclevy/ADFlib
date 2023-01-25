@@ -63,14 +63,14 @@ RETCODE adfGetFileBlocks(struct Volume* vol, struct bFileHeaderBlock* entry,
 RETCODE adfFreeFileBlocks(struct Volume* vol, struct bFileHeaderBlock *entry);
 PREFIX int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *extN);
 
-int32_t adfPos2DataBlock(int32_t pos, int blockSize, int *posInExtBlk, int *posInDataBlk, int32_t *curDataN );
+PREFIX int32_t adfPos2DataBlock(int32_t pos, int blockSize, int *posInExtBlk, int *posInDataBlk, int32_t *curDataN );
 
 RETCODE adfWriteFileHdrBlock(struct Volume *vol, SECTNUM nSect, struct bFileHeaderBlock* fhdr);
 
 RETCODE adfReadDataBlock(struct Volume *vol, SECTNUM nSect, void *data);
 RETCODE adfWriteDataBlock(struct Volume *vol, SECTNUM nSect, void *data);
-RETCODE adfReadFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
-RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
+PREFIX RETCODE adfReadFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
+PREFIX RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
 
 PREFIX struct File* adfOpenFile(struct Volume *vol, char* name, char *mode);
 PREFIX void adfCloseFile(struct File *file);
