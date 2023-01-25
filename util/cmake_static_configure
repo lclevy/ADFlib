@@ -1,4 +1,4 @@
-
+#!/bin/sh
 # Generate configuration to build a static library
 #
 # Related discussion and info:

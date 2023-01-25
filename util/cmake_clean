@@ -1,9 +1,10 @@
+#!/bin/sh
+
 
 [ "$0"x != "util/cmake_clean"x ] && {
     echo "The script must be executed in the main project directory!"
     exit 1
 }
 #echo $0
-
 
 rm -rfv build/

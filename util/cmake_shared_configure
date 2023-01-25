@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # Generate configuration to build a shared library
 #
 # Related discussion and info:
@@ -6,7 +6,7 @@
 #
 
 BUILD_DLL=
-if [ x"${OSTYPE}" == x"cygwin" ]
+if [ "x${OSTYPE}" == "xcygwin" ]
 then
     BUILD_DLL=-DADFLIB_BUILD_DLL=ON
 fi
