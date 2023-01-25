@@ -6,7 +6,7 @@ Obviously, a requirement for building is installation of the chosen one.
 
 Testing require also the Check testing framework for C (link below).
 
-Building deb packages require typical tools for that (helper script uses
+Building deb packages require typical tools for that (ie. helper script uses
 debuild from devscripts).
 
 0.7.13 was tested mostly on:
@@ -21,7 +21,7 @@ and briefly on:
 Building with CMake
 --------------------
 There are helper scripts in the util/ directory, which should help doing quick
-builds. For instance, to build the release version:
+builds. For instance, to build a release version (both static and binary lib.):
 1. $ util/cmake_release_configure
 2. $ util/cmake_release_build
 
@@ -35,7 +35,7 @@ To clean the build subdirectory use:
 
 Native devices (generic/linux/win32) can be selected only by manually editing
 src/CMakelists.txt. At this stage, if you are not testing (caution, physical
-disk devices in use!) use the default: generic (a safe dummy device).
+storage/disk devices in use!) use the default: generic (a safe dummy device).
 
 
 Building with Autotools
@@ -62,10 +62,10 @@ WARNING: the native device type selected by default by autotools is the one
 Building with Visual Studio
 ----------------------------
 Existing CMake configuration should allow to build with VS. Just open
-the directory with the project (or possibly clone repo with VS).
+the directory with the project (or possibly clone the repo with VS).
 It should configure automatically, and it can be build as usual ("Build all").
 
-There are 2 debug and release configurations for VS, allowing to build
+There are 2 debug and 2 release configurations for VS, allowing to build
 a static or a shared (DLL) library. All use MSVC compiler (but this can be
 changed easily in CMake settings, eg. to clang ).
 
@@ -93,9 +93,9 @@ There are 2 sets of tests:
 Note that:
 - on Windows (Visual Studio, CygWin) tests with shared library will fail,
   unless the built library (src/adf.dll, cygadf.dll for CygWin) is copied
-  to the directories  with test binaries (it probably can be fixed and done
+  to the directories with test binaries (it probably can be fixed and done
   automatically but no time for it now; if sb has good solution for this,
-  help welcome).
+  help welcomed).
 
 
 Testing with CMake
@@ -118,7 +118,7 @@ Testing with Visual Studio
 
 Note that:
 - tests using shell scripts does not work - they require sh / bash
-  (which can installed and configured but not a standard thing on Windows...)
+  (can be installed and configured but not a standard thing on Windows...)
 
 
 Installation
