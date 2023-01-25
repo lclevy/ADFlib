@@ -2,7 +2,7 @@ libadf (0.7.13-1) unstable; urgency=medium
 
   * Initial packaging of version 0.7.13 for Debian.
 
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Mon, 24 Jan 2022 13:52:05 +0100
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Tue, 25 Jan 2022 22:46:05 +0100
 
 libadf (0.7.12-1) unstable; urgency=medium
 

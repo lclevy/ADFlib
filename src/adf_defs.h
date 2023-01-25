@@ -36,7 +36,7 @@
 #define ADFLIB_VERSION PACKAGE_VERSION
 #endif
 
-#define ADFLIB_DATE "January 24th, 2022"
+#define ADFLIB_DATE "January 25th, 2022"
 
 
 #define SECTNUM int32_t
