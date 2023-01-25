@@ -1,6 +1,11 @@
 
 configure_file (config.h.cmake.in config.h)
 
+# set DLL symbols export (if building a DLL)
+if (ADFLIB_BUILD_DLL)
+    add_compile_definitions(_EXPORTING)
+endif (ADFLIB_BUILD_DLL)
+
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/src/generic

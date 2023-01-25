@@ -28,7 +28,8 @@
  */ 
 
 //#ifdef WIN32DLL
-#ifdef _WIN32
+//#ifdef _WIN32
+#ifdef BUILD_DLL
 
 /* define declaration prefix for exporing symbols compiling a DLL library,
    and importing when compiling a client code

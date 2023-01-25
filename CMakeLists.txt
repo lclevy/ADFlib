@@ -43,6 +43,13 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT ${MINGW})
       $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
+OPTION(ADFLIB_BUILD_DLL "Build Windows DLL" OFF)
+
+if(ADFLIB_BUILD_DLL)
+#if(BUILD_SHARED_LIBS)
+    add_definitions(-DBUILD_DLL)
+endif(ADFLIB_BUILD_DLL)
+
 enable_testing()
 
 ADD_SUBDIRECTORY( src )
