@@ -114,7 +114,9 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_PROG_AR
-AC_PROG_LIBTOOL
+
+#AC_PROG_LIBTOOL - obsolete
+LT_INIT()
 
 
 # Checks for libraries.
