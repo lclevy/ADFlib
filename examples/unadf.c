@@ -46,7 +46,7 @@ typedef uint32_t mode_t;
 # define DIRSEP '/'
 #endif
 
-#define UNADF_VERSION "1.1"
+#define UNADF_VERSION "1.2"
 #define EXTRACT_BUFFER_SIZE 8192
 
 /* command-line arguments */
