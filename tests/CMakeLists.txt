@@ -32,7 +32,11 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_BINARY_DIR}/src)
 
 #message ("Check include dir: ${CHECK_INCLUDE_DIR}, libraries: ${CHECK_LIBRARIES}")
-include_directories(${CHECK_INCLUDE_DIR})
+#if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+#include_directories(${CHECK_INCLUDE_DIR})
+#else()
+add_compile_options(${CHECK_CFLAGS})
+#endif()
 
 add_executable ( test_adfPos2DataBlock
   test_adfPos2DataBlock.c
@@ -48,7 +52,8 @@ add_test ( test_adfDays2Date test_adfDays2Date )
 if ( "${CHECK_LIBRARIES}" STREQUAL "" )
   set (CHECK_LIBRARIES Check::check)
 else()
-  set (CHECK_LIBRARIES "${CHECK_LIBRARIES} -pthread")
+  #set (CHECK_LIBRARIES "${CHECK_LIBRARIES} -pthread")
+  set (CHECK_LIBRARIES "${CHECK_LDFLAGS}")
 endif()
 
 target_link_libraries ( test_adfPos2DataBlock PUBLIC
