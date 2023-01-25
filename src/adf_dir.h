@@ -84,7 +84,6 @@ SECTNUM adfNameToEntryBlk(struct Volume *vol, int32_t ht[], char* name,
     struct bEntryBlock *entry, SECTNUM *);
 
 PREFIX void printEntry(struct Entry* entry);
-void adfFreeDirList(struct List* list);
 
 #endif /* ADF_DIR_H */
 
