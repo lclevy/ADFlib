@@ -33,13 +33,30 @@ To clean the build subdirectory use:
 
 (all have to be configured again for building).
 
+Native devices (generic/linux/win32) can be selected only by manually editing
+src/CMakelists.txt. At this stage, if you are not testing (caution, physical
+disk devices in use!) use the default: generic (a safe dummy device).
+
 
 Building with Autotools
 ------------------------
 Standard way:
 1. $ ./autogen.sh
 2. $ ./configure
+   or better (see the warning below):
+   $ ./configure --enable-native-generic
 3. $ make
+
+Native devices can be selected with configure script switches:
+  --enable-native-generic  Enable generic native devices
+  --enable-native-linux    Enable Linux native devices
+  --enable-native-win32    Enable Win32 native devices
+
+WARNING: the native device type selected by default by autotools is the one
+         NATIVE FOR THE HOST OS(!), so using physical storage (disk)
+	 devices(!). At this stage, if you are not testing this functionality
+	 in a safe environment (like a VM), it is strongly advised to build
+	 only a generic/dummy native device.
 
 
 Building with Visual Studio
@@ -73,6 +90,13 @@ There are 2 sets of tests:
   like adf images)
 - tests/ - mainly unit tests; require Check testing framework (link below)
 
+Note that:
+- on Windows (Visual Studio, CygWin) tests with shared library will fail,
+  unless the built library (src/adf.dll, cygadf.dll for CygWin) is copied
+  to the directories  with test binaries (it probably can be fixed and done
+  automatically but no time for it now; if sb has good solution for this,
+  help welcome).
+
 
 Testing with CMake
 -------------------
@@ -93,12 +117,8 @@ Testing with Visual Studio
 "Run CTests".
 
 Note that:
-- tests with shared library will fail, unless the built library (src/adf.dll)
-  is copied to the directories with test binaries (it probably can be fixed
-  and done automatically but no time for it now;
-  if sb has good solution for this, help welcome)
 - tests using shell scripts does not work - they require sh / bash
-  (which can installed and configured but not standard things on Windows...)
+  (which can installed and configured but not a standard thing on Windows...)
 
 
 Installation
