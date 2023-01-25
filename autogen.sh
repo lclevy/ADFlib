@@ -6,10 +6,9 @@
 #then
 #  LIBTOOLIZE=libtoolize
 #fi
-#$LIBTOOLIZE --copy --force
 
-#
-# Set glibtoolize on Darwin (ie. MacOSX)
+
+# Set libtoolize (or glibtoolize on Darwin, ie. MacOSX)
 case `uname` in
        Darwin*)
                LIBTOOLIZE=glibtoolize
@@ -18,6 +17,7 @@ case `uname` in
                LIBTOOLIZE=libtoolize
 esac
 
+$LIBTOOLIZE --copy --force
 aclocal
 autoconf
 autoheader
