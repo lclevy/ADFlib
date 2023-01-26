@@ -7,7 +7,7 @@ on:
     branches: [ "citest" ]
 
 jobs:
-  build_and_test_ubuntu_cmake:
+  ubuntu_cmake_shared:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -27,3 +27,67 @@ jobs:
       run: sudo ldconfig
     - name: test command-line utils
       run: util/test_examples
+
+  ubuntu_cmake_debug:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: cmake_debug_configure
+      run: util/cmake_debug_configure
+    - name: cmake_debug_build
+      run: util/cmake_debug_build
+    - name: cmake_debug_test
+      run: util/cmake_debug_test
+    - name: cmake_debug_install
+      run: sudo bash util/cmake_debug_install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test command-line utils
+      run: util/test_examples
+
+jobs:
+  macosx_cmake_shared:
+    runs-on: macosx-latest
+    steps:
+    - uses: actions/checkout@v3
+#    - name: install prereq.
+#      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: cmake_shared_configure
+      run: util/cmake_shared_configure
+    - name: cmake_shared_build
+      run: util/cmake_shared_build
+    - name: cmake_shared_test
+      run: util/cmake_shared_test
+    - name: cmake_shared_install
+      run: sudo bash util/cmake_shared_install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test command-line utils
+      run: util/test_examples
+
+#  macosx_cmake_debug:
+#    runs-on: macosx-latest
+#    steps:
+#    - uses: actions/checkout@v3
+#    - name: install prereq.
+#      run: sudo apt-get update ; sudo apt-get install -y check
+#    - name: cmake_debug_configure
+#      run: util/cmake_debug_configure
+#    - name: cmake_debug_build
+#      run: util/cmake_debug_build
+#    - name: cmake_debug_test
+#      run: util/cmake_debug_test
+#    - name: cmake_debug_install
+#      run: sudo bash util/cmake_debug_install
+#    - name: check installation
+#      run: find /usr/local -iname '*adf*'
+#    - name: update ldconfig
+#      run: sudo ldconfig
+#    - name: test command-line utils
+#      run: util/test_examples
