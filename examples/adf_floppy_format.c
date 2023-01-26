@@ -82,7 +82,7 @@ int main ( int     argc,
 
 void usage ( void )
 {
-    printf ( "Usage:  adf_create_floppy filename label fstype\n\n"
+    printf ( "Usage:  adf_floppy_format filename label fstype\n\n"
 //             " where:\n"
              "   fstype can be 0-7: flags = 3 least significant bits\n"
              "         bit  set         clr\n"
