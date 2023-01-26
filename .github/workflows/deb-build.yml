@@ -32,7 +32,7 @@ jobs:
     - name: copy artifacts
       run:
         mkdir -v artifacts ;
-        cp -v ../*.deb ../*.gz ../*.xz artifacts/
+        cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
     - uses: actions/upload-artifact@v3
       with:
         name: ubuntu-deb
