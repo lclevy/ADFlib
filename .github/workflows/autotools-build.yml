@@ -35,9 +35,9 @@ jobs:
       run: adf_show_metadata arccsh.adf CSH
     - name: try adf_show_metadata dir
       run:
-        adf_show_metadata arccsh.adf c/
+        adf_show_metadata arccsh.adf c/ ;
         adf_show_metadata arccsh.adf l
     - name: try adf_create_floppy
       run: adf_floppy_create testflopdd1.adf dd
     - name: try adf_create_floppy
-      run: adf_floppy_format testflopdd1.adf 1
+      run: adf_floppy_format testflopdd1.adf TestFlopDD1 1

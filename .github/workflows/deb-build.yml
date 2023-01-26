@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: install prereq.
       run:
-        sudo apt-get update
+        sudo apt-get update &&
         sudo apt-get install -y check devscripts debhelper
     - name: debuild
       run: util/deb_build.sh
