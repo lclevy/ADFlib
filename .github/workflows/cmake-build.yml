@@ -93,7 +93,7 @@ jobs:
       run: sudo bash util/cmake_shared_install
     - name: check installation
       run: find /usr/local -iname '*adf*'
-    - name: update ldconfig
-      run: sudo ldconfig
+#    - name: update ldconfig
+#      run: sudo ldconfig
     - name: test command-line utils
       run: util/test_examples
