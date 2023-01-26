@@ -76,7 +76,7 @@ int main ( int     argc,
 
 void usage ( void )
 {
-    printf ( "Usage:  adf_create_floppy filename fdtype\n\n"
+    printf ( "Usage:  adf_floppy_create filename fdtype\n\n"
              "   fdtype can be:\n"
              "     'dd' -> 880K\n"
              "     'hd' -> 1760K\n"
