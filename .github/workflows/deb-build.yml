@@ -7,7 +7,7 @@ on:
     branches: [ "citest" ]
 
 jobs:
-  build_and_test_deb:
+  ubuntu_deb:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -28,3 +28,10 @@ jobs:
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
     - name: test command-line utils
       run: util/test_examples
+#https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu-deb
+        path: |
+          ../*.deb
+          ../*gz
