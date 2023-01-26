@@ -7,7 +7,7 @@ on:
     branches: [ "citest" ]
 
 jobs:
-  build_and_test_ubuntu:
+  build_and_test_ubuntu_native_dev_default:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,6 +17,29 @@ jobs:
       run: ./autogen.sh
     - name: configure
       run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test command-line utils
+      run: util/test_examples
+
+  build_and_test_ubuntu_native_dev_generic:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --enable-native-generic
     - name: make
       run: make
     - name: make check
