@@ -20,6 +20,6 @@ jobs:
     - name: list packages
       run: ls ..
     - name: install packages
-      run: dpkg -i ../*.deb
-    - name: try a commandline
-      run: unadf
+      run: sudo dpkg -i ../*.deb
+    - name: test command-line utils
+      run: util/test_examples
