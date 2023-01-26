@@ -29,9 +29,12 @@ jobs:
     - name: test command-line utils
       run: util/test_examples
 #https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    - name: copy artifacts
+      run:
+        mkdir -v artifacts
+        cp -v ../*.deb ../*.gz artifacts/
     - uses: actions/upload-artifact@v3
       with:
         name: ubuntu-deb
         path: |
-          ../*.deb
-          ../*gz
+          artifacts/
