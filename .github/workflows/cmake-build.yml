@@ -64,15 +64,39 @@ jobs:
     - name: cmake_shared_build
       shell: bash
       run: util/cmake_shared_build
+    - name: copy dll to dirs with test exe
+      shell: bash
+      run: |
+        cp -v build/shared/src/Debug/*.dll regtests/Test/
+        cp -v build/shared/src/Debug/*.dll tests/
     - name: cmake_shared_test
       shell: bash
       run: util/cmake_shared_test
-    - name: cmake_shared_install
+#    - name: cmake_shared_install
+#      shell: bash
+#      run: util/cmake_shared_install
+    - name: check build files
       shell: bash
-      run: util/cmake_shared_install
+      run: |
+        pwd
+        find
+    - name: prepare artifacts
+      shell: bash
+      run: |
+        mkdir artifacts
+        cp -v build/shared/src/Debug/*.dll \
+              build/shared/examples/Debug/*.exe \
+              artifacts/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-windows
+        path: |
+          artifacts/
     - name: test command-line utils
       shell: bash
-      run: util/test_examples
+      run: |
+        cp -v artifacts/* .
+        util/test_examples
 
   macos_cmake_shared:
     runs-on: macos-latest
