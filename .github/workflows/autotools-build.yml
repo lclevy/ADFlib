@@ -23,3 +23,11 @@ jobs:
       run: make check
     - name: make install
       run: sudo make install
+    - name: check installation
+      run: find /usr/local
+    - name: try unadf
+      run: unadf -r arccsh.adf
+    - name: try adf_show_metadata
+      run:
+        adf_show_metadata arccsh.adf && \
+        adf_show_metadata arccsh.adf CSH
