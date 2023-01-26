@@ -7,7 +7,7 @@ on:
     branches: [ "citest" ]
 
 jobs:
-  build_and_test_ubuntu_native_dev_default:
+  ubuntu_native_default:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
     - name: test command-line utils
       run: util/test_examples
 
-  build_and_test_ubuntu_native_dev_generic:
+  ubuntu_native_generic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
