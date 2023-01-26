@@ -49,7 +49,6 @@ jobs:
     - name: test command-line utils
       run: util/test_examples
 
-jobs:
   macosx_cmake_shared:
     runs-on: macosx-latest
     steps:
