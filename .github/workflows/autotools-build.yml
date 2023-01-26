@@ -24,7 +24,9 @@ jobs:
     - name: make install
       run: sudo make install
     - name: check installation
-      run: find /usr/local
+      run: find /usr/local/bin ; ls /usr/local/*.so*
+    - name: update ldconfig
+      run: sudo ldconfig
     - name: try unadf
       run: unadf -r arccsh.adf
     - name: try adf_show_metadata
