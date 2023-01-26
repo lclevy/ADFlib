@@ -20,7 +20,7 @@ jobs:
     - name: list packages
       run: ls ..
     - name: install packages
-      run: sudo dpkg -i ../*.deb
+      run: sudo dpkg -i ../*.deb ../*.ddeb
     - name: check installation
       run:
         dpkg -l 'libadf*' ;
@@ -31,8 +31,8 @@ jobs:
 #https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
     - name: copy artifacts
       run:
-        mkdir -v artifacts
-        cp -v ../*.deb ../*.gz artifacts/
+        mkdir -v artifacts ;
+        cp -v ../*.deb ../*.gz ../*.xz artifacts/
     - uses: actions/upload-artifact@v3
       with:
         name: ubuntu-deb
