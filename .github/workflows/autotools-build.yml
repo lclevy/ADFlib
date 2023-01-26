@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
     - name: autogen
       run: ./autogen.sh
     - name: configure
