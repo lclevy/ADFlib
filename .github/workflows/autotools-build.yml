@@ -24,7 +24,7 @@ jobs:
     - name: make install
       run: sudo make install
     - name: check installation
-      run: find /usr/local/bin ; ls /usr/local/*.so*
+      run: find /usr/local/bin ; ls /usr/local/lib/*.so*
     - name: update ldconfig
       run: sudo ldconfig
     - name: try unadf
