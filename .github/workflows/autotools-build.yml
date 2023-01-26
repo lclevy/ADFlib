@@ -41,3 +41,5 @@ jobs:
       run: adf_floppy_create testflopdd1.adf dd
     - name: try adf_create_floppy
       run: adf_floppy_format testflopdd1.adf TestFlopDD1 1
+    - name: try adf_show_metadata on created floppy
+      run: adf_show_metadata testflopdd1.adf
