@@ -8,5 +8,6 @@ CUR_DIR=`pwd`
 #[ ! -e build/shared/tests/testdata ] && { ln -vs -t build/shared/tests ${CUR_DIR}/tests/testdata ; }
 
 cd build/shared
-make test
+#make test
+ctest -C CTestTestfile.cmake  --progress -VV
 cd ${CUR_DIR}
