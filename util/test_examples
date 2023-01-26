@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#
+# A simple test of command-line utilities
+#
+
+run_cmd()
+{
+    echo "============================================================="
+    #stdbuf -oL
+    echo "executing:  ${1}"
+    $1
+}
+
+CMDS[0]="unadf -r arccsh.adf"
+CMDS[1]="adf_show_metadata arccsh.adf"
+CMDS[2]="adf_show_metadata arccsh.adf CSH"
+CMDS[3]="adf_show_metadata arccsh.adf c/"
+CMDS[4]="adf_show_metadata arccsh.adf l"
+CMDS[5]="adf_floppy_create testflopdd1.adf dd"
+CMDS[6]="adf_floppy_format testflopdd1.adf TestFlopDD1 1"
+CMDS[7]="adf_show_metadata testflopdd1.adf"
+CMDS[8]="rm -v testflopdd1.adf"
+
+#echo ${CMD[0]}
+for CMD in "${CMDS[@]}"
+do
+    run_cmd "${CMD}"
+done
