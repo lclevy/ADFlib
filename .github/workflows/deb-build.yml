@@ -21,5 +21,10 @@ jobs:
       run: ls ..
     - name: install packages
       run: sudo dpkg -i ../*.deb
+    - name: check installation
+      run:
+        dpkg -l 'libadf*' ;
+        dpkg -l 'libadf*' | grep "libadf" |
+        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
     - name: test command-line utils
       run: util/test_examples
