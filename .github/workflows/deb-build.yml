@@ -1,0 +1,23 @@
+name: ADFlib deb build/packaging
+
+on:
+  push:
+    branches: [ "citest" ]
+  pull_request:
+    branches: [ "citest" ]
+
+jobs:
+  build_and_test_deb:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check devscripts
+    - name: debuild
+      run: util/deb_build.sh
+    - name: list packages
+      run: ls ..
+    - name: install packages
+      run: dpkg -i ../*.deb
+    - name: try a commandline
+      run: unadf
