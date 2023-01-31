@@ -15,8 +15,15 @@ run_cmd()
 {
     echo "============================================================="
     #stdbuf -oL
-    echo "executing:  ${1}"
-    $1
+    if [ ${OSTYPE} == "msys" ]
+    then
+	EXEC=${1}.exe
+    else
+	EXEC=${1}
+    fi
+    shift
+    echo "executing:  ${EXEC} $@"
+    ${EXEC} $@
 }
 
 CMDS[0]="unadf -r arccsh.adf"
@@ -32,5 +39,5 @@ CMDS[8]="rm -v testflopdd1.adf"
 #echo ${CMD[0]}
 for CMD in "${CMDS[@]}"
 do
-    run_cmd "${CMD}"
+    run_cmd ${CMD}
 done
