@@ -4,6 +4,13 @@
 # A simple test of command-line utilities
 #
 
+[ x"$0" != x"util/test_examples" ] && {
+    echo "The script must be executed in the main project directory!"
+    exit 1
+}
+
+PATH=`pwd`/examples:$PATH
+
 run_cmd()
 {
     echo "============================================================="
