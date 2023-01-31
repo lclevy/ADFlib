@@ -95,8 +95,8 @@ jobs:
     - name: test command-line utils
       shell: bash
       run: |
-        cp -v artifacts/* .
-        util/test_examples
+#        cp -v artifacts/* .
+        PATH=`pwd`/artifacts:$PATH util/test_examples
 
   macos_cmake_shared:
     runs-on: macos-latest
