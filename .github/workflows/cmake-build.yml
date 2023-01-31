@@ -64,11 +64,14 @@ jobs:
     - name: cmake_shared_build
       shell: bash
       run: util/cmake_shared_build
-    - name: copy dll to dirs with test exe
+    - name: copy binaries to orig. dirs
       shell: bash
       run: |
-        cp -v build/shared/src/Debug/*.dll regtests/Test/
-        cp -v build/shared/src/Debug/*.dll tests/
+        cp -v build/shared/src/Debug/*.dll build/shared/regtests/Test/
+        cp -v build/shared/src/Debug/*.dll build/shared/tests/
+        cp -v build/shared/regtests/Test/Debug/*.exe build/shared/regtests/Test/
+        cp -v build/shared/tests/Debug/*.exe build/shared/tests/
+        cp -v build/shared/examples/Debug/*.exe build/shared/examples/
     - name: cmake_shared_test
       shell: bash
       run: util/cmake_shared_test
