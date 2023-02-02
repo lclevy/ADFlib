@@ -28,7 +28,6 @@
 
 #include"prefix.h"
 
-
 /* ----- ENVIRONMENT ----- */
 
 #define PR_VFCT			1
@@ -46,6 +45,9 @@ struct Env {
     void (*vFct)(char*);       /* verbose callback function */
     void (*wFct)(char*);       /* warning callback function */
     void (*eFct)(char*);       /* error callback function */
+    void (*vFctf)(const char * const format, ...); /* verbose cb formatted */
+    void (*wFctf)(const char * const format, ...); /* warning cb formatted */
+    void (*eFctf)(const char * const format, ...); /* error cb formatted */
 
     void (*notifyFct)(SECTNUM, int);
     BOOL useNotify;
