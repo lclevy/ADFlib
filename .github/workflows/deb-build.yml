@@ -26,9 +26,9 @@ jobs:
         dpkg -l 'libadf*' ;
         dpkg -l 'libadf*' | grep "libadf" |
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
-    - name: test command-line utils
-      run: util/test_examples
-#https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples
+    #https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
     - name: copy artifacts
       run:
         mkdir -v artifacts ;

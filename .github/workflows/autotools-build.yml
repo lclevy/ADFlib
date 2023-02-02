@@ -27,8 +27,8 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: util/test_examples
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples
 
   ubuntu_native_generic:
     runs-on: ubuntu-latest
@@ -50,5 +50,5 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: util/test_examples
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples
