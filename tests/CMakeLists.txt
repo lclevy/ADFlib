@@ -46,9 +46,6 @@ add_executable ( test_adfDays2Date
   test_adfDays2Date.c
 )
 
-add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
-add_test ( test_adfDays2Date test_adfDays2Date )
-
 if ( "${CHECK_LIBRARIES}" STREQUAL "" )
   set (CHECK_LIBRARIES Check::check)
 else()
@@ -65,3 +62,10 @@ target_link_libraries ( test_adfDays2Date PUBLIC
   adf
   ${CHECK_LIBRARIES}
 )
+
+configure_file(test_examples test_examples COPYONLY)
+
+add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
+add_test ( test_adfDays2Date test_adfDays2Date )
+add_test ( test_examples ${BASH_PROGRAM} test_examples )
+
