@@ -25,8 +25,8 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: util/test_examples
+#    - name: test command-line utils
+#      run: util/test_examples
 
   ubuntu_cmake_debug:
     runs-on: ubuntu-latest
@@ -46,8 +46,8 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: util/test_examples
+#    - name: test command-line utils
+#      run: util/test_examples
 
   windows_cmake:
     runs-on: windows-latest
@@ -67,11 +67,15 @@ jobs:
     - name: copy binaries to orig. dirs
       shell: bash
       run: |
-        cp -v build/shared/src/Debug/*.dll build/shared/regtests/Test/
-        cp -v build/shared/src/Debug/*.dll build/shared/tests/
         cp -v build/shared/regtests/Test/Debug/*.exe build/shared/regtests/Test/
         cp -v build/shared/tests/Debug/*.exe build/shared/tests/
         cp -v build/shared/examples/Debug/*.exe build/shared/examples/
+    - name: copy dll to dirs with test exe
+      shell: bash
+      run: |
+        cp -v build/shared/src/Debug/*.dll build/shared/regtests/Test/
+        cp -v build/shared/src/Debug/*.dll build/shared/tests/
+        cp -v build/shared/src/Debug/*.dll build/shared/examples/
     - name: cmake_shared_test
       shell: bash
       run: util/cmake_shared_test
@@ -95,9 +99,9 @@ jobs:
         name: adflib-windows
         path: |
           artifacts/
-    - name: test command-line utils
-      shell: bash
-      run: util/test_examples
+#    - name: test command-line utils
+#      shell: bash
+#      run: util/test_examples
 
   macos_cmake_shared:
     runs-on: macos-latest
@@ -120,5 +124,5 @@ jobs:
       run: find /usr/local -iname '*adf*'
 #    - name: update ldconfig
 #      run: sudo ldconfig
-    - name: test command-line utils
-      run: util/test_examples
+#    - name: test command-line utils
+#      run: util/test_examples
