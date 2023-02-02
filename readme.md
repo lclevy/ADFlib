@@ -24,7 +24,14 @@ It supports :
 It is written in portable C, and support the WinNT platform to access real drives.
 
 
-## unADF
+## Command-line utilities
+
+Examples directory contains some (example but already useful) command-line utilities.
+
+For usage info is shown when they are executed without any parameters.
+
+
+### unADF
 
 unADF is a unzip like for .ADF files :
 
@@ -41,6 +48,23 @@ unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
     -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)
     -d dir : extract to 'dir' directory
 ```
+
+### adf_floppy_create
+
+Creates an image of a floppy disk (empty, not formatted).
+
+
+### adf_floppy_format
+
+Formats/creates selected Amiga filesystem on a floppy disk image.
+
+
+### adf_show_metadata
+
+A low-level utility / diagnostic tool, showing metadata about a device / device
+image or a file/directory inside the Amiga filesystem. In particular, it shows
+contents of Amiga filesystem metadata blocks, it can help understand structure
+of Amiga filesystems (for anyone curious...).
 
 
 ## Credits:
