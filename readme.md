@@ -11,6 +11,7 @@ It supports :
 - multiple partitions harddisk dumps
 - UAE hardfiles
 - WinNT devices with the 'native driver' written by Dan Sutherland
+- Linux devices with the 'native driver' written by Tomasz Wolak
 - mount/unmount/create a device (real one or a dump file),
 - mount/unmount/create a volume (partition),
 - create/open/close/delete/rename/undel a file,
@@ -45,7 +46,7 @@ unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
 ## Credits:
 
 - main design and code : Laurent Clevy
-- recent fixes (2022): Tomasz Wolak
+- current maint. and recent fixes (2022): Tomasz Wolak
 - Bug fixes and C++ wrapper : Bjarke Viksoe (adfwrapper.h)
 - WinNT native driver : Dan Sutherland and Gary Harris
 
@@ -61,14 +62,8 @@ Stuart Caie fixed arbitrary directory traversal in [4ce14b2](https://github.com/
 
 ## Compilation
 
-The following commands should automatically detect the system 
-configuration and build the library and examples/unadf, 
-the ADF extractor binary.
-```
-./autogen.sh
-./configure
-make
-```
+See INSTALL file.
+
 
 ## Files
 
@@ -78,7 +73,8 @@ make
 - CHANGES : Detailed changes
 - src/ :	main library files
 - src/win32/ : WinNT native driver
-- src/generic/ :	native files templates
+- src/linux/ : Linux native driver (experimental!)
+- src/generic/ : native files templates
 - boot/ :	Bootblocks that might by used to put on floppy disks
 - doc/ :	The library developpers documentation 
 - doc/FAQ/ : The Amiga Filesystem explained
@@ -105,6 +101,25 @@ If the WIN32DLL variable is defined in the library code, public functions
 are preceded by the '__declspec(dllexport)' directive. If this same
 variable is defined, the '__declspec(dllimport)' is put before the functions
 prototypes in the 'adflib.h' library include file.
+
+
+## Current status
+Most of the code has certain age. While there where some improvements done,
+there is still a long way to go. What you should be aware of:
+- it is mostly tested with ADF disk (ie. floppy) images, not native devices
+- native device support means accessing physical devices(!), please know what you are doing
+  (eg. do not open your C:\ on windows or /dev/sda on Linux and call a function for creating
+  Amiga filesystem on it... unless you really want to reinstall your system and restore your
+  data from a backup...)
+- also, since native devices are not much tested - consider them as testing/experimental
+  and treat as such (ie. use in a safe environment like a VM) and if you do not need them,
+  do not use or even compile them with your lib (use only "generic")
+- read support is rather well tested
+- write support is found to be very buggy(!)
+  - works only if you create a new file, write it and close it
+  - any reopening and appending or overwriting the data in a file with fail (and may currupt
+    your disk/image, so be aware)
+
 
 ## Possible bugs
 
