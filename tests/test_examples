@@ -1,15 +1,13 @@
 #!/bin/bash
-
 #
 # A simple test of command-line utilities
 #
 
-[ x"$0" != x"util/test_examples" ] && {
-    echo "The script must be executed in the main project directory!"
-    exit 1
-}
+PATH=`pwd`/../examples:$PATH
+#echo "PATH: ${PATH}"
+#EXAMPLES_PATH=../examples
 
-PATH=`pwd`/examples:$PATH
+set -e
 
 run_cmd()
 {
@@ -23,6 +21,7 @@ run_cmd()
     fi
     shift
     echo "executing:  ${EXEC} $@"
+    #${EXAMPLES_PATH}/${EXEC} $@
     ${EXEC} $@
 }
 
@@ -36,7 +35,6 @@ CMDS[6]="adf_floppy_format testflopdd1.adf TestFlopDD1 1"
 CMDS[7]="adf_show_metadata testflopdd1.adf"
 CMDS[8]="rm -v testflopdd1.adf"
 
-#echo ${CMD[0]}
 for CMD in "${CMDS[@]}"
 do
     run_cmd ${CMD}
