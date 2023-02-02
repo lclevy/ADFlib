@@ -5,7 +5,8 @@ check_PROGRAMS = \
     test_adfDays2Date \
     test_adfPos2DataBlock
 
-TESTS = $(check_PROGRAMS)
+TESTS = $(check_PROGRAMS) \
+    test_examples
 
 ADFLIBS = $(top_builddir)/src/libadf.la
 if ADFLIB_OS_CYGWIN
