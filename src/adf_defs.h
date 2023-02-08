@@ -30,12 +30,12 @@
 
 #include <stdint.h>
 
-#include "config.h"
+//#include "config.h"
 /* autotools defines this */
-#ifdef PACKAGE_VERSION
-#define ADFLIB_VERSION PACKAGE_VERSION
-#endif
-
+//#ifdef PACKAGE_VERSION
+//#define ADFLIB_VERSION PACKAGE_VERSION
+//#endif
+#define ADFLIB_VERSION "0.7.13"
 #define ADFLIB_DATE "January 25th, 2022"
 
 
