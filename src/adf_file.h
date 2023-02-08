@@ -35,14 +35,14 @@
 /* ----- FILE ----- */
 
 struct AdfFile {
-    struct AdfVolume *volume;
+    struct AdfVolume *        volume;
 
-    struct bFileHeaderBlock* fileHdr;
-    void *currentData;
-    struct bFileExtBlock* currentExt;
+    struct bFileHeaderBlock * fileHdr;
+    void *                    currentData;
+    struct bFileExtBlock *    currentExt;
 
-    int32_t nDataBlock;  /* current data block number */
-    SECTNUM curDataPtr;  /* sector number of current data block */
+    int32_t  nDataBlock;  /* current data block number */
+    SECTNUM  curDataPtr;  /* sector number of current data block */
     uint32_t pos;
 
     int posInDataBlk;
@@ -51,11 +51,11 @@ struct AdfFile {
 };
 
 struct AdfFileBlocks {
-    SECTNUM header;
-    int32_t nbExtens;
-    SECTNUM* extens;
-    int32_t nbData;
-    SECTNUM* data;
+    SECTNUM   header;
+    int32_t   nbExtens;
+    SECTNUM * extens;
+    int32_t   nbData;
+    SECTNUM * data;
 };
 
 RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
@@ -65,9 +65,16 @@ RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
 RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
                             struct bFileHeaderBlock * entry );
 
-PREFIX int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *extN);
+PREFIX int32_t adfFileRealSize ( uint32_t  size,
+                                 int       blockSize,
+                                 int32_t * dataN,
+                                 int32_t * extN );
 
-PREFIX int32_t adfPos2DataBlock(int32_t pos, int blockSize, int *posInExtBlk, int *posInDataBlk, int32_t *curDataN );
+PREFIX int32_t adfPos2DataBlock ( int32_t   pos,
+                                  int       blockSize,
+                                  int *     posInExtBlk,
+                                  int *     posInDataBlk,
+                                  int32_t * curDataN );
 
 RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
                                SECTNUM                   nSect,
