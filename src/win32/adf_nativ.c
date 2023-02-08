@@ -42,8 +42,6 @@ RETCODE Win32InitDevice ( struct AdfDevice * dev,
                           char *             lpstrName,
                           BOOL               ro )
 {
-	char strTempName[3];
-
 	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
             malloc ( sizeof(struct AdfNativeDevice) );
 	if (!nDev) {
@@ -57,6 +55,7 @@ RETCODE Win32InitDevice ( struct AdfDevice * dev,
 		return RC_ERROR;													/* BV */
 	}
 
+	char strTempName[3];
 	strTempName[0] = lpstrName[1];
 	strTempName[1] = lpstrName[2];
 	strTempName[2] = '\0';
