@@ -42,7 +42,7 @@ union u{
     char c[4];
     };
 
-struct Env adfEnv;
+struct AdfEnv adfEnv;
 
 
 void rwHeadAccess(SECTNUM physical, SECTNUM logical, BOOL write)

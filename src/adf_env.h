@@ -41,7 +41,7 @@
 #define PR_RWACCESS 	9
 #define PR_USE_RWACCESS 10
 
-struct Env {
+struct AdfEnv {
     void (*vFct)(char*);       /* verbose callback function */
     void (*wFct)(char*);       /* warning callback function */
     void (*eFct)(char*);       /* error callback function */
@@ -72,7 +72,7 @@ PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();
 PREFIX char* adfGetVersionDate();
 
-extern struct Env adfEnv;
+extern struct AdfEnv adfEnv;
 
 #endif /* ADF_ENV_H */
 /*##########################################################################*/
