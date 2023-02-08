@@ -72,37 +72,44 @@ void adfFlushFile(struct AdfFile * file)
     struct bEntryBlock parent;
     struct bOFSDataBlock *data;
 
-    if (file->currentExt) {
-        if (file->writeMode)
-            adfWriteFileExtBlock(file->volume, file->currentExt->headerKey,
-                file->currentExt);
-    }
-    if (file->currentData) {
-        if (file->writeMode) {
-            file->fileHdr->byteSize = file->pos;
-	        if (isOFS(file->volume->dosType)) {
-                data = (struct bOFSDataBlock *)file->currentData;
-                data->dataSize = file->posInDataBlk;
-            }
-            if (file->fileHdr->byteSize>0)
-                adfWriteDataBlock(file->volume, file->curDataPtr, 
-				    file->currentData);
-        }
-    }
-    if (file->writeMode) {
-        file->fileHdr->byteSize = file->pos;
-/*printf("pos=%ld\n",file->pos);*/
-        adfTime2AmigaTime(adfGiveCurrentTime(),
-            &(file->fileHdr->days),&(file->fileHdr->mins),&(file->fileHdr->ticks) );
-        adfWriteFileHdrBlock(file->volume, file->fileHdr->headerKey, file->fileHdr);
+    if ( ! file->writeMode )
+        return;
 
-	    if (isDIRCACHE(file->volume->dosType)) {
-/*printf("parent=%ld\n",file->fileHdr->parent);*/
-            adfReadEntryBlock(file->volume, file->fileHdr->parent, &parent);
-            adfUpdateCache(file->volume, &parent, (struct bEntryBlock*)file->fileHdr,FALSE);
-        }
-        adfUpdateBitmap(file->volume);
+    if (file->currentExt) {
+        adfWriteFileExtBlock ( file->volume,
+                               file->currentExt->headerKey,
+                               file->currentExt );
     }
+
+    if (file->currentData) {
+        file->fileHdr->byteSize = file->pos;
+        if ( isOFS ( file->volume->dosType ) ) {
+            data = (struct bOFSDataBlock *) file->currentData;
+            data->dataSize = file->posInDataBlk;
+        }
+        if ( file->fileHdr->byteSize > 0 )
+            adfWriteDataBlock ( file->volume,
+                                file->curDataPtr,
+                                file->currentData );
+    }
+
+    file->fileHdr->byteSize = file->pos;
+/*printf("pos=%ld\n",file->pos);*/
+    adfTime2AmigaTime ( adfGiveCurrentTime(),
+                        &(file->fileHdr->days),
+                        &(file->fileHdr->mins),
+                        &(file->fileHdr->ticks) );
+    adfWriteFileHdrBlock ( file->volume,
+                           file->fileHdr->headerKey,
+                           file->fileHdr );
+
+    if ( isDIRCACHE ( file->volume->dosType ) ) {
+/*printf("parent=%ld\n",file->fileHdr->parent);*/
+        adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );
+        adfUpdateCache ( file->volume, &parent,
+                         (struct bEntryBlock *) file->fileHdr, FALSE );
+    }
+    adfUpdateBitmap ( file->volume );
 }
 
 
