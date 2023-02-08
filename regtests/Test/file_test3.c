@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     struct AdfDevice *hd;
     struct AdfVolume *vol;
-    struct adfFile *file;
+    struct AdfFile *file;
     unsigned char buf[600];
     long n;
     FILE *out;

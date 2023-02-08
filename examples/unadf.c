@@ -397,7 +397,7 @@ void extract_filepath(struct AdfVolume *vol, char *filepath)
 /* copies a file from the volume to a given output filename */
 void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms)
 {
-    struct adfFile *f = NULL;
+    struct AdfFile *f = NULL;
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;
 

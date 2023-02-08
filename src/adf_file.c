@@ -67,7 +67,7 @@ void adfFileTruncate ( struct AdfVolume * vol,
  * adfFileFlush
  *
  */
-void adfFlushFile(struct adfFile * file)
+void adfFlushFile(struct AdfFile * file)
 {
     struct bEntryBlock parent;
     struct bOFSDataBlock *data;
@@ -250,7 +250,7 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
  *
  */
 
-static void adfFileSeekStart ( struct adfFile * file )
+static void adfFileSeekStart ( struct AdfFile * file )
 {
     file->pos = 0;
     file->posInExtBlk = 0;
@@ -261,7 +261,7 @@ static void adfFileSeekStart ( struct adfFile * file )
 }
 
 
-static void adfFileSeekOFS ( struct adfFile * file,
+static void adfFileSeekOFS ( struct AdfFile * file,
                              uint32_t         pos )
 {
     adfFileSeekStart ( file );
@@ -286,7 +286,7 @@ static void adfFileSeekOFS ( struct adfFile * file,
 }
 
 
-static RETCODE adfFileSeekExt ( struct adfFile * file,
+static RETCODE adfFileSeekExt ( struct AdfFile * file,
                                 uint32_t         pos )
 {
     file->pos = min ( pos, file->fileHdr->byteSize );
@@ -327,7 +327,7 @@ static RETCODE adfFileSeekExt ( struct adfFile * file,
     return RC_OK;
 }
 
-void adfFileSeek(struct adfFile * file, uint32_t pos)
+void adfFileSeek(struct AdfFile * file, uint32_t pos)
 {
     if ( file->pos == pos )
         return;
@@ -343,11 +343,11 @@ void adfFileSeek(struct adfFile * file, uint32_t pos)
  * adfFileOpen
  *
  */ 
-struct adfFile * adfOpenFile ( struct AdfVolume * vol,
+struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
                                char *             name,
                                char *             mode )
 {
-    struct adfFile *file;
+    struct AdfFile *file;
     SECTNUM nSect;
     struct bEntryBlock entry, parent;
     BOOL write;
@@ -395,7 +395,7 @@ struct adfFile * adfOpenFile ( struct AdfVolume * vol,
         }
     }
 
-    file = (struct adfFile *) malloc (sizeof(struct adfFile));
+    file = (struct AdfFile *) malloc (sizeof(struct AdfFile));
     if (!file) { (*adfEnv.wFct)("adfFileOpen : malloc"); return NULL; }
     file->fileHdr = (struct bFileHeaderBlock*)malloc(sizeof(struct bFileHeaderBlock));
     if (!file->fileHdr) {
@@ -440,7 +440,7 @@ struct adfFile * adfOpenFile ( struct AdfVolume * vol,
  * adfCloseFile
  *
  */
-void adfCloseFile(struct adfFile * file)
+void adfCloseFile(struct AdfFile * file)
 {
 
     if (file==0)
@@ -466,7 +466,7 @@ void adfCloseFile(struct adfFile * file)
  * adfReadFile
  *
  */
-int32_t adfReadFile(struct adfFile * file, int32_t n, uint8_t *buffer)
+int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
 {
     int32_t bytesRead;
     uint8_t *dataPtr, *bufPtr;
@@ -511,7 +511,7 @@ int32_t adfReadFile(struct adfFile * file, int32_t n, uint8_t *buffer)
  * adfEndOfFile
  *
  */
-BOOL adfEndOfFile(struct adfFile* file)
+BOOL adfEndOfFile(struct AdfFile* file)
 {
     return(file->eof);
 }
@@ -521,7 +521,7 @@ BOOL adfEndOfFile(struct adfFile* file)
  * adfReadNextFileBlock
  *
  */
-RETCODE adfReadNextFileBlock(struct adfFile* file)
+RETCODE adfReadNextFileBlock(struct AdfFile* file)
 {
     SECTNUM nSect;
     struct bOFSDataBlock *data;
@@ -570,7 +570,7 @@ RETCODE adfReadNextFileBlock(struct adfFile* file)
  * adfWriteFile
  *
  */
-int32_t adfWriteFile(struct adfFile *file, int32_t n, uint8_t *buffer)
+int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
 {
     int32_t bytesWritten;
     uint8_t *dataPtr, *bufPtr;
@@ -622,7 +622,7 @@ int32_t adfWriteFile(struct adfFile *file, int32_t n, uint8_t *buffer)
  * adfCreateNextFileBlock
  *
  */
-SECTNUM adfCreateNextFileBlock(struct adfFile* file)
+SECTNUM adfCreateNextFileBlock(struct AdfFile* file)
 {
     SECTNUM nSect, extSect;
     struct bOFSDataBlock *data;
@@ -866,7 +866,7 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfReadFileExtBlockN ( struct adfFile *       file,
+RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
                                int32_t                extBlock,
                                struct bFileExtBlock * fext )
 {
@@ -925,7 +925,7 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
 
 #ifdef DEBUG_ADF_FILE
 
-static void show_File ( const struct adfFile * const file )
+static void show_File ( const struct AdfFile * const file )
 {
     printf ( "\nstruct File:\n"
              //"volume:\t0x%x

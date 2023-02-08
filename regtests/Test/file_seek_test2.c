@@ -42,7 +42,7 @@ test_file_t test_file_ffs = {
 
 int run_multiple_seek_tests ( test_file_t * test_data );
 
-int test_single_seek ( struct adfFile * const file_adf,
+int test_single_seek ( struct AdfFile * const file_adf,
                        FILE * const           file_local,
                        unsigned int           offset );
 
@@ -97,7 +97,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct adfFile * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
+    struct AdfFile * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );
@@ -130,7 +130,7 @@ cleanup:
 }
 
 
-int test_single_seek ( struct adfFile * const file_adf,
+int test_single_seek ( struct AdfFile * const file_adf,
                        FILE * const           file_local,
                        unsigned int           offset )
 {

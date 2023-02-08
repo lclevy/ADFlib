@@ -26,7 +26,7 @@ typedef struct reading_test_s {
 
 int test_hlink_read ( reading_test_t * test_data );
 
-int test_single_read ( struct adfFile * const file_adf,
+int test_single_read ( struct AdfFile * const file_adf,
                        unsigned int           offset,
                        unsigned char          expected_value );
 
@@ -145,7 +145,7 @@ int test_hlink_read ( reading_test_t * test_data )
         }
     }
 
-    struct adfFile * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
+    struct AdfFile * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );
@@ -171,7 +171,7 @@ clean_up:
 }
 
 
-int test_single_read ( struct adfFile * const file_adf,
+int test_single_read ( struct AdfFile * const file_adf,
                        unsigned int           offset,
                        unsigned char          expected_value )
 {

@@ -34,7 +34,7 @@
 
 /* ----- FILE ----- */
 
-struct adfFile {
+struct AdfFile {
     struct AdfVolume *volume;
 
     struct bFileHeaderBlock* fileHdr;
@@ -89,32 +89,32 @@ PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
                                       SECTNUM                nSect,
                                       struct bFileExtBlock * fext );
 
-PREFIX struct adfFile * adfOpenFile ( struct AdfVolume * vol,
+PREFIX struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
                                       char *             name,
                                       char *             mode );
 
-PREFIX void adfCloseFile ( struct adfFile * file );
+PREFIX void adfCloseFile ( struct AdfFile * file );
 
-PREFIX int32_t adfReadFile ( struct adfFile * file,
+PREFIX int32_t adfReadFile ( struct AdfFile * file,
                              int32_t          n,
                              uint8_t *        buffer );
 
-PREFIX BOOL adfEndOfFile ( struct adfFile * file );
+PREFIX BOOL adfEndOfFile ( struct AdfFile * file );
 
-PREFIX void adfFileSeek ( struct adfFile * file,
+PREFIX void adfFileSeek ( struct AdfFile * file,
                           uint32_t         pos );		/* BV */
 
-RETCODE adfReadNextFileBlock ( struct adfFile * file );
+RETCODE adfReadNextFileBlock ( struct AdfFile * file );
 
-PREFIX int32_t adfWriteFile ( struct adfFile * file,
+PREFIX int32_t adfWriteFile ( struct AdfFile * file,
                               int32_t          n,
                               uint8_t *        buffer );
 
-SECTNUM adfCreateNextFileBlock ( struct adfFile * file );
+SECTNUM adfCreateNextFileBlock ( struct AdfFile * file );
 
-PREFIX void adfFlushFile ( struct adfFile * file );
+PREFIX void adfFlushFile ( struct AdfFile * file );
 
-RETCODE adfReadFileExtBlockN ( struct adfFile *       file,
+RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
                                int32_t                extBlock,
                                struct bFileExtBlock * fext );
 #endif /* ADF_FILE_H */

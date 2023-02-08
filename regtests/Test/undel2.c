@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     struct List *list, *cell;
     struct GenBlock *block;
     BOOL true = TRUE;
-    struct adfFile *file;
+    struct AdfFile *file;
     unsigned char buf[600];
     long n;
     FILE *out;
