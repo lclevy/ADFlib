@@ -110,9 +110,8 @@ RETCODE myReleaseDevice ( struct AdfDevice * dev )
  */
 void adfInitNativeFct()
 {
-    struct nativeFunctions *nFct;
-
-    nFct = (struct nativeFunctions*)adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct =
+        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
     nFct->adfInitDevice = myInitDevice ;
     nFct->adfNativeReadSector = myReadSector ;

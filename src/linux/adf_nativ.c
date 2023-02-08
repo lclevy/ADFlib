@@ -174,8 +174,8 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
  */
 void adfInitNativeFct()
 {
-    struct nativeFunctions * nFct =
-        ( struct nativeFunctions * ) adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct =
+        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
     nFct->adfInitDevice        = adfLinuxInitDevice;
     nFct->adfNativeReadSector  = adfLinuxReadSector;

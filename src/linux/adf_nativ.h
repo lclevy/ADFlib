@@ -41,7 +41,7 @@ struct AdfNativeDevice {
     int fd;
 };
 
-struct nativeFunctions {
+struct AdfNativeFunctions {
     RETCODE (*adfInitDevice)( struct AdfDevice *, char *, BOOL );
     RETCODE (*adfNativeReadSector)( struct AdfDevice *, int32_t, int, uint8_t * );
     RETCODE (*adfNativeWriteSector)( struct AdfDevice *, int32_t, int, uint8_t * );

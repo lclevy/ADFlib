@@ -186,7 +186,7 @@ void adfEnvInitDefault()
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
 */
-    adfEnv.nativeFct=(struct nativeFunctions*)malloc(sizeof(struct nativeFunctions));
+    adfEnv.nativeFct=(struct AdfNativeFunctions*)malloc(sizeof(struct AdfNativeFunctions));
     if (!adfEnv.nativeFct) (*adfEnv.wFct)("adfInitDefaultEnv : malloc");
 
     adfInitNativeFct();

@@ -65,7 +65,7 @@ struct AdfDevice * adfOpenDev ( char * filename, BOOL ro )
     dev->readOnly = ro;
 
     /* switch between dump files and real devices */
-    struct nativeFunctions * nFct = adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct = adfEnv.nativeFct;
     dev->isNativeDev = ( *nFct->adfIsDevNative )( filename );
 
     RETCODE rc;
@@ -129,7 +129,7 @@ void adfCloseDev ( struct AdfDevice * dev )
     }
 
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         ( *nFct->adfReleaseDevice )( dev );
     } else
         adfReleaseDumpDevice ( dev );
@@ -302,7 +302,7 @@ RETCODE adfReadBlockDev ( struct AdfDevice * dev,
 
 /*printf("pSect R =%ld\n",pSect);*/
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeReadSector)( dev, pSect, size, buf );
     } else
         rc = adfReadDumpSector( dev, pSect, size, buf );
@@ -320,7 +320,7 @@ RETCODE adfWriteBlockDev ( struct AdfDevice * dev,
 
 /*printf("nativ=%d\n",dev->isNativeDev);*/
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeWriteSector)( dev, pSect, size, buf );
     } else
         rc = adfWriteDumpSector ( dev, pSect, size, buf );

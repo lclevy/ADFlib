@@ -41,7 +41,7 @@ struct AdfNativeDevice {
     FILE* fd;
 };
 
-struct nativeFunctions{
+struct AdfNativeFunctions {
     /* called by adfMount() */
     RETCODE (*adfInitDevice)(struct AdfDevice*, char*,BOOL);
     /* called by adfReadBlock() */

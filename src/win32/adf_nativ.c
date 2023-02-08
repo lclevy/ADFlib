@@ -151,9 +151,8 @@ RETCODE Win32ReleaseDevice ( struct AdfDevice * dev )
 
 void adfInitNativeFct()
 {
-	struct nativeFunctions *nFct;
-
-	nFct = (struct nativeFunctions*)adfEnv.nativeFct;
+	struct AdfNativeFunctions * nFct =
+            ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
 	nFct->adfInitDevice = Win32InitDevice;
 	nFct->adfNativeReadSector = Win32ReadSector;
