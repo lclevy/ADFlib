@@ -90,7 +90,7 @@ int run_chdir_tests ( chdir_test_t * test_data )
              test_data->image );
 //#endif
 
-    struct adfDevice * const dev = adfMountDev ( test_data->image, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image );

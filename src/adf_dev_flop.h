@@ -6,9 +6,9 @@
 #include "adf_dev.h"
 #include "prefix.h"
 
-RETCODE adfMountFlop ( struct adfDevice * dev );
+RETCODE adfMountFlop ( struct AdfDevice * dev );
 
-PREFIX RETCODE adfCreateFlop ( struct adfDevice * dev,
+PREFIX RETCODE adfCreateFlop ( struct AdfDevice * dev,
                                char *             volName,
                                int                volType );
 #endif

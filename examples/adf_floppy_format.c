@@ -30,7 +30,7 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct adfDevice * device = adfMountDev ( adfname, FALSE );
+    struct AdfDevice * device = adfMountDev ( adfname, FALSE );
     if ( device ) {
         fprintf ( stderr, "The floppy disk %s already contains a filesystem - aborting...\n",
                   adfname );

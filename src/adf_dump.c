@@ -44,7 +44,7 @@
  * adfInitDumpDevice
  *
  */
-RETCODE adfInitDumpDevice ( struct adfDevice * dev,
+RETCODE adfInitDumpDevice ( struct AdfDevice * dev,
                             char *             name,
                             BOOL               ro )
 {
@@ -82,7 +82,7 @@ RETCODE adfInitDumpDevice ( struct adfDevice * dev,
  * adfReadDumpSector
  *
  */
-RETCODE adfReadDumpSector ( struct adfDevice * dev,
+RETCODE adfReadDumpSector ( struct AdfDevice * dev,
                             int32_t            n,
                             int                size,
                             uint8_t *          buf )
@@ -108,7 +108,7 @@ RETCODE adfReadDumpSector ( struct adfDevice * dev,
  * adfWriteDumpSector
  *
  */
-RETCODE adfWriteDumpSector ( struct adfDevice * dev,
+RETCODE adfWriteDumpSector ( struct AdfDevice * dev,
                              int32_t            n,
                              int                size,
                              uint8_t *          buf )
@@ -128,7 +128,7 @@ RETCODE adfWriteDumpSector ( struct adfDevice * dev,
  * adfReleaseDumpDevice
  *
  */
-RETCODE adfReleaseDumpDevice ( struct adfDevice * dev )
+RETCODE adfReleaseDumpDevice ( struct AdfDevice * dev )
 {
     fclose ( dev->fd );
 
@@ -142,7 +142,7 @@ RETCODE adfReleaseDumpDevice ( struct adfDevice * dev )
  * adfCreateHdFile
  *
  */
-RETCODE adfCreateHdFile ( struct adfDevice * dev,
+RETCODE adfCreateHdFile ( struct AdfDevice * dev,
                           char *             volName,
                           int                volType )
 {
@@ -174,7 +174,7 @@ RETCODE adfCreateHdFile ( struct adfDevice * dev,
  *
  * returns NULL if failed
  */ 
-struct adfDevice * adfCreateDumpDevice ( char *  filename,
+struct AdfDevice * adfCreateDumpDevice ( char *  filename,
                                          int32_t cylinders,
                                          int32_t heads,
                                          int32_t sectors )
@@ -183,8 +183,8 @@ struct adfDevice * adfCreateDumpDevice ( char *  filename,
 /*    int32_t i;*/
     int r;
 	
-    struct adfDevice * dev = (struct adfDevice *)
-        malloc (sizeof(struct adfDevice));
+    struct AdfDevice * dev = (struct AdfDevice *)
+        malloc (sizeof(struct AdfDevice));
     if (!dev) { 
         (*adfEnv.eFct)("adfCreateDumpDevice : malloc dev");
         return NULL;

@@ -42,31 +42,31 @@ struct nativeDevice {
 };
 
 struct nativeFunctions {
-    RETCODE (*adfInitDevice)( struct adfDevice *, char *, BOOL );
-    RETCODE (*adfNativeReadSector)( struct adfDevice *, int32_t, int, uint8_t * );
-    RETCODE (*adfNativeWriteSector)( struct adfDevice *, int32_t, int, uint8_t * );
+    RETCODE (*adfInitDevice)( struct AdfDevice *, char *, BOOL );
+    RETCODE (*adfNativeReadSector)( struct AdfDevice *, int32_t, int, uint8_t * );
+    RETCODE (*adfNativeWriteSector)( struct AdfDevice *, int32_t, int, uint8_t * );
     BOOL (*adfIsDevNative)(char*);
-    RETCODE (*adfReleaseDevice)(struct adfDevice* dev);
+    RETCODE (*adfReleaseDevice)(struct AdfDevice* dev);
 };
 
 void adfInitNativeFct();
 
 
-RETCODE adfLinuxReadSector ( struct adfDevice * dev,
+RETCODE adfLinuxReadSector ( struct AdfDevice * dev,
                              int32_t            n,
                              int                size,
                              uint8_t *          buf );
 
-RETCODE adfLinuxWriteSector ( struct adfDevice * dev,
+RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
                               int32_t            n,
                               int                size,
                               uint8_t *          buf );
 
-RETCODE adfLinuxInitDevice ( struct adfDevice * dev,
+RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
                              char *             name,
                              BOOL               ro );
 
-RETCODE adfLinuxReleaseDevice ( struct adfDevice * dev );
+RETCODE adfLinuxReleaseDevice ( struct AdfDevice * dev );
 
 BOOL adfLinuxIsDevNative ( char * );
 

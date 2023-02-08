@@ -41,30 +41,30 @@ struct nativeDevice{
 };
 
 struct nativeFunctions {
-	RETCODE (*adfInitDevice)(struct adfDevice *, char*, BOOL);
-	RETCODE (*adfNativeReadSector)(struct adfDevice *, long, int, unsigned char*);
-	RETCODE (*adfNativeWriteSector)(struct adfDevice *, long, int, unsigned char*);
+	RETCODE (*adfInitDevice)(struct AdfDevice *, char*, BOOL);
+	RETCODE (*adfNativeReadSector)(struct AdfDevice *, long, int, unsigned char*);
+	RETCODE (*adfNativeWriteSector)(struct AdfDevice *, long, int, unsigned char*);
 	BOOL (*adfIsDevNative)(char*);
-	RETCODE (*adfReleaseDevice)(struct adfDevice * dev);
+	RETCODE (*adfReleaseDevice)(struct AdfDevice * dev);
 };
 
 void adfInitNativeFct();
 
-RETCODE Win32ReadSector ( struct adfDevice * dev,
+RETCODE Win32ReadSector ( struct AdfDevice * dev,
                           long               n,
                           int                size,
                           unsigned char *    buf );
 
-RETCODE Win32WriteSector ( struct adfDevice * dev,
+RETCODE Win32WriteSector ( struct AdfDevice * dev,
                            long               n,
                            int                size,
                            unsigned char *    buf );
 
-RETCODE Win32InitDevice ( struct adfDevice * dev,
+RETCODE Win32InitDevice ( struct AdfDevice * dev,
                           char *             name,
                           BOOL               ro );
 
-RETCODE Win32ReleaseDevice ( struct adfDevice * dev );
+RETCODE Win32ReleaseDevice ( struct AdfDevice * dev );
 BOOL Win32IsDevNative(char*);
 
 #endif /* ndef ADF_NATIV_H */

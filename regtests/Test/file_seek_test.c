@@ -120,7 +120,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
              test_data->image_filename, test_data->filename );
 #endif
 
-    struct adfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );

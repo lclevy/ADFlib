@@ -42,7 +42,7 @@
  *
  * must fill 'dev->size'
  */
-RETCODE adfLinuxInitDevice ( struct adfDevice * dev,
+RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
                              char *             name,
                              BOOL               ro )
 {
@@ -113,7 +113,7 @@ RETCODE adfLinuxInitDevice ( struct adfDevice * dev,
  *
  * free native device
  */
-RETCODE adfLinuxReleaseDevice ( struct adfDevice * dev )
+RETCODE adfLinuxReleaseDevice ( struct AdfDevice * dev )
 {
     struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
@@ -126,7 +126,7 @@ RETCODE adfLinuxReleaseDevice ( struct adfDevice * dev )
  * adfLinuxReadSector
  *
  */
-RETCODE adfLinuxReadSector ( struct adfDevice * dev,
+RETCODE adfLinuxReadSector ( struct AdfDevice * dev,
                              int32_t            n,
                              int                size,
                              uint8_t *          buf )
@@ -149,7 +149,7 @@ RETCODE adfLinuxReadSector ( struct adfDevice * dev,
  * adfLinuxWriteSector
  *
  */
-RETCODE adfLinuxWriteSector ( struct adfDevice * dev,
+RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
                               int32_t            n,
                               int                size,
                               uint8_t *          buf )

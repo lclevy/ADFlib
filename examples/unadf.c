@@ -59,7 +59,7 @@ struct List *file_list = NULL;
 /* prototypes */
 void parse_args(int argc, char *argv[]);
 void help();
-void print_device(struct adfDevice *dev);
+void print_device(struct AdfDevice *dev);
 void print_volume(struct adfVolume * vol);
 void print_tree(struct List *node, char *path);
 void print_entry(struct Entry *e, char *path);
@@ -74,7 +74,7 @@ mode_t permissions(struct Entry *e);
 int replace_not_allowed_chars ( char * const path );
 
 int main(int argc, char *argv[]) {
-    struct adfDevice *dev = NULL;
+    struct AdfDevice *dev = NULL;
     struct adfVolume *vol = NULL;
     struct List *list, *node;
 
@@ -230,7 +230,7 @@ void help() {
 }
 
 /* prints one line of information about a device */
-void print_device(struct adfDevice *dev)
+void print_device(struct AdfDevice *dev)
 {
     printf("Device : %s. Cylinders = %d, Heads = %d, Sectors = %d. Volumes = %d\n",
         dev->devType == DEVTYPE_FLOPDD   ? "Floppy DD" :

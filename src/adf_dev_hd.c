@@ -69,7 +69,7 @@ static void adfFreeTmpVolList(struct List *root)
  * adfMountHdFile
  *
  */
-RETCODE adfMountHdFile ( struct adfDevice * dev )
+RETCODE adfMountHdFile ( struct AdfDevice * dev )
 {
     struct adfVolume * vol;
     uint8_t buf[512];
@@ -128,7 +128,7 @@ RETCODE adfMountHdFile ( struct adfDevice * dev )
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */
-RETCODE adfMountHd ( struct adfDevice * dev )
+RETCODE adfMountHd ( struct AdfDevice * dev )
 {
     struct bRDSKblock rdsk;
     struct bPARTblock part;
@@ -250,7 +250,7 @@ RETCODE adfMountHd ( struct adfDevice * dev )
  * do not fill dev->volList[]
  * called by adfCreateHd()
  */
-RETCODE adfCreateHdHeader ( struct adfDevice *  dev,
+RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
                             int                 n,
                             struct Partition ** partList )
 {
@@ -338,7 +338,7 @@ RETCODE adfCreateHdHeader ( struct adfDevice *  dev,
  * fills dev->volList[]
  *
  */
-RETCODE adfCreateHd ( struct adfDevice *  dev,
+RETCODE adfCreateHd ( struct AdfDevice *  dev,
                       int                 n,
                       struct Partition ** partList )
 {
@@ -390,7 +390,7 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  * ReadRDSKblock
  *
  */
-RETCODE adfReadRDSKblock ( struct adfDevice *  dev,
+RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,
                            struct bRDSKblock * blk )
 {
     UCHAR buf[256];
@@ -434,7 +434,7 @@ RETCODE adfReadRDSKblock ( struct adfDevice *  dev,
  * adfWriteRDSKblock
  *
  */
-RETCODE adfWriteRDSKblock ( struct adfDevice *  dev,
+RETCODE adfWriteRDSKblock ( struct AdfDevice *  dev,
                             struct bRDSKblock * rdsk )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
@@ -472,7 +472,7 @@ RETCODE adfWriteRDSKblock ( struct adfDevice *  dev,
  * ReadPARTblock
  *
  */
-RETCODE adfReadPARTblock ( struct adfDevice *  dev,
+RETCODE adfReadPARTblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
                            struct bPARTblock * blk )
 {
@@ -513,7 +513,7 @@ RETCODE adfReadPARTblock ( struct adfDevice *  dev,
  * adfWritePARTblock
  *
  */
-RETCODE adfWritePARTblock ( struct adfDevice *  dev,
+RETCODE adfWritePARTblock ( struct AdfDevice *  dev,
                             int32_t             nSect,
                             struct bPARTblock * part )
 {
@@ -551,7 +551,7 @@ RETCODE adfWritePARTblock ( struct adfDevice *  dev,
  * ReadFSHDblock
  *
  */
-RETCODE adfReadFSHDblock ( struct adfDevice *  dev,
+RETCODE adfReadFSHDblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
                            struct bFSHDblock * blk )
 {
@@ -586,7 +586,7 @@ RETCODE adfReadFSHDblock ( struct adfDevice *  dev,
  *  adfWriteFSHDblock
  *
  */
-RETCODE adfWriteFSHDblock ( struct adfDevice *  dev,
+RETCODE adfWriteFSHDblock ( struct AdfDevice *  dev,
                             int32_t             nSect,
                             struct bFSHDblock * fshd )
 {
@@ -620,7 +620,7 @@ RETCODE adfWriteFSHDblock ( struct adfDevice *  dev,
  * ReadLSEGblock
  *
  */
-RETCODE adfReadLSEGblock ( struct adfDevice *  dev,
+RETCODE adfReadLSEGblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
                            struct bLSEGblock * blk )
 {
@@ -655,7 +655,7 @@ RETCODE adfReadLSEGblock ( struct adfDevice *  dev,
  * adfWriteLSEGblock
  *
  */
-RETCODE adfWriteLSEGblock ( struct adfDevice *  dev,
+RETCODE adfWriteLSEGblock ( struct AdfDevice *  dev,
                             int32_t             nSect,
                             struct bLSEGblock * lseg )
 {

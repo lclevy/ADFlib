@@ -23,7 +23,7 @@ struct Partition {
 #define DEVTYPE_HARDDISK 	3
 #define DEVTYPE_HARDFILE 	4
 
-struct adfDevice {
+struct AdfDevice {
     int devType;               /* see below */
     BOOL readOnly;
     int32_t size;                 /* in bytes */
@@ -43,23 +43,23 @@ struct adfDevice {
 };
 
 
-PREFIX struct adfDevice * adfOpenDev ( char * filename, BOOL ro );
-PREFIX void adfCloseDev ( struct adfDevice * dev );
+PREFIX struct AdfDevice * adfOpenDev ( char * filename, BOOL ro );
+PREFIX void adfCloseDev ( struct AdfDevice * dev );
 
-PREFIX int adfDevType ( struct adfDevice * dev );
-PREFIX void adfDeviceInfo ( struct adfDevice * dev );
+PREFIX int adfDevType ( struct AdfDevice * dev );
+PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
 
-PREFIX struct adfDevice * adfMountDev ( char * filename, BOOL ro );
-PREFIX void adfUnMountDev ( struct adfDevice * dev );
+PREFIX struct AdfDevice * adfMountDev ( char * filename, BOOL ro );
+PREFIX void adfUnMountDev ( struct AdfDevice * dev );
 
-//struct adfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
+//struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
 
-RETCODE adfReadBlockDev ( struct adfDevice * dev,
+RETCODE adfReadBlockDev ( struct AdfDevice * dev,
                           int32_t            pSect,
                           int32_t            size,
                           uint8_t *          buf );
 
-RETCODE adfWriteBlockDev ( struct adfDevice * dev,
+RETCODE adfWriteBlockDev ( struct AdfDevice * dev,
                            int32_t            pSect,
                            int32_t            size,
                            uint8_t *          buf );

@@ -166,7 +166,7 @@ void adfVolumeInfo ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfMount ( struct adfDevice * dev,
+struct adfVolume * adfMount ( struct AdfDevice * dev,
                               int                nPart,
                               BOOL               readOnly )
 {
@@ -246,7 +246,7 @@ void adfUnMount ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfCreateVol ( struct adfDevice * dev,
+struct adfVolume * adfCreateVol ( struct AdfDevice * dev,
                                   int32_t            start,
                                   int32_t            len,
                                   char *             volName,

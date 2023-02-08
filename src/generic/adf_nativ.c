@@ -34,7 +34,7 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice ( struct adfDevice * dev,
+RETCODE myInitDevice ( struct AdfDevice * dev,
                        char *             name,
                        BOOL               ro )
 {
@@ -65,7 +65,7 @@ RETCODE myInitDevice ( struct adfDevice * dev,
  * myReadSector
  *
  */
-RETCODE myReadSector ( struct adfDevice * dev,
+RETCODE myReadSector ( struct AdfDevice * dev,
                        int32_t            n,
                        int                size,
                        uint8_t *          buf )
@@ -78,7 +78,7 @@ RETCODE myReadSector ( struct adfDevice * dev,
  * myWriteSector
  *
  */
-RETCODE myWriteSector ( struct adfDevice * dev,
+RETCODE myWriteSector ( struct AdfDevice * dev,
                         int32_t            n,
                         int                size,
                         uint8_t *          buf )
@@ -92,7 +92,7 @@ RETCODE myWriteSector ( struct adfDevice * dev,
  *
  * free native device
  */
-RETCODE myReleaseDevice ( struct adfDevice * dev )
+RETCODE myReleaseDevice ( struct AdfDevice * dev )
 {
     struct nativeDevice* nDev;
 
