@@ -36,7 +36,7 @@
 #define RETCODE int32_t
 #endif
 
-struct nativeDevice {    
+struct AdfNativeDevice {
     //FILE * fd;
     int fd;
 };

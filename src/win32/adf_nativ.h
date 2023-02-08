@@ -36,7 +36,7 @@
 #define RETCODE long
 #endif
 
-struct nativeDevice{
+struct AdfNativeDevice {
 	void *hDrv;
 };
 

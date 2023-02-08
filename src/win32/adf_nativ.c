@@ -42,12 +42,13 @@ RETCODE Win32InitDevice ( struct AdfDevice * dev,
                           char *             lpstrName,
                           BOOL               ro )
 {
-	struct nativeDevice* nDev;
+	struct AdfNativeDevice * nDev;
 	char strTempName[3];
 
-	nDev = (struct nativeDevice*)dev->nativeDev;
+	nDev = (struct AdfNativeDevice *) dev->nativeDev;
 
-	nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
+	nDev = (struct AdfNativeDevice *)
+            malloc ( sizeof(struct AdfNativeDevice) );
 	if (!nDev) {
 		(*adfEnv.eFct)("Win32InitDevice : malloc");
 		return RC_ERROR;													/* BV */
@@ -105,9 +106,8 @@ RETCODE Win32ReadSector ( struct AdfDevice * dev,
                           int                size,
                           unsigned char *    buf )
 {
-	struct nativeDevice* tDev;
-
-	tDev = (struct nativeDevice*)dev->nativeDev;
+	struct AdfNativeDevice * tDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
 	if (! NT4ReadSector(tDev->hDrv, n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4ReadSector");
@@ -123,9 +123,8 @@ RETCODE Win32WriteSector ( struct AdfDevice * dev,
                            int                size,
                            unsigned char *    buf )
 {
-	struct nativeDevice* tDev;
-
-	tDev = (struct nativeDevice*)dev->nativeDev;
+	struct AdfNativeDevice * tDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
 	if (! NT4WriteSector(tDev->hDrv, n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4WriteSector");
@@ -138,9 +137,8 @@ RETCODE Win32WriteSector ( struct AdfDevice * dev,
 
 RETCODE Win32ReleaseDevice ( struct AdfDevice * dev )
 {
-	struct nativeDevice* nDev;
-
-	nDev = (struct nativeDevice*)dev->nativeDev;
+	struct AdfNativeDevice * nDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
 	if (! NT4CloseDrive(nDev->hDrv))
 		return RC_ERROR;													/* BV */

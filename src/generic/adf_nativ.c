@@ -38,11 +38,11 @@ RETCODE myInitDevice ( struct AdfDevice * dev,
                        char *             name,
                        BOOL               ro )
 {
-    struct nativeDevice* nDev;
+    struct AdfNativeDevice * nDev;
 
-    nDev = (struct nativeDevice*)dev->nativeDev;
+    nDev = (struct AdfNativeDevice *)dev->nativeDev;
 
-    nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
+    nDev = (struct AdfNativeDevice *) malloc (sizeof(struct AdfNativeDevice));
     if (!nDev) {
         (*adfEnv.eFct)("myInitDevice : malloc");
         return RC_ERROR;
@@ -94,9 +94,9 @@ RETCODE myWriteSector ( struct AdfDevice * dev,
  */
 RETCODE myReleaseDevice ( struct AdfDevice * dev )
 {
-    struct nativeDevice* nDev;
+    struct AdfNativeDevice * nDev;
 
-    nDev = (struct nativeDevice*)dev->nativeDev;
+    nDev = (struct AdfNativeDevice *) dev->nativeDev;
 
 	free(nDev);
 

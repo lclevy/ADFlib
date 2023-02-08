@@ -46,8 +46,8 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
                              char *             name,
                              BOOL               ro )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * )
-        malloc ( sizeof ( struct nativeDevice ) );
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
+        malloc ( sizeof ( struct AdfNativeDevice ) );
 
     if ( ! nDev ) {
         (*adfEnv.eFct)("adfLinuxInitDevice : malloc");
@@ -115,7 +115,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
  */
 RETCODE adfLinuxReleaseDevice ( struct AdfDevice * dev )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
     free ( nDev );
     return RC_OK;
@@ -131,7 +131,7 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * dev,
                              int                size,
                              uint8_t *          buf )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
     off_t offset = n * 512;
     if ( lseek ( nDev->fd, offset, SEEK_SET ) != offset ) {
@@ -154,7 +154,7 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
                               int                size,
                               uint8_t *          buf )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
     off_t offset = n * 512;
     if ( lseek ( nDev->fd, offset, SEEK_SET ) != offset ) {
