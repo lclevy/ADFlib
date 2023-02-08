@@ -42,12 +42,9 @@ RETCODE Win32InitDevice ( struct AdfDevice * dev,
                           char *             lpstrName,
                           BOOL               ro )
 {
-	struct AdfNativeDevice * nDev;
 	char strTempName[3];
 
-	nDev = (struct AdfNativeDevice *) dev->nativeDev;
-
-	nDev = (struct AdfNativeDevice *)
+	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
             malloc ( sizeof(struct AdfNativeDevice) );
 	if (!nDev) {
 		(*adfEnv.eFct)("Win32InitDevice : malloc");
