@@ -42,7 +42,7 @@
 
 
 /*
-freeEntCache(struct CacheEntry *cEntry)
+freeEntCache(struct AdfCacheEntry *cEntry)
 {
     if (cEntry->name!=NULL)
         free(cEntry->name);
@@ -64,7 +64,7 @@ struct List * adfGetDirEntCache ( struct adfVolume * vol,
 	struct bDirCacheBlock dirc;
     int offset, n;
     struct List *cell, *head;
-    struct CacheEntry caEntry;
+    struct AdfCacheEntry caEntry;
     struct Entry *entry;
     SECTNUM nSect;
 
@@ -140,7 +140,9 @@ struct List * adfGetDirEntCache ( struct adfVolume * vol,
  * Returns a cache entry, starting from the offset p (the index into records[])
  * This offset is updated to the end of the returned entry.
  */
-void adfGetCacheEntry(struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry)
+void adfGetCacheEntry ( struct bDirCacheBlock * dirc,
+                        int *                   p,
+                        struct AdfCacheEntry *  cEntry )
 {
     int ptr;
 
@@ -196,7 +198,9 @@ void adfGetCacheEntry(struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cE
  *
  * remplaces one cache entry at the p offset, and returns its length
  */
-int adfPutCacheEntry( struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry)
+int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
+                       int *                   p,
+                       struct AdfCacheEntry *  cEntry )
 {
     int ptr, l;
 
@@ -244,7 +248,8 @@ int adfPutCacheEntry( struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cE
  *
  * converts one dir entry into a cache entry, and return its future length in records[]
  */
-int adfEntry2CacheEntry(struct bEntryBlock *entry, struct CacheEntry *newEntry)
+int adfEntry2CacheEntry ( struct bEntryBlock *   entry,
+                          struct AdfCacheEntry * newEntry )
 {
     int entryLen;
 
@@ -288,7 +293,7 @@ RETCODE adfDelFromCache ( struct adfVolume *   vol,
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect, prevSect;
-    struct CacheEntry caEntry;
+    struct AdfCacheEntry caEntry;
     int offset, oldOffset, n;
     BOOL found;
     int entryLen;
@@ -360,7 +365,7 @@ RETCODE adfAddInCache ( struct adfVolume *   vol,
 {
     struct bDirCacheBlock dirc, newDirc;
     SECTNUM nSect, nCache;
-    struct CacheEntry caEntry, newEntry;
+    struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
 
@@ -449,7 +454,7 @@ RETCODE adfUpdateCache ( struct adfVolume *   vol,
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect;
-    struct CacheEntry caEntry, newEntry;
+    struct AdfCacheEntry caEntry, newEntry;
     int offset, oldOffset, n;
     BOOL found;
     int i, oLen, nLen;

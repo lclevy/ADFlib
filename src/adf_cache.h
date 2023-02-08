@@ -32,7 +32,7 @@
 #include "adf_vol.h"
 
 
-struct CacheEntry {
+struct AdfCacheEntry {
     int32_t header,
             size,
             protect;
@@ -50,11 +50,11 @@ struct CacheEntry {
 
 void adfGetCacheEntry ( struct bDirCacheBlock * dirc,
                         int *                   p,
-                        struct CacheEntry *     cEntry );
+                        struct AdfCacheEntry *  cEntry );
 
 int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
                        int *                   p,
-                       struct CacheEntry *     cEntry );
+                       struct AdfCacheEntry *  cEntry );
 
 struct List * adfGetDirEntCache ( struct adfVolume * vol,
                                   SECTNUM            dir,
