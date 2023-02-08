@@ -50,7 +50,7 @@ struct AdfFile {
     BOOL eof, writeMode;
 };
 
-struct FileBlocks {
+struct AdfFileBlocks {
     SECTNUM header;
     int32_t nbExtens;
     SECTNUM* extens;
@@ -60,7 +60,7 @@ struct FileBlocks {
 
 RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
                            struct bFileHeaderBlock * entry,
-                           struct FileBlocks *       fileBlocks );
+                           struct AdfFileBlocks *    fileBlocks );
 
 RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
                             struct bFileHeaderBlock * entry );

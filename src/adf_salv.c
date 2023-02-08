@@ -241,7 +241,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     char name[MAXNAMELEN+1];
     struct bEntryBlock parent;
     RETCODE rc;
-    struct FileBlocks fileBlocks;
+    struct AdfFileBlocks fileBlocks;
 
     /* check if the given parent sector pointer seems OK */
     if ( (rc=adfCheckParent(vol,pSect)) != RC_OK)
@@ -323,7 +323,7 @@ RETCODE adfCheckFile ( struct AdfVolume *        vol,
 {
     struct bFileExtBlock extBlock;
     struct bOFSDataBlock dataBlock;
-    struct FileBlocks fileBlocks;
+    struct AdfFileBlocks fileBlocks;
     int n;
  
     adfGetFileBlocks(vol,file,&fileBlocks);

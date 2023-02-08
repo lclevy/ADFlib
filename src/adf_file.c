@@ -112,7 +112,7 @@ void adfFlushFile(struct AdfFile * file)
  */
 RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
                            struct bFileHeaderBlock * entry,
-                           struct FileBlocks *       fileBlocks )
+                           struct AdfFileBlocks *    fileBlocks )
 {
     int32_t n, m;
     SECTNUM nSect;
@@ -163,7 +163,7 @@ RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
                             struct bFileHeaderBlock * entry )
 {
     int i;
-    struct FileBlocks fileBlocks;
+    struct AdfFileBlocks fileBlocks;
     RETCODE rc = RC_OK;
 
     adfGetFileBlocks(vol,entry,&fileBlocks);
