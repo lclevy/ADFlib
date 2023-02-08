@@ -38,11 +38,8 @@ RETCODE myInitDevice ( struct AdfDevice * dev,
                        char *             name,
                        BOOL               ro )
 {
-    struct AdfNativeDevice * nDev;
-
-    nDev = (struct AdfNativeDevice *)dev->nativeDev;
-
-    nDev = (struct AdfNativeDevice *) malloc (sizeof(struct AdfNativeDevice));
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
+        malloc ( sizeof ( struct AdfNativeDevice ) );
     if (!nDev) {
         (*adfEnv.eFct)("myInitDevice : malloc");
         return RC_ERROR;
