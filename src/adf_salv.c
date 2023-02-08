@@ -56,9 +56,9 @@ void adfFreeGenBlock(struct GenBlock* block)
  * adfFreeDelList
  *
  */
-void adfFreeDelList(struct List* list)
+void adfFreeDelList ( struct AdfList * list )
 {
-    struct List *cell;
+    struct AdfList *cell;
 
     cell = list;
     while(cell!=NULL) {
@@ -73,11 +73,11 @@ void adfFreeDelList(struct List* list)
  * adfGetDelEnt
  *
  */
-struct List* adfGetDelEnt ( struct AdfVolume * vol )
+struct AdfList * adfGetDelEnt ( struct AdfVolume * vol )
 {
     struct GenBlock *block;
     int32_t i;
-    struct List *list, *head;
+    struct AdfList *list, *head;
     BOOL delEnt;
 
     list = head = NULL;

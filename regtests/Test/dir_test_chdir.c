@@ -174,7 +174,7 @@ int test_chdir ( struct AdfVolume * vol,
 
 int count_dir_entries ( struct AdfVolume * vol )
 {
-    struct List *list, *cell;
+    struct AdfList *list, *cell;
     
     int nentries = 0;
     cell = list = adfGetDirEnt ( vol, vol->curDirPtr );

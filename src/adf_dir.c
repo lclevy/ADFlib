@@ -350,9 +350,9 @@ BOOL isDirEmpty(struct bDirBlock *dir)
  * adfFreeDirList
  *
  */
-void adfFreeDirList(struct List* list)
+void adfFreeDirList ( struct AdfList * list )
 {
-    struct List *root, *cell;
+    struct AdfList *root, *cell;
 
     root = cell = list;
     while(cell!=NULL) {
@@ -369,12 +369,12 @@ void adfFreeDirList(struct List* list)
  * adfGetRDirEnt
  *
  */
-struct List * adfGetRDirEnt ( struct AdfVolume * vol,
-                              SECTNUM            nSect,
-                              BOOL               recurs )
+struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
+                                 SECTNUM            nSect,
+                                 BOOL               recurs )
 {
     struct bEntryBlock entryBlk;
-	struct List *cell, *head;
+    struct AdfList *cell, *head;
     int i;
     struct AdfEntry * entry;
     SECTNUM nextSector;
@@ -462,8 +462,8 @@ struct List * adfGetRDirEnt ( struct AdfVolume * vol,
  * adfGetDirEnt
  *
  */
-struct List * adfGetDirEnt ( struct AdfVolume * vol,
-                             SECTNUM            nSect )
+struct AdfList * adfGetDirEnt ( struct AdfVolume * vol,
+                                SECTNUM            nSect )
 {
     return adfGetRDirEnt(vol, nSect, FALSE);
 }
@@ -492,7 +492,7 @@ void adfFreeEntry ( struct AdfEntry * entry )
 int adfDirCountEntries ( struct AdfVolume * const vol,
                          SECTNUM                  dirPtr )
 {
-    struct List * list, * cell;
+    struct AdfList *list, *cell;
 
     int nentries = 0;
     cell = list = adfGetDirEnt ( vol, dirPtr );

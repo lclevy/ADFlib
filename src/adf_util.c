@@ -61,11 +61,11 @@ void swShort(uint8_t* buf, uint16_t val)
  *
  * adds a cell at the end the list
  */
-struct List* newCell(struct List* list, void* content)
+struct AdfList * newCell ( struct AdfList * list,
+                           void *           content )
 {
-    struct List* cell;
-
-    cell=(struct List*)malloc(sizeof(struct List));
+    struct AdfList * cell = ( struct AdfList * )
+        malloc ( sizeof ( struct AdfList ) );
     if (!cell) {
         (*adfEnv.eFct)("newCell : malloc");
         return NULL;
@@ -83,7 +83,7 @@ struct List* newCell(struct List* list, void* content)
  * freeList
  *
  */
-void freeList(struct List* list)
+void freeList ( struct AdfList * list )
 {
     if (list==NULL) 
         return;

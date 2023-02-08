@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     long n;
     FILE *out;
     long len;
-    struct List *list;
+    struct AdfList *list;
  
     adfEnvInitDefault();
 

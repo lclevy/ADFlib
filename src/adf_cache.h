@@ -56,9 +56,9 @@ int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
                        int *                   p,
                        struct AdfCacheEntry *  cEntry );
 
-struct List * adfGetDirEntCache ( struct AdfVolume * vol,
-                                  SECTNUM            dir,
-                                  BOOL               recurs );
+struct AdfList * adfGetDirEntCache ( struct AdfVolume * vol,
+                                     SECTNUM            dir,
+                                     BOOL               recurs );
 
 RETCODE adfCreateEmptyCache ( struct AdfVolume *   vol,
                               struct bEntryBlock * parent,

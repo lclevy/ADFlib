@@ -58,14 +58,14 @@ PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * vol,
                                 SECTNUM            pSect,
                                 char *             name );
 
-PREFIX struct List * adfGetDirEnt ( struct AdfVolume * vol,
-                                    SECTNUM            nSect );
+PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * vol,
+                                       SECTNUM            nSect );
 
-PREFIX struct List * adfGetRDirEnt ( struct AdfVolume * vol,
-                                     SECTNUM            nSect,
-                                     BOOL               recurs );
+PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
+                                        SECTNUM            nSect,
+                                        BOOL               recurs );
 
-PREFIX void adfFreeDirList(struct List* list);
+PREFIX void adfFreeDirList ( struct AdfList * list );
 
 PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
                                 SECTNUM                  dirPtr );

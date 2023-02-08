@@ -29,10 +29,10 @@
  */
 
 
-struct List{         /* generic linked tree */
+struct AdfList {         /* generic linked tree */
     void *content;
-    struct List* subdir;
-    struct List* next;
+    struct AdfList *subdir;
+    struct AdfList *next;
 };
 
 

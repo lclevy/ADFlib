@@ -52,8 +52,8 @@ PREFIX RETCODE adfUndelEntry ( struct AdfVolume * vol,
                                SECTNUM            parent,
                                SECTNUM            nSect );
 
-PREFIX struct List * adfGetDelEnt ( struct AdfVolume * vol );
-PREFIX void adfFreeDelList(struct List* list);
+PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * vol );
+PREFIX void adfFreeDelList ( struct AdfList * list );
 
 
 /*##########################################################################*/

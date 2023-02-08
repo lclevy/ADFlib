@@ -50,7 +50,7 @@
  */
 static void adfFreeTmpVolList(struct List *root)
 {
-    struct List *cell;
+    struct AdfList *cell;
     struct AdfVolume *vol;
 
     cell = root;
@@ -135,7 +135,7 @@ RETCODE adfMountHd ( struct AdfDevice * dev )
     struct bFSHDblock fshd;
     struct bLSEGblock lseg;
     int32_t next;
-    struct List *vList, *listRoot;
+    struct AdfList *vList, *listRoot;
     int i;
     struct AdfVolume * vol;
     int len;

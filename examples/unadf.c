@@ -54,16 +54,16 @@ BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
      show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
-struct List *file_list = NULL;
+struct AdfList *file_list = NULL;
 
 /* prototypes */
 void parse_args(int argc, char *argv[]);
 void help();
 void print_device(struct AdfDevice *dev);
 void print_volume(struct AdfVolume * vol);
-void print_tree(struct List *node, char *path);
+void print_tree(struct AdfList *node, char *path);
 void print_entry(struct AdfEntry *e, char *path);
-void extract_tree(struct AdfVolume *vol, struct List *node, char *path);
+void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path);
 void extract_filepath(struct AdfVolume *vol, char *filepath);
 void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms);
 char *output_name(char *path, char *name);
@@ -76,7 +76,7 @@ int replace_not_allowed_chars ( char * const path );
 int main(int argc, char *argv[]) {
     struct AdfDevice *dev = NULL;
     struct AdfVolume *vol = NULL;
-    struct List *list, *node;
+    struct AdfList *list, *node;
 
     fprintf(stderr, "unADF v%s : a unzip like for .ADF files, powered by ADFlib (v%s - %s)\n\n",
         UNADF_VERSION, adfGetVersionNumber(), adfGetVersionDate());
@@ -165,7 +165,7 @@ error_handler:
 
 /* parses the command line arguments into global variables */
 void parse_args(int argc, char *argv[]) {
-    struct List *list = NULL;
+    struct AdfList *list = NULL;
     int i, j;
 
     /* parse flags */
@@ -276,7 +276,8 @@ void print_volume(struct AdfVolume *vol)
 }
 
 /* recurses through all directories/files and calls print_entry() on them */
-void print_tree(struct List *node, char *path) {
+void print_tree(struct AdfList *node, char *path)
+{
     for (; node; node = node->next) {
         print_entry(node->content, path);
         if (node->subdir) {
@@ -315,7 +316,7 @@ void print_entry(struct AdfEntry *e, char *path) {
 }
 
 /* extracts all files, recursing into directories */
-void extract_tree(struct AdfVolume *vol, struct List *node, char *path)
+void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
 {
     for (; node; node = node->next) {
         struct AdfEntry *e = node->content;

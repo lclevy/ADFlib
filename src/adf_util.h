@@ -38,8 +38,9 @@ struct DateTime {
 void swLong(uint8_t* buf, uint32_t val);
 void swShort(uint8_t* buf, uint16_t val);
 
-PREFIX struct List* newCell(struct List* list, void* content);
-PREFIX void freeList(struct List* list);
+PREFIX struct AdfList * newCell ( struct AdfList * list,
+                                  void *           content );
+PREFIX void freeList ( struct AdfList * list );
 PREFIX void adfDays2Date(int32_t days, int *yy, int *mm, int *dd);
 BOOL adfIsLeap(int y);
     void

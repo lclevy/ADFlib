@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     struct AdfVolume *vol;
     struct AdfFile *fic;
     unsigned char buf[1];
-    struct List *list, *cell;
+    struct AdfList *list, *cell;
     struct GenBlock *block;
     BOOL true = TRUE;
  

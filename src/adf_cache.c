@@ -56,14 +56,14 @@ freeEntCache(struct AdfCacheEntry *cEntry)
  *
  * replace 'adfGetDirEnt'. returns a the dir contents based on the dircache list
  */
-struct List * adfGetDirEntCache ( struct AdfVolume * vol,
-                                  SECTNUM            dir,
-                                  BOOL               recurs )
+struct AdfList * adfGetDirEntCache ( struct AdfVolume * vol,
+                                     SECTNUM            dir,
+                                     BOOL               recurs )
 {
 	struct bEntryBlock parent;
 	struct bDirCacheBlock dirc;
     int offset, n;
-    struct List *cell, *head;
+    struct AdfList *cell, *head;
     struct AdfCacheEntry caEntry;
     struct AdfEntry *entry;
     SECTNUM nSect;

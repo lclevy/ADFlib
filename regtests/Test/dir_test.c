@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
     struct AdfDevice *hd;
     struct AdfVolume *vol;
-    struct List *list, *cell;
+    struct AdfList *list, *cell;
     SECTNUM nSect;
  
     adfEnvInitDefault();
@@ -126,7 +126,7 @@ int test_chdir_hlink ( struct AdfVolume * vol,
         status++;
     }
 
-    struct List * list, * cell;
+    struct AdfList * list, * cell;
     list = cell = adfGetDirEnt ( vol, vol->curDirPtr );
     int count = 0;
     while ( cell ) {
