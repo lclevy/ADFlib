@@ -46,7 +46,7 @@
 
 #ifdef DEBUG_ADF_FILE
 
-static void show_File ( const struct File * const file );
+static void show_File ( const struct AdfFile * const file );
 
 static void show_bFileHeaderBlock (
     const struct bFileHeaderBlock * const block );
