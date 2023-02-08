@@ -34,7 +34,7 @@
 
 /* ----- FILE ----- */
 
-struct File {
+struct adfFile {
     struct Volume *volume;
 
     struct bFileHeaderBlock* fileHdr;
@@ -72,17 +72,17 @@ RETCODE adfWriteDataBlock(struct Volume *vol, SECTNUM nSect, void *data);
 PREFIX RETCODE adfReadFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
 PREFIX RETCODE adfWriteFileExtBlock(struct Volume *vol, SECTNUM nSect, struct bFileExtBlock* fext);
 
-PREFIX struct File* adfOpenFile(struct Volume *vol, char* name, char *mode);
-PREFIX void adfCloseFile(struct File *file);
-PREFIX int32_t adfReadFile(struct File* file, int32_t n, uint8_t *buffer);
-PREFIX BOOL adfEndOfFile(struct File* file);
-PREFIX void adfFileSeek(struct File *file, uint32_t pos);		/* BV */
-RETCODE adfReadNextFileBlock(struct File* file);
-PREFIX int32_t adfWriteFile(struct File *file, int32_t n, uint8_t *buffer);
-SECTNUM adfCreateNextFileBlock(struct File* file);
-PREFIX void adfFlushFile(struct File *file);
+PREFIX struct adfFile* adfOpenFile(struct Volume *vol, char* name, char *mode);
+PREFIX void adfCloseFile(struct adfFile * file);
+PREFIX int32_t adfReadFile(struct adfFile * file, int32_t n, uint8_t *buffer);
+PREFIX BOOL adfEndOfFile(struct adfFile * file);
+PREFIX void adfFileSeek(struct adfFile * file, uint32_t pos);		/* BV */
+RETCODE adfReadNextFileBlock(struct adfFile * file);
+PREFIX int32_t adfWriteFile(struct adfFile * file, int32_t n, uint8_t *buffer);
+SECTNUM adfCreateNextFileBlock(struct adfFile * file);
+PREFIX void adfFlushFile(struct adfFile * file);
 
-RETCODE adfReadFileExtBlockN ( struct File *          file,
+RETCODE adfReadFileExtBlockN ( struct adfFile *       file,
                                int32_t                extBlock,
                                struct bFileExtBlock * fext );
 #endif /* ADF_FILE_H */

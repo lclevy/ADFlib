@@ -42,9 +42,9 @@ test_file_t test_file_ffs = {
 
 int run_multiple_seek_tests ( test_file_t * test_data );
 
-int test_single_seek ( struct File * const file_adf,
-                       FILE * const        file_local,
-                       unsigned int        offset );
+int test_single_seek ( struct adfFile * const file_adf,
+                       FILE * const           file_local,
+                       unsigned int           offset );
 
 
 int main ( int argc, char * argv[] )
@@ -97,7 +97,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct File * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
+    struct adfFile * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );
@@ -130,9 +130,9 @@ cleanup:
 }
 
 
-int test_single_seek ( struct File * const file_adf,
-                       FILE * const        file_local,
-                       unsigned int        offset )
+int test_single_seek ( struct adfFile * const file_adf,
+                       FILE * const           file_local,
+                       unsigned int           offset )
 {
 #if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",

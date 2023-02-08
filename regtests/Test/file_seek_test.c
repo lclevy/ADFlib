@@ -86,11 +86,11 @@ reading_test_t test_ffs = {
 
 
 int run_single_seek_tests ( reading_test_t * test_data );
-int test_single_seek ( struct File *       file,
+int test_single_seek ( struct adfFile *    file,
                        unsigned int        offset,
                        const unsigned char expected_value );
-int test_seek_eof ( struct File * file,
-                    unsigned int  offset );
+int test_seek_eof ( struct adfFile * file,
+                    unsigned int     offset );
 
 
 int main ( int argc, char * argv[] )
@@ -141,7 +141,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     int status = 0;
     for ( unsigned int i = 0 ; i < test_data->nchecks - 1; ++i ) {
 
-        struct File * file = adfOpenFile ( vol, test_data->filename, "r" );
+        struct adfFile * file = adfOpenFile ( vol, test_data->filename, "r" );
         if ( ! file ) {
             printf ("Cannot open file %s - aborting...\n", test_data->filename );
             status = 1;
@@ -155,7 +155,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     }
 
     // test EOF
-    struct File * file = adfOpenFile ( vol, test_data->filename, "r" );
+    struct adfFile * file = adfOpenFile ( vol, test_data->filename, "r" );
     if ( ! file ) {
         printf ("Cannot open file %s - aborting...\n", test_data->filename );
         status = 1;
@@ -174,7 +174,7 @@ cleanup:
 }
 
 
-int test_single_seek ( struct File *       file,
+int test_single_seek ( struct adfFile *    file,
                        unsigned int        offset,
                        const unsigned char expected_value )
 {
@@ -207,8 +207,8 @@ int test_single_seek ( struct File *       file,
 }
 
 
-int test_seek_eof ( struct File * file,
-                    unsigned int  offset )
+int test_seek_eof ( struct adfFile * file,
+                    unsigned int     offset )
 {
 #if TEST_VERBOSITY > 0
     printf ( "  Seeking to EOF position 0x%x (%d)...", offset, offset );

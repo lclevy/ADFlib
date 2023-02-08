@@ -85,7 +85,7 @@ int test_floppy_overfilling ( char * const          adfname,
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
 
-    struct File * output = adfOpenFile ( vol, filename, "w" );
+    struct adfFile * output = adfOpenFile ( vol, filename, "w" );
     if ( ! output )
         return 1;
 
@@ -143,7 +143,7 @@ int verify_file_data ( struct Volume * const vol,
                        unsigned char * const buffer,
                        const unsigned        bytes_written )
 {
-    struct File * output = adfOpenFile ( vol, filename, "r" );
+    struct adfFile * output = adfOpenFile ( vol, filename, "r" );
     if ( ! output )
         return 1;
 

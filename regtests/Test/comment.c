@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     struct Device *hd;
     struct Volume *vol;
-    struct File *fic;
+    struct adfFile *fic;
     unsigned char buf[1];
     struct List *list, *cell;
     BOOL true = TRUE;

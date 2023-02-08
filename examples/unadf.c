@@ -392,7 +392,7 @@ void extract_filepath(struct Volume *vol, char *filepath) {
 
 /* copies a file from the volume to a given output filename */
 void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
-    struct File *f = NULL;
+    struct adfFile *f = NULL;
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;
 
