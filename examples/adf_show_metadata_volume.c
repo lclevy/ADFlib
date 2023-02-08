@@ -10,7 +10,7 @@
 static void show_bmpages ( const int32_t bmpages [ BM_SIZE ] );
 
 
-void show_volume_metadata ( struct Volume * const vol )
+void show_volume_metadata ( struct adfVolume * const vol )
 {
     adfVolumeInfo ( vol );
 

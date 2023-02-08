@@ -33,7 +33,7 @@
 
 /* ----- VOLUME ----- */
 
-struct Volume {
+struct adfVolume {
     struct Device* dev;
 
     SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
@@ -59,21 +59,36 @@ struct Volume {
 };
 
 
-PREFIX RETCODE adfInstallBootBlock(struct Volume *vol,uint8_t*);
+PREFIX RETCODE adfInstallBootBlock ( struct adfVolume * vol,
+                                     uint8_t *          code );
 
-PREFIX BOOL isSectNumValid(struct Volume *vol, SECTNUM nSect);
+PREFIX BOOL isSectNumValid ( struct adfVolume * vol,
+                             SECTNUM            nSect );
 
-PREFIX struct Volume* adfMount( struct Device *dev, int nPart, BOOL readOnly );
-PREFIX void adfUnMount(struct Volume *vol);
-PREFIX void adfVolumeInfo(struct Volume *vol);
-struct Volume* adfCreateVol( struct Device* dev, int32_t start, int32_t len, 
-    char* volName, int volType );
+PREFIX struct adfVolume * adfMount ( struct Device * dev,
+                                     int             nPart,
+                                     BOOL            readOnly );
 
-/*void adfReadBitmap(struct Volume* , int32_t nBlock, struct bRootBlock* root);
-void adfUpdateBitmap(struct Volume*);
+PREFIX void adfUnMount ( struct adfVolume * vol );
+
+PREFIX void adfVolumeInfo ( struct adfVolume * vol );
+
+struct adfVolume * adfCreateVol ( struct Device * dev,
+                                  int32_t         start,
+                                  int32_t         len,
+                                  char *          volName,
+                                  int             volType );
+
+/*void adfReadBitmap(struct adfVolume* , int32_t nBlock, struct bRootBlock* root);
+void adfUpdateBitmap(struct adfVolume*);
 */
-PREFIX RETCODE adfReadBlock(struct Volume* , int32_t nSect, uint8_t* buf);
-PREFIX RETCODE adfWriteBlock(struct Volume* , int32_t nSect, uint8_t* buf);
+PREFIX RETCODE adfReadBlock ( struct adfVolume * vol,
+                              int32_t            nSect,
+                              uint8_t *          buf );
+
+PREFIX RETCODE adfWriteBlock ( struct adfVolume * vol,
+                               int32_t            nSect,
+                               uint8_t *          buf );
 
 #endif /* _ADF_VOL_H */
 

@@ -73,7 +73,7 @@ void adfFreeDelList(struct List* list)
  * adfGetDelEnt
  *
  */
-struct List* adfGetDelEnt(struct Volume *vol)
+struct List* adfGetDelEnt ( struct adfVolume * vol )
 {
     struct GenBlock *block;
     int32_t i;
@@ -117,7 +117,9 @@ struct List* adfGetDelEnt(struct Volume *vol)
  * adfReadGenBlock
  *
  */
-RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *block)
+RETCODE adfReadGenBlock ( struct adfVolume * vol,
+                          SECTNUM            nSect,
+                          struct GenBlock *  block )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
     int len;
@@ -157,7 +159,8 @@ RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *bloc
  * adfCheckParent
  *
  */
-RETCODE adfCheckParent(struct Volume* vol, SECTNUM pSect)
+RETCODE adfCheckParent ( struct adfVolume * vol,
+                         SECTNUM            pSect )
 {
     struct GenBlock block;
 
@@ -182,8 +185,10 @@ RETCODE adfCheckParent(struct Volume* vol, SECTNUM pSect)
  * adfUndelDir
  *
  */
-RETCODE adfUndelDir(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, 
-    struct bDirBlock* entry)
+RETCODE adfUndelDir ( struct adfVolume * vol,
+                      SECTNUM            pSect,
+                      SECTNUM            nSect,
+                      struct bDirBlock * entry )
 {
     RETCODE rc;
     struct bEntryBlock parent;
@@ -227,7 +232,10 @@ RETCODE adfUndelDir(struct Volume* vol, SECTNUM pSect, SECTNUM nSect,
  * adfUndelFile
  *
  */
-RETCODE adfUndelFile(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, struct bFileHeaderBlock* entry)
+RETCODE adfUndelFile ( struct adfVolume *        vol,
+                       SECTNUM                   pSect,
+                       SECTNUM                   nSect,
+                       struct bFileHeaderBlock * entry )
 {
     int32_t i;
     char name[MAXNAMELEN+1];
@@ -281,7 +289,9 @@ RETCODE adfUndelFile(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, struct bF
  * adfUndelEntry
  *
  */
-RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect)
+RETCODE adfUndelEntry ( struct adfVolume * vol,
+                        SECTNUM            parent,
+                        SECTNUM            nSect )
 {
     struct bEntryBlock entry;
 
@@ -306,8 +316,10 @@ RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect)
  * adfCheckFile
  *
  */
-RETCODE adfCheckFile(struct Volume* vol, SECTNUM nSect,
-    struct bFileHeaderBlock* file, int level)
+RETCODE adfCheckFile ( struct adfVolume *        vol,
+                       SECTNUM                   nSect,
+                       struct bFileHeaderBlock * file,
+                       int                       level )
 {
     struct bFileExtBlock extBlock;
     struct bOFSDataBlock dataBlock;
@@ -361,8 +373,10 @@ RETCODE adfCheckFile(struct Volume* vol, SECTNUM nSect,
  * adfCheckDir
  *
  */
-RETCODE adfCheckDir(struct Volume* vol, SECTNUM nSect, struct bDirBlock* dir, 
-    int level)
+RETCODE adfCheckDir ( struct adfVolume * vol,
+                      SECTNUM            nSect,
+                      struct bDirBlock * dir,
+                      int                level )
 {
 
 
@@ -376,7 +390,9 @@ RETCODE adfCheckDir(struct Volume* vol, SECTNUM nSect, struct bDirBlock* dir,
  * adfCheckEntry
  *
  */
-RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level)
+RETCODE adfCheckEntry ( struct adfVolume * vol,
+                        SECTNUM            nSect,
+                        int                level )
 {
     struct bEntryBlock entry;
     RETCODE rc;

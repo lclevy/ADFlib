@@ -17,8 +17,8 @@ char* basename(char* path);
 
 static void show_device_metadata ( struct Device * const dev );    
 
-static void show_dentry_metadata ( struct Volume * const vol,
-                                   char * const          path );
+static void show_dentry_metadata ( struct adfVolume * const vol,
+                                   char * const             path );
 
 void usage ( void )
 {
@@ -54,7 +54,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct Volume * const vol = adfMount ( dev, vol_id, 1 );
+    struct adfVolume * const vol = adfMount ( dev, vol_id, 1 );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );
@@ -88,8 +88,8 @@ static void show_device_metadata ( struct Device * const dev )
 }
 
 
-static void show_dentry_metadata ( struct Volume * const vol,
-                                   char * const          path )
+static void show_dentry_metadata ( struct adfVolume * const vol,
+                                   char * const             path )
 {
     printf ( "\nPath:\t\t%s\n", path );
     const char * path_relative = path;

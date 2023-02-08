@@ -29,7 +29,7 @@ struct Device {
     int32_t size;                 /* in bytes */
 
     int nVol;                  /* partitions */
-    struct Volume** volList;
+    struct adfVolume** volList;
 
     int32_t cylinders;            /* geometry */
     int32_t heads;

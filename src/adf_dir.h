@@ -51,37 +51,83 @@ struct Entry{
 };
 
 
-PREFIX RETCODE adfToRootDir(struct Volume *vol);
+PREFIX RETCODE adfToRootDir ( struct adfVolume * vol );
 BOOL isDirEmpty(struct bDirBlock *dir);
-PREFIX RETCODE adfRemoveEntry(struct Volume *vol, SECTNUM pSect, char *name);
-PREFIX struct List* adfGetDirEnt(struct Volume* vol, SECTNUM nSect );
-PREFIX struct List* adfGetRDirEnt(struct Volume* vol, SECTNUM nSect, BOOL recurs );
+
+PREFIX RETCODE adfRemoveEntry ( struct adfVolume * vol,
+                                SECTNUM            pSect,
+                                char *             name );
+
+PREFIX struct List * adfGetDirEnt ( struct adfVolume * vol,
+                                    SECTNUM            nSect );
+
+PREFIX struct List * adfGetRDirEnt ( struct adfVolume * vol,
+                                     SECTNUM            nSect,
+                                     BOOL               recurs );
+
 PREFIX void adfFreeDirList(struct List* list);
-PREFIX int adfDirCountEntries ( struct Volume * const vol, SECTNUM dirPtr );
+
+PREFIX int adfDirCountEntries ( struct adfVolume * const vol,
+                                SECTNUM                  dirPtr );
 
 RETCODE adfEntBlock2Entry(struct bEntryBlock *entryBlk, struct Entry *entry);
 PREFIX void adfFreeEntry(struct Entry *entry);
-RETCODE adfCreateFile(struct Volume* vol, SECTNUM parent, char *name,
-    struct bFileHeaderBlock *fhdr);
-PREFIX RETCODE adfCreateDir(struct Volume* vol, SECTNUM parent, char* name);
-SECTNUM adfCreateEntry(struct Volume *vol, struct bEntryBlock *dir, char *name, SECTNUM );
-PREFIX RETCODE adfRenameEntry(struct Volume *vol, SECTNUM, char *old,SECTNUM,char *new);
 
+RETCODE adfCreateFile ( struct adfVolume *        vol,
+                        SECTNUM                   parent,
+                        char *                    name,
+                        struct bFileHeaderBlock * fhdr );
 
-PREFIX RETCODE adfReadEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock* ent);
-RETCODE adfWriteDirBlock(struct Volume* vol, SECTNUM nSect, struct bDirBlock *dir);
-RETCODE adfWriteEntryBlock(struct Volume* vol, SECTNUM nSect, struct bEntryBlock *ent);
+PREFIX RETCODE adfCreateDir ( struct adfVolume * vol,
+                              SECTNUM            parent,
+                              char *             name );
+
+SECTNUM adfCreateEntry ( struct adfVolume *   vol,
+                         struct bEntryBlock * dir,
+                         char *               name,
+                         SECTNUM              thisSect );
+
+PREFIX RETCODE adfRenameEntry ( struct adfVolume * vol,
+                                SECTNUM            pSect,
+                                char *             oldName,
+                                SECTNUM            nPSect,
+                                char *             newName );
+
+PREFIX RETCODE adfReadEntryBlock ( struct adfVolume *   vol,
+                                   SECTNUM              nSect,
+                                   struct bEntryBlock * ent );
+
+RETCODE adfWriteDirBlock ( struct adfVolume * vol,
+                           SECTNUM            nSect,
+                           struct bDirBlock * dir );
+
+RETCODE adfWriteEntryBlock ( struct adfVolume *   vol,
+                             SECTNUM              nSect,
+                             struct bEntryBlock * ent );
 
 char* adfAccess2String(int32_t acc);
 uint8_t adfIntlToUpper(uint8_t c);
 int adfGetHashValue(uint8_t *name, BOOL intl);
 void myToUpper( uint8_t *ostr, uint8_t *nstr, int,BOOL intl );
-PREFIX RETCODE adfChangeDir(struct Volume* vol, char *name);
-PREFIX RETCODE adfParentDir(struct Volume* vol);
-PREFIX RETCODE adfSetEntryAccess(struct Volume*, SECTNUM, char*, int32_t);
-PREFIX RETCODE adfSetEntryComment(struct Volume*, SECTNUM, char*, char*);
-PREFIX SECTNUM adfNameToEntryBlk(struct Volume *vol, int32_t ht[], char* name,
-    struct bEntryBlock *entry, SECTNUM *);
+PREFIX RETCODE adfChangeDir ( struct adfVolume * vol,
+                              char *             name );
+PREFIX RETCODE adfParentDir ( struct adfVolume * vol );
+
+PREFIX RETCODE adfSetEntryAccess ( struct adfVolume * vol,
+                                   SECTNUM            parSect,
+                                   char *             name,
+                                   int32_t            newAcc );
+
+PREFIX RETCODE adfSetEntryComment ( struct adfVolume * vol,
+                                    SECTNUM            parSect,
+                                    char *             name,
+                                    char *             newCmt );
+
+PREFIX SECTNUM adfNameToEntryBlk ( struct adfVolume *   vol,
+                                   int32_t              ht[],
+                                   char *               name,
+                                   struct bEntryBlock * entry,
+                                   SECTNUM *            nUpdSect );
 
 PREFIX void printEntry(struct Entry* entry);
 

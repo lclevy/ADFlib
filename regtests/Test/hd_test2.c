@@ -23,7 +23,7 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     struct Device *hd;
-    struct Volume *vol;
+    struct adfVolume *vol;
     struct Partition part1;
     struct Partition **partList;
 

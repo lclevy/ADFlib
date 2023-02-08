@@ -141,7 +141,7 @@ RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType)
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
         return RC_ERROR;
     }
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
+    dev->volList = (struct adfVolume **) malloc (sizeof(struct Volume *));
     if (!dev->volList) { 
                 (*adfEnv.eFct)("adfCreateHdFile : unknown device type");
         return RC_ERROR;

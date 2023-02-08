@@ -51,11 +51,11 @@
 static void adfFreeTmpVolList(struct List *root)
 {
     struct List *cell;
-    struct Volume *vol;
+    struct adfVolume *vol;
 
     cell = root;
     while(cell!=NULL) {
-        vol = (struct Volume *)cell->content;
+        vol = (struct adfVolume *) cell->content;
         if (vol->volName!=NULL)
             free(vol->volName);  
         cell = cell->next;
@@ -71,20 +71,20 @@ static void adfFreeTmpVolList(struct List *root)
  */
 RETCODE adfMountHdFile(struct Device *dev)
 {
-    struct Volume* vol;
+    struct adfVolume * vol;
     uint8_t buf[512];
     int32_t size;
     BOOL found;
 
     dev->devType = DEVTYPE_HARDFILE;
     dev->nVol = 0;
-    dev->volList = (struct Volume**)malloc(sizeof(struct Volume*));
+    dev->volList = (struct adfVolume **) malloc (sizeof(struct adfVolume *));
     if (!dev->volList) { 
         (*adfEnv.eFct)("adfMountHdFile : malloc");
         return RC_ERROR;
     }
 
-    vol=(struct Volume*)malloc(sizeof(struct Volume));
+    vol = (struct adfVolume *) malloc (sizeof(struct adfVolume));
     if (!vol) {
         (*adfEnv.eFct)("adfMountHdFile : malloc");
         return RC_ERROR;
@@ -137,7 +137,7 @@ RETCODE adfMountHd(struct Device *dev)
     int32_t next;
     struct List *vList, *listRoot;
     int i;
-    struct Volume* vol;
+    struct adfVolume * vol;
     int len;
 
     if (adfReadRDSKblock( dev, &rdsk )!=RC_OK)
@@ -159,7 +159,7 @@ RETCODE adfMountHd(struct Device *dev)
             return RC_ERROR;
         }
 
-        vol=(struct Volume*)malloc(sizeof(struct Volume));
+        vol = (struct adfVolume *) malloc (sizeof(struct adfVolume));
         if (!vol) {
             adfFreeTmpVolList(listRoot);
             (*adfEnv.eFct)("adfMountHd : malloc");
@@ -201,7 +201,8 @@ RETCODE adfMountHd(struct Device *dev)
     }
 
     /* stores the list in an array */
-    dev->volList = (struct Volume**)malloc(sizeof(struct Volume*) * dev->nVol);
+    dev->volList = (struct adfVolume **) malloc (
+        sizeof(struct adfVolume *) * dev->nVol );
     if (!dev->volList) { 
         adfFreeTmpVolList(listRoot);
         (*adfEnv.eFct)("adfMount : unknown device type");
@@ -209,7 +210,7 @@ RETCODE adfMountHd(struct Device *dev)
     }
     vList = listRoot;
     for(i=0; i<dev->nVol; i++) {
-        dev->volList[i]=(struct Volume*)vList->content;
+        dev->volList[i] = (struct adfVolume *) vList->content;
         vList = vList->next;
     }
     freeList(listRoot);
@@ -339,14 +340,15 @@ RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList )
 {
     int i, j;
 
-/*struct Volume *vol;*/
+/*struct adfVolume *vol;*/
 
     if (dev==NULL || partList==NULL || n<=0) {
         (*adfEnv.eFct)("adfCreateHd : illegal parameter(s)");
         return RC_ERROR;
     }
 
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*)*n);
+    dev->volList = (struct adfVolume **) malloc (
+        sizeof(struct adfVolume *) * n );
     if (!dev->volList) {
         (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;

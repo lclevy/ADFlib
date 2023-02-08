@@ -116,7 +116,7 @@ int test_hlink_read ( reading_test_t * test_data )
         return 1;
     }
 
-    struct Volume * const vol = adfMount ( dev, 0, TRUE );
+    struct adfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image_filename );

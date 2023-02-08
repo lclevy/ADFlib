@@ -6,7 +6,7 @@
 #include <adf_blk.h>
 #include <stdbool.h>
 
-void show_volume_metadata ( struct Volume * const vol );
+void show_volume_metadata ( struct adfVolume * const vol );
 
 void show_bootblock ( const struct bBootBlock * const bblock,
                       bool                            show_data );

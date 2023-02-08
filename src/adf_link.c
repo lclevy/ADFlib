@@ -36,8 +36,11 @@
  *
  *
  */
-RETCODE adfBlockPtr2EntryName(struct Volume *vol, SECTNUM nSect, SECTNUM lPar, 
-	char **name, int32_t *size)
+RETCODE adfBlockPtr2EntryName ( struct adfVolume * vol,
+                                SECTNUM            nSect,
+                                SECTNUM            lPar,
+                                char **            name,
+                                int32_t *          size )
 {
     struct bEntryBlock entryBlk;
     struct Entry entry;

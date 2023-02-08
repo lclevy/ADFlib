@@ -56,7 +56,9 @@ freeEntCache(struct CacheEntry *cEntry)
  *
  * replace 'adfGetDirEnt'. returns a the dir contents based on the dircache list
  */
-struct List* adfGetDirEntCache(struct Volume *vol, SECTNUM dir, BOOL recurs)
+struct List * adfGetDirEntCache ( struct adfVolume * vol,
+                                  SECTNUM            dir,
+                                  BOOL               recurs )
 {
 	struct bEntryBlock parent;
 	struct bDirCacheBlock dirc;
@@ -280,8 +282,9 @@ printf("newEntry->nLen %d newEntry->cLen %d\n",newEntry->nLen,newEntry->cLen);
  *
  * delete one cache entry from its block. don't do 'records garbage collecting'
  */
-RETCODE adfDelFromCache(struct Volume *vol, struct bEntryBlock *parent, 
-    SECTNUM headerKey)
+RETCODE adfDelFromCache ( struct adfVolume *   vol,
+                          struct bEntryBlock * parent,
+                          SECTNUM              headerKey )
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect, prevSect;
@@ -351,8 +354,9 @@ RETCODE adfDelFromCache(struct Volume *vol, struct bEntryBlock *parent,
  * adfAddInCache
  *
  */
-RETCODE adfAddInCache(struct Volume *vol, struct bEntryBlock *parent, 
-    struct bEntryBlock *entry)
+RETCODE adfAddInCache ( struct adfVolume *   vol,
+                        struct bEntryBlock * parent,
+                        struct bEntryBlock * entry )
 {
     struct bDirCacheBlock dirc, newDirc;
     SECTNUM nSect, nCache;
@@ -438,8 +442,10 @@ dumpBlock(&dirc);
  * adfUpdateCache
  *
  */
-RETCODE adfUpdateCache(struct Volume *vol, struct bEntryBlock *parent, 
-    struct bEntryBlock *entry, BOOL entryLenChg)
+RETCODE adfUpdateCache ( struct adfVolume *   vol,
+                         struct bEntryBlock * parent,
+                         struct bEntryBlock * entry,
+                         BOOL                 entryLenChg )
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect;
@@ -519,7 +525,9 @@ RETCODE adfUpdateCache(struct Volume *vol, struct bEntryBlock *parent,
  * adfCreateEmptyCache
  *
  */
-RETCODE adfCreateEmptyCache(struct Volume *vol, struct bEntryBlock *parent, SECTNUM nSect)
+RETCODE adfCreateEmptyCache ( struct adfVolume *   vol,
+                              struct bEntryBlock * parent,
+                              SECTNUM              nSect )
 {
     struct bDirCacheBlock dirc;
     SECTNUM nCache;
@@ -562,7 +570,9 @@ RETCODE adfCreateEmptyCache(struct Volume *vol, struct bEntryBlock *parent, SECT
  * adfReadDirCBlock
  *
  */
-RETCODE adfReadDirCBlock(struct Volume *vol, SECTNUM nSect, struct bDirCacheBlock *dirc)
+RETCODE adfReadDirCBlock ( struct adfVolume *      vol,
+                           SECTNUM                 nSect,
+                           struct bDirCacheBlock * dirc )
 {
     uint8_t buf[512];
 
@@ -588,7 +598,9 @@ RETCODE adfReadDirCBlock(struct Volume *vol, SECTNUM nSect, struct bDirCacheBloc
  * adfWriteDirCblock
  *
  */
-RETCODE adfWriteDirCBlock(struct Volume* vol, int32_t nSect, struct bDirCacheBlock* dirc)
+RETCODE adfWriteDirCBlock ( struct adfVolume *      vol,
+                            int32_t                 nSect,
+                            struct bDirCacheBlock * dirc )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

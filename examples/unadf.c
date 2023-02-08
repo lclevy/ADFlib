@@ -60,12 +60,12 @@ struct List *file_list = NULL;
 void parse_args(int argc, char *argv[]);
 void help();
 void print_device(struct Device *dev);
-void print_volume(struct Volume *vol);
+void print_volume(struct adfVolume * vol);
 void print_tree(struct List *node, char *path);
 void print_entry(struct Entry *e, char *path);
-void extract_tree(struct Volume *vol, struct List *node, char *path);
-void extract_filepath(struct Volume *vol, char *filepath);
-void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms);
+void extract_tree(struct adfVolume *vol, struct List *node, char *path);
+void extract_filepath(struct adfVolume *vol, char *filepath);
+void extract_file(struct adfVolume *vol, char *filename, char *out, mode_t perms);
 char *output_name(char *path, char *name);
 char *join_path(char *path, char *name);
 void set_file_date(char *out, struct Entry *e);
@@ -75,7 +75,7 @@ int replace_not_allowed_chars ( char * const path );
 
 int main(int argc, char *argv[]) {
     struct Device *dev = NULL;
-    struct Volume *vol = NULL;
+    struct adfVolume *vol = NULL;
     struct List *list, *node;
 
     fprintf(stderr, "unADF v%s : a unzip like for .ADF files, powered by ADFlib (v%s - %s)\n\n",
@@ -240,7 +240,8 @@ void print_device(struct Device *dev) {
 }
 
 /* prints one line of information about a volume */
-void print_volume(struct Volume *vol) {
+void print_volume(struct adfVolume *vol)
+{
     SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
 
     switch (vol->dev->devType) {
@@ -313,7 +314,8 @@ void print_entry(struct Entry *e, char *path) {
 }
 
 /* extracts all files, recursing into directories */
-void extract_tree(struct Volume *vol, struct List *node, char *path) {
+void extract_tree(struct adfVolume *vol, struct List *node, char *path)
+{
     for (; node; node = node->next) {
         struct Entry *e = node->content;
 
@@ -350,7 +352,8 @@ void extract_tree(struct Volume *vol, struct List *node, char *path) {
 }
 
 /* follows a path to a file on disk and extracts just that file */
-void extract_filepath(struct Volume *vol, char *filepath) {
+void extract_filepath(struct adfVolume *vol, char *filepath)
+{
     char *p, *element, *out;
 
     /* skip any leading slashes */
@@ -391,7 +394,8 @@ void extract_filepath(struct Volume *vol, char *filepath) {
 }
 
 /* copies a file from the volume to a given output filename */
-void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
+void extract_file(struct adfVolume *vol, char *filename, char *out, mode_t perms)
+{
     struct adfFile *f = NULL;
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;

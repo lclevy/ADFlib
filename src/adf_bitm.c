@@ -44,7 +44,7 @@ extern uint32_t bitMask[32];
  * adfUpdateBitmap
  *
  */
-RETCODE adfUpdateBitmap(struct Volume *vol)
+RETCODE adfUpdateBitmap(struct adfVolume *vol)
 {
 	int i;
     struct bRootBlock root;
@@ -78,7 +78,7 @@ RETCODE adfUpdateBitmap(struct Volume *vol)
  * adfCountFreeBlocks
  *
  */
-int32_t adfCountFreeBlocks(struct Volume* vol)
+int32_t adfCountFreeBlocks(struct adfVolume* vol)
 {
     int32_t freeBlocks;
     int j;
@@ -96,7 +96,9 @@ int32_t adfCountFreeBlocks(struct Volume* vol)
  * adfReadBitmap
  *
  */
-RETCODE adfReadBitmap(struct Volume* vol, int32_t nBlock, struct bRootBlock* root)
+RETCODE adfReadBitmap ( struct adfVolume *  vol,
+                        int32_t             nBlock,
+                        struct bRootBlock * root )
 {
 	int32_t mapSize, nSect;
 	int32_t j, i;
@@ -183,7 +185,7 @@ RETCODE adfReadBitmap(struct Volume* vol, int32_t nBlock, struct bRootBlock* roo
  * adfIsBlockFree
  *
  */
-BOOL adfIsBlockFree(struct Volume* vol, SECTNUM nSect)
+BOOL adfIsBlockFree(struct adfVolume * vol, SECTNUM nSect)
 {
     assert ( nSect >= 2 );
     int sectOfMap = nSect-2;
@@ -205,7 +207,7 @@ printf("res=%x,  ",vol->bitmapTable[ block ]->map[ indexInMap ]
  * adfSetBlockFree OK
  *
  */
-void adfSetBlockFree(struct Volume* vol, SECTNUM nSect)
+void adfSetBlockFree(struct adfVolume * vol, SECTNUM nSect)
 {
     uint32_t oldValue;
     int sectOfMap = nSect-2;
@@ -230,7 +232,7 @@ printf("bit=%d,  ",sectOfMap%32);
  * adfSetBlockUsed
  *
  */
-void adfSetBlockUsed(struct Volume* vol, SECTNUM nSect)
+void adfSetBlockUsed(struct adfVolume * vol, SECTNUM nSect)
 {
     uint32_t oldValue;
     int sectOfMap = nSect-2;
@@ -249,7 +251,8 @@ void adfSetBlockUsed(struct Volume* vol, SECTNUM nSect)
  * adfGet1FreeBlock
  *
  */
-SECTNUM adfGet1FreeBlock(struct Volume *vol) {
+SECTNUM adfGet1FreeBlock(struct adfVolume * vol)
+{
     SECTNUM block[1];
     if (!adfGetFreeBlocks(vol,1,block))
         return(-1);
@@ -261,7 +264,7 @@ SECTNUM adfGet1FreeBlock(struct Volume *vol) {
  * adfGetFreeBlocks
  *
  */
-BOOL adfGetFreeBlocks(struct Volume* vol, int nbSect, SECTNUM* sectList)
+BOOL adfGetFreeBlocks(struct adfVolume * vol, int nbSect, SECTNUM * sectList)
 {
     int i, j;
     BOOL diskFull;
@@ -300,7 +303,7 @@ BOOL adfGetFreeBlocks(struct Volume* vol, int nbSect, SECTNUM* sectList)
  *
  * create bitmap structure in vol
  */
-RETCODE adfCreateBitmap(struct Volume *vol)
+RETCODE adfCreateBitmap(struct adfVolume * vol)
 {
     int32_t nBlock, mapSize ;
     int i, j;
@@ -358,7 +361,7 @@ RETCODE adfCreateBitmap(struct Volume *vol)
  *
  * uses vol->bitmapSize, 
  */
-RETCODE adfWriteNewBitmap(struct Volume *vol)
+RETCODE adfWriteNewBitmap(struct adfVolume * vol)
 {
     struct bBitmapExtBlock bitme;
     SECTNUM *bitExtBlock;
@@ -444,8 +447,9 @@ RETCODE adfWriteNewBitmap(struct Volume *vol)
  *
  * ENDIAN DEPENDENT
  */
-RETCODE
-adfReadBitmapBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapBlock* bitm)
+RETCODE adfReadBitmapBlock ( struct adfVolume *    vol,
+                             SECTNUM               nSect,
+                             struct bBitmapBlock * bitm )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
 
@@ -471,8 +475,9 @@ adfReadBitmapBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapBlock* bitm)
  *
  * OK
  */
-RETCODE
-adfWriteBitmapBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapBlock* bitm)
+RETCODE adfWriteBitmapBlock ( struct adfVolume *    vol,
+                              SECTNUM               nSect,
+                              struct bBitmapBlock * bitm )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 	uint32_t newSum;
@@ -499,8 +504,9 @@ adfWriteBitmapBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapBlock* bitm
  *
  * ENDIAN DEPENDENT
  */
-RETCODE
-adfReadBitmapExtBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapExtBlock* bitme)
+RETCODE adfReadBitmapExtBlock ( struct adfVolume *       vol,
+                                SECTNUM                  nSect,
+                                struct bBitmapExtBlock * bitme )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
 
@@ -520,8 +526,9 @@ adfReadBitmapExtBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapExtBlock*
  * adfWriteBitmapExtBlock
  *
  */
-RETCODE
-adfWriteBitmapExtBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapExtBlock* bitme)
+RETCODE adfWriteBitmapExtBlock ( struct adfVolume *       vol,
+                                 SECTNUM                  nSect,
+                                 struct bBitmapExtBlock * bitme )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
 	
@@ -543,7 +550,7 @@ adfWriteBitmapExtBlock(struct Volume* vol, SECTNUM nSect, struct bBitmapExtBlock
  * adfFreeBitmap
  *
  */
-void adfFreeBitmap(struct Volume* vol)
+void adfFreeBitmap ( struct adfVolume * vol )
 {
     int i;
 

@@ -23,7 +23,7 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     struct Device *hd;
-    struct Volume *vol;
+    struct adfVolume *vol;
     struct List *list, *head;
     SECTNUM nSect;
  
