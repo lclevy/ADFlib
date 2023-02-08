@@ -22,7 +22,7 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
+    struct adfDevice *hd;
     struct adfVolume *vol;
     FILE* boot;
     unsigned char bootcode[1024];

@@ -38,7 +38,9 @@
 #include "nt4_dev.h"
 
 
-RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
+RETCODE Win32InitDevice ( struct adfDevice * dev,
+                          char *             lpstrName,
+                          BOOL               ro )
 {
 	struct nativeDevice* nDev;
 	char strTempName[3];
@@ -98,7 +100,10 @@ RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
 }
 
 
-RETCODE Win32ReadSector(struct Device *dev, long n, int size, unsigned char* buf)
+RETCODE Win32ReadSector ( struct adfDevice * dev,
+                          long               n,
+                          int                size,
+                          unsigned char *    buf )
 {
 	struct nativeDevice* tDev;
 
@@ -113,7 +118,10 @@ RETCODE Win32ReadSector(struct Device *dev, long n, int size, unsigned char* buf
 }
 
 
-RETCODE Win32WriteSector(struct Device *dev, long n, int size, unsigned char* buf)
+RETCODE Win32WriteSector ( struct adfDevice * dev,
+                           long               n,
+                           int                size,
+                           unsigned char *    buf )
 {
 	struct nativeDevice* tDev;
 
@@ -128,7 +136,7 @@ RETCODE Win32WriteSector(struct Device *dev, long n, int size, unsigned char* bu
 }
 
 
-RETCODE Win32ReleaseDevice(struct Device *dev)
+RETCODE Win32ReleaseDevice ( struct adfDevice * dev )
 {
 	struct nativeDevice* nDev;
 

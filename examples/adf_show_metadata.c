@@ -15,7 +15,7 @@ char* basename(char* path);
 #include "adf_show_metadata_file.h"
 
 
-static void show_device_metadata ( struct Device * const dev );    
+static void show_device_metadata ( struct adfDevice * const dev );
 
 static void show_dentry_metadata ( struct adfVolume * const vol,
                                    char * const             path );
@@ -45,7 +45,7 @@ int main ( int     argc,
     adfEnvInitDefault();
 
     printf ( "\nOpening image/device:\t'%s'\n", adfname );
-    struct Device * const dev = adfMountDev ( adfname, TRUE );
+    struct adfDevice * const dev = adfMountDev ( adfname, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
@@ -82,7 +82,7 @@ env_cleanup:
 }
 
 
-static void show_device_metadata ( struct Device * const dev )
+static void show_device_metadata ( struct adfDevice * const dev )
 {
     adfDeviceInfo ( dev );
 }

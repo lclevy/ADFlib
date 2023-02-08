@@ -34,7 +34,7 @@
 /* ----- VOLUME ----- */
 
 struct adfVolume {
-    struct Device* dev;
+    struct adfDevice *dev;
 
     SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
     SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
@@ -65,15 +65,15 @@ PREFIX RETCODE adfInstallBootBlock ( struct adfVolume * vol,
 PREFIX BOOL isSectNumValid ( struct adfVolume * vol,
                              SECTNUM            nSect );
 
-PREFIX struct adfVolume * adfMount ( struct Device * dev,
-                                     int             nPart,
-                                     BOOL            readOnly );
+PREFIX struct adfVolume * adfMount ( struct adfDevice * dev,
+                                     int                nPart,
+                                     BOOL               readOnly );
 
 PREFIX void adfUnMount ( struct adfVolume * vol );
 
 PREFIX void adfVolumeInfo ( struct adfVolume * vol );
 
-struct adfVolume * adfCreateVol ( struct Device * dev,
+struct adfVolume * adfCreateVol ( struct adfDevice * dev,
                                   int32_t         start,
                                   int32_t         len,
                                   char *          volName,

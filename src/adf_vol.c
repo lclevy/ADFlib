@@ -166,9 +166,9 @@ void adfVolumeInfo ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfMount ( struct Device * dev,
-                              int             nPart,
-                              BOOL            readOnly )
+struct adfVolume * adfMount ( struct adfDevice * dev,
+                              int                nPart,
+                              BOOL               readOnly )
 {
     int32_t nBlock;
     struct bRootBlock root;
@@ -246,11 +246,11 @@ void adfUnMount ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfCreateVol ( struct Device * dev,
-                                  int32_t         start,
-                                  int32_t         len,
-                                  char *          volName,
-                                  int             volType )
+struct adfVolume * adfCreateVol ( struct adfDevice * dev,
+                                  int32_t            start,
+                                  int32_t            len,
+                                  char *             volName,
+                                  int                volType )
 {
     struct bBootBlock boot;
     struct bRootBlock root;

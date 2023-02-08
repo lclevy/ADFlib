@@ -21,7 +21,7 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
+    struct adfDevice *hd;
     struct adfVolume *vol;
     struct adfFile *fic;
     unsigned char buf[1];

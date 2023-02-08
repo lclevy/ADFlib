@@ -69,7 +69,7 @@ static void adfFreeTmpVolList(struct List *root)
  * adfMountHdFile
  *
  */
-RETCODE adfMountHdFile(struct Device *dev)
+RETCODE adfMountHdFile ( struct adfDevice * dev )
 {
     struct adfVolume * vol;
     uint8_t buf[512];
@@ -128,7 +128,7 @@ RETCODE adfMountHdFile(struct Device *dev)
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */
-RETCODE adfMountHd(struct Device *dev)
+RETCODE adfMountHd ( struct adfDevice * dev )
 {
     struct bRDSKblock rdsk;
     struct bPARTblock part;
@@ -250,7 +250,9 @@ RETCODE adfMountHd(struct Device *dev)
  * do not fill dev->volList[]
  * called by adfCreateHd()
  */
-RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList )
+RETCODE adfCreateHdHeader ( struct adfDevice *  dev,
+                            int                 n,
+                            struct Partition ** partList )
 {
     int i;
     struct bRDSKblock rdsk;
@@ -336,7 +338,9 @@ RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList
  * fills dev->volList[]
  *
  */
-RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList )
+RETCODE adfCreateHd ( struct adfDevice *  dev,
+                      int                 n,
+                      struct Partition ** partList )
 {
     int i, j;
 
@@ -386,8 +390,8 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  * ReadRDSKblock
  *
  */
-RETCODE
-adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk )
+RETCODE adfReadRDSKblock ( struct adfDevice *  dev,
+                           struct bRDSKblock * blk )
 {
     UCHAR buf[256];
     RETCODE rc = RC_OK;
@@ -430,8 +434,8 @@ adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk )
  * adfWriteRDSKblock
  *
  */
-RETCODE
-adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
+RETCODE adfWriteRDSKblock ( struct adfDevice *  dev,
+                            struct bRDSKblock * rdsk )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -468,8 +472,9 @@ adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk)
  * ReadPARTblock
  *
  */
-RETCODE
-adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk )
+RETCODE adfReadPARTblock ( struct adfDevice *  dev,
+                           int32_t             nSect,
+                           struct bPARTblock * blk )
 {
     UCHAR buf[ sizeof(struct bPARTblock) ];
     RETCODE rc2, rc = RC_OK;
@@ -508,8 +513,9 @@ adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk )
  * adfWritePARTblock
  *
  */
-RETCODE
-adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
+RETCODE adfWritePARTblock ( struct adfDevice *  dev,
+                            int32_t             nSect,
+                            struct bPARTblock * part )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -545,8 +551,9 @@ adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part)
  * ReadFSHDblock
  *
  */
-RETCODE
-adfReadFSHDblock( struct Device* dev, int32_t nSect, struct bFSHDblock* blk)
+RETCODE adfReadFSHDblock ( struct adfDevice *  dev,
+                           int32_t             nSect,
+                           struct bFSHDblock * blk )
 {
     UCHAR buf[sizeof(struct bFSHDblock)];
 
@@ -579,8 +586,9 @@ adfReadFSHDblock( struct Device* dev, int32_t nSect, struct bFSHDblock* blk)
  *  adfWriteFSHDblock
  *
  */
-    RETCODE
-adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
+RETCODE adfWriteFSHDblock ( struct adfDevice *  dev,
+                            int32_t             nSect,
+                            struct bFSHDblock * fshd )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -612,8 +620,9 @@ adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd)
  * ReadLSEGblock
  *
  */
-   RETCODE
-adfReadLSEGblock(struct Device* dev, int32_t nSect, struct bLSEGblock* blk)
+RETCODE adfReadLSEGblock ( struct adfDevice *  dev,
+                           int32_t             nSect,
+                           struct bLSEGblock * blk )
 {
     UCHAR buf[sizeof(struct bLSEGblock)];
 
@@ -646,8 +655,9 @@ adfReadLSEGblock(struct Device* dev, int32_t nSect, struct bLSEGblock* blk)
  * adfWriteLSEGblock
  *
  */
-RETCODE
-adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg)
+RETCODE adfWriteLSEGblock ( struct adfDevice *  dev,
+                            int32_t             nSect,
+                            struct bLSEGblock * lseg )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

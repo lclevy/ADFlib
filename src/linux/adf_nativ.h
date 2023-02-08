@@ -42,31 +42,31 @@ struct nativeDevice {
 };
 
 struct nativeFunctions {
-    RETCODE (*adfInitDevice)( struct Device *, char *, BOOL );
-    RETCODE (*adfNativeReadSector)( struct Device *, int32_t, int, uint8_t * );
-    RETCODE (*adfNativeWriteSector)( struct Device *, int32_t, int, uint8_t * );
+    RETCODE (*adfInitDevice)( struct adfDevice *, char *, BOOL );
+    RETCODE (*adfNativeReadSector)( struct adfDevice *, int32_t, int, uint8_t * );
+    RETCODE (*adfNativeWriteSector)( struct adfDevice *, int32_t, int, uint8_t * );
     BOOL (*adfIsDevNative)(char*);
-    RETCODE (*adfReleaseDevice)(struct Device* dev);
+    RETCODE (*adfReleaseDevice)(struct adfDevice* dev);
 };
 
 void adfInitNativeFct();
 
 
-RETCODE adfLinuxReadSector ( struct Device * dev,
-                             int32_t         n,
-                             int             size,
-                             uint8_t *       buf );
+RETCODE adfLinuxReadSector ( struct adfDevice * dev,
+                             int32_t            n,
+                             int                size,
+                             uint8_t *          buf );
 
-RETCODE adfLinuxWriteSector ( struct Device * dev,
-                              int32_t         n,
-                              int             size,
-                              uint8_t *       buf );
+RETCODE adfLinuxWriteSector ( struct adfDevice * dev,
+                              int32_t            n,
+                              int                size,
+                              uint8_t *          buf );
 
-RETCODE adfLinuxInitDevice ( struct Device * dev,
-                             char *          name,
-                             BOOL            ro );
+RETCODE adfLinuxInitDevice ( struct adfDevice * dev,
+                             char *             name,
+                             BOOL               ro );
 
-RETCODE adfLinuxReleaseDevice ( struct Device * dev );
+RETCODE adfLinuxReleaseDevice ( struct adfDevice * dev );
 
 BOOL adfLinuxIsDevNative ( char * );
 

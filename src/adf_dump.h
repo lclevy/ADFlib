@@ -28,14 +28,30 @@
 
 #include "adf_dev.h"
 
-PREFIX     struct Device*
-adfCreateDumpDevice(char* filename, int32_t cyl, int32_t heads, int32_t sec);
-PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
-BOOL adfInitDumpDevice(struct Device* dev, char* name,BOOL);
-BOOL adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-BOOL adfWriteDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-RETCODE adfReleaseDumpDevice(struct Device *dev);
+PREFIX struct adfDevice * adfCreateDumpDevice ( char *  filename,
+                                                int32_t cyl,
+                                                int32_t heads,
+                                                int32_t sec );
 
+PREFIX RETCODE adfCreateHdFile ( struct adfDevice * dev,
+                                 char *             volName,
+                                 int                volType );
+
+BOOL adfInitDumpDevice ( struct adfDevice * dev,
+                         char             * name,
+                         BOOL               ro );
+
+BOOL adfReadDumpSector ( struct adfDevice * dev,
+                         int32_t            n,
+                         int                size,
+                         uint8_t *          buf );
+
+BOOL adfWriteDumpSector ( struct adfDevice * dev,
+                          int32_t            n,
+                          int                size,
+                          uint8_t *          buf );
+
+RETCODE adfReleaseDumpDevice ( struct adfDevice * dev );
 
 #endif /* ADF_DUMP_H */
 /*##########################################################################*/

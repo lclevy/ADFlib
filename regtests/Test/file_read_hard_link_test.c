@@ -109,7 +109,7 @@ int test_hlink_read ( reading_test_t * test_data )
              test_data->real_file );
 #endif
 
-    struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct adfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );

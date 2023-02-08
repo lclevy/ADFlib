@@ -72,7 +72,7 @@ int test_floppy_overfilling ( char * const          adfname,
             fstype_info [fstype], blocksize );
 #endif
 
-    struct Device * device = adfCreateDumpDevice ( adfname, 80, 2, 11 );
+    struct adfDevice * device = adfCreateDumpDevice ( adfname, 80, 2, 11 );
     if ( ! device )
         return 1;
     adfCreateFlop ( device, "OverfillTest", fstype );

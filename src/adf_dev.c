@@ -53,9 +53,10 @@
  *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
  *          EXIST ALREADY ON THE DEVICE(!)
  */
-struct Device * adfOpenDev ( char * filename, BOOL ro )
+struct adfDevice * adfOpenDev ( char * filename, BOOL ro )
 {
-    struct Device * dev = ( struct Device * ) malloc ( sizeof ( struct Device ) );
+    struct adfDevice * dev = ( struct adfDevice * )
+        malloc ( sizeof ( struct adfDevice ) );
     if ( ! dev ) {
         (*adfEnv.eFct)("adfOpenDev : malloc error");
         return NULL;
@@ -111,7 +112,7 @@ struct Device * adfOpenDev ( char * filename, BOOL ro )
  * Closes/releases an opened device.
  * Called by adfUnMountDev()
  */
-void adfCloseDev ( struct Device * dev )
+void adfCloseDev ( struct adfDevice * dev )
 {
     if ( ! dev )
         return;
@@ -143,7 +144,7 @@ void adfCloseDev ( struct Device * dev )
  * returns the type of a device
  * only based of the field 'dev->size'
  */
-int adfDevType(struct Device* dev)
+int adfDevType ( struct adfDevice * dev )
 {
     if( (dev->size==512*11*2*80) ||		/* BV */
         (dev->size==512*11*2*81) ||		/* BV */
@@ -169,7 +170,7 @@ int adfDevType(struct Device* dev)
  *
  * can be used before adfCreateVol() or adfMount()
  */
-void adfDeviceInfo(struct Device *dev)
+void adfDeviceInfo ( struct adfDevice * dev )
 {
     const char * devTypeInfo = NULL;
     switch ( dev->devType ) {
@@ -227,12 +228,13 @@ void adfDeviceInfo(struct Device *dev)
  *
  * adfInitDevice() must fill dev->size !
  */
-struct Device* adfMountDev( char* filename, BOOL ro)
+struct adfDevice * adfMountDev ( char * filename,
+                                 BOOL   ro )
 {
     RETCODE rc;
     uint8_t buf[512];
 
-    struct Device * dev = adfOpenDev ( filename, ro );
+    struct adfDevice * dev = adfOpenDev ( filename, ro );
     if ( ! dev ) {
         //(*adfEnv.eFct)("adfMountDev : malloc error");
         return NULL;
@@ -285,16 +287,16 @@ struct Device* adfMountDev( char* filename, BOOL ro)
  * adfUnMountDev
  *
  */
-void adfUnMountDev( struct Device* dev)
+void adfUnMountDev ( struct adfDevice * dev )
 {
     adfCloseDev ( dev );
 }
 
 
-RETCODE adfReadBlockDev ( struct Device * dev,
-                          int32_t         pSect,
-                          int32_t         size,
-                          uint8_t *       buf )
+RETCODE adfReadBlockDev ( struct adfDevice * dev,
+                          int32_t            pSect,
+                          int32_t            size,
+                          uint8_t *          buf )
 {
     RETCODE rc;
 
@@ -309,10 +311,10 @@ RETCODE adfReadBlockDev ( struct Device * dev,
 }
 
 
-RETCODE adfWriteBlockDev ( struct Device * dev,
-                           int32_t         pSect,
-                           int32_t         size,
-                           uint8_t *       buf )
+RETCODE adfWriteBlockDev ( struct adfDevice * dev,
+                           int32_t            pSect,
+                           int32_t            size,
+                           uint8_t *          buf )
 {
     RETCODE rc;
 
