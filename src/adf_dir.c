@@ -49,7 +49,7 @@
  * adfRenameEntry
  *
  */ 
-RETCODE adfRenameEntry ( struct adfVolume * vol,
+RETCODE adfRenameEntry ( struct AdfVolume * vol,
                          SECTNUM            pSect,
                          char *             oldName,
                          SECTNUM            nPSect,
@@ -184,7 +184,7 @@ RETCODE adfRenameEntry ( struct adfVolume * vol,
  * adfRemoveEntry
  *
  */
-RETCODE adfRemoveEntry ( struct adfVolume * vol,
+RETCODE adfRemoveEntry ( struct AdfVolume * vol,
                          SECTNUM            pSect,
                          char *             name )
 {
@@ -262,7 +262,7 @@ RETCODE adfRemoveEntry ( struct adfVolume * vol,
  * adfSetEntryComment
  *
  */
-RETCODE adfSetEntryComment ( struct adfVolume * vol,
+RETCODE adfSetEntryComment ( struct AdfVolume * vol,
                              SECTNUM            parSect,
                              char *             name,
                              char *             newCmt )
@@ -299,7 +299,7 @@ RETCODE adfSetEntryComment ( struct adfVolume * vol,
  * adfSetEntryAccess
  *
  */
-RETCODE adfSetEntryAccess ( struct adfVolume * vol,
+RETCODE adfSetEntryAccess ( struct AdfVolume * vol,
                             SECTNUM            parSect,
                             char *             name,
                             int32_t            newAcc )
@@ -369,7 +369,7 @@ void adfFreeDirList(struct List* list)
  * adfGetRDirEnt
  *
  */
-struct List * adfGetRDirEnt ( struct adfVolume * vol,
+struct List * adfGetRDirEnt ( struct AdfVolume * vol,
                               SECTNUM            nSect,
                               BOOL               recurs )
 {
@@ -462,7 +462,7 @@ struct List * adfGetRDirEnt ( struct adfVolume * vol,
  * adfGetDirEnt
  *
  */
-struct List * adfGetDirEnt ( struct adfVolume * vol,
+struct List * adfGetDirEnt ( struct AdfVolume * vol,
                              SECTNUM            nSect )
 {
     return adfGetRDirEnt(vol, nSect, FALSE);
@@ -489,7 +489,7 @@ void adfFreeEntry(struct Entry *entry)
  * adfDirCountEntries
  *
  */
-int adfDirCountEntries ( struct adfVolume * const vol,
+int adfDirCountEntries ( struct AdfVolume * const vol,
                          SECTNUM                  dirPtr )
 {
     struct List * list, * cell;
@@ -510,7 +510,7 @@ int adfDirCountEntries ( struct adfVolume * const vol,
  * adfToRootDir
  *
  */
-RETCODE adfToRootDir ( struct adfVolume * vol )
+RETCODE adfToRootDir ( struct AdfVolume * vol )
 {
     vol->curDirPtr = vol->rootBlock;
 
@@ -522,7 +522,7 @@ RETCODE adfToRootDir ( struct adfVolume * vol )
  * adfChangeDir
  *
  */
-RETCODE adfChangeDir ( struct adfVolume * vol,
+RETCODE adfChangeDir ( struct AdfVolume * vol,
                        char *             name )
 {
     struct bEntryBlock entry;
@@ -558,7 +558,7 @@ RETCODE adfChangeDir ( struct adfVolume * vol,
  * adfParentDir
  *
  */
-SECTNUM adfParentDir ( struct adfVolume * vol )
+SECTNUM adfParentDir ( struct AdfVolume * vol )
 {
     struct bEntryBlock entry;
 
@@ -642,7 +642,7 @@ RETCODE adfEntBlock2Entry(struct bEntryBlock *entryBlk, struct Entry *entry)
  * adfNameToEntryBlk
  *
  */
-SECTNUM adfNameToEntryBlk ( struct adfVolume *   vol,
+SECTNUM adfNameToEntryBlk ( struct AdfVolume *   vol,
                             int32_t              ht[],
                             char *               name,
                             struct bEntryBlock * entry,
@@ -728,7 +728,7 @@ adfAccess2String(int32_t acc)
  * name 'name'. if 'thisSect'!=-1, insert this sector pointer  into the hashTable 
  * (here 'thisSect' must be allocated before in the bitmap).
  */
-SECTNUM adfCreateEntry ( struct adfVolume *   vol,
+SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
                          struct bEntryBlock * dir,
                          char *               name,
                          SECTNUM              thisSect )
@@ -910,7 +910,7 @@ void printEntry(struct Entry* entry)
  * adfCreateDir
  *
  */
-RETCODE adfCreateDir ( struct adfVolume * vol,
+RETCODE adfCreateDir ( struct AdfVolume * vol,
                        SECTNUM            nParent,
                        char *             name )
 {
@@ -962,7 +962,7 @@ RETCODE adfCreateDir ( struct adfVolume * vol,
  * adfCreateFile
  *
  */
-RETCODE adfCreateFile ( struct adfVolume *        vol,
+RETCODE adfCreateFile ( struct AdfVolume *        vol,
                         SECTNUM                   nParent,
                         char *                    name,
                         struct bFileHeaderBlock * fhdr )
@@ -1009,7 +1009,7 @@ RETCODE adfCreateFile ( struct adfVolume *        vol,
  * adfReadEntryBlock
  *
  */
-RETCODE adfReadEntryBlock ( struct adfVolume *   vol,
+RETCODE adfReadEntryBlock ( struct AdfVolume *   vol,
                             SECTNUM              nSect,
                             struct bEntryBlock * ent )
 {
@@ -1053,7 +1053,7 @@ RETCODE adfReadEntryBlock ( struct adfVolume *   vol,
  * adfWriteEntryBlock
  *
  */
-RETCODE adfWriteEntryBlock ( struct adfVolume *   vol,
+RETCODE adfWriteEntryBlock ( struct AdfVolume *   vol,
                              SECTNUM              nSect,
                              struct bEntryBlock * ent )
 {
@@ -1080,7 +1080,7 @@ RETCODE adfWriteEntryBlock ( struct adfVolume *   vol,
  * adfWriteDirBlock
  *
  */
-RETCODE adfWriteDirBlock ( struct adfVolume * vol,
+RETCODE adfWriteDirBlock ( struct AdfVolume * vol,
                            SECTNUM            nSect,
                            struct bDirBlock * dir )
 {

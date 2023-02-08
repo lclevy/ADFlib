@@ -55,7 +55,7 @@ uint32_t bitMask[32] = {
 	0x10000000, 0x20000000, 0x40000000, 0x80000000 };
 
 
-RETCODE adfInstallBootBlock ( struct adfVolume * vol,
+RETCODE adfInstallBootBlock ( struct AdfVolume * vol,
                               uint8_t *          code )
 {
     int i;
@@ -84,7 +84,7 @@ RETCODE adfInstallBootBlock ( struct adfVolume * vol,
  * isSectNumValid
  *
  */
-BOOL isSectNumValid ( struct adfVolume * vol,
+BOOL isSectNumValid ( struct AdfVolume * vol,
                       SECTNUM            nSect )
 {
     return( 0<=nSect && nSect<=(vol->lastBlock - vol->firstBlock) );
@@ -96,7 +96,7 @@ BOOL isSectNumValid ( struct adfVolume * vol,
  * adfVolumeInfo
  *
  */
-void adfVolumeInfo ( struct adfVolume * vol )
+void adfVolumeInfo ( struct AdfVolume * vol )
 {
     struct bRootBlock root;
     char diskName[35];
@@ -166,14 +166,14 @@ void adfVolumeInfo ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfMount ( struct AdfDevice * dev,
+struct AdfVolume * adfMount ( struct AdfDevice * dev,
                               int                nPart,
                               BOOL               readOnly )
 {
     int32_t nBlock;
     struct bRootBlock root;
     struct bBootBlock boot;
-    struct adfVolume * vol;
+    struct AdfVolume * vol;
 
     if (dev==NULL || nPart >= dev->nVol) {
         (*adfEnv.eFct)("adfMount : invalid parameter(s)");
@@ -226,7 +226,7 @@ struct adfVolume * adfMount ( struct AdfDevice * dev,
 * free bitmap structures
 * free current dir
 */
-void adfUnMount ( struct adfVolume * vol )
+void adfUnMount ( struct AdfVolume * vol )
 {
 	if (!vol) {
 		(*adfEnv.eFct)("adfUnMount : vol is null");
@@ -246,7 +246,7 @@ void adfUnMount ( struct adfVolume * vol )
  *
  * 
  */
-struct adfVolume * adfCreateVol ( struct AdfDevice * dev,
+struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
                                   int32_t            start,
                                   int32_t            len,
                                   char *             volName,
@@ -256,13 +256,13 @@ struct adfVolume * adfCreateVol ( struct AdfDevice * dev,
     struct bRootBlock root;
 /*    struct bDirCacheBlock dirc;*/
     SECTNUM blkList[2];
-    struct adfVolume* vol;
+    struct AdfVolume* vol;
     int nlen;
 
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(0);
 
-    vol = (struct adfVolume *) malloc (sizeof(struct adfVolume));
+    vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
 		(*adfEnv.eFct)("adfCreateVol : malloc vol");
         return NULL;
@@ -379,7 +379,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
  *
  * read logical block
  */
-RETCODE adfReadBlock ( struct adfVolume * vol,
+RETCODE adfReadBlock ( struct AdfVolume * vol,
                        int32_t            nSect,
                        uint8_t *          buf )
 {
@@ -414,7 +414,7 @@ RETCODE adfReadBlock ( struct adfVolume * vol,
  * adfWriteBlock
  *
  */
-RETCODE adfWriteBlock ( struct adfVolume * vol,
+RETCODE adfWriteBlock ( struct AdfVolume * vol,
                         int32_t            nSect,
                         uint8_t *          buf )
 {

@@ -29,7 +29,7 @@ struct AdfDevice {
     int32_t size;                 /* in bytes */
 
     int nVol;                  /* partitions */
-    struct adfVolume** volList;
+    struct AdfVolume** volList;
 
     int32_t cylinders;            /* geometry */
     int32_t heads;

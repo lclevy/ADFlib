@@ -30,7 +30,7 @@
 
 
 void adfVolumeInfoWin ( HWND               hWnd,
-                        struct adfVolume * vol )
+                        struct AdfVolume * vol )
 /* Windows version of adfVolumeInfo().
 ** Input:  Receives a handle to the window on which to display the dialogue and a pointer
 **         to a ADFLib adfVolume structure.

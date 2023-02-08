@@ -17,7 +17,7 @@ int test_floppy_overfilling ( char * const          adfname,
                               const unsigned        blocksize,
                               const unsigned char   fstype );
 
-int verify_file_data ( struct adfVolume * const vol,
+int verify_file_data ( struct AdfVolume * const vol,
                        char * const             filename,
                        unsigned char * const buffer,
                        const unsigned        bytes_written );
@@ -77,7 +77,7 @@ int test_floppy_overfilling ( char * const          adfname,
         return 1;
     adfCreateFlop ( device, "OverfillTest", fstype );
 
-    struct adfVolume * vol = adfMount ( device, 0, FALSE );
+    struct AdfVolume * vol = adfMount ( device, 0, FALSE );
     if ( ! vol )
         return 1;
 
@@ -138,7 +138,7 @@ int test_floppy_overfilling ( char * const          adfname,
 }
 
 
-int verify_file_data ( struct adfVolume * const vol,
+int verify_file_data ( struct AdfVolume * const vol,
                        char * const             filename,
                        unsigned char * const    buffer,
                        const unsigned           bytes_written )

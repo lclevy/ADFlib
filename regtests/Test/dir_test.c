@@ -10,11 +10,11 @@
 #include"adflib.h"
 #include "adf_dir.h"
 
-int test_chdir_hlink ( struct adfVolume * vol,
+int test_chdir_hlink ( struct AdfVolume * vol,
                        char *             hlink,
                        int                num_entries );
 
-int test_softlink_realname ( struct adfVolume * vol,
+int test_softlink_realname ( struct AdfVolume * vol,
                              char *             slink,
                              char *             expected_dest_name );
 
@@ -32,7 +32,7 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     struct AdfDevice *hd;
-    struct adfVolume *vol;
+    struct AdfVolume *vol;
     struct List *list, *cell;
     SECTNUM nSect;
  
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 }
 
 
-int test_chdir_hlink ( struct adfVolume * vol,
+int test_chdir_hlink ( struct AdfVolume * vol,
                        char *             hlink,
                        int                num_entries )
 {
@@ -148,7 +148,7 @@ int test_chdir_hlink ( struct adfVolume * vol,
 }
 
 
-int test_softlink_realname ( struct adfVolume * vol,
+int test_softlink_realname ( struct AdfVolume * vol,
                              char *             slink,
                              char *             expected_dest_name )
 {

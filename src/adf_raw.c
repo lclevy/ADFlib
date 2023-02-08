@@ -112,7 +112,7 @@ swapEndian( uint8_t *buf, int type )
  * ENDIAN DEPENDENT
  */
 RETCODE
-adfReadRootBlock ( struct adfVolume *  vol,
+adfReadRootBlock ( struct AdfVolume *  vol,
                    int32_t             nSect,
                    struct bRootBlock * root )
 {
@@ -144,7 +144,7 @@ adfReadRootBlock ( struct adfVolume *  vol,
  *
  * 
  */
-RETCODE adfWriteRootBlock ( struct adfVolume *  vol,
+RETCODE adfWriteRootBlock ( struct AdfVolume *  vol,
                             int32_t             nSect,
                             struct bRootBlock * root )
 {
@@ -186,7 +186,7 @@ RETCODE adfWriteRootBlock ( struct adfVolume *  vol,
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadBootBlock ( struct adfVolume  * vol,
+RETCODE adfReadBootBlock ( struct AdfVolume  * vol,
                            struct bBootBlock * boot )
 {
 	uint8_t buf[1024];
@@ -221,7 +221,7 @@ RETCODE adfReadBootBlock ( struct adfVolume  * vol,
  *
  *     write bootcode ?
  */
-RETCODE adfWriteBootBlock ( struct adfVolume *  vol,
+RETCODE adfWriteBootBlock ( struct AdfVolume *  vol,
                             struct bBootBlock * boot )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE*2];

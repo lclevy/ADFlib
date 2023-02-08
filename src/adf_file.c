@@ -55,7 +55,7 @@ static void show_bFileExtBlock (
     const struct bFileExtBlock * const block );
 #endif
 
-void adfFileTruncate ( struct adfVolume * vol,
+void adfFileTruncate ( struct AdfVolume * vol,
                        SECTNUM            nParent,
                        char *             name )
 {
@@ -110,7 +110,7 @@ void adfFlushFile(struct adfFile * file)
  * adfGetFileBlocks
  *
  */
-RETCODE adfGetFileBlocks ( struct adfVolume *        vol,
+RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
                            struct bFileHeaderBlock * entry,
                            struct FileBlocks *       fileBlocks )
 {
@@ -159,7 +159,7 @@ RETCODE adfGetFileBlocks ( struct adfVolume *        vol,
  * adfFreeFileBlocks
  *
  */
-RETCODE adfFreeFileBlocks ( struct adfVolume *        vol,
+RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
                             struct bFileHeaderBlock * entry )
 {
     int i;
@@ -219,7 +219,7 @@ int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *e
  * adfWriteFileHdrBlock
  *
  */
-RETCODE adfWriteFileHdrBlock ( struct adfVolume *        vol,
+RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
                                SECTNUM                   nSect,
                                struct bFileHeaderBlock * fhdr )
 {
@@ -343,7 +343,7 @@ void adfFileSeek(struct adfFile * file, uint32_t pos)
  * adfFileOpen
  *
  */ 
-struct adfFile * adfOpenFile ( struct adfVolume * vol,
+struct adfFile * adfOpenFile ( struct AdfVolume * vol,
                                char *             name,
                                char *             mode )
 {
@@ -757,7 +757,7 @@ int32_t adfPos2DataBlock(int32_t pos, int blockSize,
  * adfReadDataBlock
  *
  */
-RETCODE adfReadDataBlock ( struct adfVolume * vol,
+RETCODE adfReadDataBlock ( struct AdfVolume * vol,
                            SECTNUM            nSect,
                            void *             data )
 {
@@ -796,7 +796,7 @@ RETCODE adfReadDataBlock ( struct adfVolume * vol,
  * adfWriteDataBlock
  *
  */
-RETCODE adfWriteDataBlock ( struct adfVolume * vol,
+RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
                             SECTNUM            nSect,
                             void *             data )
 {
@@ -831,7 +831,7 @@ RETCODE adfWriteDataBlock ( struct adfVolume * vol,
  * adfReadFileExtBlock
  *
  */
-RETCODE adfReadFileExtBlock ( struct adfVolume *     vol,
+RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
                               SECTNUM                nSect,
                               struct bFileExtBlock * fext )
 {
@@ -896,7 +896,7 @@ RETCODE adfReadFileExtBlockN ( struct adfFile *       file,
  * adfWriteFileExtBlock
  *
  */
-RETCODE adfWriteFileExtBlock ( struct adfVolume *     vol,
+RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
                                SECTNUM                nSect,
                                struct bFileExtBlock * fext )
 {

@@ -47,7 +47,7 @@
  */
 RETCODE adfMountFlop ( struct AdfDevice * dev )
 {
-    struct adfVolume *vol;
+    struct AdfVolume *vol;
     struct bRootBlock root;
     char diskName[35];
 	
@@ -58,7 +58,7 @@ RETCODE adfMountFlop ( struct AdfDevice * dev )
     else 
         dev->sectors = 22;
 
-    vol = (struct adfVolume *) malloc (sizeof(struct adfVolume));
+    vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
         (*adfEnv.eFct)("adfMount : malloc");
         return RC_ERROR;
@@ -80,7 +80,7 @@ RETCODE adfMountFlop ( struct AdfDevice * dev )
 
     vol->volName = strdup(diskName);
 	
-    dev->volList = (struct adfVolume **) malloc (sizeof(struct adfVolume *));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) {
         free(vol);
         (*adfEnv.eFct)("adfMount : malloc");
@@ -112,7 +112,7 @@ RETCODE adfCreateFlop ( struct AdfDevice * dev,
         (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
         return RC_ERROR;
     }
-    dev->volList = (struct adfVolume **) malloc (sizeof(struct adfVolume *));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) { 
         (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;

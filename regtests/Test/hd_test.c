@@ -23,7 +23,7 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     struct AdfDevice *hd;
-    struct adfVolume *vol, *vol2;
+    struct AdfVolume *vol, *vol2;
 
     /* initialisation */
     adfEnvInitDefault();

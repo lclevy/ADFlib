@@ -35,7 +35,7 @@
 /* ----- FILE ----- */
 
 struct adfFile {
-    struct adfVolume *volume;
+    struct AdfVolume *volume;
 
     struct bFileHeaderBlock* fileHdr;
     void *currentData;
@@ -58,38 +58,38 @@ struct FileBlocks {
     SECTNUM* data;
 };
 
-RETCODE adfGetFileBlocks ( struct adfVolume *        vol,
+RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
                            struct bFileHeaderBlock * entry,
                            struct FileBlocks *       fileBlocks );
 
-RETCODE adfFreeFileBlocks ( struct adfVolume *        vol,
+RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
                             struct bFileHeaderBlock * entry );
 
 PREFIX int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *extN);
 
 PREFIX int32_t adfPos2DataBlock(int32_t pos, int blockSize, int *posInExtBlk, int *posInDataBlk, int32_t *curDataN );
 
-RETCODE adfWriteFileHdrBlock ( struct adfVolume *        vol,
+RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
                                SECTNUM                   nSect,
                                struct bFileHeaderBlock * fhdr );
 
-RETCODE adfReadDataBlock ( struct adfVolume * vol,
+RETCODE adfReadDataBlock ( struct AdfVolume * vol,
                            SECTNUM            nSect,
                            void *             data );
 
-RETCODE adfWriteDataBlock ( struct adfVolume * vol,
+RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
                             SECTNUM            nSect,
                             void *             data );
 
-PREFIX RETCODE adfReadFileExtBlock ( struct adfVolume *     vol,
+PREFIX RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
                                      SECTNUM                nSect,
                                      struct bFileExtBlock * fext );
 
-PREFIX RETCODE adfWriteFileExtBlock ( struct adfVolume *     vol,
+PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
                                       SECTNUM                nSect,
                                       struct bFileExtBlock * fext );
 
-PREFIX struct adfFile * adfOpenFile ( struct adfVolume * vol,
+PREFIX struct adfFile * adfOpenFile ( struct AdfVolume * vol,
                                       char *             name,
                                       char *             mode );
 

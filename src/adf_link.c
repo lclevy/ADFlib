@@ -36,7 +36,7 @@
  *
  *
  */
-RETCODE adfBlockPtr2EntryName ( struct adfVolume * vol,
+RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                 SECTNUM            nSect,
                                 SECTNUM            lPar,
                                 char **            name,

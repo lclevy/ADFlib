@@ -7,7 +7,7 @@
 #include "adf_show_metadata_common.h"
 
 
-void show_directory_metadata ( struct adfVolume * const vol,
+void show_directory_metadata ( struct AdfVolume * const vol,
                                SECTNUM                  dir_sector )
 {
     struct bDirBlock //bEntryBlock

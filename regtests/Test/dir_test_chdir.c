@@ -22,10 +22,10 @@ typedef struct chdir_test_s {
 
 int run_chdir_tests ( chdir_test_t * test_data );
 
-int test_chdir ( struct adfVolume * vol,
+int test_chdir ( struct AdfVolume * vol,
                  check_t *          check );
 
-int count_dir_entries ( struct adfVolume * vol );
+int count_dir_entries ( struct AdfVolume * vol );
 
 
 int main ( int argc, char * argv[] )
@@ -97,7 +97,7 @@ int run_chdir_tests ( chdir_test_t * test_data )
         return 1;
     }
 
-    struct adfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image );
@@ -127,7 +127,7 @@ int run_chdir_tests ( chdir_test_t * test_data )
 }
 
 
-int test_chdir ( struct adfVolume * vol,
+int test_chdir ( struct AdfVolume * vol,
                  check_t *          check )
 {
 //#if TEST_VERBOSITY > 0
@@ -172,7 +172,7 @@ int test_chdir ( struct adfVolume * vol,
 }
 
 
-int count_dir_entries ( struct adfVolume * vol )
+int count_dir_entries ( struct AdfVolume * vol )
 {
     struct List *list, *cell;
     

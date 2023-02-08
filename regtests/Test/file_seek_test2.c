@@ -85,7 +85,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         return 1;
     }
 
-    struct adfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         printf ( "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );

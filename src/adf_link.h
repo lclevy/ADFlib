@@ -31,7 +31,7 @@
 #include "adf_defs.h"
 #include "adf_vol.h"
 
-PREFIX RETCODE adfBlockPtr2EntryName ( struct adfVolume * vol,
+PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                        SECTNUM            nSect,
                                        SECTNUM            lPar,
                                        char **            name,
