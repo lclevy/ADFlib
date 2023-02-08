@@ -376,7 +376,7 @@ struct List * adfGetRDirEnt ( struct AdfVolume * vol,
     struct bEntryBlock entryBlk;
 	struct List *cell, *head;
     int i;
-    struct Entry *entry;
+    struct AdfEntry * entry;
     SECTNUM nextSector;
     int32_t *hashTable;
     struct bEntryBlock parent;
@@ -393,7 +393,7 @@ struct List * adfGetRDirEnt ( struct AdfVolume * vol,
     cell = head = NULL;
     for(i=0; i<HT_SIZE; i++) {
         if (hashTable[i]!=0) {
-             entry = (struct Entry *)malloc(sizeof(struct Entry));
+             entry = ( struct AdfEntry * ) malloc ( sizeof ( struct AdfEntry ) );
              if (!entry) {
                  adfFreeDirList(head);
 				 (*adfEnv.eFct)("adfGetDirEnt : malloc");
@@ -422,7 +422,7 @@ struct List * adfGetRDirEnt ( struct AdfVolume * vol,
              /* same hashcode linked list */
              nextSector = entryBlk.nextSameHash;
              while( nextSector!=0 ) {
-                 entry = (struct Entry *)malloc(sizeof(struct Entry));
+                 entry = ( struct AdfEntry * ) malloc ( sizeof ( struct AdfEntry ) );
                  if (!entry) {
                      adfFreeDirList(head);
 					 (*adfEnv.eFct)("adfGetDirEnt : malloc");
@@ -473,7 +473,7 @@ struct List * adfGetDirEnt ( struct AdfVolume * vol,
  * adfFreeEntry
  *
  */
-void adfFreeEntry(struct Entry *entry)
+void adfFreeEntry ( struct AdfEntry * entry )
 {
 	if (entry==NULL)
        return;
@@ -575,7 +575,8 @@ SECTNUM adfParentDir ( struct AdfVolume * vol )
  * adfEntBlock2Entry
  *
  */
-RETCODE adfEntBlock2Entry(struct bEntryBlock *entryBlk, struct Entry *entry)
+RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
+                            struct AdfEntry *    entry )
 {
     char buf[MAXCMMTLEN+1];
     int len;
@@ -889,7 +890,7 @@ adfGetHashValue(uint8_t *name, BOOL intl)
  * printEntry
  *
  */
-void printEntry(struct Entry* entry)
+void printEntry ( struct AdfEntry * entry )
 {
     printf("%-30s %2d %6d ", entry->name, entry->type, entry->sector);
     printf("%2d/%02d/%04d %2d:%02d:%02d",entry->days, entry->month, entry->year,

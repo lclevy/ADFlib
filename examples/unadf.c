@@ -62,15 +62,15 @@ void help();
 void print_device(struct AdfDevice *dev);
 void print_volume(struct AdfVolume * vol);
 void print_tree(struct List *node, char *path);
-void print_entry(struct Entry *e, char *path);
+void print_entry(struct AdfEntry *e, char *path);
 void extract_tree(struct AdfVolume *vol, struct List *node, char *path);
 void extract_filepath(struct AdfVolume *vol, char *filepath);
 void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms);
 char *output_name(char *path, char *name);
 char *join_path(char *path, char *name);
-void set_file_date(char *out, struct Entry *e);
+void set_file_date(char *out, struct AdfEntry *e);
 void mkdir_if_needed(char *path, mode_t perms);
-mode_t permissions(struct Entry *e);
+mode_t permissions(struct AdfEntry *e);
 int replace_not_allowed_chars ( char * const path );
 
 int main(int argc, char *argv[]) {
@@ -280,7 +280,7 @@ void print_tree(struct List *node, char *path) {
     for (; node; node = node->next) {
         print_entry(node->content, path);
         if (node->subdir) {
-            struct Entry *e = (struct Entry *) node->content;
+            struct AdfEntry *e = (struct AdfEntry *) node->content;
             char *newpath = join_path(path, e->name);
             print_tree(node->subdir, newpath);
             free(newpath);
@@ -289,7 +289,7 @@ void print_tree(struct List *node, char *path) {
 }
 
 /* prints one line of information about a directory/file entry */
-void print_entry(struct Entry *e, char *path) {
+void print_entry(struct AdfEntry *e, char *path) {
     BOOL is_dir = e->type == ST_DIR;
     BOOL print_comment = show_comments && e->comment && *e->comment;
 
@@ -318,7 +318,7 @@ void print_entry(struct Entry *e, char *path) {
 void extract_tree(struct AdfVolume *vol, struct List *node, char *path)
 {
     for (; node; node = node->next) {
-        struct Entry *e = node->content;
+        struct AdfEntry *e = node->content;
 
         /* extract file or create directory */
         char *out = output_name(path, e->name);
@@ -500,7 +500,7 @@ char *output_name(char *path, char *name) {
 }
 
 /* set amiga file date on output file */
-void set_file_date(char *out, struct Entry *e) {
+void set_file_date(char *out, struct AdfEntry *e) {
     time_t time;
 #ifdef WIN32
     struct utimbuf times;
@@ -551,7 +551,7 @@ void mkdir_if_needed(char *path, mode_t perms) {
 }
 
 /* convert amiga permissions to unix permissions */
-mode_t permissions(struct Entry *e) {
+mode_t permissions(struct AdfEntry *e) {
     return (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
         (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */

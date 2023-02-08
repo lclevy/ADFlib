@@ -37,7 +37,7 @@
 
 /* ----- ENTRY ---- */
 
-struct Entry{
+struct AdfEntry {
     int type;
     char* name;
     SECTNUM sector;
@@ -70,8 +70,10 @@ PREFIX void adfFreeDirList(struct List* list);
 PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
                                 SECTNUM                  dirPtr );
 
-RETCODE adfEntBlock2Entry(struct bEntryBlock *entryBlk, struct Entry *entry);
-PREFIX void adfFreeEntry(struct Entry *entry);
+RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
+                            struct AdfEntry *    entry );
+
+PREFIX void adfFreeEntry (struct AdfEntry * entry );
 
 RETCODE adfCreateFile ( struct AdfVolume *        vol,
                         SECTNUM                   parent,
@@ -129,7 +131,7 @@ PREFIX SECTNUM adfNameToEntryBlk ( struct AdfVolume *   vol,
                                    struct bEntryBlock * entry,
                                    SECTNUM *            nUpdSect );
 
-PREFIX void printEntry(struct Entry* entry);
+PREFIX void printEntry ( struct AdfEntry * entry );
 
 #endif /* ADF_DIR_H */
 

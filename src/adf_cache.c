@@ -65,7 +65,7 @@ struct List * adfGetDirEntCache ( struct AdfVolume * vol,
     int offset, n;
     struct List *cell, *head;
     struct AdfCacheEntry caEntry;
-    struct Entry *entry;
+    struct AdfEntry *entry;
     SECTNUM nSect;
 
     if (adfReadEntryBlock(vol,dir,&parent)!=RC_OK)
@@ -81,7 +81,7 @@ struct List * adfGetDirEntCache ( struct AdfVolume * vol,
             return NULL;
         while (n<dirc.recordsNb) {
             /* one loop per record */
-            entry = (struct Entry*)malloc(sizeof(struct Entry));
+            entry = ( struct AdfEntry * ) malloc ( sizeof ( struct AdfEntry ) );
             if (!entry) {
                 adfFreeDirList(head);
                 return NULL;
