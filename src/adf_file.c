@@ -793,6 +793,12 @@ RETCODE adfReadDataBlock ( struct AdfVolume * vol,
                            SECTNUM            nSect,
                            void *             data )
 {
+    if ( nSect < 1 ) {
+        // ie. block 0 is volume's bootblock - cannot be a data block
+        adfEnv.eFctf ( "adfReadDataBlock : error, '%d' cannot be a data block", nSect );
+        return RC_ERROR;
+    }
+
     uint8_t buf[512];
     struct bOFSDataBlock *dBlock;
     RETCODE rc = RC_OK;
@@ -832,6 +838,12 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
                             SECTNUM            nSect,
                             void *             data )
 {
+    if ( nSect < 1 ) {
+        // ie. block 0 is volume's bootblock - cannot be a data block
+        adfEnv.eFctf ( "adfWriteDataBlock : error, '%d' cannot be a data block", nSect );
+        return RC_ERROR;
+    }
+
     uint8_t buf[512];
     uint32_t newSum;
     struct bOFSDataBlock *dataB;
