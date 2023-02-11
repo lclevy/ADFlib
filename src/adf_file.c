@@ -293,8 +293,8 @@ static void adfFileSeekStart ( struct AdfFile * file )
 }
 
 
-static void adfFileSeekOFS ( struct AdfFile * file,
-                             uint32_t         pos )
+static RETCODE adfFileSeekOFS ( struct AdfFile * file,
+                                uint32_t         pos )
 {
     adfFileSeekStart ( file );
 
@@ -310,11 +310,17 @@ static void adfFileSeekOFS ( struct AdfFile * file,
         offset += size;
         file->posInDataBlk += size;
         if ( file->posInDataBlk == blockSize && offset < pos ) {
-            adfReadNextFileBlock ( file );
+            if ( adfReadNextFileBlock ( file ) != RC_OK ) {
+                adfEnv.eFctf ( "adfFileSeekOFS: error reading next data block, pos %d",
+                               file->pos );
+                //file->curDataPtr = 0;  // invalidate data ptr
+                return RC_ERROR;
+            }
             file->posInDataBlk = 0;
         }
     }
     file->eof = ( file->pos == file->fileHdr->byteSize );
+    return RC_OK;
 }
 
 
