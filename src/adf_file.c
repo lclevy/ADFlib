@@ -818,16 +818,21 @@ RETCODE adfReadDataBlock ( struct AdfVolume * vol,
         dBlock = (struct bOFSDataBlock*)data;
 /*printf("adfReadDataBlock %ld\n",nSect);*/
 
-        if (dBlock->checkSum!=adfNormalSum(buf,20,sizeof(struct bOFSDataBlock)))
-            (*adfEnv.wFct)("adfReadDataBlock : invalid checksum");
-        if (dBlock->type!=T_DATA)
-            (*adfEnv.wFct)("adfReadDataBlock : id T_DATA not found");
-        if (dBlock->dataSize<0 || dBlock->dataSize>488)
-            (*adfEnv.wFct)("adfReadDataBlock : dataSize incorrect");
-        if ( !isSectNumValid(vol,dBlock->headerKey) )
-			(*adfEnv.wFct)("adfReadDataBlock : headerKey out of range");
-        if ( !isSectNumValid(vol,dBlock->nextData) )
-			(*adfEnv.wFct)("adfReadDataBlock : nextData out of range");
+        if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct bOFSDataBlock) ) )
+            adfEnv.wFctf ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
+                           nSect, vol->volName );
+        if ( dBlock->type != T_DATA )
+            adfEnv.wFctf ( "adfReadDataBlock : id T_DATA not found, block %d, volume '%s'",
+                           nSect, vol->volName );
+        if ( dBlock->dataSize < 0 || dBlock->dataSize > 488 )
+            adfEnv.wFctf ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
+                           dBlock->dataSize, dBlock->dataSize, nSect, vol->volName );
+        if ( ! isSectNumValid ( vol, dBlock->headerKey ) )
+            adfEnv.wFctf ( "adfReadDataBlock : headerKey (0x%x / %u) out of range, block %d, volume '%s'",
+                           dBlock->headerKey, dBlock->headerKey, nSect, vol->volName );
+        if ( ! isSectNumValid ( vol, dBlock->nextData ) )
+            adfEnv.wFctf ( "adfReadDataBlock : nextData out of range, block %d, volume '%s'",
+                           nSect, vol->volName );
     }
 
     return rc;
