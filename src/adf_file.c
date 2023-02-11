@@ -348,7 +348,9 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
         }
 
         if ( adfReadFileExtBlockN ( file, extBlock, file->currentExt ) != RC_OK ) {
-            (*adfEnv.wFct)("adfFileSeekExt: error");
+            adfEnv.eFctf ( "adfFileSeekExt: error reading ext block 0x%x(%d), file '%s'",
+                           extBlock, extBlock, file->fileHdr->fileName );
+            file->curDataPtr = 0;  // invalidate data ptr
             return RC_ERROR;
         }
 
@@ -356,9 +358,13 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
             MAX_DATABLK - 1 - file->posInExtBlk ];
     }
 
-    adfReadDataBlock ( file->volume,
-                       file->curDataPtr,
-                       file->currentData );
+    RETCODE rc = adfReadDataBlock ( file->volume,
+                                    file->curDataPtr,
+                                    file->currentData );
+    if ( rc != RC_OK ) {
+        adfEnv.eFctf ( "adfFileSeekExt: error reading data block %d, file '%s'",
+                       file->curDataPtr, file->fileHdr->fileName );
+    }
 
     file->eof = ( file->pos == file->fileHdr->byteSize );
 
