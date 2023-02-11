@@ -801,9 +801,13 @@ RETCODE adfReadDataBlock ( struct AdfVolume * vol,
 
     uint8_t buf[512];
     struct bOFSDataBlock *dBlock;
-    RETCODE rc = RC_OK;
 
-    adfReadBlock(vol, nSect,buf);
+    RETCODE rc = adfReadBlock ( vol, nSect, buf );
+    if ( rc != RC_OK ) {
+        adfEnv.eFctf ( "adfReadDataBlock: error reading block %d, volume '%s'",
+                       nSect, vol->volName );
+        //return RC_ERROR;
+    }
 
     memcpy(data,buf,512);
 
