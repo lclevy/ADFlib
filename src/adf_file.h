@@ -108,8 +108,8 @@ PREFIX int32_t adfReadFile ( struct AdfFile * file,
 
 PREFIX BOOL adfEndOfFile ( struct AdfFile * file );
 
-PREFIX void adfFileSeek ( struct AdfFile * file,
-                          uint32_t         pos );		/* BV */
+PREFIX RETCODE adfFileSeek ( struct AdfFile * file,
+                             uint32_t         pos );		/* BV */
 
 RETCODE adfReadNextFileBlock ( struct AdfFile * file );
 

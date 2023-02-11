@@ -365,15 +365,17 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
     return RC_OK;
 }
 
-void adfFileSeek(struct AdfFile * file, uint32_t pos)
+RETCODE adfFileSeek ( struct AdfFile * file,
+                      uint32_t         pos )
 {
     if ( file->pos == pos )
-        return;
+        return RC_OK;
 
     RETCODE status = adfFileSeekExt ( file, pos );
 
     if ( status != RC_OK && isOFS ( file->volume->dosType ) )
-        adfFileSeekOFS ( file, pos );
+        status = adfFileSeekOFS ( file, pos );
+    return status;
 }
 
 
