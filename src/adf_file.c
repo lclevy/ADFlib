@@ -921,7 +921,11 @@ RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
     SECTNUM nSect = file->fileHdr->extension;
     int32_t i = -1;
     while ( i < extBlock && nSect != 0 ) {
-        adfReadFileExtBlock ( file->volume, nSect, fext );
+        if ( adfReadFileExtBlock ( file->volume, nSect, fext ) != RC_OK ) {
+            adfEnv.eFctf ( "adfReadFileExtBlockN: error reading ext block %d, file '%s'",
+                           nSect, file->fileHdr->fileName );
+            return RC_ERROR;
+        }
 #ifdef DEBUG_ADF_FILE
         show_bFileExtBlock ( file->currentExt );
 #endif
@@ -929,7 +933,8 @@ RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
         i++;
     }
     if ( i != extBlock ) {
-        (*adfEnv.wFct)("adfReadFileExtBlockN: error");
+        adfEnv.eFctf ( "adfReadFileExtBlockN: error reading ext block %d, file '%s'",
+                       extBlock, file->fileHdr->fileName );
         return RC_ERROR;
     }
     return RC_OK;
