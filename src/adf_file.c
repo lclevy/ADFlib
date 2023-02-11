@@ -880,9 +880,12 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
                               struct bFileExtBlock * fext )
 {
     uint8_t buf[sizeof(struct bFileExtBlock)];
-    RETCODE rc = RC_OK;
-
-    adfReadBlock(vol, nSect,buf);
+    RETCODE rc = adfReadBlock ( vol, nSect,buf );
+    if ( rc != RC_OK ) {
+        adfEnv.eFctf ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
+                       nSect, vol->volName );
+        //return RC_ERROR;
+    }
 /*printf("read fext=%d\n",nSect);*/
     memcpy(fext,buf,sizeof(struct bFileExtBlock));
 #ifdef LITT_ENDIAN
@@ -951,7 +954,6 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
 {
     uint8_t buf[512];
     uint32_t newSum;
-    RETCODE rc = RC_OK;
 
     fext->type = T_LIST;
     fext->secType = ST_FILE;
@@ -966,7 +968,11 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    adfWriteBlock(vol,nSect,buf);
+    RETCODE rc = adfWriteBlock ( vol, nSect, buf );
+    if ( rc != RC_OK ) {
+        adfEnv.eFctf ( "adfWriteFileExtBlock: error wriding block %d, volume '%s'",
+                       nSect, vol->volName );
+    }
 
     return rc;
 }
