@@ -87,7 +87,7 @@ void adfFlushFile(struct AdfFile * file)
         }
     }
 
-    if (file->currentData) {
+    if ( file->currentData && file->curDataPtr ) {
         file->fileHdr->byteSize = file->pos;
         if ( isOFS ( file->volume->dosType ) ) {
             data = (struct bOFSDataBlock *) file->currentData;
