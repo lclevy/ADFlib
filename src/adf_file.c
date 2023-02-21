@@ -380,6 +380,9 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
 RETCODE adfFileSeek ( struct AdfFile * file,
                       uint32_t         pos )
 {
+    if ( pos == 0 )
+        return adfFileSeekStart ( file );
+
     if ( file->pos == pos )
         return RC_OK;
 
