@@ -456,8 +456,10 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     if ( fileAlreadyExists ) {
         if ( entry.realEntry )  {  // ... and it is a hard-link...
             // ... load entry of the hard-linked file
-            adfReadEntryBlock ( vol, entry.realEntry, &entry );
-            adfReadEntryBlock ( vol, entry.parent, &parent );
+            RETCODE rc = adfReadEntryBlock ( vol, entry.realEntry, &entry );
+            if ( rc != RC_OK ) return NULL;
+            rc = adfReadEntryBlock ( vol, entry.parent, &parent );
+            if ( rc != RC_OK ) return NULL;
         }
 
         // entry should be a real file now
