@@ -85,7 +85,6 @@ void adfFlushFile(struct AdfFile * file)
     }
 
     if ( file->currentData && file->curDataPtr ) {
-        file->fileHdr->byteSize = file->pos;
         if ( isOFS ( file->volume->dosType ) ) {
             struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
             data->dataSize = file->posInDataBlk;
@@ -100,7 +99,6 @@ void adfFlushFile(struct AdfFile * file)
         }
     }
 
-    file->fileHdr->byteSize = file->pos;
 /*printf("pos=%ld\n",file->pos);*/
     adfTime2AmigaTime ( adfGiveCurrentTime(),
                         &(file->fileHdr->days),
@@ -719,6 +717,11 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
         file->pos += size;
         bytesWritten += size;
         file->posInDataBlk += size;
+
+        // update file size in the header
+        file->fileHdr->byteSize = max ( file->fileHdr->byteSize,
+                                        file->pos );
+
         if (file->posInDataBlk==blockSize && bytesWritten<n) {
             if (adfCreateNextFileBlock(file)==-1) {
                 /* bug found by Rikard */
