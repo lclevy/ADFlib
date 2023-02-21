@@ -493,6 +493,7 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     file->writeMode = write;
     file->currentExt = NULL;
     file->nDataBlock = 0;
+    file->curDataPtr = 0;
 
     if ( mode_read ) {
         memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
@@ -590,6 +591,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
             adfEnv.eFctf ( "adfReadFile : error reading next data block, "
                            "file '%s', pos %d, data block %d",
                            file->fileHdr->fileName, file->pos, file->nDataBlock );
+            file->curDataPtr = 0;  // invalidate data ptr
             return 0;
         }
         file->posInDataBlk = 0;
@@ -609,6 +611,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
                 adfEnv.eFctf ( "adfReadFile : error reading next data block, "
                                "file '%s', pos %d, data block %d",
                                file->fileHdr->fileName, file->pos, file->nDataBlock );
+                file->curDataPtr = 0;  // invalidate data ptr
                 return bytesRead;
             }
             file->posInDataBlk = 0;
@@ -704,6 +707,7 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
         if (adfCreateNextFileBlock(file)==-1) {
             /* bug found by Rikard */
             (*adfEnv.wFct)("adfWritefile : no more free sector availbale");                        
+            file->curDataPtr = 0; // invalidate data ptr
             return bytesWritten;
         }
         file->posInDataBlk = 0;
@@ -726,6 +730,7 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
             if (adfCreateNextFileBlock(file)==-1) {
                 /* bug found by Rikard */
                 (*adfEnv.wFct)("adfWritefile : no more free sector availbale");                        
+                file->curDataPtr = 0; // invalidate data ptr
                 return bytesWritten;
             }
             file->posInDataBlk = 0;
