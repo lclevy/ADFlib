@@ -569,11 +569,17 @@ void adfCloseFile(struct AdfFile * file)
  */
 int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
 {
+    if ( n == 0 ||
+         file->fileHdr->byteSize == 0 ||
+         adfEndOfFile ( file ) )
+    {
+        return 0;
+    }
+
     int32_t bytesRead;
     uint8_t *dataPtr, *bufPtr;
 	int blockSize, size;
 
-    if (n==0) return(n);
     blockSize = file->volume->datablockSize;
 /*puts("adfReadFile");*/
     if (file->pos+n > file->fileHdr->byteSize)
