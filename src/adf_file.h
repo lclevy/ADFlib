@@ -49,7 +49,7 @@ struct AdfFile {
 
     int posInDataBlk;
     int posInExtBlk;
-    BOOL eof, writeMode;
+    BOOL writeMode;
 };
 
 struct AdfFileBlocks {

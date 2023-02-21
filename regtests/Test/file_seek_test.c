@@ -214,9 +214,9 @@ int test_seek_eof ( struct AdfFile * file,
     printf ( "  Seeking to EOF position 0x%x (%d)...", offset, offset );
 #endif
 
-    // seek to and check EOF status
+    // seek to end and check EOF
     adfFileSeek ( file, offset );
-    if ( file->eof == FALSE ) {
+    if ( adfEndOfFile ( file ) ) {
         fprintf ( stderr, " -> EOF flag not set after seeking to 0x%x (%d)!!!\n",
                   offset, offset );
         return 1;
@@ -243,8 +243,8 @@ int test_seek_eof ( struct AdfFile * file,
         return 1;
     }
 
-    if ( file->eof == FALSE ) {
-        fprintf ( stderr, " -> EOF flag not set (after reading at EOF)!!!\n" );
+    if ( adfEndOfFile ( file ) ) {
+        fprintf ( stderr, " -> no EOF after reading at EOF!!!\n" );
         return 1;
     }
 

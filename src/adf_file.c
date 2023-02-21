@@ -317,7 +317,6 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * file,
             file->posInDataBlk = 0;
         }
     }
-    file->eof = ( file->pos == file->fileHdr->byteSize );
     return RC_OK;
 }
 
@@ -363,8 +362,6 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
         adfEnv.eFctf ( "adfFileSeekExt: error reading data block %d, file '%s'",
                        file->curDataPtr, file->fileHdr->fileName );
     }
-
-    file->eof = ( file->pos == file->fileHdr->byteSize );
 
     return RC_OK;
 }
@@ -619,7 +616,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
             file->posInDataBlk = 0;
         }
     }
-    file->eof = (file->pos==file->fileHdr->byteSize);
+
     return( bytesRead );
 }
 
@@ -630,7 +627,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
  */
 BOOL adfEndOfFile(struct AdfFile* file)
 {
-    return(file->eof);
+    return ( file->pos == file->fileHdr->byteSize );
 }
 
 
@@ -1084,7 +1081,6 @@ static void show_File ( const struct AdfFile * const file )
              "  pos:\t\t0x%x\t\t%u\n"
              "  posInDataBlk:\t0x%x\t\t%u\n"
              "  posInExtBlk:\t0x%x\t\t%u\n"
-             "  eof:\t\t0x%x\t\t%u\n"
              "  writeMode:\t0x%x\t\t%u\n",
              //volume;
              //fileHdr;
@@ -1100,8 +1096,6 @@ static void show_File ( const struct AdfFile * const file )
              file->posInDataBlk,
              file->posInExtBlk,
              file->posInExtBlk,
-             file->eof,
-             file->eof,
              file->writeMode,
              file->writeMode );
 }
