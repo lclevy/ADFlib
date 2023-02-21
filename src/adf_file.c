@@ -69,9 +69,6 @@ void adfFileTruncate ( struct AdfVolume * vol,
  */
 void adfFlushFile(struct AdfFile * file)
 {
-    struct bEntryBlock parent;
-    struct bOFSDataBlock *data;
-
     if ( ! file->writeMode )
         return;
 
@@ -90,7 +87,7 @@ void adfFlushFile(struct AdfFile * file)
     if ( file->currentData && file->curDataPtr ) {
         file->fileHdr->byteSize = file->pos;
         if ( isOFS ( file->volume->dosType ) ) {
-            data = (struct bOFSDataBlock *) file->currentData;
+            struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
             data->dataSize = file->posInDataBlk;
         }
         if ( file->fileHdr->byteSize > 0 ) {
@@ -120,6 +117,7 @@ void adfFlushFile(struct AdfFile * file)
 
     if ( isDIRCACHE ( file->volume->dosType ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
+        struct bEntryBlock parent;
         if ( adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent ) != RC_OK ) {
             adfEnv.eFctf ( "adfFlushfile : error reading entry block %d",
                            file->fileHdr->parent );
