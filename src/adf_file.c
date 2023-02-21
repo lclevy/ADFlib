@@ -392,7 +392,6 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
                                char *             mode )
 {
     struct AdfFile *file;
-    SECTNUM nSect;
     char filename[200];
 
     if ( ! vol ) {
@@ -428,8 +427,10 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     if ( adfReadEntryBlock(vol, vol->curDirPtr, &parent) != RC_OK )
         return NULL;
 
-    nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
-    if (!write && nSect==-1) {
+    BOOL fileAlreadyExists =
+        ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
+
+    if ( mode_read && ( ! fileAlreadyExists ) ) {
         sprintf(filename,"adfFileOpen : file \"%s\" not found.",name);
         (*adfEnv.wFct)(filename);
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
@@ -441,14 +442,11 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
         (*adfEnv.wFct)("adfFileOpen : not a file"); return NULL; }
 	if (write && (hasE(entry.access)||hasW(entry.access))) {
         (*adfEnv.wFct)("adfFileOpen : access denied"); return NULL; }  
-*/    if (write && nSect!=-1) {
+*/    if (write && fileAlreadyExists ) {
         (*adfEnv.wFct)("adfFileOpen : file already exists"); return NULL; }  
 
-
-    // if the file already exists...
-    if ( nSect != -1 ) {
-        // ... and it is a hard-link...
-        if ( entry.realEntry )  {
+    if ( fileAlreadyExists ) {
+        if ( entry.realEntry )  {  // ... and it is a hard-link...
             // ... load entry of the hard-linked file
             adfReadEntryBlock ( vol, entry.realEntry, &entry );
             adfReadEntryBlock ( vol, entry.parent, &parent );
