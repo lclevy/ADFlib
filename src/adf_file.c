@@ -470,16 +470,25 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     }
 
     struct AdfFile * file = (struct AdfFile *) malloc ( sizeof(struct AdfFile) );
-    if (!file) { (*adfEnv.wFct)("adfFileOpen : malloc"); return NULL; }
-    file->fileHdr = (struct bFileHeaderBlock*)malloc(sizeof(struct bFileHeaderBlock));
-    if (!file->fileHdr) {
-		(*adfEnv.wFct)("adfFileOpen : malloc"); 
-		free(file); return NULL; 
+    if ( file == NULL ) {
+        adfEnv.eFct ( "adfFileOpen : malloc" );
+        return NULL;
     }
-    file->currentData = malloc(512*sizeof(uint8_t));
-    if (!file->currentData) { 
-		(*adfEnv.wFct)("adfFileOpen : malloc"); 
-        free(file->fileHdr); free(file); return NULL; 
+
+    file->fileHdr = (struct bFileHeaderBlock *)
+        malloc ( sizeof(struct bFileHeaderBlock) );
+    if ( file->fileHdr == NULL ) {
+        adfEnv.eFct ( "adfFileOpen : malloc" );
+        free ( file );
+        return NULL;
+    }
+
+    file->currentData = malloc ( 512 * sizeof(uint8_t) );
+    if ( file->currentData == NULL ) {
+        adfEnv.eFct ( "adfFileOpen : malloc" );
+        free ( file->fileHdr );
+        free ( file );
+        return NULL;
     }
 
     file->volume = vol;
