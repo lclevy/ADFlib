@@ -590,7 +590,13 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
         dataPtr = file->currentData;
 
     if (file->pos==0 || file->posInDataBlk==blockSize) {
-        adfReadNextFileBlock(file);
+        RETCODE rc = adfReadNextFileBlock ( file );
+        if ( rc != RC_OK ) {
+            adfEnv.eFctf ( "adfReadFile : error reading next data block, "
+                           "file '%s', pos %d, data block %d",
+                           file->fileHdr->fileName, file->pos, file->nDataBlock );
+            return 0;
+        }
         file->posInDataBlk = 0;
     }
 
@@ -603,7 +609,13 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
         bytesRead += size;
         file->posInDataBlk += size;
         if (file->posInDataBlk==blockSize && bytesRead<n) {
-            adfReadNextFileBlock(file);
+            RETCODE rc = adfReadNextFileBlock ( file );
+            if ( rc != RC_OK ) {
+                adfEnv.eFctf ( "adfReadFile : error reading next data block, "
+                               "file '%s', pos %d, data block %d",
+                               file->fileHdr->fileName, file->pos, file->nDataBlock );
+                return bytesRead;
+            }
             file->posInDataBlk = 0;
         }
     }
