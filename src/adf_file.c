@@ -391,9 +391,6 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
                                char *             name,
                                char *             mode )
 {
-    struct AdfFile *file;
-    char filename[200];
-
     if ( ! vol ) {
         adfEnv.eFct ( "adfFileOpen : vol is NULL" );
         return NULL;
@@ -431,6 +428,7 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
     if ( mode_read && ( ! fileAlreadyExists ) ) {
+        char filename[200];
         sprintf(filename,"adfFileOpen : file \"%s\" not found.",name);
         (*adfEnv.wFct)(filename);
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
@@ -459,7 +457,7 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
         }
     }
 
-    file = (struct AdfFile *) malloc (sizeof(struct AdfFile));
+    struct AdfFile * file = (struct AdfFile *) malloc ( sizeof(struct AdfFile) );
     if (!file) { (*adfEnv.wFct)("adfFileOpen : malloc"); return NULL; }
     file->fileHdr = (struct bFileHeaderBlock*)malloc(sizeof(struct bFileHeaderBlock));
     if (!file->fileHdr) {
