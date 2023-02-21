@@ -394,12 +394,33 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     struct AdfFile *file;
     SECTNUM nSect;
     struct bEntryBlock entry, parent;
-    BOOL write;
     char filename[200];
 
-    write=( strcmp("w",mode)==0 || strcmp("a",mode)==0 );
-    
-	if (write && vol->dev->readOnly) {
+    if ( ! vol ) {
+        adfEnv.eFct ( "adfFileOpen : vol is NULL" );
+        return NULL;
+    }
+
+    if ( ! name ) {
+        adfEnv.eFct ( "adfFileOpen : name is NULL" );
+        return NULL;
+    }
+
+    if ( ( ! mode )  ) {
+        adfEnv.eFct ( "adfFileOpen : mode is NULL" );
+        return NULL;
+    }
+
+    BOOL mode_read   = ( strcmp ( "r", mode ) == 0 );
+    BOOL mode_write  = ( strcmp ( "w", mode ) == 0 );
+    BOOL mode_append = ( strcmp ( "a", mode ) == 0 );
+    if ( ! ( mode_read || mode_write || mode_append ) ) {
+        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%s'", mode );
+        return NULL;
+    }
+
+    BOOL write = ( mode_write || mode_append );
+    if ( write && vol->dev->readOnly ) {
         (*adfEnv.wFct)("adfFileOpen : device is mounted 'read only'");
         return NULL;
     }
