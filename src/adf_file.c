@@ -46,6 +46,8 @@
 
 #ifdef DEBUG_ADF_FILE
 
+#include <assert.h>
+
 static void show_File ( const struct AdfFile * const file );
 
 static void show_bFileHeaderBlock (
@@ -596,6 +598,10 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
         }
         file->posInDataBlk = 0;
     }
+
+#ifdef DEBUG_ADF_FILE
+    assert ( file->curDataPtr != 0 );
+#endif
 
     bytesRead = 0; bufPtr = buffer;
     while ( bytesRead < n ) {
