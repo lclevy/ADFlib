@@ -393,7 +393,6 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
 {
     struct AdfFile *file;
     SECTNUM nSect;
-    struct bEntryBlock entry, parent;
     char filename[200];
 
     if ( ! vol ) {
@@ -425,7 +424,9 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
         return NULL;
     }
 
-    adfReadEntryBlock(vol, vol->curDirPtr, &parent);
+    struct bEntryBlock entry, parent;
+    if ( adfReadEntryBlock(vol, vol->curDirPtr, &parent) != RC_OK )
+        return NULL;
 
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
     if (!write && nSect==-1) {
