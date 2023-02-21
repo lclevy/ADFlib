@@ -428,20 +428,30 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
     if ( mode_read && ( ! fileAlreadyExists ) ) {
-        char filename[200];
-        sprintf(filename,"adfFileOpen : file \"%s\" not found.",name);
-        (*adfEnv.wFct)(filename);
+        adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
-		 return NULL; 
+        return NULL;
     }
-    if (!write && hasR(entry.access)) {
-        (*adfEnv.wFct)("adfFileOpen : access denied"); return NULL; }
-/*    if (entry.secType!=ST_FILE) {
-        (*adfEnv.wFct)("adfFileOpen : not a file"); return NULL; }
-	if (write && (hasE(entry.access)||hasW(entry.access))) {
-        (*adfEnv.wFct)("adfFileOpen : access denied"); return NULL; }  
-*/    if (write && fileAlreadyExists ) {
-        (*adfEnv.wFct)("adfFileOpen : file already exists"); return NULL; }  
+
+    if ( mode_read && hasR(entry.access)) {
+        adfEnv.wFctf ( "adfFileOpen : read access denied to '%s'", name );
+         return NULL;
+    }
+
+    if ( write && hasW ( entry.access ) ) {
+        adfEnv.wFctf ( "adfFileOpen : write access denied to '%s'", name );
+        return NULL;
+    }
+
+    if ( fileAlreadyExists &&
+         entry.secType != ST_FILE &&
+         entry.secType != ST_LFILE )
+    {
+        printf (" entry.secType %d \n", entry.secType );
+        adfEnv.wFctf ( "adfFileOpen : '%s' is not a file (or a hardlink to a file)",
+                       name );
+        return NULL;
+    }
 
     if ( fileAlreadyExists ) {
         if ( entry.realEntry )  {  // ... and it is a hard-link...
