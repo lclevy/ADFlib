@@ -427,7 +427,7 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     BOOL fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
-    if ( mode_read && ( ! fileAlreadyExists ) ) {
+    if ( ( mode_read || mode_append ) && ( ! fileAlreadyExists ) ) {
         adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
         return NULL;
