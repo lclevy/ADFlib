@@ -578,9 +578,8 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
 
     int32_t bytesRead;
     uint8_t *dataPtr, *bufPtr;
-	int blockSize, size;
 
-    blockSize = file->volume->datablockSize;
+    int blockSize = file->volume->datablockSize;
 /*puts("adfReadFile");*/
     if (file->pos+n > file->fileHdr->byteSize)
         n = file->fileHdr->byteSize - file->pos;
@@ -596,9 +595,8 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
     }
 
     bytesRead = 0; bufPtr = buffer;
-    size = 0;
     while ( bytesRead < n ) {
-        size = min(n-bytesRead, blockSize-file->posInDataBlk);
+        int size = min ( n - bytesRead, blockSize - file->posInDataBlk );
         memcpy(bufPtr, dataPtr+file->posInDataBlk, size);
         bufPtr += size;
         file->pos += size;
