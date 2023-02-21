@@ -2,7 +2,9 @@
 
 AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
     -D_GNU_SOURCE
-AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -I$(top_srcdir)/src
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
+    -Werror-implicit-function-declaration \
+    -I$(top_srcdir)/src
 
 check_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
         hd_test2 hd_test3 file_test file_test2 file_test3 file_seek_test \

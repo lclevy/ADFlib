@@ -1,5 +1,7 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
+AM_CPPFLAGS = -std=c99 -Wall -Wextra -pedantic \
+    -Werror-implicit-function-declaration \
+    -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
 
 check_PROGRAMS = \
     test_adfDays2Date \

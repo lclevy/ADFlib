@@ -61,5 +61,6 @@ AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
     -D_GNU_SOURCE -D_EXPORTING
 
 AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
+    -Werror-implicit-function-declaration \
     -I$(srcdir) \
     -I$(srcdir)/$(NATIVE_DIR)
