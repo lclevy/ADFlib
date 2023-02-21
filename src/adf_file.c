@@ -499,23 +499,41 @@ struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
     file->currentExt = NULL;
     file->nDataBlock = 0;
 
-    if (strcmp("w",mode)==0) {
-        memset(file->fileHdr,0,512);
-        adfCreateFile(vol,vol->curDirPtr,name,file->fileHdr);
-        file->eof = TRUE;
+    if ( mode_read ) {
+        memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+        if ( adfFileSeek ( file, 0 ) != RC_OK ) {
+            adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
+                           0, file->fileHdr->fileName );
+            goto adfOpenFile_error;
+        }
     }
-    else if (strcmp("a",mode)==0) {
-        memcpy(file->fileHdr,&entry,sizeof(struct bFileHeaderBlock));
-        file->eof = TRUE;
-        adfFileSeek(file, file->fileHdr->byteSize);
-    }
-    else if (strcmp("r",mode)==0) {
-        memcpy(file->fileHdr,&entry,sizeof(struct bFileHeaderBlock));
-        file->eof = FALSE;
+    else {     // mode_write || mode_append
+        if ( fileAlreadyExists ) {
+            memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+            int seekpos = mode_append ? file->fileHdr->byteSize : 0;
+            if ( adfFileSeek ( file, seekpos ) != RC_OK ) {
+                adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
+                               seekpos, file->fileHdr->fileName );
+                goto adfOpenFile_error;
+            }
+        } else {
+            // a new file
+            memset ( file->fileHdr, 0, 512 );
+            if ( adfCreateFile ( vol, vol->curDirPtr, name, file->fileHdr ) != RC_OK ) {
+                adfEnv.eFctf ( "adfFileOpen : error creating file: %s",
+                               file->fileHdr->fileName );
+                goto adfOpenFile_error;
+            }
+        }
     }
 
-/*puts("adfOpenFile");*/
-    return(file);
+    return file;
+
+adfOpenFile_error:
+    free ( file->currentData );
+    free ( file->fileHdr );
+    free ( file );
+    return NULL;
 }
 
 
