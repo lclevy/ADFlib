@@ -280,14 +280,23 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
  *
  */
 
-static void adfFileSeekStart ( struct AdfFile * file )
+static RETCODE adfFileSeekStart ( struct AdfFile * const file )
 {
     file->pos = 0;
     file->posInExtBlk = 0;
     file->posInDataBlk = 0;
     file->nDataBlock = 0;
+    file->curDataPtr = 0;
 
-    adfReadNextFileBlock ( file );
+    if ( file->fileHdr->byteSize == 0 )
+        // an empty file - no data block to read
+        return RC_OK;
+
+    RETCODE rc = adfReadNextFileBlock ( file );
+    if ( rc != RC_OK ) {
+        file->curDataPtr = 0;  // invalidate data ptr
+    }
+    return rc;
 }
 
 
@@ -311,7 +320,7 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * file,
             if ( adfReadNextFileBlock ( file ) != RC_OK ) {
                 adfEnv.eFctf ( "adfFileSeekOFS: error reading next data block, pos %d",
                                file->pos );
-                //file->curDataPtr = 0;  // invalidate data ptr
+                file->curDataPtr = 0;  // invalidate data ptr
                 return RC_ERROR;
             }
             file->posInDataBlk = 0;
@@ -340,6 +349,7 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
                 malloc ( sizeof ( struct bFileExtBlock ) );
             if ( ! file->currentExt ) {
                 (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
+                file->curDataPtr = 0;  // invalidate data ptr
                 return RC_ERROR;
             }
         }
@@ -361,6 +371,7 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfFileSeekExt: error reading data block %d, file '%s'",
                        file->curDataPtr, file->fileHdr->fileName );
+        file->curDataPtr = 0;  // invalidate data ptr
     }
 
     return RC_OK;
