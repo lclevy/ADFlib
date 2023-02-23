@@ -1,38 +1,32 @@
 #!/bin/sh
+#
+# bigdev / harddisk (fileimage) tests
+#
 
+#set -e
 
+NFAILED=0
+FAILED=
 
-# autotools uses $srcdir
-if [ "x$srcdir" != "x" ]
-then
-    TESTS_DIR=${srcdir}/regtests
-else
-    TESTS_DIR=".."
-fi
+for A_TEST in \
+   ./hd_test.sh \
+   ./hd_test2.sh \
+   ./hd_test3.sh \
+   ./hardfile.sh
+do
+    echo "---------------------------------------------------"
+    echo "    Executing: ${A_TEST}"
+    echo "---------------------------------------------------"
+    stdbuf -oL -eL ./${A_TEST}
+    RESULT=${?}
+    #echo "Result: ${RESULT}"
+    if [ ${RESULT} -ne 0 ]
+    then
+	NFAILED=$(( ${NFAILED} + 1 ))
+	FAILED="${FAILED}\n  ${A_TEST}  (result: ${RESULT})"
+    fi    
+done
 
-DUMPS=${TESTS_DIR}/Dumps
-
-FFSDUMP=$DUMPS/testffs.adf
-OFSDUMP=$DUMPS/testofs.adf
-HDDUMP=$DUMPS/testhd.adf
-
-BOOTDIR=${TESTS_DIR}/Boot
-BOOTBLK=$BOOTDIR/stdboot3.bbk
-
-CHECK=${TESTS_DIR}/Check
-
-set -e
-
-#echo "----- hd_test"
-#./hd_test /home/root/hd.adf /home/root/idh2.adf
-
-echo "----- hd_test2"
-./hd_test2
-rm -v hd_test2-newdev
-
-echo "----- hd_test3"
-./hd_test3
-rm -v hd_test3-newdev
-
-#echo "----- hardfile"
-#./hardfile /home/root/hardfile.hdf
+echo "---------------------------------------------------"
+echo "${NFAILED} tests failed: ${FAILED}"
+echo "---------------------------------------------------"
