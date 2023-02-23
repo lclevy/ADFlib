@@ -15,12 +15,14 @@ int test_floppy_overfilling ( char * const          adfname,
                               char * const          filename,
                               unsigned char * const buffer,
                               const unsigned        blocksize,
-                              const unsigned char   fstype );
+                              const unsigned char   fstype,
+                              const int             max_errors );
 
 int verify_file_data ( struct AdfVolume * const vol,
                        char * const             filename,
-                       unsigned char * const buffer,
-                       const unsigned        bytes_written );
+                       unsigned char * const    buffer,
+                       const unsigned           bytes_written,
+                       const int                max_errors );
 
 void pattern_AMIGAMIG ( unsigned char * buf,
                         const unsigned  BUFSIZE );
@@ -50,9 +52,9 @@ int main (void)
 
     for ( unsigned i = 0 ; i < sizeof ( test_bufsize ) / sizeof ( unsigned ) ; ++i ) {
         status += test_floppy_overfilling (
-            "test.adf", "testfile1.dat", buf, test_bufsize[i], 0 );  // OFS
+            "test.adf", "testfile1.dat", buf, test_bufsize[i], 0, 10 );  // OFS
         status += test_floppy_overfilling (
-            "test.adf", "testfile1.dat", buf, test_bufsize[i], 1 );  // FFS
+            "test.adf", "testfile1.dat", buf, test_bufsize[i], 1, 10 );  // FFS
     }
 
     adfEnvCleanUp();
@@ -64,7 +66,8 @@ int test_floppy_overfilling ( char * const          adfname,
                               char * const          filename,
                               unsigned char * const buffer,
                               const unsigned        blocksize,
-                              const unsigned char   fstype )
+                              const unsigned char   fstype,
+                              const int             max_errors )
 {
     const char * const fstype_info[] = { "OFS", "FFS" };
 #if TEST_VERBOSITY > 0
@@ -125,7 +128,7 @@ int test_floppy_overfilling ( char * const          adfname,
         status++;
     }
 
-    status += verify_file_data ( vol, filename, buffer, bytes_written );
+    status += verify_file_data ( vol, filename, buffer, bytes_written, max_errors );
 
     adfUnMount ( vol );
     adfUnMountDev ( device );
@@ -141,7 +144,8 @@ int test_floppy_overfilling ( char * const          adfname,
 int verify_file_data ( struct AdfVolume * const vol,
                        char * const             filename,
                        unsigned char * const    buffer,
-                       const unsigned           bytes_written )
+                       const unsigned           bytes_written,
+                       const int                max_errors )
 {
     struct AdfFile * output = adfOpenFile ( vol, filename, "r" );
     if ( ! output )
@@ -157,7 +161,7 @@ int verify_file_data ( struct AdfVolume * const vol,
     unsigned bytes_read = 0,
              block_bytes_read,
              offset = 0;
-    int status = 0;
+    int nerrors = 0;
     do {
         block_bytes_read = (unsigned) adfReadFile ( output, (int) READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
@@ -167,21 +171,23 @@ int verify_file_data ( struct AdfVolume * const vol,
                           offset, offset,
                           buffer [ offset ],
                           readbuf [ offset % READ_BUFSIZE ] );
-                status++;
+                nerrors++;
+                if ( nerrors > max_errors )
+                    break;
             }
             offset++;
         }
-    } while ( block_bytes_read == READ_BUFSIZE );
+    } while ( block_bytes_read == READ_BUFSIZE  && nerrors <= max_errors );
 
     adfCloseFile ( output );
 
     if ( bytes_read != bytes_written ) {
         fprintf ( stderr, "bytes read (%u) != bytes written (%u) -> ERROR!!!\n",
                   bytes_read, bytes_written );
-        status++;
+        nerrors++;
     }
 
-    return status;
+    return nerrors;
 }
 
 
