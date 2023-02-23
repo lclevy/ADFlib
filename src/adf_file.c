@@ -675,8 +675,16 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
             nSect = file->fileHdr->dataBlocks[MAX_DATABLK-1-file->nDataBlock];
         else {
             if (file->nDataBlock==MAX_DATABLK) {
-                file->currentExt=(struct bFileExtBlock*)malloc(sizeof(struct bFileExtBlock));
-                if (!file->currentExt) (*adfEnv.eFct)("adfReadNextFileBlock : malloc");
+
+                if ( file->currentExt == NULL ) {
+                    file->currentExt = (struct bFileExtBlock *)
+                        malloc ( sizeof(struct bFileExtBlock) );
+                    if ( file->currentExt == NULL ) {
+                        adfEnv.eFct ("adfReadNextFileBlock : malloc");
+                        return -1;
+                    }
+                }
+
                 adfReadFileExtBlock(file->volume, file->fileHdr->extension,
                     file->currentExt);
                 file->posInExtBlk = 0;
