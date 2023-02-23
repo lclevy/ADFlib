@@ -18,6 +18,8 @@ typedef struct test_file_s {
     char * filename_local;
 
     unsigned int len;
+
+    int max_errors;
 } test_file_t;
 
 
@@ -26,7 +28,8 @@ typedef struct test_file_s {
 test_file_t test_file_ofs = {
     .filename_adf = "moon.gif",
     .filename_local = "../Files/testofs_adf/MOON.GIF",
-    .len = 173847
+    .len = 173847,
+    .max_errors = 10
 };
 
 
@@ -36,7 +39,8 @@ test_file_t test_file_ofs = {
 test_file_t test_file_ffs = {
     .filename_adf = "mod.And.DistantCall",
     .filename_local = "../Files/testffs_adf/mod.And.DistantCall",
-    .len = 145360
+    .len = 145360,
+    .max_errors = 10
 };
 
 
@@ -112,10 +116,14 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         goto cleanup_adffile;
     }
 
+    int errors = 0;
     for ( int i = 0 ; i < NUM_TESTS && status < MAX_ERRORS ; ++i ) {
-        status += test_single_seek ( file_adf, file_local,
+        errors += test_single_seek ( file_adf, file_local,
                                      rand() % test_data->len );
+        if ( errors > test_data->max_errors )
+            break;
     }
+    status += errors;
 
     fclose ( file_local );
 
