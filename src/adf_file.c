@@ -695,6 +695,7 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
     if (isOFS(file->volume->dosType) && data->seqNum!=file->nDataBlock+1)
         (*adfEnv.wFct)("adfReadNextFileBlock : seqnum incorrect");
 
+    file->curDataPtr = nSect;
     file->nDataBlock++;
 
     return rc;
