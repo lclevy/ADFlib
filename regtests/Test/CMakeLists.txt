@@ -95,8 +95,36 @@ TARGET_LINK_LIBRARIES ( undel3 adf )
 add_executable ( floppy_overfilling_test floppy_overfilling_test.c )
 TARGET_LINK_LIBRARIES ( floppy_overfilling_test adf )
 
-configure_file(floppy.sh floppy.sh COPYONLY)
-configure_file(bigdev.sh bigdev.sh COPYONLY)
+foreach ( a_file
+    floppy.sh
+    bigdev.sh
+    bootdisk.sh
+    common.sh
+    del_test.sh
+    dir_test2.sh
+    dir_test_chdir.sh
+    dir_test.sh
+    file_read_hard_link_test.sh
+    file_seek_test2.sh
+    file_seek_test.sh
+    file_test2.sh
+    file_test3.sh
+    file_test.sh
+    floppy_overfilling_test.sh
+    floppy.sh
+    fl_test2.sh
+    fl_test.sh
+    hardfile.sh
+    hd_test2.sh
+    hd_test3.sh
+    hd_test.sh
+    rename2.sh
+    rename.sh
+    undel2.sh
+    undel3.sh
+    undel.sh )
+  configure_file ( ${a_file} ${a_file} COPYONLY )
+endforeach ( a_file )
 
 file (
   COPY ${PROJECT_SOURCE_DIR}/regtests/Boot
