@@ -685,13 +685,28 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
                     }
                 }
 
-                adfReadFileExtBlock(file->volume, file->fileHdr->extension,
-                    file->currentExt);
+                RETCODE rc = adfReadFileExtBlock ( file->volume,
+                                                   file->fileHdr->extension,
+                                                   file->currentExt );
+                if ( rc != RC_OK ) {
+                    adfEnv.eFctf ( "adfReadNextFileBlock : error reading ext block %d",
+                                   file->fileHdr->extension );
+                    return -1;
+                }
+
                 file->posInExtBlk = 0;
             }
             else if (file->posInExtBlk==MAX_DATABLK) {
-                adfReadFileExtBlock(file->volume, file->currentExt->extension,
-                    file->currentExt);
+
+                RETCODE rc = adfReadFileExtBlock ( file->volume,
+                                                   file->currentExt->extension,
+                                                   file->currentExt );
+                if ( rc != RC_OK ) {
+                    adfEnv.eFctf ( "adfReadNextFileBlock : error reading ext block %d",
+                                   file->currentExt->extension );
+                    return -1;
+                }
+
                 file->posInExtBlk = 0;
             }
             nSect = file->currentExt->dataBlocks[MAX_DATABLK-1-file->posInExtBlk];
