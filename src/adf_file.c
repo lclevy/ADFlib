@@ -690,7 +690,15 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
             file->posInExtBlk++;
         }
     }
-    adfReadDataBlock(file->volume,nSect,file->currentData);
+
+#ifdef DEBUG_ADF_FILE
+    assert ( nSect > 0 );
+#endif
+
+    rc = adfReadDataBlock ( file->volume, nSect, file->currentData );
+    if ( rc != RC_OK )
+        adfEnv.eFctf ( "adfReadNextFileBlock : error reading data block %d / %d, file '%s'",
+                       file->nDataBlock, nSect, file->fileHdr->fileName );
 
     if (isOFS(file->volume->dosType) && data->seqNum!=file->nDataBlock+1)
         (*adfEnv.wFct)("adfReadNextFileBlock : seqnum incorrect");
