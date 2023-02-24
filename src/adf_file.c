@@ -601,7 +601,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
     else
         dataPtr = file->currentData;
 
-    if (file->pos==0 || file->posInDataBlk==blockSize) {
+    if ( file->posInDataBlk == blockSize ) {
         RETCODE rc = adfReadNextFileBlock ( file );
         if ( rc != RC_OK ) {
             adfEnv.eFctf ( "adfReadFile : error reading next data block, "
