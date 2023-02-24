@@ -377,6 +377,8 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
     return RC_OK;
 }
 
+//#define TEST_OFS_SEEK 1
+
 RETCODE adfFileSeek ( struct AdfFile * file,
                       uint32_t         pos )
 {
@@ -386,8 +388,16 @@ RETCODE adfFileSeek ( struct AdfFile * file,
     if ( pos == 0 )
         return adfFileSeekStart ( file );
 
-    RETCODE status = adfFileSeekExt ( file, pos );
+#ifdef TEST_OFS_SEEK
+    // optional code for testing only
+    // (ie. to test OFS seek, which is less optimal and not used by default)
+    if ( isOFS ( file->volume->dosType ) )
+        return adfFileSeekOFS ( file, pos );
+    else
+        return adfFileSeekExt ( file, pos );
+#endif
 
+    RETCODE status = adfFileSeekExt ( file, pos );
     if ( status != RC_OK && isOFS ( file->volume->dosType ) )
         status = adfFileSeekOFS ( file, pos );
     return status;
