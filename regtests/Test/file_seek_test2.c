@@ -147,7 +147,12 @@ int test_single_seek ( struct AdfFile * const file_adf,
              offset, offset );
 #endif
 
-    adfFileSeek ( file_adf, offset );
+    RETCODE rc = adfFileSeek ( file_adf, offset );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
+                  offset, offset );
+        return 1;
+    }
 
     unsigned char c;
     int n = adfReadFile ( file_adf, 1, &c );

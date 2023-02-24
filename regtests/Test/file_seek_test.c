@@ -118,6 +118,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
 #if TEST_VERBOSITY > 0
     printf ( "\n*** Test file seeking on image: %s, filename: %s\n",
              test_data->image_filename, test_data->filename );
+    fflush ( stdout );
 #endif
 
     struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
@@ -181,8 +182,14 @@ int test_single_seek ( struct AdfFile *    file,
 #if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
+    fflush ( stdout );
 #endif
-    adfFileSeek ( file, offset );
+    RETCODE rc = adfFileSeek ( file, offset );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, "Seeking to position 0x%x (%d) failed!!!\n",
+                  offset, offset );
+        return 1;
+    }
 
     unsigned char c;
     int n = adfReadFile ( file, 1, &c );
@@ -212,12 +219,20 @@ int test_seek_eof ( struct AdfFile * file,
 {
 #if TEST_VERBOSITY > 0
     printf ( "  Seeking to EOF position 0x%x (%d)...", offset, offset );
+    fflush ( stdout );
+    fflush ( stderr );
 #endif
 
     // seek to end and check EOF
-    adfFileSeek ( file, offset );
-    if ( adfEndOfFile ( file ) ) {
-        fprintf ( stderr, " -> EOF flag not set after seeking to 0x%x (%d)!!!\n",
+    RETCODE rc = adfFileSeek ( file, offset );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
+                  offset, offset );
+        return 1;
+    }
+
+    if ( ! adfEndOfFile ( file ) ) {
+        fprintf ( stderr, " -> EOF false after seeking to EOF ( 0x%x / %d )!!!\n",
                   offset, offset );
         return 1;
     }
@@ -243,7 +258,7 @@ int test_seek_eof ( struct AdfFile * file,
         return 1;
     }
 
-    if ( adfEndOfFile ( file ) ) {
+    if ( ! adfEndOfFile ( file ) ) {
         fprintf ( stderr, " -> no EOF after reading at EOF!!!\n" );
         return 1;
     }
