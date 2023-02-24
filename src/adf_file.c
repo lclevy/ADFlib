@@ -681,30 +681,30 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
                         malloc ( sizeof(struct bFileExtBlock) );
                     if ( file->currentExt == NULL ) {
                         adfEnv.eFct ("adfReadNextFileBlock : malloc");
-                        return -1;
+                        return RC_ERROR;
                     }
                 }
 
-                RETCODE rc = adfReadFileExtBlock ( file->volume,
-                                                   file->fileHdr->extension,
-                                                   file->currentExt );
+                rc = adfReadFileExtBlock ( file->volume,
+                                           file->fileHdr->extension,
+                                           file->currentExt );
                 if ( rc != RC_OK ) {
                     adfEnv.eFctf ( "adfReadNextFileBlock : error reading ext block %d",
                                    file->fileHdr->extension );
-                    return -1;
+                    return rc;
                 }
 
                 file->posInExtBlk = 0;
             }
             else if (file->posInExtBlk==MAX_DATABLK) {
 
-                RETCODE rc = adfReadFileExtBlock ( file->volume,
-                                                   file->currentExt->extension,
-                                                   file->currentExt );
+                rc = adfReadFileExtBlock ( file->volume,
+                                           file->currentExt->extension,
+                                           file->currentExt );
                 if ( rc != RC_OK ) {
                     adfEnv.eFctf ( "adfReadNextFileBlock : error reading ext block %d",
                                    file->currentExt->extension );
-                    return -1;
+                    return rc;
                 }
 
                 file->posInExtBlk = 0;
