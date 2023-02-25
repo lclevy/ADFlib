@@ -598,20 +598,19 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
         return 0;
     }
 
-    int32_t bytesRead;
-    uint8_t *dataPtr, *bufPtr;
-
     int blockSize = file->volume->datablockSize;
 /*puts("adfReadFile");*/
     if (file->pos+n > file->fileHdr->byteSize)
         n = file->fileHdr->byteSize - file->pos;
 
-    if (isOFS(file->volume->dosType))
-        dataPtr = (uint8_t*)(file->currentData)+24;
-    else
-        dataPtr = file->currentData;
+    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
+        //(uint8_t*)(file->currentData)+24 :
+        ( (struct bOFSDataBlock *) file->currentData )->data :
+        file->currentData;
 
-    bytesRead = 0; bufPtr = buffer;
+    int32_t bytesRead = 0;
+    uint8_t *bufPtr = buffer;
+
     while ( bytesRead < n ) {
 
         if ( file->posInDataBlk == blockSize ) {
