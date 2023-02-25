@@ -764,18 +764,24 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
     else
         dataPtr = file->currentData;
 
-    if (file->pos==0 || file->posInDataBlk==blockSize) {
-        if (adfCreateNextFileBlock(file)==-1) {
-            /* bug found by Rikard */
-            (*adfEnv.wFct)("adfWritefile : no more free sector availbale");                        
-            file->curDataPtr = 0; // invalidate data ptr
-            return bytesWritten;
-        }
-        file->posInDataBlk = 0;
-    }
-
     bytesWritten = 0; bufPtr = buffer;
     while( bytesWritten<n ) {
+
+        // if at the end of the last block of the file...
+        if ( file->pos == file->fileHdr->byteSize &&
+             //file->posInDataBlk == blockSize ) {
+             file->pos % blockSize == 0 )
+        {
+            // ...  create a new block
+            if ( adfCreateNextFileBlock(file) == -1 ) {
+                /* bug found by Rikard */
+                adfEnv.wFct ( "adfWritefile : no more free sector available" );
+                file->curDataPtr = 0; // invalidate data ptr
+                return bytesWritten;
+            }
+            file->posInDataBlk = 0;
+        }
+
         size = min(n-bytesWritten, blockSize-file->posInDataBlk);
         memcpy(dataPtr+file->posInDataBlk, bufPtr, size);
         bufPtr += size;
@@ -786,16 +792,6 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,
                                         file->pos );
-
-        if (file->posInDataBlk==blockSize && bytesWritten<n) {
-            if (adfCreateNextFileBlock(file)==-1) {
-                /* bug found by Rikard */
-                (*adfEnv.wFct)("adfWritefile : no more free sector availbale");                        
-                file->curDataPtr = 0; // invalidate data ptr
-                return bytesWritten;
-            }
-            file->posInDataBlk = 0;
-        }
     }
     return( bytesWritten );
 }
