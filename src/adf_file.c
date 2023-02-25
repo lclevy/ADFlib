@@ -752,14 +752,13 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
     int32_t bytesWritten;
     uint8_t *dataPtr, *bufPtr;
     int size, blockSize;
-    struct bOFSDataBlock *dataB;
     
     bytesWritten = 0;
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
     blockSize = file->volume->datablockSize;
     if (isOFS(file->volume->dosType)) {
-        dataB =(struct bOFSDataBlock *)file->currentData;
+        struct bOFSDataBlock *dataB = (struct bOFSDataBlock *) file->currentData;
         dataPtr = dataB->data;
     }
     else
