@@ -734,22 +734,16 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
  */
 int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
 {
-    int32_t bytesWritten;
-    uint8_t *dataPtr, *bufPtr;
-    int size, blockSize;
-    
-    bytesWritten = 0;
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
-    blockSize = file->volume->datablockSize;
-    if (isOFS(file->volume->dosType)) {
-        struct bOFSDataBlock *dataB = (struct bOFSDataBlock *) file->currentData;
-        dataPtr = dataB->data;
-    }
-    else
-        dataPtr = file->currentData;
+    int blockSize = file->volume->datablockSize;
 
-    bytesWritten = 0; bufPtr = buffer;
+    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
+        ( (struct bOFSDataBlock *) file->currentData )->data :
+        file->currentData;
+
+    int32_t bytesWritten = 0;
+    uint8_t *bufPtr = buffer;
     while( bytesWritten<n ) {
 
         // if at the end of the last block of the file...
@@ -767,7 +761,7 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
             file->posInDataBlk = 0;
         }
 
-        size = min(n-bytesWritten, blockSize-file->posInDataBlk);
+        int size = min ( n - bytesWritten, blockSize - file->posInDataBlk );
         memcpy(dataPtr+file->posInDataBlk, bufPtr, size);
         bufPtr += size;
         file->pos += size;
