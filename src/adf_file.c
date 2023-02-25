@@ -611,31 +611,10 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
     else
         dataPtr = file->currentData;
 
-    if ( file->posInDataBlk == blockSize ) {
-        RETCODE rc = adfReadNextFileBlock ( file );
-        if ( rc != RC_OK ) {
-            adfEnv.eFctf ( "adfReadFile : error reading next data block, "
-                           "file '%s', pos %d, data block %d",
-                           file->fileHdr->fileName, file->pos, file->nDataBlock );
-            file->curDataPtr = 0;  // invalidate data ptr
-            return 0;
-        }
-        file->posInDataBlk = 0;
-    }
-
-#ifdef DEBUG_ADF_FILE
-    assert ( file->curDataPtr != 0 );
-#endif
-
     bytesRead = 0; bufPtr = buffer;
     while ( bytesRead < n ) {
-        int size = min ( n - bytesRead, blockSize - file->posInDataBlk );
-        memcpy(bufPtr, dataPtr+file->posInDataBlk, size);
-        bufPtr += size;
-        file->pos += size;
-        bytesRead += size;
-        file->posInDataBlk += size;
-        if (file->posInDataBlk==blockSize && bytesRead<n) {
+
+        if ( file->posInDataBlk == blockSize ) {
             RETCODE rc = adfReadNextFileBlock ( file );
             if ( rc != RC_OK ) {
                 adfEnv.eFctf ( "adfReadFile : error reading next data block, "
@@ -646,6 +625,13 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
             }
             file->posInDataBlk = 0;
         }
+
+        int size = min ( n - bytesRead, blockSize - file->posInDataBlk );
+        memcpy(bufPtr, dataPtr+file->posInDataBlk, size);
+        bufPtr += size;
+        file->pos += size;
+        bytesRead += size;
+        file->posInDataBlk += size;
     }
 
     return( bytesRead );
