@@ -806,12 +806,9 @@ int32_t adfWriteFile ( struct AdfFile * const file,
 SECTNUM adfCreateNextFileBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect, extSect;
-    struct bOFSDataBlock *data;
-	unsigned int blockSize;
-    int i;
+
 /*puts("adfCreateNextFileBlock");*/
-    blockSize = file->volume->datablockSize;
-    data = file->currentData;
+    unsigned int blockSize = file->volume->datablockSize;
 
     /* the first data blocks pointers are inside the file header block */
     if (file->nDataBlock<MAX_DATABLK) {
@@ -850,7 +847,7 @@ SECTNUM adfCreateNextFileBlock ( struct AdfFile * const file )
             }
 
             /* initializes a file extension block */
-            for(i=0; i<MAX_DATABLK; i++)
+            for ( int i = 0 ; i < MAX_DATABLK ; i++ )
                 file->currentExt->dataBlocks[i] = 0L;
             file->currentExt->headerKey = extSect;
             file->currentExt->parent = file->fileHdr->headerKey;
@@ -873,13 +870,14 @@ SECTNUM adfCreateNextFileBlock ( struct AdfFile * const file )
     /* builds OFS header */
     if (isOFS(file->volume->dosType)) {
         /* writes previous data block and link it  */
+        struct bOFSDataBlock * const data = file->currentData;
         if (file->pos>=blockSize) {
             data->nextData = nSect;
             adfWriteDataBlock(file->volume, file->curDataPtr, file->currentData);
 /*printf ("writedata=%d\n",file->curDataPtr);*/
         }
         /* initialize a new data block */
-        for(i=0; i<(int)blockSize; i++)
+        for ( unsigned i = 0 ; i < blockSize ; i++ )
             data->data[i]=0;
         data->seqNum = file->nDataBlock+1;
         data->dataSize = blockSize;
