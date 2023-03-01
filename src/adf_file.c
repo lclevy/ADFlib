@@ -69,7 +69,7 @@ void adfFileTruncate ( struct AdfVolume * vol,
  * adfFileFlush
  *
  */
-void adfFlushFile(struct AdfFile * file)
+void adfFlushFile ( struct AdfFile * const file)
 {
     if ( ! file->writeMode )
         return;
@@ -140,9 +140,9 @@ void adfFlushFile(struct AdfFile * file)
  * adfGetFileBlocks
  *
  */
-RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
-                           struct bFileHeaderBlock * entry,
-                           struct AdfFileBlocks *    fileBlocks )
+RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
+                           struct bFileHeaderBlock * const entry,
+                           struct AdfFileBlocks * const    fileBlocks )
 {
     int32_t n, m;
     SECTNUM nSect;
@@ -189,8 +189,8 @@ RETCODE adfGetFileBlocks ( struct AdfVolume *        vol,
  * adfFreeFileBlocks
  *
  */
-RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
-                            struct bFileHeaderBlock * entry )
+RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
+                            struct bFileHeaderBlock * const entry )
 {
     int i;
     struct AdfFileBlocks fileBlocks;
@@ -219,7 +219,10 @@ RETCODE adfFreeFileBlocks ( struct AdfVolume *        vol,
  * Compute number of datablocks and file extension blocks
  *
  */
-int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *extN)
+int32_t adfFileRealSize ( uint32_t        size,
+                          int             blockSize,
+                          int32_t * const dataN,
+                          int32_t * const extN )
 {
     int32_t data, ext;
 
@@ -249,9 +252,9 @@ int32_t adfFileRealSize(uint32_t size, int blockSize, int32_t *dataN, int32_t *e
  * adfWriteFileHdrBlock
  *
  */
-RETCODE adfWriteFileHdrBlock ( struct AdfVolume *        vol,
-                               SECTNUM                   nSect,
-                               struct bFileHeaderBlock * fhdr )
+RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
+                               const SECTNUM                   nSect,
+                               struct bFileHeaderBlock * const fhdr )
 {
     uint8_t buf[512];
     uint32_t newSum;
@@ -300,8 +303,8 @@ static RETCODE adfFileSeekStart ( struct AdfFile * const file )
 }
 
 
-static RETCODE adfFileSeekOFS ( struct AdfFile * file,
-                                uint32_t         pos )
+static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
+                                uint32_t               pos )
 {
     adfFileSeekStart ( file );
 
@@ -330,8 +333,8 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * file,
 }
 
 
-static RETCODE adfFileSeekExt ( struct AdfFile * file,
-                                uint32_t         pos )
+static RETCODE adfFileSeekExt ( struct AdfFile * const file,
+                                uint32_t               pos )
 {
     file->pos = min ( pos, file->fileHdr->byteSize );
 
@@ -379,8 +382,8 @@ static RETCODE adfFileSeekExt ( struct AdfFile * file,
 
 //#define TEST_OFS_SEEK 1
 
-RETCODE adfFileSeek ( struct AdfFile * file,
-                      uint32_t         pos )
+RETCODE adfFileSeek ( struct AdfFile * const file,
+                      const uint32_t         pos )
 {
     if ( file->pos == pos  && file->curDataPtr != 0 )
         return RC_OK;
@@ -408,9 +411,9 @@ RETCODE adfFileSeek ( struct AdfFile * file,
  * adfFileOpen
  *
  */ 
-struct AdfFile * adfOpenFile ( struct AdfVolume * vol,
-                               char *             name,
-                               char *             mode )
+struct AdfFile * adfOpenFile ( struct AdfVolume * const vol,
+                               const char * const       name,
+                               const char * const       mode )
 {
     if ( ! vol ) {
         adfEnv.eFct ( "adfFileOpen : vol is NULL" );
@@ -589,7 +592,9 @@ void adfCloseFile(struct AdfFile * file)
  * adfReadFile
  *
  */
-int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
+int32_t adfReadFile ( struct AdfFile * const file,
+                      int32_t                n,
+                      uint8_t * const        buffer )
 {
     if ( n == 0 ||
          file->fileHdr->byteSize == 0 ||
@@ -641,7 +646,7 @@ int32_t adfReadFile(struct AdfFile * file, int32_t n, uint8_t *buffer)
  * adfEndOfFile
  *
  */
-BOOL adfEndOfFile(struct AdfFile* file)
+BOOL adfEndOfFile ( const struct AdfFile * const file )
 {
     return ( file->pos == file->fileHdr->byteSize );
 }
@@ -651,7 +656,7 @@ BOOL adfEndOfFile(struct AdfFile* file)
  * adfReadNextFileBlock
  *
  */
-RETCODE adfReadNextFileBlock(struct AdfFile* file)
+RETCODE adfReadNextFileBlock ( struct AdfFile * const file)
 {
     SECTNUM nSect;
     struct bOFSDataBlock *data;
@@ -732,7 +737,9 @@ RETCODE adfReadNextFileBlock(struct AdfFile* file)
  * adfWriteFile
  *
  */
-int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
+int32_t adfWriteFile ( struct AdfFile * const file,
+                       const int32_t          n,
+                       const uint8_t * const  buffer )
 {
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
@@ -796,7 +803,7 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
  * adfCreateNextFileBlock
  *
  */
-SECTNUM adfCreateNextFileBlock(struct AdfFile* file)
+SECTNUM adfCreateNextFileBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect, extSect;
     struct bOFSDataBlock *data;
@@ -931,9 +938,9 @@ int32_t adfPos2DataBlock(int32_t pos, int blockSize,
  * adfReadDataBlock
  *
  */
-RETCODE adfReadDataBlock ( struct AdfVolume * vol,
-                           SECTNUM            nSect,
-                           void *             data )
+RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
+                           const SECTNUM            nSect,
+                           void * const             data )
 {
     if ( nSect < 1 ) {
         // ie. block 0 is volume's bootblock - cannot be a data block
@@ -985,9 +992,9 @@ RETCODE adfReadDataBlock ( struct AdfVolume * vol,
  * adfWriteDataBlock
  *
  */
-RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
-                            SECTNUM            nSect,
-                            void *             data )
+RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
+                            const SECTNUM            nSect,
+                            void * const            data )
 {
     if ( nSect < 1 ) {
         // ie. block 0 is volume's bootblock - cannot be a data block
@@ -1027,9 +1034,9 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
  * adfReadFileExtBlock
  *
  */
-RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
-                              SECTNUM                nSect,
-                              struct bFileExtBlock * fext )
+RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
+                              const SECTNUM                nSect,
+                              struct bFileExtBlock * const fext )
 {
     uint8_t buf[sizeof(struct bFileExtBlock)];
     RETCODE rc = adfReadBlock ( vol, nSect,buf );
@@ -1065,9 +1072,9 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume *     vol,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
-                               int32_t                extBlock,
-                               struct bFileExtBlock * fext )
+RETCODE adfReadFileExtBlockN ( struct AdfFile * const       file,
+                               const int32_t                extBlock,
+                               struct bFileExtBlock * const fext )
 {
     // add checking if extBlock value is valid (?)
 
@@ -1100,9 +1107,9 @@ RETCODE adfReadFileExtBlockN ( struct AdfFile *       file,
  * adfWriteFileExtBlock
  *
  */
-RETCODE adfWriteFileExtBlock ( struct AdfVolume *     vol,
-                               SECTNUM                nSect,
-                               struct bFileExtBlock * fext )
+RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
+                               const SECTNUM                nSect,
+                               struct bFileExtBlock * const fext )
 {
     uint8_t buf[512];
     uint32_t newSum;
