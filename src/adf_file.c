@@ -736,14 +736,14 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
 {
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
-    int blockSize = file->volume->datablockSize;
+    const int blockSize = file->volume->datablockSize;
 
     uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
         ( (struct bOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
     int32_t bytesWritten = 0;
-    uint8_t *bufPtr = buffer;
+    const uint8_t *bufPtr = buffer;
     while( bytesWritten<n ) {
 
         // if at the end of the last block of the file...
@@ -761,7 +761,7 @@ int32_t adfWriteFile(struct AdfFile *file, int32_t n, uint8_t *buffer)
             file->posInDataBlk = 0;
         }
 
-        int size = min ( n - bytesWritten, blockSize - file->posInDataBlk );
+        const int size = min ( n - bytesWritten, blockSize - file->posInDataBlk );
         memcpy(dataPtr+file->posInDataBlk, bufPtr, size);
         bufPtr += size;
         file->pos += size;
