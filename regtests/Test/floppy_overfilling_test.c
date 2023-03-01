@@ -11,12 +11,18 @@
 
 #define TEST_VERBOSITY 1
 
-int test_floppy_overfilling ( char * const          adfname,
-                              char * const          filename,
-                              unsigned char * const buffer,
-                              const unsigned        blocksize,
-                              const unsigned char   fstype,
-                              const int             max_errors );
+typedef struct test_data_s {
+    char * const          adfname;
+    char * const          filename;
+    unsigned char * const buffer;
+    const unsigned        bufsize;
+    unsigned              blocksize;
+    const unsigned char   fstype;
+    const int             max_errors;
+} test_data_t;
+
+
+int test_floppy_overfilling ( test_data_t * const tdata );
 
 int verify_file_data ( struct AdfVolume * const vol,
                        char * const             filename,
@@ -40,45 +46,65 @@ int main (void)
 #else
     const unsigned BUF_SIZE = 1024 * 1024;
 #endif
-    unsigned char buf [ BUF_SIZE ];
+    unsigned char * const buf = malloc ( BUF_SIZE );
+    if ( buf == NULL )
+        return 1;
 
     //pattern_AMIGAMIG ( buf, BUFSIZE );
     pattern_random ( buf, BUF_SIZE );
 
-    int status = 0;
-
-    unsigned test_bufsize[] = { 4096, 4095, 2049, 2048, 1025, 1024, 1023,
+    const unsigned test_blocksize[] = { 4096, 4095, 2049, 2048, 1025, 1024, 1023,
         513, 512, 511, 257, 256, 128, 32, 16, 8, 4, 2, 1 };
+    const unsigned nblocksizes = sizeof ( test_blocksize ) / sizeof ( unsigned );
 
-    for ( unsigned i = 0 ; i < sizeof ( test_bufsize ) / sizeof ( unsigned ) ; ++i ) {
-        status += test_floppy_overfilling (
-            "test.adf", "testfile1.dat", buf, test_bufsize[i], 0, 10 );  // OFS
-        status += test_floppy_overfilling (
-            "test.adf", "testfile1.dat", buf, test_bufsize[i], 1, 10 );  // FFS
+    test_data_t tdata_ofs = {
+        .adfname    = "test_floppy_overfilling_ofs.adf",
+        .filename   = "testfile1.dat",
+        .buffer     = buf,
+        .bufsize    = BUF_SIZE,
+        //.blocksize = ,
+        .fstype     =  0,     // OFS
+        .max_errors = 10
+    };
+
+    test_data_t tdata_ffs = {
+        .adfname    = "test_floppy_overfilling_ffs.adf",
+        .filename   = "testfile1.dat",
+        .buffer     = buf,
+        .bufsize    = BUF_SIZE,
+        //.blocksize = ,
+        .fstype     =  1,     // FFS
+        .max_errors = 10
+    };
+
+    int status = 0;
+    for ( unsigned i = 0 ; i < nblocksizes ; ++i ) {
+
+        tdata_ofs.blocksize = test_blocksize[i];
+        status += test_floppy_overfilling ( &tdata_ofs );
+
+        tdata_ffs.blocksize = test_blocksize[i];
+        status += test_floppy_overfilling ( &tdata_ffs );
     }
 
+    free ( buf );
     adfEnvCleanUp();
     return status;
 }
 
 
-int test_floppy_overfilling ( char * const          adfname,
-                              char * const          filename,
-                              unsigned char * const buffer,
-                              const unsigned        blocksize,
-                              const unsigned char   fstype,
-                              const int             max_errors )
+int test_floppy_overfilling ( test_data_t * const tdata )
 {
     const char * const fstype_info[] = { "OFS", "FFS" };
 #if TEST_VERBOSITY > 0
     printf ("Test floppy overfilling, filesystem: %s, blocksize: %d",
-            fstype_info [fstype], blocksize );
+            fstype_info [ tdata->fstype ], tdata->blocksize );
 #endif
 
-    struct AdfDevice * device = adfCreateDumpDevice ( adfname, 80, 2, 11 );
+    struct AdfDevice * device = adfCreateDumpDevice ( tdata->adfname, 80, 2, 11 );
     if ( ! device )
         return 1;
-    adfCreateFlop ( device, "OverfillTest", fstype );
+    adfCreateFlop ( device, "OverfillTest", tdata->fstype );
 
     struct AdfVolume * vol = adfMount ( device, 0, FALSE );
     if ( ! vol )
@@ -88,24 +114,24 @@ int test_floppy_overfilling ( char * const          adfname,
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
 
-    struct AdfFile * output = adfOpenFile ( vol, filename, "w" );
+    struct AdfFile * output = adfOpenFile ( vol, tdata->filename, "w" );
     if ( ! output )
         return 1;
 
     int status = 1;
-    unsigned iterations = 1024u * 1024u / blocksize +
-        ( 1024 * 1024 % blocksize > 0 ? 1 : 0 );
-    unsigned char * bufferp = buffer;
+    unsigned char * bufferp = tdata->buffer;
     unsigned bytes_written = 0;
-    for ( unsigned i = 0; i < iterations ; ++i ) {
-        int block_bytes_written = adfWriteFile ( output, (int) blocksize, bufferp );
+    while ( bytes_written + tdata->blocksize < tdata->bufsize ) {  /* <- assumption:
+                                                                      bufsize must be larger than
+                                                                      floppy size + blocksize */
+        int block_bytes_written = adfWriteFile ( output, (int) tdata->blocksize, bufferp );
         bytes_written += (unsigned) block_bytes_written;
-        if ( (unsigned) block_bytes_written != blocksize ) {
-            // OK, not all bytes written
+        if ( (unsigned) block_bytes_written != tdata->blocksize ) {
+            // OK, end of the disk space hit and not all bytes written
             status = 0;   
             break;
         }
-        bufferp += blocksize;
+        bufferp += block_bytes_written; //tdata->blocksize;
         //printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
     }
 
@@ -128,7 +154,8 @@ int test_floppy_overfilling ( char * const          adfname,
         status++;
     }
 
-    status += verify_file_data ( vol, filename, buffer, bytes_written, max_errors );
+    status += verify_file_data ( vol, tdata->filename, tdata->buffer,
+                                 bytes_written, tdata->max_errors );
 
     adfUnMount ( vol );
     adfUnMountDev ( device );
