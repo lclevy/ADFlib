@@ -979,20 +979,23 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * vol,
         return RC_ERROR;
     }
 
+    RETCODE rc;
     if (isOFS(vol->dosType)) {
         struct bOFSDataBlock * dataB = (struct bOFSDataBlock *) data;
         dataB->type = T_DATA;
 
-        uint8_t *buf = data;
+        uint8_t buf[512];
+        memcpy ( buf, data, 512 );
 #ifdef LITT_ENDIAN
         swapEndian(buf, SWBL_DATA);
 #endif
         uint32_t newSum = adfNormalSum ( buf, 20, 512 );
         swLong(buf+20,newSum);
 /*        *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
+        rc = adfWriteBlock ( vol, nSect, buf );
+    } else {
+        rc = adfWriteBlock ( vol, nSect, data );
     }
-
-    RETCODE rc = adfWriteBlock ( vol, nSect, data );
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfWriteDataBlock: error writing block %d, volume '%s'",
                        nSect, vol->volName );
