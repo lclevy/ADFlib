@@ -8,6 +8,14 @@
 NFAILED=0
 FAILED=
 
+case `uname` in
+    Darwin*)
+	STDBUF=gstdbuf
+	;;
+    *)
+	STDBUF=stdbuf
+esac
+
 for A_TEST in \
     bootdisk.sh \
     del_test.sh \
@@ -31,7 +39,7 @@ do
     echo "---------------------------------------------------"
     echo "    Executing: ${A_TEST}"
     echo "---------------------------------------------------"
-    stdbuf -oL -eL ./${A_TEST}
+    ${STDBUF} -oL -eL ./${A_TEST}
     RESULT=${?}
     #echo "Result: ${RESULT}"
     if [ ${RESULT} -ne 0 ]
