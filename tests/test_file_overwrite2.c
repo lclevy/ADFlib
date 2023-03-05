@@ -1,6 +1,9 @@
 #include <check.h>
 #include <stdlib.h>
-#include <unistd.h>
+
+#ifndef _WIN32
+#include <unistd.h>   // for unlink()
+#endif
 
 #include "test_util.h"
 

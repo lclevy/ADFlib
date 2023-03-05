@@ -1,6 +1,9 @@
 #include <check.h>
 #include <stdlib.h>
-#include <unistd.h>
+
+#ifndef _WIN32
+#include <unistd.h>   // for unlink()
+#endif
 
 #include "adflib.h"
 //#include "adf_util.h"
@@ -121,7 +124,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
 
     // write data buffer to the file
-    unsigned bufsize = tdata->bufsize;
+    const unsigned bufsize = tdata->bufsize;
     const unsigned char * const buffer = tdata->buffer;
     int bytes_written = adfWriteFile ( file, bufsize, buffer );
     ck_assert_int_eq ( bufsize, bytes_written );
@@ -174,8 +177,11 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
 
-    unsigned char rbuf [ bufsize ];
+    unsigned char * rbuf = malloc ( bufsize );
+    ck_assert_ptr_nonnull ( rbuf );
     int bytes_read = adfReadFile ( file, bufsize, rbuf );
+    free(rbuf);
+    rbuf = NULL;
     ck_assert_int_eq ( bufsize, bytes_read );
     ck_assert_uint_eq ( bufsize, file->pos );
     //ck_assert_int_eq ( 0, file->posInExtBlk );  // TODO
