@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);

@@ -179,7 +179,7 @@ int count_dir_entries ( struct AdfVolume * vol )
     int nentries = 0;
     cell = list = adfGetDirEnt ( vol, vol->curDirPtr );
     while ( cell ) {
-        //printEntry ( cell->content );
+        //adfEntryPrint ( cell->content );
         cell = cell->next;
         nentries++;
     }

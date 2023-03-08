@@ -136,7 +136,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
                             struct bEntryBlock * const entry,
                             SECTNUM * const            nUpdSect );
 
-PREFIX void printEntry ( struct AdfEntry * entry );
+PREFIX void adfEntryPrint ( struct AdfEntry * entry );
 
 #endif /* ADF_DIR_H */
 

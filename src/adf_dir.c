@@ -499,7 +499,7 @@ int adfDirCountEntries ( struct AdfVolume * const vol,
     int nentries = 0;
     cell = list = adfGetDirEnt ( vol, dirPtr );
     while ( cell ) {
-        //printEntry ( cell->content );
+        //adfEntryPrint ( cell->content );
         cell = cell->next;
         nentries++;
     }
@@ -892,10 +892,10 @@ adfGetHashValue(uint8_t *name, BOOL intl)
 
 
 /*
- * printEntry
+ * adfEntryPrint
  *
  */
-void printEntry ( struct AdfEntry * entry )
+void adfEntryPrint ( struct AdfEntry * entry )
 {
     printf("%-30s %2d %6d ", entry->name, entry->type, entry->sector);
     printf("%2d/%02d/%04d %2d:%02d:%02d",entry->days, entry->month, entry->year,

@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         adfFreeEntry(cell->content);
         cell = cell->next;
     }

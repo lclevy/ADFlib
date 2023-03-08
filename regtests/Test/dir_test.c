@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         adfFreeEntry(cell->content);
         cell = cell->next;
     }
@@ -130,7 +130,7 @@ int test_chdir_hlink ( struct AdfVolume * vol,
     list = cell = adfGetDirEnt ( vol, vol->curDirPtr );
     int count = 0;
     while ( cell ) {
-        //printEntry ( list->content );
+        //adfEntryPrint ( list->content );
         cell = cell->next;
         count++;
     }

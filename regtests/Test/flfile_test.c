@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     /* the directory */
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     /* the directory */
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }
