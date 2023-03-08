@@ -643,11 +643,11 @@ RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
  * adfNameToEntryBlk
  *
  */
-SECTNUM adfNameToEntryBlk ( struct AdfVolume *   vol,
-                            int32_t              ht[],
-                            char *               name,
-                            struct bEntryBlock * entry,
-                            SECTNUM *            nUpdSect )
+SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
+                            const int32_t              ht[],
+                            const char * const         name,
+                            struct bEntryBlock * const entry,
+                            SECTNUM * const            nUpdSect )
 {
     int hashVal;
     uint8_t upperName[MAXNAMELEN+1];
