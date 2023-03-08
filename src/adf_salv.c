@@ -33,7 +33,7 @@
 #include "adf_util.h"
 #include "adf_vol.h"
 #include "adf_dir.h"
-#include "adf_file.h"
+#include "adf_file_block.h"
 #include "adf_cache.h"
 #include "adf_env.h"
 

@@ -45,6 +45,7 @@ extern "C" {
 
 /* file */
 #include "adf_file.h"
+#include "adf_file_block.h"
 
 /* volume */
 #include "adf_vol.h"

@@ -13,6 +13,7 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_env.c \
                     adf_dir.c \
                     adf_file.c \
+                    adf_file_block.c \
                     adf_cache.c \
                     adf_link.c \
                     adf_salv.c \
@@ -32,6 +33,7 @@ include_HEADERS = adf_defs.h \
                   adf_dump.h \
                   adf_env.h \
                   adf_file.h \
+                  adf_file_block.h \
                   adf_link.h \
                   adf_raw.h \
                   adf_salv.h \

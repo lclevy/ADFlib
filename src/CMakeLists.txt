@@ -24,6 +24,7 @@ add_library ( adf
   adf_dump.c
   adf_env.c
   adf_file.c
+  adf_file_block.c
   adf_link.c
   adf_raw.c
   adf_salv.c
