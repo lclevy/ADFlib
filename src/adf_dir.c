@@ -67,8 +67,8 @@ RETCODE adfRenameEntry ( struct AdfVolume * vol,
     
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     len = strlen(newName);
-    myToUpper((uint8_t*)name2, (uint8_t*)newName, len, intl);
-    myToUpper((uint8_t*)name3, (uint8_t*)oldName, strlen(oldName), intl);
+    adfStrToUpper ( (uint8_t *) name2, (uint8_t*) newName, len, intl );
+    adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, strlen(oldName), intl );
     /* newName == oldName ? */
 
     if (adfReadEntryBlock( vol, pSect, &parent )!=RC_OK)
@@ -137,7 +137,9 @@ RETCODE adfRenameEntry ( struct AdfVolume * vol,
             if (adfReadEntryBlock(vol, nSect2, &previous)!=RC_OK)
                 return -1;
             if (previous.nameLen==len) {
-                myToUpper((uint8_t*)name3,(uint8_t*)previous.name,previous.nameLen,intl);
+                adfStrToUpper ( (uint8_t *) name3,
+                                (uint8_t *) previous.name,
+                                previous.nameLen, intl );
                 if (strncmp(name3,name2,len)==0) {
                     (*adfEnv.wFct)("adfRenameEntry : entry already exists");
                     return -1;
@@ -661,7 +663,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     hashVal = adfGetHashValue( (uint8_t*)name, intl );
     nameLen = min(strlen(name), MAXNAMELEN);
-    myToUpper( upperName, (uint8_t*)name, nameLen, intl );
+    adfStrToUpper ( upperName, (uint8_t *) name, nameLen, intl );
 
     nSect = ht[hashVal];
 /*printf("name=%s ht[%d]=%d upper=%s len=%d\n",name,hashVal,nSect,upperName,nameLen);
@@ -679,7 +681,7 @@ for(i=0; i<HT_SIZE; i++) printf("ht[%d]=%d    ",i,ht[i]);
         if (adfReadEntryBlock(vol, nSect, entry)!=RC_OK)
 			return -1;
         if (nameLen==entry->nameLen) {
-            myToUpper( upperName2, (uint8_t*)entry->name, nameLen, intl );
+            adfStrToUpper ( upperName2, (uint8_t *) entry->name, nameLen, intl );
 /*printf("2=%s %s\n",upperName2,upperName);*/
             found = strncmp((char*)upperName, (char*)upperName2, nameLen)==0;
         }
@@ -746,7 +748,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
 
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     len = min(strlen(name), MAXNAMELEN) ;
-    myToUpper((uint8_t*)name2, (uint8_t*)name, len, intl);
+    adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
     hashValue = adfGetHashValue((uint8_t*)name, intl);
     nSect = dir->hashTable[ hashValue ];
 
@@ -785,7 +787,9 @@ SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
         if (adfReadEntryBlock(vol, nSect, &updEntry)!=RC_OK)
 			return -1;
         if (updEntry.nameLen==len) {
-            myToUpper((uint8_t*)name3,(uint8_t*)updEntry.name,updEntry.nameLen,intl);
+            adfStrToUpper ( (uint8_t *) name3,
+                            (uint8_t *) updEntry.name,
+                            updEntry.nameLen, intl );
             if (strncmp(name3,name2,len)==0) {
                 (*adfEnv.wFct)("adfCreateEntry : entry already exists");
                 return -1;
@@ -841,13 +845,13 @@ return (c>='a' && c<='z') ? c - ('a'-'A') : c ;
 }
 
 /*
- * myToUpper
+ * adfStrToUpper
  *
  */
-void myToUpper ( uint8_t * const       nstr,
-                 const uint8_t * const ostr,
-                 const int             nlen,
-                 const BOOL            intl )
+void adfStrToUpper ( uint8_t * const       nstr,
+                     const uint8_t * const ostr,
+                     const int             nlen,
+                     const BOOL            intl )
 {
     int i;
 

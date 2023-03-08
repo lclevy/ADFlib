@@ -111,10 +111,10 @@ char* adfAccess2String(int32_t acc);
 uint8_t adfIntlToUpper ( const uint8_t c );
 int adfGetHashValue(uint8_t *name, BOOL intl);
 
-void myToUpper ( uint8_t * const       nstr,
-                 const uint8_t * const ostr,
-                 const int             nlen,
-                 const BOOL            intl );
+void adfStrToUpper ( uint8_t * const       nstr,
+                     const uint8_t * const ostr,
+                     const int             nlen,
+                     const BOOL            intl );
 
 PREFIX RETCODE adfChangeDir ( struct AdfVolume * vol,
                               char *             name );
