@@ -329,7 +329,6 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
          entry.secType != ST_FILE &&
          entry.secType != ST_LFILE )
     {
-        printf (" entry.secType %d \n", entry.secType );
         adfEnv.wFctf ( "adfFileOpen : '%s' is not a file (or a hardlink to a file)",
                        name );
         return NULL;
