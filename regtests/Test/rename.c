@@ -54,25 +54,25 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    fic = adfOpenFile(vol, "file_1a","w");
+    fic = adfFileOpen ( vol, "file_1a", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
-    fic = adfOpenFile(vol, "file_24","w");
+    fic = adfFileOpen ( vol, "file_24", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
-    fic = adfOpenFile(vol, "dir_1a","w");
+    fic = adfFileOpen ( vol, "dir_1a", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
-    fic = adfOpenFile(vol, "dir_5u","w");
+    fic = adfFileOpen ( vol, "dir_5u", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
     puts("Create file_1a, file_24, dir_1a, dir_5u (with this order)");
 

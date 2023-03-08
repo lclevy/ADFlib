@@ -49,9 +49,9 @@ void test_file_create ( test_data_t * const tdata )
 
     // create a new file
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfOpenFile ( vol, filename, tdata->openMode );
+    struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
     ck_assert_ptr_nonnull ( file );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
@@ -66,34 +66,34 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfOpenFile ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, "r" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert ( adfEndOfFile ( file ) != 0 );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // the same when open for appending
-    file = adfOpenFile ( vol, filename, "a" );
+    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert ( adfEndOfFile ( file ) != 0 );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // the same when open for writing
-    file = adfOpenFile ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, "w" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert ( adfEndOfFile ( file ) != 0 );
-    adfCloseFile ( file );
+    adfFileClose ( file );
     
     // umount volume
     adfUnMount ( tdata->vol );
@@ -118,9 +118,9 @@ void test_file_create_with_append ( test_data_t * const tdata )
 
     // create a new file
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfOpenFile ( vol, filename, tdata->openMode );
+    struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
     ck_assert_ptr_null ( file );
-    adfCloseFile ( file );   // should not be needed (but should not fail either)
+    adfFileClose ( file );   // should not be needed (but should not fail either)
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );

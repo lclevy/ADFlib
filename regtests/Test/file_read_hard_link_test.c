@@ -145,7 +145,7 @@ int test_hlink_read ( reading_test_t * test_data )
         }
     }
 
-    struct AdfFile * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );
@@ -159,7 +159,7 @@ int test_hlink_read ( reading_test_t * test_data )
                                      test_data->checks[i].value );
     }
 
-    adfCloseFile ( file_adf );
+    adfFileClose ( file_adf );
 
     // clean-up
 clean_up:
@@ -183,7 +183,7 @@ int test_single_read ( struct AdfFile * const file_adf,
     adfFileSeek ( file_adf, offset );
 
     unsigned char c;
-    int n = adfReadFile ( file_adf, 1, &c );
+    int n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );

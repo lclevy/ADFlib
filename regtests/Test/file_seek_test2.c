@@ -101,7 +101,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct AdfFile * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );
@@ -128,7 +128,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
     fclose ( file_local );
 
 cleanup_adffile:
-    adfCloseFile ( file_adf );
+    adfFileClose ( file_adf );
 
 cleanup:
     adfUnMount ( vol );
@@ -155,7 +155,7 @@ int test_single_seek ( struct AdfFile * const file_adf,
     }
 
     unsigned char c;
-    int n = adfReadFile ( file_adf, 1, &c );
+    int n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );

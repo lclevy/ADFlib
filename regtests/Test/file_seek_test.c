@@ -142,7 +142,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     int status = 0;
     for ( unsigned int i = 0 ; i < test_data->nchecks - 1; ++i ) {
 
-        struct AdfFile * file = adfOpenFile ( vol, test_data->filename, "r" );
+        struct AdfFile * file = adfFileOpen ( vol, test_data->filename, "r" );
         if ( ! file ) {
             printf ("Cannot open file %s - aborting...\n", test_data->filename );
             status = 1;
@@ -152,11 +152,11 @@ int run_single_seek_tests ( reading_test_t * test_data )
         status += test_single_seek ( file,
                                      test_data->checks[i].offset,
                                      test_data->checks[i].value );
-        adfCloseFile ( file );
+        adfFileClose ( file );
     }
 
     // test EOF
-    struct AdfFile * file = adfOpenFile ( vol, test_data->filename, "r" );
+    struct AdfFile * file = adfFileOpen ( vol, test_data->filename, "r" );
     if ( ! file ) {
         printf ("Cannot open file %s - aborting...\n", test_data->filename );
         status = 1;
@@ -165,7 +165,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
 
     unsigned int check_eof = test_data->nchecks - 1;
     status += test_seek_eof ( file, test_data->checks[ check_eof ].offset );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
 cleanup:
     adfUnMount ( vol );
@@ -192,7 +192,7 @@ int test_single_seek ( struct AdfFile *    file,
     }
 
     unsigned char c;
-    int n = adfReadFile ( file, 1, &c );
+    int n = adfFileRead ( file, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, "Reading data failed after seeking to position 0x%x (%d)!!!\n",
@@ -252,7 +252,7 @@ int test_seek_eof ( struct AdfFile * file,
     printf ( "  Reading at EOF position 0x%x (%d)...", file->pos, file->pos );
 #endif
     unsigned char c;
-    int n = adfReadFile ( file, 1, &c );
+    int n = adfFileRead ( file, 1, &c );
     if ( n != 0 ) {
         fprintf ( stderr, " -> Length of data read at EOF not zero (%d)!!!\n", n );
         return 1;

@@ -114,7 +114,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
 
-    struct AdfFile * output = adfOpenFile ( vol, tdata->filename, "w" );
+    struct AdfFile * output = adfFileOpen ( vol, tdata->filename, "w" );
     if ( ! output )
         return 1;
 
@@ -124,7 +124,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     while ( bytes_written + tdata->blocksize < tdata->bufsize ) {  /* <- assumption:
                                                                       bufsize must be larger than
                                                                       floppy size + blocksize */
-        int block_bytes_written = adfWriteFile ( output, (int) tdata->blocksize, bufferp );
+        int block_bytes_written = adfFileWrite ( output, (int) tdata->blocksize, bufferp );
         bytes_written += (unsigned) block_bytes_written;
         if ( (unsigned) block_bytes_written != tdata->blocksize ) {
             // OK, end of the disk space hit and not all bytes written
@@ -142,7 +142,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     }
 
     //adfFlushFile ( output );
-    adfCloseFile ( output );
+    adfFileClose ( output );
 
 #if TEST_VERBOSITY > 1
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
@@ -174,7 +174,7 @@ int verify_file_data ( struct AdfVolume * const vol,
                        const unsigned           bytes_written,
                        const int                max_errors )
 {
-    struct AdfFile * output = adfOpenFile ( vol, filename, "r" );
+    struct AdfFile * output = adfFileOpen ( vol, filename, "r" );
     if ( ! output )
         return 1;
 
@@ -190,7 +190,7 @@ int verify_file_data ( struct AdfVolume * const vol,
              offset = 0;
     int nerrors = 0;
     do {
-        block_bytes_read = (unsigned) adfReadFile ( output, (int) READ_BUFSIZE, readbuf );
+        block_bytes_read = (unsigned) adfFileRead ( output, (int) READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
         for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
             if ( readbuf [ offset % READ_BUFSIZE ] != buffer [ offset ] ) {
@@ -206,7 +206,7 @@ int verify_file_data ( struct AdfVolume * const vol,
         }
     } while ( block_bytes_read == READ_BUFSIZE  && nerrors <= max_errors );
 
-    adfCloseFile ( output );
+    adfFileClose ( output );
 
     if ( bytes_read != bytes_written ) {
         fprintf ( stderr, "bytes read (%u) != bytes written (%u) -> ERROR!!!\n",

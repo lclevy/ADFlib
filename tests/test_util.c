@@ -12,7 +12,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
                             const unsigned           bytes_written,
                             const unsigned           errors_max )
 {
-    struct AdfFile * output = adfOpenFile ( vol, filename, "r" );
+    struct AdfFile * output = adfFileOpen ( vol, filename, "r" );
     if ( ! output )
         return 1;
 
@@ -28,7 +28,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
              offset = 0,
              nerrors = 0;
     do {
-        block_bytes_read = (unsigned) adfReadFile ( output, (int) READ_BUFSIZE, readbuf );
+        block_bytes_read = (unsigned) adfFileRead ( output, (int) READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
         for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
             if ( readbuf [ offset % READ_BUFSIZE ] != buffer [ offset ] ) {
@@ -38,7 +38,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
                           readbuf [ offset % READ_BUFSIZE ] );
                 nerrors++;
                 if ( nerrors > errors_max ) {
-                    adfCloseFile ( output );
+                    adfFileClose ( output );
                     return nerrors;
                 }
             }
@@ -46,7 +46,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
         }
     } while ( block_bytes_read == READ_BUFSIZE );
 
-    adfCloseFile ( output );
+    adfFileClose ( output );
 
     if ( bytes_read != bytes_written ) {
         fprintf ( stderr, "bytes read (%u) != bytes written (%u) -> ERROR!!!\n",

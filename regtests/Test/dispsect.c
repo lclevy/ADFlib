@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    fic = adfOpenFile(vol, "file_1a","w");
+    fic = adfFileOpen ( vol, "file_1a", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
     puts("\ncreate file_1a");
     adfVolumeInfo(vol);

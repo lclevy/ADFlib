@@ -85,23 +85,23 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfOpenFile(vol, "MOON.GIF","r");
+    file = adfFileOpen ( vol, "MOON.GIF", "r" );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;
 
     len = 600;
-    n = adfReadFile(file, len, buf);
+    n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfReadFile(file, len, buf);
+        n = adfFileRead ( file, len, buf );
     }
     if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
 
     fclose(out);
 
-    adfCloseFile(file);
+    adfFileClose ( file );
 
     adfUnMount(vol);
     adfUnMountDev(hd);

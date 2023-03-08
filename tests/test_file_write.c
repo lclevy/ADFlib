@@ -61,9 +61,9 @@ void test_file_write ( test_data_t * const tdata )
     ///
 
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfOpenFile ( vol, filename, tdata->openMode );
+    struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
     ck_assert_ptr_nonnull ( file );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( vol );
@@ -79,34 +79,34 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfOpenFile ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, "r" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // the same when open for appending
-    file = adfOpenFile ( vol, filename, "a" );
+    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // the same when open for writing
-    file = adfOpenFile ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, "w" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
 
     ///
@@ -114,7 +114,7 @@ void test_file_write ( test_data_t * const tdata )
     ///
     
     // open for writing
-    file = adfOpenFile ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, "w" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -126,7 +126,7 @@ void test_file_write ( test_data_t * const tdata )
     // write data buffer to the file
     const unsigned bufsize = tdata->bufsize;
     const unsigned char * const buffer = tdata->buffer;
-    int bytes_written = adfWriteFile ( file, bufsize, buffer );
+    int bytes_written = adfFileWrite ( file, bufsize, buffer );
     ck_assert_int_eq ( bufsize, bytes_written );
     ck_assert_uint_eq ( bufsize, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
@@ -146,7 +146,7 @@ void test_file_write ( test_data_t * const tdata )
     //ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( ( ( bufsize - 1 ) / vol->datablockSize ) + 1, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( vol );
@@ -168,7 +168,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfOpenFile ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, "r" );
     ck_assert_uint_eq ( bufsize, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -179,7 +179,7 @@ void test_file_write ( test_data_t * const tdata )
 
     unsigned char * rbuf = malloc ( bufsize );
     ck_assert_ptr_nonnull ( rbuf );
-    int bytes_read = adfReadFile ( file, bufsize, rbuf );
+    int bytes_read = adfFileRead ( file, bufsize, rbuf );
     free(rbuf);
     rbuf = NULL;
     ck_assert_int_eq ( bufsize, bytes_read );
@@ -194,7 +194,7 @@ void test_file_write ( test_data_t * const tdata )
                     "file->nDataBlock %d == expected %d, bufsize %u",
                     file->nDataBlock, expected_nDataBlock, bufsize );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfCloseFile ( file );
+    adfFileClose ( file );
 
     ck_assert_msg ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0,
                     "Data verification failed for bufsize %u (0x%x)", bufsize, bufsize );

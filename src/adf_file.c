@@ -69,7 +69,7 @@ void adfFileTruncate ( struct AdfVolume * vol,
  * adfFileFlush
  *
  */
-void adfFlushFile ( struct AdfFile * const file)
+void adfFileFlush ( struct AdfFile * const file )
 {
     if ( ! file->writeMode )
         return;
@@ -153,7 +153,7 @@ static RETCODE adfFileSeekStart ( struct AdfFile * const file )
         // an empty file - no data block to read
         return RC_OK;
 
-    RETCODE rc = adfReadNextFileBlock ( file );
+    RETCODE rc = adfFileReadNextBlock ( file );
     if ( rc != RC_OK ) {
         file->curDataPtr = 0;  // invalidate data ptr
     }
@@ -178,7 +178,7 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
         offset += size;
         file->posInDataBlk += size;
         if ( file->posInDataBlk == blockSize && offset < pos ) {
-            if ( adfReadNextFileBlock ( file ) != RC_OK ) {
+            if ( adfFileReadNextBlock ( file ) != RC_OK ) {
                 adfEnv.eFctf ( "adfFileSeekOFS: error reading next data block, pos %d",
                                file->pos );
                 file->curDataPtr = 0;  // invalidate data ptr
@@ -215,7 +215,7 @@ static RETCODE adfFileSeekExt ( struct AdfFile * const file,
             }
         }
 
-        if ( adfReadFileExtBlockN ( file, extBlock, file->currentExt ) != RC_OK ) {
+        if ( adfFileReadExtBlockN ( file, extBlock, file->currentExt ) != RC_OK )  {
             adfEnv.eFctf ( "adfFileSeekExt: error reading ext block 0x%x(%d), file '%s'",
                            extBlock, extBlock, file->fileHdr->fileName );
             file->curDataPtr = 0;  // invalidate data ptr
@@ -269,7 +269,7 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
  * adfFileOpen
  *
  */ 
-struct AdfFile * adfOpenFile ( struct AdfVolume * const vol,
+struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
                                const char * const       name,
                                const char * const       mode )
 {
@@ -424,14 +424,14 @@ adfOpenFile_error:
  * adfCloseFile
  *
  */
-void adfCloseFile(struct AdfFile * file)
+void adfFileClose ( struct AdfFile * file )
 {
 
     if (file==0)
         return;
 /*puts("adfCloseFile in");*/
 
-    adfFlushFile(file);
+    adfFileFlush ( file );
 
     if (file->currentExt)
         free(file->currentExt);
@@ -450,7 +450,7 @@ void adfCloseFile(struct AdfFile * file)
  * adfReadFile
  *
  */
-int32_t adfReadFile ( struct AdfFile * const file,
+int32_t adfFileRead ( struct AdfFile * const file,
                       int32_t                n,
                       uint8_t * const        buffer )
 {
@@ -477,7 +477,7 @@ int32_t adfReadFile ( struct AdfFile * const file,
     while ( bytesRead < n ) {
 
         if ( file->posInDataBlk == blockSize ) {
-            RETCODE rc = adfReadNextFileBlock ( file );
+            RETCODE rc = adfFileReadNextBlock ( file );
             if ( rc != RC_OK ) {
                 adfEnv.eFctf ( "adfReadFile : error reading next data block, "
                                "file '%s', pos %d, data block %d",
@@ -514,7 +514,7 @@ BOOL adfEndOfFile ( const struct AdfFile * const file )
  * adfReadNextFileBlock
  *
  */
-RETCODE adfReadNextFileBlock ( struct AdfFile * const file)
+RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect;
     struct bOFSDataBlock *data;
@@ -595,7 +595,7 @@ RETCODE adfReadNextFileBlock ( struct AdfFile * const file)
  * adfWriteFile
  *
  */
-int32_t adfWriteFile ( struct AdfFile * const file,
+int32_t adfFileWrite ( struct AdfFile * const file,
                        const int32_t          n,
                        const uint8_t * const  buffer )
 {
@@ -615,7 +615,7 @@ int32_t adfWriteFile ( struct AdfFile * const file,
 
             if ( file->pos == file->fileHdr->byteSize ) {   // at EOF ?
                 // ...  create a new block
-                if ( adfCreateNextFileBlock(file) == -1 ) {
+                if ( adfFileCreateNextBlock ( file ) == -1 ) {
                     /* bug found by Rikard */
                     adfEnv.wFct ( "adfWritefile : no more free sectors available" );
                     //file->curDataPtr = 0; // invalidate data ptr
@@ -626,10 +626,10 @@ int32_t adfWriteFile ( struct AdfFile * const file,
                 // inside the existing data (at the end of a data block )
 
                 // write the block stored currently in the memory
-                adfFlushFile ( file ); // to optimize (?)
+                adfFileFlush ( file ); // to optimize (?)
 
                 // - and read the next block
-                RETCODE rc = adfReadNextFileBlock ( file );
+                RETCODE rc = adfFileReadNextBlock ( file );
                 if ( rc != RC_OK ) {
                     adfEnv.eFctf ( "adfWriteFile : error reading next data block, "
                                    "file '%s', pos %d, data block %d",
@@ -661,7 +661,7 @@ int32_t adfWriteFile ( struct AdfFile * const file,
  * adfCreateNextFileBlock
  *
  */
-SECTNUM adfCreateNextFileBlock ( struct AdfFile * const file )
+SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect, extSect;
 
@@ -794,7 +794,7 @@ int32_t adfPos2DataBlock(int32_t pos, int blockSize,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfReadFileExtBlockN ( struct AdfFile * const       file,
+RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
                                const int32_t                extBlock,
                                struct bFileExtBlock * const fext )
 {
