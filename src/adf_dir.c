@@ -830,14 +830,12 @@ SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
  * adfIntlToUpper
  *
  */
-    uint8_t
-adfIntlToUpper(uint8_t c)
+uint8_t adfIntlToUpper ( const uint8_t c )
 {
 return (c>='a' && c<='z') || (c>=224 && c<=254 && c!=247) ? c - ('a'-'A') : c ;
 }
 
-    uint8_t
-adfToUpper(uint8_t c)
+uint8_t adfToUpper ( const uint8_t c )
 {
 return (c>='a' && c<='z') ? c - ('a'-'A') : c ;
 }
@@ -846,8 +844,10 @@ return (c>='a' && c<='z') ? c - ('a'-'A') : c ;
  * myToUpper
  *
  */
-    void
-myToUpper( uint8_t *nstr, uint8_t *ostr, int nlen, BOOL intl )
+void myToUpper ( uint8_t * const       nstr,
+                 const uint8_t * const ostr,
+                 const int             nlen,
+                 const BOOL            intl )
 {
     int i;
 
