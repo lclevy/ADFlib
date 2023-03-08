@@ -836,12 +836,13 @@ SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
  */
 uint8_t adfIntlToUpper ( const uint8_t c )
 {
-return (c>='a' && c<='z') || (c>=224 && c<=254 && c!=247) ? c - ('a'-'A') : c ;
+    return ( ( c >= 'a' && c <= 'z' ) ||
+             ( c >= 224 && c <= 254 && c != 247 ) ) ? c - ('a'-'A') : c ;
 }
 
 uint8_t adfToUpper ( const uint8_t c )
 {
-return (c>='a' && c<='z') ? c - ('a'-'A') : c ;
+    return ( c >= 'a' && c <= 'z' ) ? c - ( 'a' - 'A' ) : c ;
 }
 
 /*
