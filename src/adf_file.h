@@ -80,7 +80,7 @@ PREFIX int32_t adfFileWrite ( struct AdfFile * const file,
 
 SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
 
-PREFIX void adfFileFlush ( struct AdfFile * const file );
+PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
 RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
                                const int32_t                extBlock,

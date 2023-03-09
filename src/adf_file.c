@@ -69,10 +69,12 @@ void adfFileTruncate ( struct AdfVolume * vol,
  * adfFileFlush
  *
  */
-void adfFileFlush ( struct AdfFile * const file )
+RETCODE adfFileFlush ( struct AdfFile * const file )
 {
     if ( ! file->writeMode )
-        return;
+        return RC_OK;
+
+    RETCODE rc = RC_OK;
 
     if (file->currentExt) {
         if ( adfWriteFileExtBlock ( file->volume,
@@ -83,6 +85,7 @@ void adfFileFlush ( struct AdfFile * const file )
                            file->currentExt->headerKey,
                            file->currentExt->headerKey,
                            file->fileHdr->fileName );
+            rc = RC_ERROR;
         }
     }
 
@@ -95,9 +98,12 @@ void adfFileFlush ( struct AdfFile * const file )
             if ( adfWriteDataBlock ( file->volume,
                                      file->curDataPtr,
                                      file->currentData ) != RC_OK )
+            {
                 adfEnv.eFctf ( "adfFlushFile : error writing data block 0x%x (%u), file '%s'",
                                file->curDataPtr, file->curDataPtr,
                                file->fileHdr->fileName );
+                rc = RC_ERROR;
+            }
         }
     }
 
@@ -113,6 +119,7 @@ void adfFileFlush ( struct AdfFile * const file )
     {
         adfEnv.eFctf ( "adfFlushfile : error writing file header block %d",
                        file->fileHdr->headerKey );
+        rc = RC_ERROR;
     }
 
     if ( isDIRCACHE ( file->volume->dosType ) ) {
@@ -121,18 +128,23 @@ void adfFileFlush ( struct AdfFile * const file )
         if ( adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent ) != RC_OK ) {
             adfEnv.eFctf ( "adfFlushfile : error reading entry block %d",
                            file->fileHdr->parent );
+            rc = RC_ERROR;
         }
 
         if ( adfUpdateCache ( file->volume, &parent,
                               (struct bEntryBlock*) file->fileHdr, FALSE ) != RC_OK )
         {
             adfEnv.eFctf ( "adfFlushfile : error updating cache" );
+            rc = RC_ERROR;
         }
     }
 
     if ( adfUpdateBitmap ( file->volume ) != RC_OK ) {
         adfEnv.eFctf ( "adfFlushfile : error updating volume bitmap" );
+        rc = RC_ERROR;
     }
+
+    return rc;
 }
 
 
