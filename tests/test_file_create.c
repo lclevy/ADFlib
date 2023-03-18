@@ -250,7 +250,11 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    adfCreateFlop ( tdata->device, tdata->volname, 0 );
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+        fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
+                  tdata->volname );
+        exit(1);
+    }
 
     //tdata->vol = adfMount ( tdata->device, 0, FALSE );
     //if ( ! tdata->vol )
