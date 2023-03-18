@@ -174,7 +174,7 @@ RETCODE adfCreateHdFile ( struct AdfDevice * dev,
  *
  * returns NULL if failed
  */ 
-struct AdfDevice * adfCreateDumpDevice ( char *  filename,
+struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
                                          int32_t cylinders,
                                          int32_t heads,
                                          int32_t sectors )
