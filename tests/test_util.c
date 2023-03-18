@@ -36,6 +36,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
                           offset, offset,
                           buffer [ offset ],
                           readbuf [ offset % READ_BUFSIZE ] );
+                fflush ( stderr );
                 nerrors++;
                 if ( nerrors > errors_max ) {
                     adfFileClose ( output );
@@ -51,6 +52,7 @@ unsigned verify_file_data ( struct AdfVolume * const vol,
     if ( bytes_read != bytes_written ) {
         fprintf ( stderr, "bytes read (%u) != bytes written (%u) -> ERROR!!!\n",
                   bytes_read, bytes_written );
+        fflush ( stderr );
         nerrors++;
     }
 
