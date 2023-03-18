@@ -21,6 +21,7 @@ check_PROGRAMS = \
 	file_read_hard_link_test \
 	file_seek_test \
 	file_seek_test2 \
+	file_seek_after_write \
 	fl_test \
 	fl_test2 \
 	floppy_overfilling_test \
@@ -97,6 +98,10 @@ file_seek_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
 file_seek_test2_SOURCES = file_seek_test2.c
 file_seek_test2_LDADD = $(ADFLIBS)
 file_seek_test2_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+file_seek_after_write_SOURCES = file_seek_after_write.c
+file_seek_after_write_LDADD = $(ADFLIBS)
+file_seek_after_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 file_read_hard_link_test_SOURCES = file_read_hard_link_test.c
 file_read_hard_link_test_LDADD = $(ADFLIBS)

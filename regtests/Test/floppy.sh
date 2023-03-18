@@ -29,6 +29,7 @@ for A_TEST in \
     file_test3.sh \
     file_seek_test.sh \
     file_seek_test2.sh \
+    file_seek_after_write \
     file_read_hard_link_test.sh \
     rename.sh \
     undel.sh \
@@ -52,4 +53,3 @@ done
 echo "---------------------------------------------------"
 echo "${NFAILED} tests failed: ${FAILED}"
 echo "---------------------------------------------------"
-
