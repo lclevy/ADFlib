@@ -58,6 +58,10 @@ add_executable ( test_file_write
                  test_file_write.c
 	         test_util.c )
 
+add_executable ( test_file_write_chunks
+                 test_file_write_chunks.c
+	         test_util.c )
+
 add_executable ( test_file_overwrite
                  test_file_overwrite.c )
 
@@ -98,6 +102,10 @@ target_link_libraries ( test_file_write PUBLIC
   adf ${CHECK_LIBRARIES}
 )
 
+target_link_libraries ( test_file_write_chunks PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
 target_link_libraries ( test_file_overwrite PUBLIC
   adf ${CHECK_LIBRARIES}
 )
@@ -115,6 +123,7 @@ add_test ( test_adfDays2Date test_adfDays2Date )
 add_test ( test_file_create test_file_create )
 add_test ( test_file_append test_file_append )
 add_test ( test_file_write test_file_write )
+add_test ( test_file_write_chunks test_file_write_chunks )
 add_test ( test_file_overwrite test_file_overwrite )
 add_test ( test_file_overwrite2 test_file_overwrite2 )
 add_test ( test_examples ${BASH_PROGRAM} test_examples )

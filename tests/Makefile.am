@@ -11,6 +11,7 @@ check_PROGRAMS = \
     test_file_overwrite \
     test_file_overwrite2 \
     test_file_write \
+    test_file_write_chunks \
     test_test_util
 
 TESTS = $(check_PROGRAMS) \
@@ -45,6 +46,11 @@ test_file_write_SOURCES = test_file_write.c test_util.c test_util.h
 test_file_write_CFLAGS = $(CHECK_CFLAGS)
 test_file_write_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_file_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_write_chunks_SOURCES = test_file_write_chunks.c test_util.c test_util.h
+test_file_write_chunks_CFLAGS = $(CHECK_CFLAGS)
+test_file_write_chunks_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_write_chunks_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 test_file_overwrite_SOURCES = test_file_overwrite.c
 test_file_overwrite_CFLAGS = $(CHECK_CFLAGS)
