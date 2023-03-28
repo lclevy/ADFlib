@@ -160,7 +160,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
         ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0 );
     if ( ! data_valid ) {
         fprintf ( stderr,
-                  "Data vefification failed: nchunks %u, chunksize %u, "
+                  "Data verification failed: nchunks %u, chunksize %u, "
                   "bufsize %u, vol type %s, dblock size %u\n",
                   nchunks, chunksize, bufsize,
                   ( tdata->fstype & 1 ) == 0 ? "OFS" : "FFS",
