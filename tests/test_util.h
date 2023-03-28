@@ -5,11 +5,11 @@
 #include "adflib.h"
 
 
-unsigned verify_file_data ( struct AdfVolume * const vol,
-                            char * const             filename,
-                            unsigned char * const    buffer,
-                            const unsigned           bytes_written,
-                            const unsigned           errors_max );
+unsigned verify_file_data ( struct AdfVolume * const    vol,
+                            const char * const          filename,
+                            const unsigned char * const buffer,
+                            const unsigned              bytes_written,
+                            const unsigned              errors_max );
 
 void pattern_AMIGAMIG ( unsigned char * buf,
                         const unsigned  BUFSIZE );
