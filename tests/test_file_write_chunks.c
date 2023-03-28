@@ -209,7 +209,7 @@ void test_file_write ( test_data_t * const tdata )
     unsigned char * rbuf = malloc ( bufsize );
     ck_assert_ptr_nonnull ( rbuf );
     int bytes_read = adfFileRead ( file, bufsize, rbuf );
-    free(rbuf);
+    free ( rbuf );
     rbuf = NULL;
     ck_assert_int_eq ( bufsize, bytes_read );
     ck_assert_uint_eq ( bufsize, file->pos );
@@ -245,7 +245,7 @@ static const unsigned buflen[] = {
     35136,
     35137,    // the 1st requiring an ext. block
     35138,
-    36000, 37000, 40000, 50000,
+    36000, 37000, 37380, 40000, 50000,
     60000, 69784, 69785, 69796, 69800, 70000,
     100000, 200000, 512000, 800000
 };
@@ -254,7 +254,9 @@ static const unsigned buflensize = sizeof ( buflen ) / sizeof (int);
 static const unsigned chunklen[] = {
     //1, 2,
     3,
-    //    4, 5, 6, 7, 8, 9, 10,
+    //    4, 5, 6,
+    7,
+    //8, 9, 10,
     //15, 16, 32, 64,
     256,
     487, 488, 489,
