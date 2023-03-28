@@ -276,8 +276,12 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
 #endif
 
     RETCODE status = adfFileSeekExt ( file, pos );
-    if ( status != RC_OK && isOFS ( file->volume->dosType ) )
+    if ( status != RC_OK && isOFS ( file->volume->dosType ) ) {
+        adfEnv.wFctf ( "adfFileSeek: seeking using ext blocks failed, fallback"
+                       " to the OFS alt. way (traversing data blocks), "
+                       "file '%s'", file->fileHdr->fileName );
         status = adfFileSeekOFS ( file, pos );
+    }
     return status;
 }
 
