@@ -69,6 +69,10 @@ add_executable ( test_file_overwrite2
                  test_file_overwrite2.c
                  test_util.c )
 
+add_executable ( test_file_seek_after_write
+                 test_file_seek_after_write.c
+                 test_util.c )
+
 if ( "${CHECK_LIBRARIES}" STREQUAL "" )
   set (CHECK_LIBRARIES Check::check)
 else()
@@ -114,6 +118,11 @@ target_link_libraries ( test_file_overwrite2 PUBLIC
   adf ${CHECK_LIBRARIES}
 )
 
+target_link_libraries ( test_file_seek_after_write PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+
 configure_file(test_examples test_examples COPYONLY)
 configure_file(arccsh.adf arccsh.adf COPYONLY)
 
@@ -126,5 +135,5 @@ add_test ( test_file_write test_file_write )
 add_test ( test_file_write_chunks test_file_write_chunks )
 add_test ( test_file_overwrite test_file_overwrite )
 add_test ( test_file_overwrite2 test_file_overwrite2 )
+add_test ( test_file_seek_after_write test_file_seek_after_write )
 add_test ( test_examples ${BASH_PROGRAM} test_examples )
-
