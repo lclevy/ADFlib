@@ -238,6 +238,7 @@ static RETCODE adfFileSeekExt ( struct AdfFile * const file,
 
         file->curDataPtr = file->currentExt->dataBlocks [
             MAX_DATABLK - 1 - file->posInExtBlk ];
+        file->posInExtBlk++;
     }
 
     RETCODE rc = adfReadDataBlock ( file->volume,
@@ -248,6 +249,8 @@ static RETCODE adfFileSeekExt ( struct AdfFile * const file,
                        file->curDataPtr, file->fileHdr->fileName );
         file->curDataPtr = 0;  // invalidate data ptr
     }
+
+    file->nDataBlock++;
 
     return RC_OK;
 }
