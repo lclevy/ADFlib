@@ -89,21 +89,23 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         }
     }
 
-    if ( file->currentData && file->curDataPtr ) {
+    if ( file->fileHdr->byteSize > 0 &&
+         file->currentData != NULL &&
+         file->curDataPtr != 0 )
+    {
         if ( isOFS ( file->volume->dosType ) ) {
             struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
             data->dataSize = file->posInDataBlk;
         }
-        if ( file->fileHdr->byteSize > 0 ) {
-            if ( adfWriteDataBlock ( file->volume,
-                                     file->curDataPtr,
-                                     file->currentData ) != RC_OK )
-            {
-                adfEnv.eFctf ( "adfFlushFile : error writing data block 0x%x (%u), file '%s'",
-                               file->curDataPtr, file->curDataPtr,
-                               file->fileHdr->fileName );
-                rc = RC_ERROR;
-            }
+
+        if ( adfWriteDataBlock ( file->volume,
+                                 file->curDataPtr,
+                                 file->currentData ) != RC_OK )
+        {
+            adfEnv.eFctf ( "adfFlushFile : error writing data block 0x%x (%u), file '%s'",
+                           file->curDataPtr, file->curDataPtr,
+                           file->fileHdr->fileName );
+            rc = RC_ERROR;
         }
     }
 
