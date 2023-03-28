@@ -263,6 +263,26 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
     if ( file->pos == pos  && file->curDataPtr != 0 )
         return RC_OK;
 
+    /* in write mode, first must write current data block before doing seek(!)
+       it should be done only if necessary:
+       - if the current data block was changed (no way to know this in
+         the current code... to improve)
+       and
+       - if seek will move the file position pointer into another data block
+    */
+    const unsigned curDatablock = //file->pos / (unsigned) file->volume->datablockSize;
+        ( file->nDataBlock > 0 ) ? file->nDataBlock - 1 : 0;
+    const unsigned reqDatablock = pos / (unsigned) file->volume->datablockSize;
+    if ( file->curDataPtr != 0 && curDatablock == reqDatablock ) {
+        // seek in the current/same data block - just move the pointers
+        file->pos = min ( pos, file->fileHdr->byteSize );
+        file->posInDataBlk = file->pos % file->volume->datablockSize;
+        return RC_OK;
+    }
+
+    if ( file->writeMode )
+        adfFileFlush ( file );
+
     if ( pos == 0 )
         return adfFileSeekStart ( file );
 
