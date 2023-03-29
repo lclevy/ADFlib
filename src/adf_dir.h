@@ -130,6 +130,11 @@ PREFIX RETCODE adfSetEntryComment ( struct AdfVolume * vol,
                                     char *             name,
                                     char *             newCmt );
 
+PREFIX SECTNUM adfGetEntryByName ( struct AdfVolume * const   vol,
+                                   const SECTNUM              dirPtr,
+                                   const char * const         name,
+                                   struct bEntryBlock * const entry );
+
 SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
                             const int32_t              ht[],
                             const char * const         name,

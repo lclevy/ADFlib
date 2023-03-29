@@ -641,6 +641,28 @@ RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
 }
 
 
+SECTNUM adfGetEntryByName ( struct AdfVolume * const   vol,
+                            const SECTNUM              dirPtr,
+                            const char * const         name,
+                            struct bEntryBlock * const entry )
+{
+    // get parent
+    struct bEntryBlock parent;
+    if ( adfReadEntryBlock ( vol, dirPtr, &parent ) != RC_OK ) {
+        adfEnv.eFctf ( "adfGetEntryByName: error reading parent entry "
+                       "(block %d)\n", dirPtr );
+        return -1;
+    }
+
+    // get entry
+    SECTNUM nUpdSect;
+    SECTNUM sectNum = adfNameToEntryBlk ( vol, parent.hashTable, name,
+                                          entry, &nUpdSect );
+    return sectNum;
+}
+
+
+
 /*
  * adfNameToEntryBlk
  *
