@@ -22,6 +22,7 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
+    (void) argc, (void) argv;
     struct AdfDevice *hd;
     struct AdfVolume *vol, *vol2;
     struct Partition part1;
