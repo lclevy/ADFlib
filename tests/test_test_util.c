@@ -14,7 +14,7 @@ END_TEST
 START_TEST ( test_filesize2datablocks )
 {
     static const struct testdata_s {
-        int fsize,
+        unsigned fsize,
             result488,
             result512;
     } testdata [] = {
@@ -36,7 +36,7 @@ START_TEST ( test_filesize2datablocks )
     for ( unsigned i = 0 ; i < ntests ; ++i ) {
         //ck_assert_int_eq ( filesize2datablocks ( testdata[i].fsize, 488 ),
         //                   testdata[i].result488 );
-        int dblocks = filesize2datablocks ( testdata[i].fsize, 488 );
+        unsigned dblocks = filesize2datablocks ( testdata[i].fsize, 488 );
         ck_assert_msg ( dblocks == testdata[i].result488,
                         "datablocks incorrect: %d, expected %d, blocksize %d",
                         dblocks, testdata[i].result488, testdata[i].fsize );
@@ -55,8 +55,8 @@ END_TEST
 START_TEST ( test_datablocks2extblocks )
 {
     static const struct testdata_s {
-        int datablocks,
-            result;
+        unsigned datablocks,
+                 result;
     } testdata [] = {
         { 0,    0 },
         { 1,    0 },
@@ -69,7 +69,7 @@ START_TEST ( test_datablocks2extblocks )
     };
     static const unsigned ntests = sizeof ( testdata ) / sizeof ( struct testdata_s );
     for ( unsigned i = 0 ; i < ntests ; ++i ) {
-        int extblocks = datablocks2extblocks ( testdata[i].datablocks );
+        unsigned extblocks = datablocks2extblocks ( testdata[i].datablocks );
         ck_assert_msg ( extblocks == testdata[i].result,
                         "ext. blocks incorrect: %d, expected %d, datablocks %d",
                         extblocks, testdata[i].result, testdata[i].datablocks );
@@ -81,7 +81,7 @@ END_TEST
 START_TEST ( test_filesize2blocks )
 {
     static const struct testdata_s {
-        int fsize,
+        unsigned fsize,
             result488,
             result512;
     } testdata [] = {
@@ -115,7 +115,7 @@ START_TEST ( test_filesize2blocks )
     };
     static const unsigned ntests = sizeof ( testdata ) / sizeof ( struct testdata_s );
     for ( unsigned i = 0 ; i < ntests ; ++i ) {
-        int nblocks = filesize2blocks ( testdata[i].fsize, 488 );
+        unsigned nblocks = filesize2blocks ( testdata[i].fsize, 488 );
         ck_assert_msg ( nblocks == testdata[i].result488,
                         "blocks incorrect: %d, expected %d, blocksize %d",
                         nblocks, testdata[i].result488, testdata[i].fsize );
@@ -132,8 +132,8 @@ END_TEST
 START_TEST ( test_datablocks2posInExtBlk )
 {
     static const struct testdata_s {
-        int datablock_idx,
-            result;
+        unsigned datablock_idx,
+                 result;
     } testdata [] = {
         //{ 0,    -1 },
         //{ 1,    -1 },
@@ -163,7 +163,7 @@ START_TEST ( test_datablocks2posInExtBlk )
     };
     static const unsigned ntests = sizeof ( testdata ) / sizeof ( struct testdata_s );
     for ( unsigned i = 0 ; i < ntests ; ++i ) {
-        int posInExtBlk = datablock2posInExtBlk ( testdata[i].datablock_idx );
+        unsigned posInExtBlk = datablock2posInExtBlk ( testdata[i].datablock_idx );
         ck_assert_msg ( posInExtBlk == testdata[i].result,
                         "pos in ext. block incorrect: %d, expected %d, datablocks %d",
                         posInExtBlk, testdata[i].result, testdata[i].datablock_idx );
