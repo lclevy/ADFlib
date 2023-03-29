@@ -336,7 +336,7 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * vol,
  * isDirEmpty
  *
  */
-BOOL isDirEmpty(struct bDirBlock *dir)
+BOOL isDirEmpty ( const struct bDirBlock * const dir )
 {
     int i;
 	
@@ -352,7 +352,7 @@ BOOL isDirEmpty(struct bDirBlock *dir)
  * adfFreeDirList
  *
  */
-void adfFreeDirList ( struct AdfList * list )
+void adfFreeDirList ( struct AdfList * const list )
 {
     struct AdfList *root, *cell;
 
@@ -371,9 +371,9 @@ void adfFreeDirList ( struct AdfList * list )
  * adfGetRDirEnt
  *
  */
-struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
-                                 SECTNUM            nSect,
-                                 BOOL               recurs )
+struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
+                                 const SECTNUM            nSect,
+                                 const BOOL               recurs )
 {
     struct bEntryBlock entryBlk;
     struct AdfList *cell, *head;
@@ -464,8 +464,8 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
  * adfGetDirEnt
  *
  */
-struct AdfList * adfGetDirEnt ( struct AdfVolume * vol,
-                                SECTNUM            nSect )
+struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
+                                const SECTNUM            nSect )
 {
     return adfGetRDirEnt(vol, nSect, FALSE);
 }

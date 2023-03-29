@@ -52,20 +52,20 @@ struct AdfEntry {
 
 
 PREFIX RETCODE adfToRootDir ( struct AdfVolume * vol );
-BOOL isDirEmpty(struct bDirBlock *dir);
+BOOL isDirEmpty ( const struct bDirBlock * const dir );
 
 PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * vol,
                                 SECTNUM            pSect,
                                 char *             name );
 
-PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * vol,
-                                       SECTNUM            nSect );
+PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
+                                       const SECTNUM            nSect );
 
-PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
-                                        SECTNUM            nSect,
-                                        BOOL               recurs );
+PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
+                                        const SECTNUM            nSect,
+                                        const BOOL               recurs );
 
-PREFIX void adfFreeDirList ( struct AdfList * list );
+PREFIX void adfFreeDirList ( struct AdfList * const list );
 
 PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
                                 const SECTNUM            dirPtr );
