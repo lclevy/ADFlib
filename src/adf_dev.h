@@ -49,7 +49,8 @@ PREFIX void adfCloseDev ( struct AdfDevice * dev );
 PREFIX int adfDevType ( struct AdfDevice * dev );
 PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
 
-PREFIX struct AdfDevice * adfMountDev ( char * filename, BOOL ro );
+PREFIX struct AdfDevice * adfMountDev ( const char * const filename,
+                                        const BOOL         ro );
 PREFIX void adfUnMountDev ( struct AdfDevice * dev );
 
 //struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);

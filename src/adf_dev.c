@@ -228,8 +228,8 @@ void adfDeviceInfo ( struct AdfDevice * dev )
  *
  * adfInitDevice() must fill dev->size !
  */
-struct AdfDevice * adfMountDev ( char * filename,
-                                 BOOL   ro )
+struct AdfDevice * adfMountDev ( const char * const filename,
+                                 const BOOL         ro )
 {
     RETCODE rc;
     uint8_t buf[512];
