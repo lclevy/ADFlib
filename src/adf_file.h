@@ -39,23 +39,23 @@ struct AdfFile {
     void *                    currentData;
     struct bFileExtBlock *    currentExt;
 
-    int32_t  nDataBlock;  /* current data block number */
+    unsigned nDataBlock;  /* current data block number */
     SECTNUM  curDataPtr;  /* sector number of current data block;
                              if == 0 -> data in the buffer (currentData) is
                                         invalid (eg. block not read correctly) */
     uint32_t pos;
 
-    int posInDataBlk;
-    int posInExtBlk;
+    unsigned posInDataBlk;
+    unsigned posInExtBlk;
     BOOL writeMode;
 };
 
 
-PREFIX int32_t adfPos2DataBlock ( int32_t   pos,
-                                  int       blockSize,
-                                  int *     posInExtBlk,
-                                  int *     posInDataBlk,
-                                  int32_t * curDataN );
+PREFIX int32_t adfPos2DataBlock ( const unsigned   pos,
+                                  const unsigned   blockSize,
+                                  unsigned * const posInExtBlk,
+                                  unsigned * const posInDataBlk,
+                                  unsigned * const curDataN );
 
 PREFIX struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
                                       const char * const       name,
