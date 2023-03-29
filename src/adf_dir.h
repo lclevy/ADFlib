@@ -89,11 +89,11 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
                          const char * const         name,
                          const SECTNUM              thisSect );
 
-PREFIX RETCODE adfRenameEntry ( struct AdfVolume * vol,
-                                SECTNUM            pSect,
-                                char *             oldName,
-                                SECTNUM            nPSect,
-                                char *             newName );
+PREFIX RETCODE adfRenameEntry ( struct AdfVolume * const vol,
+                                const SECTNUM            pSect,
+                                const char * const       oldName,
+                                const SECTNUM            nPSect,
+                                const char * const       newName );
 
 PREFIX RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
                                    const SECTNUM              nSect,

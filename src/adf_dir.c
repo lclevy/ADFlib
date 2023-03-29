@@ -49,11 +49,11 @@
  * adfRenameEntry
  *
  */ 
-RETCODE adfRenameEntry ( struct AdfVolume * vol,
-                         SECTNUM            pSect,
-                         char *             oldName,
-                         SECTNUM            nPSect,
-                         char *             newName )
+RETCODE adfRenameEntry ( struct AdfVolume * const vol,
+                         const SECTNUM            pSect,
+                         const char * const       oldName,
+                         const SECTNUM            nPSect,
+                         const char * const       newName )
 {
     struct bEntryBlock parent, previous, entry, nParent;
     SECTNUM nSect2, nSect, prevSect, tmpSect;
