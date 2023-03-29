@@ -1,5 +1,5 @@
 /*
- * unadf 1.1
+ * unadf
  *
  * tested under Linux and Windows
  *
