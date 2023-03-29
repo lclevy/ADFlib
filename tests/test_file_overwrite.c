@@ -123,7 +123,7 @@ void test_file_write ( test_data_t * const tdata )
 
     // write 1 byte to the file
     unsigned char wbuf[] = "ABC";
-    int bytes_written = adfFileWrite ( file, 1, wbuf );
+    unsigned bytes_written = adfFileWrite ( file, 1, wbuf );
     ck_assert_int_eq ( 1, bytes_written );
     ck_assert_uint_eq ( 1, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
@@ -157,7 +157,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
 
     unsigned char rbuf [ sizeof ( wbuf ) ];
-    int bytes_read = adfFileRead ( file, 1, rbuf );
+    unsigned bytes_read = adfFileRead ( file, 1, rbuf );
     ck_assert_int_eq ( 1, bytes_read );
     ck_assert_uint_eq ( wbuf[0], rbuf[0] );
     ck_assert_uint_eq ( 1, file->pos );
