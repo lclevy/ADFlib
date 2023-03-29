@@ -94,7 +94,13 @@ int test_seek_eof ( struct AdfFile * file,
 
 
 int main ( int argc, char * argv[] )
-{ 
+{
+    if ( argc < 3 ) {
+        fprintf ( stderr,
+                  "%s requires 2 parameters\n", argv[0] );
+        return 1;
+    }
+
     adfEnvInitDefault();
 
 //	adfSetEnvFct(0,0,MyVer,0);
@@ -192,7 +198,7 @@ int test_single_seek ( struct AdfFile *    file,
     }
 
     unsigned char c;
-    int n = adfFileRead ( file, 1, &c );
+    unsigned n = adfFileRead ( file, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, "Reading data failed after seeking to position 0x%x (%d)!!!\n",
@@ -252,7 +258,7 @@ int test_seek_eof ( struct AdfFile * file,
     printf ( "  Reading at EOF position 0x%x (%d)...", file->pos, file->pos );
 #endif
     unsigned char c;
-    int n = adfFileRead ( file, 1, &c );
+    unsigned n = adfFileRead ( file, 1, &c );
     if ( n != 0 ) {
         fprintf ( stderr, " -> Length of data read at EOF not zero (%d)!!!\n", n );
         return 1;
