@@ -30,9 +30,7 @@ int main(int argc, char *argv[])
     BOOL true = TRUE;
     struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
   
     adfEnvInitDefault();
 
@@ -68,8 +66,11 @@ int main(int argc, char *argv[])
     cell = list = adfGetDelEnt(vol);
     while(cell) {
         block =(struct GenBlock*) cell->content;
-       printf("%s %d %d %ld\n",block->name,block->type,block->secType,
-            block->sect);
+        printf ( "%s %d %d %d\n",
+                 block->name,
+                 block->type,
+                 block->secType,
+                 block->sect );
         cell = cell->next;
     }
     adfFreeDelList(list);
@@ -91,8 +92,8 @@ int main(int argc, char *argv[])
     out = fopen("mod.distant","wb");
     if (!out) return 1;
 
-    len = 600;
-    n = adfFileRead ( file, len, buf );
+    unsigned len = 600;
+    unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
         n = adfFileRead ( file, len, buf );
