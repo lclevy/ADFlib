@@ -119,7 +119,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
     int errors = 0;
     for ( int i = 0 ; i < NUM_TESTS && status < MAX_ERRORS ; ++i ) {
         errors += test_single_seek ( file_adf, file_local,
-                                     rand() % test_data->len );
+                                     (unsigned) rand() % test_data->len );
         if ( errors > test_data->max_errors )
             break;
     }
@@ -155,7 +155,7 @@ int test_single_seek ( struct AdfFile * const file_adf,
     }
 
     unsigned char c;
-    int n = adfFileRead ( file_adf, 1, &c );
+    unsigned n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );
