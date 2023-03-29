@@ -4,7 +4,10 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
+#ifndef _WIN32
+#include <unistd.h>   // for unlink()
+#endif
 
 
 typedef struct test_data_s {
