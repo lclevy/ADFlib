@@ -301,10 +301,10 @@ RETCODE adfSetEntryComment ( struct AdfVolume * vol,
  * adfSetEntryAccess
  *
  */
-RETCODE adfSetEntryAccess ( struct AdfVolume * vol,
-                            SECTNUM            parSect,
-                            char *             name,
-                            int32_t            newAcc )
+RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
+                            const SECTNUM            parSect,
+                            const char * const       name,
+                            const int32_t            newAcc )
 {
     struct bEntryBlock parent, entry;
     SECTNUM nSect;

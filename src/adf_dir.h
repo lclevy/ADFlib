@@ -121,10 +121,10 @@ PREFIX RETCODE adfChangeDir ( struct AdfVolume * vol,
                               char *             name );
 PREFIX RETCODE adfParentDir ( struct AdfVolume * vol );
 
-PREFIX RETCODE adfSetEntryAccess ( struct AdfVolume * vol,
-                                   SECTNUM            parSect,
-                                   char *             name,
-                                   int32_t            newAcc );
+PREFIX RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
+                                   const SECTNUM            parSect,
+                                   const char * const       name,
+                                   const int32_t            newAcc );
 
 PREFIX RETCODE adfSetEntryComment ( struct AdfVolume * vol,
                                     SECTNUM            parSect,
