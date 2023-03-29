@@ -109,7 +109,8 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume *   vol,
 
 char* adfAccess2String(int32_t acc);
 uint8_t adfIntlToUpper ( const uint8_t c );
-int adfGetHashValue(uint8_t *name, BOOL intl);
+int adfGetHashValue( const uint8_t * const name,
+                     const BOOL            intl );
 
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,
@@ -141,7 +142,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
                             struct bEntryBlock * const entry,
                             SECTNUM * const            nUpdSect );
 
-PREFIX void adfEntryPrint ( struct AdfEntry * entry );
+PREFIX void adfEntryPrint ( const struct AdfEntry * const entry );
 
 #endif /* ADF_DIR_H */
 

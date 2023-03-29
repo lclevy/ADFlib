@@ -892,8 +892,8 @@ void adfStrToUpper ( uint8_t * const       nstr,
  * adfGetHashValue
  * 
  */
-    int 
-adfGetHashValue(uint8_t *name, BOOL intl)
+int adfGetHashValue ( const uint8_t * const name,
+                      const BOOL            intl )
 {
     uint32_t hash, len;
     unsigned int i;
@@ -917,7 +917,7 @@ adfGetHashValue(uint8_t *name, BOOL intl)
  * adfEntryPrint
  *
  */
-void adfEntryPrint ( struct AdfEntry * entry )
+void adfEntryPrint ( const struct AdfEntry * const entry )
 {
     printf("%-30s %2d %6d ", entry->name, entry->type, entry->sector);
     printf("%2d/%02d/%04d %2d:%02d:%02d",entry->days, entry->month, entry->year,
