@@ -54,7 +54,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
-    int free_blocks_before = adfCountFreeBlocks ( vol );
+    unsigned free_blocks_before = adfCountFreeBlocks ( vol );
     ck_assert_int_eq ( tdata->nVolumeBlocks, free_blocks_before );
     int nentries = adfDirCountEntries ( vol, vol->curDirPtr );
     ck_assert_int_eq ( 0, nentries ); 
@@ -70,7 +70,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
 
     /// ... and write it with zeroes
     memset ( buffer, 0, bufsize );
-    unsigned bytes_written = (unsigned) adfFileWrite ( file, (int) bufsize, buffer );
+    unsigned bytes_written = (unsigned) adfFileWrite ( file, bufsize, buffer );
     ck_assert_uint_eq ( bufsize, bytes_written );
     adfFileClose ( file );
 
@@ -128,7 +128,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
 
         RETCODE rc = adfFileSeek ( file, offset );
         ck_assert_int_eq ( rc, RC_OK );
-        bytes_written = (unsigned) adfFileWrite ( file, (int) wsize, chunk );
+        bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
         chunks[ chunk_i ] = TRUE;
     }
