@@ -1037,9 +1037,9 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
  * adfReadEntryBlock
  *
  */
-RETCODE adfReadEntryBlock ( struct AdfVolume *   vol,
-                            SECTNUM              nSect,
-                            struct bEntryBlock * ent )
+RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
+                            const SECTNUM              nSect,
+                            struct bEntryBlock * const ent )
 {
     uint8_t buf[512];
 
@@ -1081,9 +1081,9 @@ RETCODE adfReadEntryBlock ( struct AdfVolume *   vol,
  * adfWriteEntryBlock
  *
  */
-RETCODE adfWriteEntryBlock ( struct AdfVolume *   vol,
-                             SECTNUM              nSect,
-                             struct bEntryBlock * ent )
+RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
+                             const SECTNUM                    nSect,
+                             const struct bEntryBlock * const ent )
 {
     uint8_t buf[512];
     uint32_t newSum;
@@ -1108,9 +1108,9 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume *   vol,
  * adfWriteDirBlock
  *
  */
-RETCODE adfWriteDirBlock ( struct AdfVolume * vol,
-                           SECTNUM            nSect,
-                           struct bDirBlock * dir )
+RETCODE adfWriteDirBlock ( struct AdfVolume * const vol,
+                           const SECTNUM            nSect,
+                           struct bDirBlock * const dir )
 {
     uint8_t buf[512];
     uint32_t newSum;

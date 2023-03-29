@@ -95,17 +95,17 @@ PREFIX RETCODE adfRenameEntry ( struct AdfVolume * vol,
                                 SECTNUM            nPSect,
                                 char *             newName );
 
-PREFIX RETCODE adfReadEntryBlock ( struct AdfVolume *   vol,
-                                   SECTNUM              nSect,
-                                   struct bEntryBlock * ent );
+PREFIX RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
+                                   const SECTNUM              nSect,
+                                   struct bEntryBlock * const ent );
 
-RETCODE adfWriteDirBlock ( struct AdfVolume * vol,
-                           SECTNUM            nSect,
-                           struct bDirBlock * dir );
+RETCODE adfWriteDirBlock ( struct AdfVolume * const vol,
+                           const SECTNUM            nSect,
+                           struct bDirBlock * const dir );
 
-RETCODE adfWriteEntryBlock ( struct AdfVolume *   vol,
-                             SECTNUM              nSect,
-                             struct bEntryBlock * ent );
+RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
+                             const SECTNUM                    nSect,
+                             const struct bEntryBlock * const ent );
 
 char* adfAccess2String(int32_t acc);
 uint8_t adfIntlToUpper ( const uint8_t c );
