@@ -490,9 +490,9 @@ void adfFileClose ( struct AdfFile * file )
  * adfReadFile
  *
  */
-int32_t adfFileRead ( struct AdfFile * const file,
-                      uint32_t               n,
-                      uint8_t * const        buffer )
+uint32_t adfFileRead ( struct AdfFile * const file,
+                       uint32_t               n,
+                       uint8_t * const        buffer )
 {
     if ( n == 0 ||
          file->fileHdr->byteSize == 0 ||
@@ -635,9 +635,9 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
  * adfWriteFile
  *
  */
-int32_t adfFileWrite ( struct AdfFile * const file,
-                       const uint32_t         n,
-                       const uint8_t * const  buffer )
+uint32_t adfFileWrite ( struct AdfFile * const file,
+                        const uint32_t         n,
+                        const uint8_t * const  buffer )
 {
     if (n==0) return (n);
 /*puts("adfWriteFile");*/

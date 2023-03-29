@@ -63,9 +63,9 @@ PREFIX struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
 
 PREFIX void adfFileClose ( struct AdfFile * const file );
 
-PREFIX int32_t adfFileRead ( struct AdfFile * const file,
-                             const uint32_t         n,
-                             uint8_t * const        buffer );
+PREFIX uint32_t adfFileRead ( struct AdfFile * const file,
+                              const uint32_t         n,
+                              uint8_t * const        buffer );
 
 PREFIX BOOL adfEndOfFile ( const struct AdfFile * const file );
 
@@ -74,9 +74,9 @@ PREFIX RETCODE adfFileSeek ( struct AdfFile * const file,
 
 RETCODE adfFileReadNextBlock ( struct AdfFile * const file );
 
-PREFIX int32_t adfFileWrite ( struct AdfFile * const file,
-                              const uint32_t         n,
-                              const uint8_t * const  buffer );
+PREFIX uint32_t adfFileWrite ( struct AdfFile * const file,
+                               const uint32_t         n,
+                               const uint8_t * const  buffer );
 
 SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
 
