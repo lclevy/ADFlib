@@ -28,7 +28,7 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
              offset = 0,
              nerrors = 0;
     do {
-        block_bytes_read = (unsigned) adfFileRead ( output, (int) READ_BUFSIZE, readbuf );
+        block_bytes_read = (unsigned) adfFileRead ( output, READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
         for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
             if ( readbuf [ offset % READ_BUFSIZE ] != buffer [ offset ] ) {
