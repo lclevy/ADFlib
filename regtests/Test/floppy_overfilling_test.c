@@ -124,9 +124,9 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     while ( bytes_written + tdata->blocksize < tdata->bufsize ) {  /* <- assumption:
                                                                       bufsize must be larger than
                                                                       floppy size + blocksize */
-        int block_bytes_written = adfFileWrite ( output, (int) tdata->blocksize, bufferp );
-        bytes_written += (unsigned) block_bytes_written;
-        if ( (unsigned) block_bytes_written != tdata->blocksize ) {
+        unsigned block_bytes_written = adfFileWrite ( output, tdata->blocksize, bufferp );
+        bytes_written += block_bytes_written;
+        if ( block_bytes_written != tdata->blocksize ) {
             // OK, end of the disk space hit and not all bytes written
             status = 0;   
             break;
@@ -147,7 +147,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
 #if TEST_VERBOSITY > 1
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
-    int free_blocks = adfCountFreeBlocks ( vol );
+    unsigned free_blocks = adfCountFreeBlocks ( vol );
     if ( free_blocks != 0 ) {
         fprintf ( stderr, "\n%d blocks still free after 'overfilling'!\n",
                   free_blocks );
@@ -190,7 +190,7 @@ int verify_file_data ( struct AdfVolume * const vol,
              offset = 0;
     int nerrors = 0;
     do {
-        block_bytes_read = (unsigned) adfFileRead ( output, (int) READ_BUFSIZE, readbuf );
+        block_bytes_read = adfFileRead ( output, READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
         for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
             if ( readbuf [ offset % READ_BUFSIZE ] != buffer [ offset ] ) {
