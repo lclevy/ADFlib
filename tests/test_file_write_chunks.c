@@ -51,7 +51,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
-    int free_blocks_before = adfCountFreeBlocks ( vol );
+    unsigned free_blocks_before = adfCountFreeBlocks ( vol );
     ck_assert_int_eq ( tdata->nVolumeBlocks, free_blocks_before );
     int nentries = adfDirCountEntries ( vol, vol->curDirPtr );
     ck_assert_int_eq ( 0, nentries ); 
@@ -72,7 +72,7 @@ void test_file_write ( test_data_t * const tdata )
         adfMount ( tdata->device, 0, FALSE );
 
     // verify free blocks
-    const int file_blocks_used_by_empty_file = 1;
+    const unsigned file_blocks_used_by_empty_file = 1;
     ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file,
                        adfCountFreeBlocks ( vol ) );
 
@@ -153,7 +153,7 @@ void test_file_write ( test_data_t * const tdata )
         
         //RETCODE rc = adfFileSeek ( file, offset );
         //ck_assert_int_eq ( rc, RC_OK );
-        unsigned bytes_written = (unsigned) adfFileWrite ( file, (int) wsize, chunk );
+        unsigned bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
     }
 
@@ -164,7 +164,7 @@ void test_file_write ( test_data_t * const tdata )
     //ck_assert_int_eq ( datablock2posInExtBlk (
     //                       filesize2datablocks ( bufsize, vol->datablockSize ) ),
     //                   file->posInExtBlk );
-    int expected_posInExtBlk = datablock2posInExtBlk (
+    unsigned expected_posInExtBlk = datablock2posInExtBlk (
         filesize2datablocks ( bufsize, vol->datablockSize ) );
     //int expected_posInExtBlk = datablock2posInExtBlk (
     //    pos2datablockIndex ( bufsize, vol->datablockSize ) );
@@ -186,9 +186,9 @@ void test_file_write ( test_data_t * const tdata )
     //ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file - 1,
     //                   adfCountFreeBlocks ( vol ) );
     //int expected_free_blocks = free_blocks_before - file_blocks_used_by_empty_file - 1;
-    int expected_free_blocks =
+    unsigned expected_free_blocks =
         free_blocks_before - filesize2blocks ( bufsize, vol->datablockSize );
-    int free_blocks = adfCountFreeBlocks ( vol );
+    unsigned free_blocks = adfCountFreeBlocks ( vol );
     ck_assert_msg ( free_blocks == expected_free_blocks,
                     "Free blocks incorrect: %d (should be %d), bufsize %d",
                     free_blocks, expected_free_blocks, bufsize );
@@ -215,7 +215,8 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_uint_eq ( bufsize, file->pos );
     //ck_assert_int_eq ( 0, file->posInExtBlk );  // TODO
     //ck_assert_int_eq ( 1, file->posInDataBlk );
-    int expected_nDataBlock = //( ( bufsize - 1 ) / vol->datablockSize ) + 1;
+    unsigned expected_nDataBlock =
+        //( ( bufsize - 1 ) / vol->datablockSize ) + 1;
         //filesize2datablocks ( bufsize, vol->datablockSize ) + 1;
         pos2datablockIndex ( bufsize - 1, vol->datablockSize ) + 1;
     //ck_assert_int_eq ( expected_nDataBlock, file->nDataBlock );
@@ -278,7 +279,7 @@ START_TEST ( test_file_write_ofs )
         .openMode = "w",
         .nVolumeBlocks = 1756
     };
-    for ( int i = 0 ; i < buflensize ; ++i ) {
+    for ( unsigned i = 0 ; i < buflensize ; ++i ) {
         test_data.bufsize = buflen[i];
         for ( unsigned j = 0 ; j < chunklensize ; ++j )  {
             if ( chunklen[j] >= test_data.bufsize )
@@ -300,7 +301,7 @@ START_TEST ( test_file_write_ffs )
         .openMode = "w",
         .nVolumeBlocks = 1756
     };
-    for ( int i = 0 ; i < buflensize ; ++i ) {
+    for ( unsigned i = 0 ; i < buflensize ; ++i ) {
         test_data.bufsize = buflen[i];
         for ( unsigned j = 0 ; j < chunklensize ; ++j )  {
             if ( chunklen[j] >= test_data.bufsize )
