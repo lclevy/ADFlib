@@ -53,7 +53,8 @@
  *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
  *          EXIST ALREADY ON THE DEVICE(!)
  */
-struct AdfDevice * adfOpenDev ( char * filename, BOOL ro )
+struct AdfDevice * adfOpenDev ( const char * const filename,
+                                const BOOL         ro )
 {
     struct AdfDevice * dev = ( struct AdfDevice * )
         malloc ( sizeof ( struct AdfDevice ) );
@@ -112,7 +113,7 @@ struct AdfDevice * adfOpenDev ( char * filename, BOOL ro )
  * Closes/releases an opened device.
  * Called by adfUnMountDev()
  */
-void adfCloseDev ( struct AdfDevice * dev )
+void adfCloseDev ( struct AdfDevice * const dev )
 {
     if ( ! dev )
         return;
@@ -287,16 +288,16 @@ struct AdfDevice * adfMountDev ( const char * const filename,
  * adfUnMountDev
  *
  */
-void adfUnMountDev ( struct AdfDevice * dev )
+void adfUnMountDev ( struct AdfDevice * const dev )
 {
     adfCloseDev ( dev );
 }
 
 
-RETCODE adfReadBlockDev ( struct AdfDevice * dev,
-                          int32_t            pSect,
-                          int32_t            size,
-                          uint8_t *          buf )
+RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
+                          const int32_t            pSect,
+                          const int32_t            size,
+                          uint8_t * const          buf )
 {
     RETCODE rc;
 
@@ -311,10 +312,10 @@ RETCODE adfReadBlockDev ( struct AdfDevice * dev,
 }
 
 
-RETCODE adfWriteBlockDev ( struct AdfDevice * dev,
-                           int32_t            pSect,
-                           int32_t            size,
-                           uint8_t *          buf )
+RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
+                           const int32_t            pSect,
+                           const int32_t            size,
+                           const uint8_t * const    buf )
 {
     RETCODE rc;
 

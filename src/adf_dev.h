@@ -43,25 +43,26 @@ struct AdfDevice {
 };
 
 
-PREFIX struct AdfDevice * adfOpenDev ( char * filename, BOOL ro );
-PREFIX void adfCloseDev ( struct AdfDevice * dev );
+PREFIX struct AdfDevice * adfOpenDev ( const char * const filename,
+                                       const BOOL         ro );
+PREFIX void adfCloseDev ( struct AdfDevice * const dev );
 
 PREFIX int adfDevType ( struct AdfDevice * dev );
 PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
 
 PREFIX struct AdfDevice * adfMountDev ( const char * const filename,
                                         const BOOL         ro );
-PREFIX void adfUnMountDev ( struct AdfDevice * dev );
+PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
 
 //struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
 
-RETCODE adfReadBlockDev ( struct AdfDevice * dev,
-                          int32_t            pSect,
-                          int32_t            size,
-                          uint8_t *          buf );
+RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
+                          const int32_t            pSect,
+                          const int32_t            size,
+                          uint8_t * const          buf );
 
-RETCODE adfWriteBlockDev ( struct AdfDevice * dev,
-                           int32_t            pSect,
-                           int32_t            size,
-                           uint8_t *          buf );
+RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
+                           const int32_t            pSect,
+                           const int32_t            size,
+                           const uint8_t * const    buf );
 #endif
