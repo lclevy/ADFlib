@@ -22,6 +22,7 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
+    (void) argc;
     struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
@@ -29,9 +30,7 @@ int main(int argc, char *argv[])
     BOOL true = TRUE;
     struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
   
     adfEnvInitDefault();
 
@@ -90,8 +89,8 @@ int main(int argc, char *argv[])
     out = fopen("moon_gif","wb");
     if (!out) return 1;
 
-    len = 600;
-    n = adfFileRead ( file, len, buf );
+    unsigned len = 600;
+    unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
         n = adfFileRead ( file, len, buf );
