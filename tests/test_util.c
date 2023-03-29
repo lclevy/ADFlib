@@ -81,41 +81,44 @@ void pattern_random ( unsigned char * buf,
 }
 
 
-int pos2datablockIndex ( int pos,
-                         int blocksize )
+unsigned pos2datablockIndex ( unsigned pos,
+                              unsigned blocksize )
 {
     return ( pos / blocksize );
 }
 
 
 
-int filesize2datablocks ( int fsize,
-                          int blocksize )
+unsigned filesize2datablocks ( unsigned fsize,
+                               unsigned blocksize )
 {
     return ( fsize / blocksize +
              ( ( fsize % blocksize > 0 ) ? 1 : 0 ) );
 }
 
 
-int datablocks2extblocks ( int data_blocks )
+unsigned datablocks2extblocks ( unsigned data_blocks )
 {
-    return max ( ( data_blocks - 1 ) / MAX_DATABLK, 0 );
+    //return max ( ( data_blocks - 1 ) / MAX_DATABLK, 0 );
+    if ( data_blocks < 1 )
+        return 0;
+    return ( data_blocks - 1 ) / ( MAX_DATABLK );
 }
 
 
-int filesize2blocks ( int fsize,
-                      int blocksize )
+unsigned filesize2blocks ( unsigned fsize,
+                           unsigned blocksize )
 {
     //assert ( fsize >= 0 );
     //assert ( blocksize >= 0 );
-    int data_blocks = filesize2datablocks ( fsize, blocksize );
-    int ext_blocks = datablocks2extblocks ( data_blocks );
+    unsigned data_blocks = filesize2datablocks ( fsize, blocksize );
+    unsigned ext_blocks = datablocks2extblocks ( data_blocks );
     return data_blocks + ext_blocks + 1;   // +1 is the file header block
 }
 
 
 // datablock index ( 0, ...  , nblocks - 1 ) to block's position in ExtBlock
-int datablock2posInExtBlk ( int datablock_idx )
+unsigned datablock2posInExtBlk ( unsigned datablock_idx )
 {
     //return max ( ( datablock_idx - MAX_DATABLK ) % ( MAX_DATABLK + 1 ), 0 );
 

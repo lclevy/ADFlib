@@ -18,17 +18,17 @@ void pattern_random ( unsigned char * buf,
                       const unsigned  BUFSIZE );
 
 
-int pos2datablockIndex ( int pos,
-                         int blocksize );
+unsigned pos2datablockIndex ( unsigned pos,
+                              unsigned blocksize );
 
-int filesize2datablocks ( int fsize,
-                          int blocksize );
+unsigned filesize2datablocks ( unsigned fsize,
+                               unsigned blocksize );
 
-int datablocks2extblocks ( int data_blocks );
+unsigned datablocks2extblocks ( unsigned data_blocks );
 
-int filesize2blocks ( int fsize,
-                      int blocksize );
+unsigned filesize2blocks ( unsigned fsize,
+                           unsigned blocksize );
 
-int datablock2posInExtBlk ( int datablock_idx );
+unsigned datablock2posInExtBlk ( unsigned datablock_idx );
 
 #endif
