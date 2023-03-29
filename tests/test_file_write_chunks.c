@@ -153,7 +153,7 @@ void test_file_write ( test_data_t * const tdata )
         
         //RETCODE rc = adfFileSeek ( file, offset );
         //ck_assert_int_eq ( rc, RC_OK );
-        unsigned bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
+        unsigned bytes_written = adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
     }
 
@@ -208,7 +208,7 @@ void test_file_write ( test_data_t * const tdata )
 
     unsigned char * rbuf = malloc ( bufsize );
     ck_assert_ptr_nonnull ( rbuf );
-    int bytes_read = adfFileRead ( file, bufsize, rbuf );
+    unsigned bytes_read = adfFileRead ( file, bufsize, rbuf );
     free ( rbuf );
     rbuf = NULL;
     ck_assert_int_eq ( bufsize, bytes_read );

@@ -126,7 +126,7 @@ void test_file_write ( test_data_t * const tdata )
     // write data buffer to the file
     const unsigned bufsize = tdata->bufsize;
     const unsigned char * const buffer = tdata->buffer;
-    int bytes_written = adfFileWrite ( file, bufsize, buffer );
+    unsigned bytes_written = adfFileWrite ( file, bufsize, buffer );
     ck_assert_int_eq ( bufsize, bytes_written );
     ck_assert_uint_eq ( bufsize, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
@@ -179,7 +179,7 @@ void test_file_write ( test_data_t * const tdata )
 
     unsigned char * rbuf = malloc ( bufsize );
     ck_assert_ptr_nonnull ( rbuf );
-    int bytes_read = adfFileRead ( file, bufsize, rbuf );
+    unsigned bytes_read = adfFileRead ( file, bufsize, rbuf );
     free(rbuf);
     rbuf = NULL;
     ck_assert_int_eq ( bufsize, bytes_read );

@@ -124,7 +124,7 @@ void test_file_append ( test_data_t * const tdata )
 
     // write 1 byte to the file
     unsigned char wbuf[256];
-    int bytes_written = adfFileWrite ( file, 1, wbuf );
+    unsigned bytes_written = adfFileWrite ( file, 1, wbuf );
     ck_assert_int_eq ( 1, bytes_written );
     // ck_assert_uint_eq ( 1, file->fileHdr->byteSize ); -> fails, file header not updated yet(?)
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
@@ -158,7 +158,7 @@ void test_file_append ( test_data_t * const tdata )
 
     // read the written byte and verify (data and metadata)
     unsigned char rbuf[256];
-    int bytes_read = adfFileRead ( file, 1, rbuf );
+    unsigned bytes_read = adfFileRead ( file, 1, rbuf );
     ck_assert_int_eq ( 1, bytes_read );
     ck_assert_uint_eq ( wbuf[0], rbuf[0] );
     ck_assert_uint_eq ( 1, file->pos );

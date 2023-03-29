@@ -131,7 +131,7 @@ void test_file_overwrite ( test_data_t * const tdata )
 //    printf (" buf1size = %u, d. block size %u\n", buf1size, vol->datablockSize );
 //    fflush (stdout);
 #endif
-    int bytes_written = adfFileWrite ( file, buf1size, tdata->buffer );
+    unsigned bytes_written = adfFileWrite ( file, buf1size, tdata->buffer );
     ck_assert_int_eq ( buf1size, bytes_written );
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
@@ -176,7 +176,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     if ( ! rbuf )
         exit ( 1 );
 
-    int bytes_read = adfFileRead ( file, buf1size, rbuf );
+    unsigned bytes_read = adfFileRead ( file, buf1size, rbuf );
     ck_assert_int_eq ( buf1size, bytes_read );
     ck_assert_mem_eq ( tdata->buffer, rbuf, buf1size );
     ck_assert_uint_eq ( buf1size, file->pos );
