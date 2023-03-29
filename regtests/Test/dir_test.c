@@ -156,19 +156,9 @@ int test_softlink_realname ( struct AdfVolume * vol,
 
     printf ("*** Test getting destination name for soft link %s\n", slink );
 
-    // get block of the directory (as parent)
-    struct bEntryBlock parent;
-    if ( adfReadEntryBlock( vol, vol->curDirPtr, &parent ) != RC_OK ) {
-        return 1;
-    }
-
     struct bLinkBlock entry;
-    SECTNUM nUpdSect;
-    SECTNUM sectNum = adfNameToEntryBlk ( vol,
-                                          parent.hashTable,
-                                          slink,
-                                          ( struct bEntryBlock * ) &entry,
-                                          &nUpdSect );
+    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
+                                          (struct bEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }
