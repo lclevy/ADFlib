@@ -26,9 +26,7 @@ int main(int argc, char *argv[])
     struct AdfVolume *vol;
     struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
     struct AdfList *list;
  
     adfEnvInitDefault();
@@ -49,11 +47,11 @@ int main(int argc, char *argv[])
     out = fopen( argv[2],"rb");
     if (!out) return 1;
     
-	len = 600;
-    n = fread(buf,sizeof(unsigned char),len,out);
+    unsigned len = 600;
+    unsigned n = (unsigned) fread(buf,sizeof(unsigned char),len,out);
     while(!feof(out)) {
         adfFileWrite ( file, n, buf );
-        n = fread(buf,sizeof(unsigned char),len,out);
+        n = (unsigned) fread(buf,sizeof(unsigned char),len,out);
     }
     if (n>0)
         adfFileWrite ( file, n, buf );
