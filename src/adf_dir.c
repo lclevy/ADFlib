@@ -475,7 +475,7 @@ struct AdfList * adfGetDirEnt ( struct AdfVolume * vol,
  * adfFreeEntry
  *
  */
-void adfFreeEntry ( struct AdfEntry * entry )
+void adfFreeEntry ( struct AdfEntry * const entry )
 {
 	if (entry==NULL)
        return;
@@ -492,7 +492,7 @@ void adfFreeEntry ( struct AdfEntry * entry )
  *
  */
 int adfDirCountEntries ( struct AdfVolume * const vol,
-                         SECTNUM                  dirPtr )
+                         const SECTNUM            dirPtr )
 {
     struct AdfList *list, *cell;
 

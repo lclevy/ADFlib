@@ -68,12 +68,12 @@ PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * vol,
 PREFIX void adfFreeDirList ( struct AdfList * list );
 
 PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
-                                SECTNUM                  dirPtr );
+                                const SECTNUM            dirPtr );
 
 RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
                             struct AdfEntry *    entry );
 
-PREFIX void adfFreeEntry (struct AdfEntry * entry );
+PREFIX void adfFreeEntry (struct AdfEntry * const entry );
 
 RETCODE adfCreateFile ( struct AdfVolume * const        vol,
                         const SECTNUM                   parent,
