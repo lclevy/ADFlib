@@ -26,9 +26,7 @@ int main(int argc, char *argv[])
     struct AdfVolume *vol;
     struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
  
     adfEnvInitDefault();
 
@@ -55,8 +53,8 @@ int main(int argc, char *argv[])
     out = fopen("mod.distant","wb");
     if (!out) return 1;
     
-	len = 600;
-    n = adfFileRead ( file, len, buf );
+    unsigned len = 600;
+    unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
         n = adfFileRead ( file, len, buf );
