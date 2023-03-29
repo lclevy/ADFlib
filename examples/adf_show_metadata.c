@@ -116,20 +116,10 @@ static void show_dentry_metadata ( struct AdfVolume * const vol,
         }
     }
 
-    // get parent
-    struct bEntryBlock parent;
-    if ( adfReadEntryBlock ( vol, vol->curDirPtr, &parent ) != RC_OK ) {
-        fprintf ( stderr, "Error reading parent entry block (%d)\n",
-                  vol->curDirPtr );
-        goto show_entry_cleanup;
-    }
-
     // get entry
     struct bEntryBlock entry;
-    SECTNUM nUpdSect;
-    SECTNUM sectNum = adfNameToEntryBlk ( vol, parent.hashTable, entry_name,
-                                          ( struct bEntryBlock * ) &entry,
-                                          &nUpdSect );
+    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr,
+                                          entry_name, &entry );
     if ( sectNum == -1 ) {
         fprintf (stderr, "'%s' not found.\n", entry_name );
         goto show_entry_cleanup;
