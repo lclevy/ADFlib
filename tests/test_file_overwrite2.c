@@ -50,7 +50,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
-    int free_blocks_before = adfCountFreeBlocks ( vol );
+    unsigned free_blocks_before = adfCountFreeBlocks ( vol );
     ck_assert_int_eq ( tdata->nVolumeBlocks, free_blocks_before );
     int nentries = adfDirCountEntries ( vol, vol->curDirPtr );
     ck_assert_int_eq ( 0, nentries ); 
@@ -72,7 +72,7 @@ void test_file_overwrite ( test_data_t * const tdata )
         adfMount ( device, 0, FALSE );
 
     // verify free blocks
-    const int file_blocks_used_by_empty_file = 1;
+    const unsigned file_blocks_used_by_empty_file = 1;
     ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file,
                        adfCountFreeBlocks ( vol ) );
 
