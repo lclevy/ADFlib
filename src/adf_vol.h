@@ -43,8 +43,8 @@ struct AdfVolume {
     char dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
     BOOL bootCode;
     BOOL readOnly;
-    int datablockSize;      /* 488 or 512 */
-    int blockSize;			/* 512 */
+    unsigned datablockSize;      /* 488 or 512 */
+    unsigned blockSize;			/* 512 */
 
     char *volName;
 
