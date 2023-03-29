@@ -33,11 +33,17 @@
 
 
 #ifdef WIN32
-//#if !defined(__GNUC__)
+
+ //#if !defined(__GNUC__)
 #if !defined(__MINGW32__) || !defined(_CYGWIN)
-#include <io.h>
+#include <io.h>         // for open(), write(), ...
 typedef uint32_t mode_t;
 #endif
+
+#if defined _MSC_VER
+#include <direct.h>     // for _mkdir()
+#endif
+
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 # include <sys/utime.h>
 # define DIRSEP '\\'
@@ -538,15 +544,28 @@ void set_file_date(char *out, struct AdfEntry *e) {
 #endif
 }
 
+/* OS-agnostic make directory function */
+static inline int makedir(char* path, mode_t perms)
+{
+#if defined _MSC_VER
+    (void) perms;
+    return _mkdir(path);
+#else
+#if defined(__MINGW32__)
+    (void) perms;
+    return mkdir(path);
+#else
+    return mkdir(path, perms);
+#endif
+#endif
+}
+
+
 /* creates directory, if it does not already exist */
 void mkdir_if_needed(char *path, mode_t perms) {
     struct stat st;
     if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) {
-#if defined(__MINGW32__)
-        if (mkdir(path) != 0) {
-#else
-        if (mkdir(path, perms) != 0) {
-#endif
+        if (makedir(path, perms) != 0) {
             perror(path);
         }
     }
