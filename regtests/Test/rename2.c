@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     adfCreateDir(vol,883,"dir_51");
 
     adfCreateDir(vol,vol->curDirPtr,"toto");
-printf("[dir = %ld]\n",vol->curDirPtr);
+printf("[dir = %d]\n",vol->curDirPtr);
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
@@ -86,7 +86,7 @@ printf("[dir = %ld]\n",883L);
     adfRenameEntry(vol, 883,"dir_51", vol->curDirPtr,"dir_55");
 putchar('\n');
 
-printf("[dir = %ld]\n",vol->curDirPtr);
+printf("[dir = %d]\n",vol->curDirPtr);
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
@@ -105,7 +105,7 @@ printf("[dir = %ld]\n",883L);
 
 putchar('\n');
 
-printf("[dir = %ld]\n",vol->curDirPtr);
+printf("[dir = %d]\n",vol->curDirPtr);
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
