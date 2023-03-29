@@ -173,7 +173,8 @@ error_handler:
 /* parses the command line arguments into global variables */
 void parse_args(int argc, char *argv[]) {
     struct AdfList *list = NULL;
-    int i, j;
+    int i;
+    size_t j;
 
     /* parse flags */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
@@ -429,7 +430,7 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
 
     /* copy from volume to local file until EOF */
     while (!adfEndOfFile(f)) {
-        int32_t n = adfFileRead ( f, sizeof(buf), buf );
+        unsigned n = adfFileRead ( f, sizeof(buf), buf );
         if (write(fd, buf, n) != n) {
             perror(out);
             goto error_handler;
@@ -454,7 +455,7 @@ char *join_path(char *path, char *file) {
 
 /* creates a suitable output filename from the amiga filename */
 char *output_name(char *path, char *name) {
-    int dirlen = extract_dir ? strlen(extract_dir) + 1 : 0;
+    size_t dirlen = ( extract_dir ? strlen(extract_dir) + 1 : 0 );
     char *out = malloc(dirlen + strlen(path) + strlen(name) + 2), *s, *o;
     if (!out) {
         perror(adf_file);
