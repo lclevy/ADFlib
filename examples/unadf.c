@@ -1,7 +1,7 @@
 /*
  * unadf
  *
- * tested under Linux and Windows
+ * an unzip-like utility for Amiga disk images (ADF)
  *
  *  This file is part of ADFLib.
  *
