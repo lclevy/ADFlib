@@ -264,10 +264,10 @@ RETCODE adfRemoveEntry ( struct AdfVolume * vol,
  * adfSetEntryComment
  *
  */
-RETCODE adfSetEntryComment ( struct AdfVolume * vol,
-                             SECTNUM            parSect,
-                             char *             name,
-                             char *             newCmt )
+RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
+                             const SECTNUM            parSect,
+                             const char * const       name,
+                             const char * const       newCmt )
 {
     struct bEntryBlock parent, entry;
     SECTNUM nSect;
