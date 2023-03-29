@@ -54,9 +54,9 @@ struct AdfEntry {
 PREFIX RETCODE adfToRootDir ( struct AdfVolume * vol );
 BOOL isDirEmpty ( const struct bDirBlock * const dir );
 
-PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * vol,
-                                SECTNUM            pSect,
-                                char *             name );
+PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
+                                const SECTNUM            pSect,
+                                const char * const       name );
 
 PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
                                        const SECTNUM            nSect );
