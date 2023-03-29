@@ -78,12 +78,11 @@ RETCODE adfUpdateBitmap(struct AdfVolume *vol)
  * adfCountFreeBlocks
  *
  */
-int32_t adfCountFreeBlocks(struct AdfVolume* vol)
+uint32_t adfCountFreeBlocks(struct AdfVolume* vol)
 {
-    int32_t freeBlocks;
     int j;
 
-	freeBlocks = 0L;
+    uint32_t freeBlocks = 0L;
     for(j=vol->firstBlock+2; j<=(vol->lastBlock - vol->firstBlock); j++)
         if ( adfIsBlockFree(vol,j) )
             freeBlocks++;

@@ -49,7 +49,7 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume *       vol,
 
 SECTNUM adfGet1FreeBlock ( struct AdfVolume * vol );
 RETCODE adfUpdateBitmap ( struct AdfVolume * vol );
-PREFIX int32_t adfCountFreeBlocks ( struct AdfVolume * vol );
+PREFIX uint32_t adfCountFreeBlocks ( struct AdfVolume * vol );
 
 RETCODE adfReadBitmap ( struct AdfVolume *  vol,
                         SECTNUM             nBlock,
