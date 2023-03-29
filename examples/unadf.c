@@ -34,7 +34,8 @@
 
 #ifdef WIN32
 //#if !defined(__GNUC__)
-#if !defined(__MINGW32__)
+#if !defined(__MINGW32__) || !defined(_CYGWIN)
+#include <io.h>
 typedef uint32_t mode_t;
 #endif
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
