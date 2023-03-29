@@ -29,6 +29,7 @@
 #define _ADF_DEFS_H 1
 
 #include <stdint.h>
+#include <stdlib.h>   // for min(), max() on Windows/MSVC
 
 //#include "config.h"
 /* autotools defines this */
