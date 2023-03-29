@@ -115,8 +115,8 @@ void show_file_ext_blocks ( struct AdfVolume * const              vol,
                             const struct bFileHeaderBlock * const fheader_block )
 {
     // check if there are any ext blocks
-    int32_t posInExtBlk, posInDataBlk, curDataN;
-    if ( adfPos2DataBlock ( ( int32_t ) fheader_block->byteSize,
+    uint32_t posInExtBlk, posInDataBlk, curDataN;
+    if ( adfPos2DataBlock ( fheader_block->byteSize,
                             vol->datablockSize,
                             &posInExtBlk, &posInDataBlk, &curDataN ) == -1 )
     {
