@@ -185,9 +185,9 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
     if ( file->pos + pos > file->fileHdr->byteSize )
         pos = file->fileHdr->byteSize - file->pos;
 
-    int32_t offset = 0;
+    uint32_t offset = 0;
     while ( offset < pos ) {
-        int size = min ( pos - offset, blockSize - file->posInDataBlk );
+        unsigned size = min ( pos - offset, (unsigned) ( blockSize - file->posInDataBlk ) );
         file->pos += size;
         offset += size;
         file->posInDataBlk += size;
