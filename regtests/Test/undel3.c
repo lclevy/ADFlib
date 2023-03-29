@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     cell = list = adfGetDelEnt(vol);
     while(cell) {
         block =(struct GenBlock*) cell->content;
-       printf("%s %d %d %ld\n",block->name,block->type,block->secType,
+       printf("%s %d %d %d\n",block->name,block->type,block->secType,
             block->sect);
         cell = cell->next;
     }
