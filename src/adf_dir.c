@@ -753,10 +753,10 @@ adfAccess2String(int32_t acc)
  * name 'name'. if 'thisSect'!=-1, insert this sector pointer  into the hashTable 
  * (here 'thisSect' must be allocated before in the bitmap).
  */
-SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
-                         struct bEntryBlock * dir,
-                         char *               name,
-                         SECTNUM              thisSect )
+SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
+                         struct bEntryBlock * const dir,
+                         const char * const         name,
+                         const SECTNUM              thisSect )
 {
     BOOL intl;
     struct bEntryBlock updEntry;
@@ -938,9 +938,9 @@ void adfEntryPrint ( struct AdfEntry * entry )
  * adfCreateDir
  *
  */
-RETCODE adfCreateDir ( struct AdfVolume * vol,
-                       SECTNUM            nParent,
-                       char *             name )
+RETCODE adfCreateDir ( struct AdfVolume * const vol,
+                       const SECTNUM            nParent,
+                       const char * const       name )
 {
     SECTNUM nSect;
     struct bDirBlock dir;
@@ -990,10 +990,10 @@ RETCODE adfCreateDir ( struct AdfVolume * vol,
  * adfCreateFile
  *
  */
-RETCODE adfCreateFile ( struct AdfVolume *        vol,
-                        SECTNUM                   nParent,
-                        char *                    name,
-                        struct bFileHeaderBlock * fhdr )
+RETCODE adfCreateFile ( struct AdfVolume * const        vol,
+                        const SECTNUM                   nParent,
+                        const char * const              name,
+                        struct bFileHeaderBlock * const fhdr )
 {
     SECTNUM nSect;
     struct bEntryBlock parent;

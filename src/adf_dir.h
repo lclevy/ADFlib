@@ -75,19 +75,19 @@ RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
 
 PREFIX void adfFreeEntry (struct AdfEntry * entry );
 
-RETCODE adfCreateFile ( struct AdfVolume *        vol,
-                        SECTNUM                   parent,
-                        char *                    name,
-                        struct bFileHeaderBlock * fhdr );
+RETCODE adfCreateFile ( struct AdfVolume * const        vol,
+                        const SECTNUM                   parent,
+                        const char * const              name,
+                        struct bFileHeaderBlock * const fhdr );
 
-PREFIX RETCODE adfCreateDir ( struct AdfVolume * vol,
-                              SECTNUM            parent,
-                              char *             name );
+PREFIX RETCODE adfCreateDir ( struct AdfVolume * const vol,
+                              const SECTNUM            parent,
+                              const char * const       name );
 
-SECTNUM adfCreateEntry ( struct AdfVolume *   vol,
-                         struct bEntryBlock * dir,
-                         char *               name,
-                         SECTNUM              thisSect );
+SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
+                         struct bEntryBlock * const dir,
+                         const char * const         name,
+                         const SECTNUM              thisSect );
 
 PREFIX RETCODE adfRenameEntry ( struct AdfVolume * vol,
                                 SECTNUM            pSect,
