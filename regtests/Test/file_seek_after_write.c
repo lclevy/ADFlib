@@ -286,7 +286,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     }
 
     // ... and write it with buffer filled with 0s
-    unsigned bytes_written = (unsigned) adfFileWrite ( file, (int) bufsize, buffer_0 );
+    unsigned bytes_written = adfFileWrite ( file, bufsize, buffer_0 );
     assert ( bytes_written == bufsize );
     assert ( file->fileHdr->byteSize == bufsize );
     adfFileClose ( file );
@@ -298,7 +298,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
         errors += 1;
         goto cleanup;
     }
-    bytes_written = (unsigned) adfFileWrite ( file, (int) bufsize, buffer_random );
+    bytes_written = adfFileWrite ( file, bufsize, buffer_random );
     assert ( bytes_written == bufsize );
     assert ( file->fileHdr->byteSize == bufsize );
     adfFileClose ( file );
@@ -327,8 +327,8 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
         errors += 1;
         goto cleanup;
     }
-    bytes_written = (unsigned) adfFileWrite ( file, (int) chunksize,
-                                              buffer_random + offset );
+    bytes_written = adfFileWrite ( file, chunksize,
+                                   buffer_random + offset );
     assert ( bytes_written == chunksize );
     assert ( file->fileHdr->byteSize == bufsize );
 
@@ -404,7 +404,7 @@ unsigned verify_overwritten_data ( struct AdfVolume * const vol,
 
     // verify part filled with 0
     unsigned chunk0_size = offset;
-    unsigned bytes_read = (unsigned) adfFileRead ( file, (int) chunk0_size, rbuf );
+    unsigned bytes_read = adfFileRead ( file, chunk0_size, rbuf );
     assert ( bytes_read == chunk0_size );
     for ( unsigned i = 0 ; i < chunk0_size ; ++i ) {
         if ( rbuf[i] != 0 ) {
@@ -417,7 +417,7 @@ unsigned verify_overwritten_data ( struct AdfVolume * const vol,
     }
 
     // verify overwritten data chunk
-    bytes_read = (unsigned) adfFileRead ( file, (int) chunksize, rbuf );
+    bytes_read = adfFileRead ( file, chunksize, rbuf );
     assert ( bytes_read == chunksize );
     for ( unsigned i = 0 ; i < chunksize ; ++i )  {
         const unsigned offset_i = offset + i;
@@ -435,7 +435,7 @@ unsigned verify_overwritten_data ( struct AdfVolume * const vol,
 
     // verify the remaining part filled with 0
     chunk0_size = filesize - chunk0_size - chunksize;
-    bytes_read = (unsigned) adfFileRead ( file, (int) chunk0_size, rbuf );
+    bytes_read = adfFileRead ( file, chunk0_size, rbuf );
     assert ( bytes_read == chunk0_size );
     for ( unsigned i = 0 ; i < chunk0_size ; ++i ) {
         if ( rbuf[i] != 0 ) {
@@ -497,7 +497,7 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
              offset = 0,
              nerrors = 0;
     do {
-        block_bytes_read = (unsigned) adfFileRead ( output, (int) READ_BUFSIZE, readbuf );
+        block_bytes_read = adfFileRead ( output, READ_BUFSIZE, readbuf );
         bytes_read += block_bytes_read;
 
         for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
