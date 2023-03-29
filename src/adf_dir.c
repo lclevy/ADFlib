@@ -512,7 +512,7 @@ int adfDirCountEntries ( struct AdfVolume * const vol,
  * adfToRootDir
  *
  */
-RETCODE adfToRootDir ( struct AdfVolume * vol )
+RETCODE adfToRootDir ( struct AdfVolume * const vol )
 {
     vol->curDirPtr = vol->rootBlock;
 
@@ -524,8 +524,8 @@ RETCODE adfToRootDir ( struct AdfVolume * vol )
  * adfChangeDir
  *
  */
-RETCODE adfChangeDir ( struct AdfVolume * vol,
-                       char *             name )
+RETCODE adfChangeDir ( struct AdfVolume * const vol,
+                       const char * const       name )
 {
     struct bEntryBlock entry;
     SECTNUM nSect;
@@ -560,7 +560,7 @@ RETCODE adfChangeDir ( struct AdfVolume * vol,
  * adfParentDir
  *
  */
-SECTNUM adfParentDir ( struct AdfVolume * vol )
+SECTNUM adfParentDir ( struct AdfVolume * const vol )
 {
     struct bEntryBlock entry;
 
@@ -577,8 +577,8 @@ SECTNUM adfParentDir ( struct AdfVolume * vol )
  * adfEntBlock2Entry
  *
  */
-RETCODE adfEntBlock2Entry ( struct bEntryBlock * entryBlk,
-                            struct AdfEntry *    entry )
+RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
+                            struct AdfEntry * const          entry )
 {
     char buf[MAXCMMTLEN+1];
     int len;
