@@ -272,8 +272,8 @@ static const unsigned chunklensize = sizeof ( chunklen ) / sizeof (unsigned);
 START_TEST ( test_file_write_ofs )
 {
     test_data_t test_data = {
-        .adfname = "test_file_write_ofs.adf",
-        .volname = "Test_file_write_ofs",
+        .adfname = "test_file_write_chunks_ofs.adf",
+        .volname = "Test_file_write_chunks_ofs",
         .fstype  = 0,          // OFS
         .openMode = "w",
         .nVolumeBlocks = 1756
@@ -294,8 +294,8 @@ START_TEST ( test_file_write_ofs )
 START_TEST ( test_file_write_ffs )
 {
     test_data_t test_data = {
-        .adfname = "test_file_write_ffs.adf",
-        .volname = "Test_file_write_ffs",
+        .adfname = "test_file_write_chunks_ffs.adf",
+        .volname = "Test_file_write_chunks_ffs",
         .fstype  = 1,          // FFS
         .openMode = "w",
         .nVolumeBlocks = 1756
