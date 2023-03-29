@@ -183,7 +183,7 @@ int test_single_read ( struct AdfFile * const file_adf,
     adfFileSeek ( file_adf, offset );
 
     unsigned char c;
-    int n = adfFileRead ( file_adf, 1, &c );
+    unsigned n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );
