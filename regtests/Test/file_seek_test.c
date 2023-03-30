@@ -17,7 +17,7 @@ typedef struct reading_test_s {
     char * filename;
 
     unsigned int nchecks;
-    check_t      checks[];
+    check_t *    checks;
 } reading_test_t;
 
 
@@ -27,18 +27,22 @@ typedef struct reading_test_s {
 const unsigned int ofs_first_pos_using_extension = 0x8940;  // 35136
 #endif
 
+
+check_t checks_ofs[] = {
+    { 0, 0x47 },
+    { 1, 0x49 },
+    { ofs_first_pos_using_extension - 1,    5 },
+    { ofs_first_pos_using_extension,     0x2d },
+    { ofs_first_pos_using_extension + 1, 0x6c },
+    { 0x2a708, 3 },
+    { 0x2a716, 0x3b },  // the last byte of the test file
+    { 0x2a717, 0x00 }   // EOF
+};
+
 reading_test_t test_ofs = {
     .filename = "moon.gif",
-    .nchecks = 8,
-    .checks = { { 0, 0x47 },
-                { 1, 0x49 },
-                { ofs_first_pos_using_extension - 1,    5 },
-                { ofs_first_pos_using_extension,     0x2d },
-                { ofs_first_pos_using_extension + 1, 0x6c },
-                { 0x2a708, 3 },
-                { 0x2a716, 0x3b },  // the last byte of the test file
-                { 0x2a717, 0x00 }   // EOF
-    }
+    .nchecks = sizeof ( checks_ofs ) / sizeof ( check_t ),
+    .checks = checks_ofs
 };
 
 
@@ -51,37 +55,40 @@ const unsigned int
     ffs_first_pos_using_2nd_extension = 0x12000;  // 73728
 #endif
 
+check_t checks_ffs[] = {
+    { 0, 0x64 },
+    { 1, 0x69 },
+
+    { ofs_first_pos_using_extension - 1, 0x28 },
+    { ofs_first_pos_using_extension,     0x24 },
+    { ofs_first_pos_using_extension + 1, 0x1b },
+
+    { ffs_first_pos_using_extension - 1, 0xff },
+    { ffs_first_pos_using_extension,     0x07 },
+    { ffs_first_pos_using_extension + 1, 0x0c },
+
+    { 0x9100, 0x12 },
+    { 0x9180, 0x0d },
+    { 0x91ff, 0x06 },
+    { 0x9200, 0x00 },
+    { 0x9201, 0xf6 },
+    { 0x9bc0, 0x09 },
+
+    { ffs_first_pos_using_2nd_extension - 1, 0x18 },
+    { ffs_first_pos_using_2nd_extension,     0x1a },
+    { ffs_first_pos_using_2nd_extension + 1, 0x1d },
+
+    { 0x237bf, 0xfa },
+    { 0x237c0, 0xfc },
+    { 0x237ce, 0xea },
+    { 0x237cf, 0x00 },  // the last byte of the file
+    { 0x237d0, 0x00 }   // EOF
+};
+
 reading_test_t test_ffs = {
     .filename = "mod.And.DistantCall",
-    .nchecks = 22,
-    .checks = { { 0, 0x64 },
-                { 1, 0x69 },
-
-                { ofs_first_pos_using_extension - 1, 0x28 },
-                { ofs_first_pos_using_extension,     0x24 },
-                { ofs_first_pos_using_extension + 1, 0x1b },
-
-                { ffs_first_pos_using_extension - 1, 0xff },
-                { ffs_first_pos_using_extension,     0x07 },
-                { ffs_first_pos_using_extension + 1, 0x0c },
-
-                { 0x9100, 0x12 },
-                { 0x9180, 0x0d },
-                { 0x91ff, 0x06 },
-                { 0x9200, 0x00 },
-                { 0x9201, 0xf6 },
-                { 0x9bc0, 0x09 },
-
-                { ffs_first_pos_using_2nd_extension - 1, 0x18 },
-                { ffs_first_pos_using_2nd_extension,     0x1a },
-                { ffs_first_pos_using_2nd_extension + 1, 0x1d },
-
-                { 0x237bf, 0xfa },
-                { 0x237c0, 0xfc },
-                { 0x237ce, 0xea },
-                { 0x237cf, 0x00 },  // the last byte of the file
-                { 0x237d0, 0x00 }   // EOF
-    }
+    .nchecks =  sizeof ( checks_ffs ) / sizeof ( check_t ),
+    .checks  = checks_ffs
 };
 
 
