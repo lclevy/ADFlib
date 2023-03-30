@@ -38,6 +38,7 @@ RETCODE myInitDevice ( struct AdfDevice * dev,
                        char *             name,
                        BOOL               ro )
 {
+    (void) name;
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
         malloc ( sizeof ( struct AdfNativeDevice ) );
     if (!nDev) {
@@ -67,7 +68,8 @@ RETCODE myReadSector ( struct AdfDevice * dev,
                        int                size,
                        uint8_t *          buf )
 {
-     return RC_OK;   
+    (void) dev, (void) n, (void) size, (void) buf;
+    return RC_OK;
 }
 
 
@@ -80,6 +82,7 @@ RETCODE myWriteSector ( struct AdfDevice * dev,
                         int                size,
                         uint8_t *          buf )
 {
+    (void) dev, (void) n, (void) size, (void) buf;
     return RC_OK;
 }
 
