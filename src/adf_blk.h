@@ -123,7 +123,7 @@ struct bRootBlock {
 /*1a4*/	int32_t	cDays; 	/* creation date FFS and OFS */
 /*1a8*/	int32_t	cMins;
 /*1ac*/	int32_t	cTicks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	diskName[MAXNAMELEN+1];
         char	r2[8];
 /*1d8*/	int32_t	days;		/* last access : days after 1 jan 1978 */
@@ -148,13 +148,13 @@ struct bEntryBlock {
         int32_t	 r2[2];
 /*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	int32_t	 byteSize;
-/*148*/	char	 commLen;
+/*148*/	uint8_t	 commLen;
 /*149*/	char	 comment[MAXCMMTLEN + 1];
         char	 r3[91 - ( MAXCMMTLEN + 1 )];
 /*1a4*/	int32_t	 days;
 /*1a8*/	int32_t	 mins;
 /*1ac*/	int32_t	 ticks;
-/*1b0*/	char	 nameLen;
+/*1b0*/	uint8_t	 nameLen;
 /*1b1*/	char	 name[MAXNAMELEN + 1];
         int32_t	 r4;
 /*1d4*/	int32_t	 realEntry;
@@ -179,13 +179,13 @@ struct bFileHeaderBlock {
 /*13c*/	int32_t	r2;
 /*140*/	int32_t	access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t	byteSize;
-/*148*/	char	commLen;
+/*148*/	uint8_t	commLen;
 /*149*/	char	comment[MAXCMMTLEN+1];
         char	r3[91-(MAXCMMTLEN+1)];
 /*1a4*/	int32_t	days;
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char	fileName[MAXNAMELEN+1];
         int32_t	r4;
 /*1d4*/	int32_t	real;		/* unused == 0 */
@@ -229,13 +229,13 @@ struct bDirBlock {
         int32_t	r2[2];
 /*140*/	int32_t	access;
         int32_t	r4;		/* == 0 */
-/*148*/	char	commLen;
+/*148*/	uint8_t	commLen;
 /*149*/	char	comment[MAXCMMTLEN+1];
         char	r5[91-(MAXCMMTLEN+1)];
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	dirName[MAXNAMELEN+1];
         int32_t	r6;
 /*1d4*/	int32_t	real;		/* ==0 */
@@ -284,7 +284,7 @@ struct bLinkBlock {
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	name[MAXNAMELEN+1];
         int32_t	r3;
 /*1d4*/	int32_t	realEntry;
