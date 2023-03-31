@@ -73,11 +73,11 @@ PREFIX void adfUnMount ( struct AdfVolume * vol );
 
 PREFIX void adfVolumeInfo ( struct AdfVolume * vol );
 
-struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
-                                  int32_t         start,
-                                  int32_t         len,
-                                  char *          volName,
-                                  uint8_t         volType );
+struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
+                                  const int32_t            start,
+                                  const int32_t            len,
+                                  char * const             volName,
+                                  const uint8_t            volType );
 
 /*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
 void adfUpdateBitmap(struct AdfVolume*);
