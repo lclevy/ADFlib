@@ -64,8 +64,8 @@ int swapTable[MAX_SWTYPE+1][15]={
  * magic :-) endian swap function (big -> little for read, little to big for write)
  */
 
-    void
-swapEndian( uint8_t *buf, int type )
+void swapEndian ( uint8_t * const buf,
+                  const int       type )
 {
     int i,j;
     int p;
@@ -260,8 +260,9 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
  * offset = checksum place (in bytes)
  * bufLen = buffer length (in bytes)
  */
-    uint32_t
-adfNormalSum( UCHAR* buf, int offset, int bufLen )
+uint32_t adfNormalSum ( const UCHAR * const buf,
+                        const int           offset,
+                        const int           bufLen )
 {
     int32_t newsum;
     int i;
@@ -279,8 +280,7 @@ adfNormalSum( UCHAR* buf, int offset, int bufLen )
  * adfBitmapSum
  *
  */
-	uint32_t
-adfBitmapSum(uint8_t *buf)
+uint32_t adfBitmapSum ( const uint8_t * const buf )
 {
 	uint32_t newSum;
 	int i;
@@ -296,8 +296,7 @@ adfBitmapSum(uint8_t *buf)
  * adfBootSum
  *
  */
-    uint32_t
-adfBootSum(uint8_t *buf)
+uint32_t adfBootSum ( const uint8_t * const buf )
 {
     uint32_t d, newSum;
     int i;
@@ -316,8 +315,7 @@ adfBootSum(uint8_t *buf)
     return(newSum);
 }
 
-    uint32_t
-adfBootSum2(uint8_t *buf)
+uint32_t adfBootSum2 ( const uint8_t * const buf )
 {
     uint32_t prevsum, newSum;
     int i;

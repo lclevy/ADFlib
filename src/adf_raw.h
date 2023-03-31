@@ -68,10 +68,13 @@ PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
 PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
                                    struct bBootBlock * const boot );
 
-uint32_t adfBootSum(uint8_t *buf);
-uint32_t adfNormalSum( uint8_t *buf, int offset, int bufLen );
+uint32_t adfBootSum ( const uint8_t * const buf );
+uint32_t adfNormalSum ( const uint8_t * const buf,
+                        const int offset,
+                        const int bufLen );
 
-void swapEndian( uint8_t *buf, int type );
+void swapEndian ( uint8_t * const buf,
+                  const int       type );
 
 #endif /* _ADF_RAW_H */
 
