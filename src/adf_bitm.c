@@ -253,7 +253,7 @@ void adfSetBlockUsed ( struct AdfVolume * const vol,
  * adfGet1FreeBlock
  *
  */
-SECTNUM adfGet1FreeBlock(struct AdfVolume * vol)
+SECTNUM adfGet1FreeBlock ( struct AdfVolume * const vol )
 {
     SECTNUM block[1];
     if (!adfGetFreeBlocks(vol,1,block))
@@ -266,7 +266,9 @@ SECTNUM adfGet1FreeBlock(struct AdfVolume * vol)
  * adfGetFreeBlocks
  *
  */
-BOOL adfGetFreeBlocks(struct AdfVolume * vol, int nbSect, SECTNUM * sectList)
+BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
+                        const int                nbSect,
+                        SECTNUM * const          sectList )
 {
     int i, j;
     BOOL diskFull;
