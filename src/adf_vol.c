@@ -379,9 +379,9 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
  *
  * read logical block
  */
-RETCODE adfReadBlock ( struct AdfVolume * vol,
-                       int32_t            nSect,
-                       uint8_t *          buf )
+RETCODE adfReadBlock ( struct AdfVolume * const vol,
+                       const int32_t            nSect,
+                       uint8_t * const          buf )
 {
   /*    char strBuf[80];*/
     int32_t pSect;
@@ -419,9 +419,9 @@ RETCODE adfReadBlock ( struct AdfVolume * vol,
  * adfWriteBlock
  *
  */
-RETCODE adfWriteBlock ( struct AdfVolume * vol,
-                        int32_t            nSect,
-                        uint8_t *          buf )
+RETCODE adfWriteBlock ( struct AdfVolume * const vol,
+                        const int32_t            nSect,
+                        const uint8_t * const    buf )
 {
     int32_t pSect;
 

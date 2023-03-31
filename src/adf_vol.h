@@ -82,13 +82,13 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
 /*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
 void adfUpdateBitmap(struct AdfVolume*);
 */
-PREFIX RETCODE adfReadBlock ( struct AdfVolume * vol,
-                              int32_t            nSect,
-                              uint8_t *          buf );
+PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
+                              const int32_t            nSect,
+                              uint8_t * const          buf );
 
-PREFIX RETCODE adfWriteBlock ( struct AdfVolume * vol,
-                               int32_t            nSect,
-                               uint8_t *          buf );
+PREFIX RETCODE adfWriteBlock ( struct AdfVolume * const vol,
+                               const int32_t            nSect,
+                               const uint8_t * const    buf );
 
 #endif /* _ADF_VOL_H */
 
