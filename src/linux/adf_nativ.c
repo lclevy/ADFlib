@@ -42,9 +42,9 @@
  *
  * must fill 'dev->size'
  */
-RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
-                             char *             name,
-                             BOOL               ro )
+RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
+                             const char * const       name,
+                             const BOOL               ro )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
         malloc ( sizeof ( struct AdfNativeDevice ) );
@@ -113,7 +113,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * dev,
  *
  * free native device
  */
-RETCODE adfLinuxReleaseDevice ( struct AdfDevice * dev )
+RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
@@ -126,10 +126,10 @@ RETCODE adfLinuxReleaseDevice ( struct AdfDevice * dev )
  * adfLinuxReadSector
  *
  */
-RETCODE adfLinuxReadSector ( struct AdfDevice * dev,
-                             int32_t            n,
-                             int                size,
-                             uint8_t *          buf )
+RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                             const int32_t            n,
+                             const int                size,
+                             uint8_t * const          buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -149,10 +149,10 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * dev,
  * adfLinuxWriteSector
  *
  */
-RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
-                              int32_t            n,
-                              int                size,
-                              uint8_t *          buf )
+RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                              const int32_t            n,
+                              const int                size,
+                              const uint8_t * const    buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -161,7 +161,7 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * dev,
         return RC_ERROR;
     }
 
-    if ( read ( nDev->fd, buf, (size_t) size ) != size )
+    if ( read ( nDev->fd, (void *) buf, (size_t) size ) != size )
         return RC_ERROR;
 
     return RC_OK;
@@ -189,7 +189,7 @@ void adfInitNativeFct()
  * adfLinuxIsDevNative
  *
  */
-BOOL adfLinuxIsDevNative ( char * devName )
+BOOL adfLinuxIsDevNative ( const char * const devName )
 {
     //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
 
