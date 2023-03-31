@@ -166,7 +166,7 @@ void adfVolumeInfo ( const struct AdfVolume * const vol )
  *
  * 
  */
-PREFIX struct AdfVolume * adfMount ( const struct AdfDevice * const dev,
+PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
                                      const BOOL               readOnly )
 {
