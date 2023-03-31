@@ -166,9 +166,9 @@ void adfVolumeInfo ( struct AdfVolume * vol )
  *
  * 
  */
-struct AdfVolume * adfMount ( struct AdfDevice * dev,
-                              int                nPart,
-                              BOOL               readOnly )
+PREFIX struct AdfVolume * adfMount ( const struct AdfDevice * const dev,
+                                     const int                      nPart,
+                                     const BOOL                     readOnly )
 {
     int32_t nBlock;
     struct bRootBlock root;
@@ -226,7 +226,7 @@ struct AdfVolume * adfMount ( struct AdfDevice * dev,
 * free bitmap structures
 * free current dir
 */
-void adfUnMount ( struct AdfVolume * vol )
+void adfUnMount ( struct AdfVolume * const vol )
 {
 	if (!vol) {
 		(*adfEnv.eFct)("adfUnMount : vol is null");
