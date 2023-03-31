@@ -257,7 +257,6 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
 /*    struct bDirCacheBlock dirc;*/
     SECTNUM blkList[2];
     struct AdfVolume* vol;
-    int nlen;
 
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(0);
@@ -281,7 +280,8 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
 
     vol->mounted = TRUE;
 
-    nlen = min( MAXNAMELEN, strlen(volName) );
+    unsigned nlen = min ( (unsigned) MAXNAMELEN,
+                          (unsigned) strlen ( volName ) );
     vol->volName = (char*)malloc(nlen+1);
     if (!vol->volName) { 
 		(*adfEnv.eFct)("adfCreateVol : malloc");
