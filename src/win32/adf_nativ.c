@@ -38,9 +38,9 @@
 #include "nt4_dev.h"
 
 
-RETCODE Win32InitDevice ( struct AdfDevice * dev,
-                          char *             lpstrName,
-                          BOOL               ro )
+RETCODE Win32InitDevice ( struct AdfDevice * const dev,
+                          const char * const       lpstrName,
+                          const BOOL               ro )
 {
 	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
             malloc ( sizeof(struct AdfNativeDevice) );
@@ -97,10 +97,10 @@ RETCODE Win32InitDevice ( struct AdfDevice * dev,
 }
 
 
-RETCODE Win32ReadSector ( struct AdfDevice * dev,
-                          long               n,
-                          int                size,
-                          unsigned char *    buf )
+RETCODE Win32ReadSector ( struct AdfDevice * const dev,
+                          const int32_t            n,
+                          const int                size,
+                          uint8_t * const          buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -114,10 +114,10 @@ RETCODE Win32ReadSector ( struct AdfDevice * dev,
 }
 
 
-RETCODE Win32WriteSector ( struct AdfDevice * dev,
-                           long               n,
-                           int                size,
-                           unsigned char *    buf )
+RETCODE Win32WriteSector ( struct AdfDevice * const dev,
+                           const int32_t            n,
+                           const int                size,
+                           const uint8_t * const    buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -131,7 +131,7 @@ RETCODE Win32WriteSector ( struct AdfDevice * dev,
 }
 
 
-RETCODE Win32ReleaseDevice ( struct AdfDevice * dev )
+RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
 	struct AdfNativeDevice * nDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -158,7 +158,7 @@ void adfInitNativeFct()
 }
 
 
-BOOL Win32IsDevNative(char *devName)
+BOOL Win32IsDevNative ( const char * const devName )
 {
 	return devName[0] == '|';
 }
