@@ -54,19 +54,19 @@
 #define SWBL_FSHD         10 
 #define SWBL_LSEG         11
 
-PREFIX RETCODE adfReadRootBlock ( struct AdfVolume *  vol,
-                                  int32_t             nSect,
-                                  struct bRootBlock * root );
+PREFIX RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
+                                  const int32_t             nSect,
+                                  struct bRootBlock * const root );
 
-PREFIX RETCODE adfWriteRootBlock ( struct AdfVolume *  vol,
-                                   int32_t             nSect,
-                                   struct bRootBlock * root );
+PREFIX RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
+                                   const int32_t             nSect,
+                                   struct bRootBlock * const root );
 
-PREFIX RETCODE adfReadBootBlock ( struct AdfVolume *  vol,
-                                  struct bBootBlock * boot );
+PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
+                                  struct bBootBlock * const boot );
 
-PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume *  vol,
-                                   struct bBootBlock * boot );
+PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
+                                   struct bBootBlock * const boot );
 
 uint32_t adfBootSum(uint8_t *buf);
 uint32_t adfNormalSum( uint8_t *buf, int offset, int bufLen );
