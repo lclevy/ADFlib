@@ -58,11 +58,11 @@ RETCODE adfReadBitmap ( struct AdfVolume *  vol,
 BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
                       const SECTNUM            nSect );
 
-void adfSetBlockFree ( struct AdfVolume * vol,
-                       SECTNUM            nSect );
+void adfSetBlockFree ( struct AdfVolume * const vol,
+                       const SECTNUM            nSect );
 
-void adfSetBlockUsed ( struct AdfVolume * vol,
-                       SECTNUM            nSect );
+void adfSetBlockUsed ( struct AdfVolume * const vol,
+                       const SECTNUM            nSect );
 
 BOOL adfGetFreeBlocks ( struct AdfVolume * vol,
                         int                nbSect,

@@ -207,7 +207,8 @@ printf("res=%x,  ",vol->bitmapTable[ block ]->map[ indexInMap ]
  * adfSetBlockFree OK
  *
  */
-void adfSetBlockFree(struct AdfVolume * vol, SECTNUM nSect)
+void adfSetBlockFree ( struct AdfVolume * const vol,
+                       const SECTNUM            nSect )
 {
     uint32_t oldValue;
     int sectOfMap = nSect-2;
@@ -232,7 +233,8 @@ printf("bit=%d,  ",sectOfMap%32);
  * adfSetBlockUsed
  *
  */
-void adfSetBlockUsed(struct AdfVolume * vol, SECTNUM nSect)
+void adfSetBlockUsed ( struct AdfVolume * const vol,
+                       const SECTNUM            nSect )
 {
     uint32_t oldValue;
     int sectOfMap = nSect-2;
