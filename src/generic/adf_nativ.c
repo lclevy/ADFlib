@@ -34,9 +34,9 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice ( struct AdfDevice * dev,
-                       char *             name,
-                       BOOL               ro )
+RETCODE myInitDevice ( struct AdfDevice * const dev,
+                       const char * const       name,
+                       const BOOL               ro )
 {
     (void) name;
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
@@ -63,10 +63,10 @@ RETCODE myInitDevice ( struct AdfDevice * dev,
  * myReadSector
  *
  */
-RETCODE myReadSector ( struct AdfDevice * dev,
-                       int32_t            n,
-                       int                size,
-                       uint8_t *          buf )
+RETCODE myReadSector ( struct AdfDevice * const dev,
+                       const int32_t            n,
+                       const int                size,
+                       uint8_t * const          buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
     return RC_OK;
@@ -77,10 +77,10 @@ RETCODE myReadSector ( struct AdfDevice * dev,
  * myWriteSector
  *
  */
-RETCODE myWriteSector ( struct AdfDevice * dev,
-                        int32_t            n,
-                        int                size,
-                        uint8_t *          buf )
+RETCODE myWriteSector ( struct AdfDevice * const dev,
+                        const int32_t            n,
+                        const int                size,
+                        const uint8_t * const    buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
     return RC_OK;
@@ -92,7 +92,7 @@ RETCODE myWriteSector ( struct AdfDevice * dev,
  *
  * free native device
  */
-RETCODE myReleaseDevice ( struct AdfDevice * dev )
+RETCODE myReleaseDevice ( struct AdfDevice * const dev )
 {
     struct AdfNativeDevice * nDev;
 
@@ -125,7 +125,7 @@ void adfInitNativeFct()
  * myIsDevNative
  *
  */
-BOOL myIsDevNative(char *devName)
+BOOL myIsDevNative ( const char * const devName )
 {
     return (strncmp(devName,"/dev/",5)==0);
 }
