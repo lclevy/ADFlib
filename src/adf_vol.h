@@ -71,7 +71,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
 PREFIX void adfUnMount ( struct AdfVolume * const vol );
 
-PREFIX void adfVolumeInfo ( const struct AdfVolume * const vol );
+PREFIX void adfVolumeInfo ( struct AdfVolume * const vol );
 
 struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const int32_t            start,
@@ -86,7 +86,7 @@ PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
                               const int32_t            nSect,
                               uint8_t * const          buf );
 
-PREFIX RETCODE adfWriteBlock ( const struct AdfVolume * const vol,
+PREFIX RETCODE adfWriteBlock ( struct AdfVolume * const vol,
                                const int32_t            nSect,
                                const uint8_t * const    buf );
 
