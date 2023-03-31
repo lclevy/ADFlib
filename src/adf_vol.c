@@ -84,8 +84,8 @@ RETCODE adfInstallBootBlock ( struct AdfVolume * vol,
  * isSectNumValid
  *
  */
-BOOL isSectNumValid ( struct AdfVolume * vol,
-                      SECTNUM            nSect )
+BOOL isSectNumValid ( const struct AdfVolume * const vol,
+                      const SECTNUM                  nSect )
 {
     return( 0<=nSect && nSect<=(vol->lastBlock - vol->firstBlock) );
 }	

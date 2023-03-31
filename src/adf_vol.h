@@ -62,8 +62,8 @@ struct AdfVolume {
 PREFIX RETCODE adfInstallBootBlock ( struct AdfVolume * vol,
                                      uint8_t *          code );
 
-PREFIX BOOL isSectNumValid ( struct AdfVolume * vol,
-                             SECTNUM            nSect );
+PREFIX BOOL isSectNumValid ( const struct AdfVolume * const vol,
+                             const SECTNUM                  nSect );
 
 PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
