@@ -35,7 +35,7 @@
 #ifdef WIN32
 
  //#if !defined(__GNUC__)
-#if !defined(__MINGW32__) || !defined(_CYGWIN)
+#if !defined(__MINGW32__) && !defined(_CYGWIN)
 #include <io.h>         // for open(), write(), ...
 typedef uint32_t mode_t;
 #endif
