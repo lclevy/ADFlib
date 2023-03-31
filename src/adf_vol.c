@@ -330,7 +330,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 
     if (strlen(volName)>MAXNAMELEN)
         volName[MAXNAMELEN]='\0';
-    root.nameLen = strlen(volName);
+    root.nameLen = (uint8_t) strlen ( volName );
     memcpy(root.diskName,volName,root.nameLen);
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.coDays),&(root.coMins),&(root.coTicks));
 
