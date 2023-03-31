@@ -29,29 +29,29 @@
 #include "adf_dev.h"
 
 PREFIX struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
-                                                int32_t cyl,
-                                                int32_t heads,
-                                                int32_t sec );
+                                                const int32_t      cyl,
+                                                const int32_t      heads,
+                                                const int32_t      sec );
 
-PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * dev,
-                                 char *             volName,
-                                 uint8_t            volType );
+PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                                 const char * const       volName,
+                                 const uint8_t            volType );
 
-BOOL adfInitDumpDevice ( struct AdfDevice * dev,
-                         char             * name,
-                         BOOL               ro );
+BOOL adfInitDumpDevice ( struct AdfDevice * const dev,
+                         const char * const       name,
+                         const BOOL               ro );
 
-BOOL adfReadDumpSector ( struct AdfDevice * dev,
-                         int32_t            n,
-                         int                size,
-                         uint8_t *          buf );
+BOOL adfReadDumpSector ( struct AdfDevice * const dev,
+                         const int32_t            n,
+                         const int                size,
+                         uint8_t * const          buf );
 
-BOOL adfWriteDumpSector ( struct AdfDevice * dev,
-                          int32_t            n,
-                          int                size,
-                          uint8_t *          buf );
+BOOL adfWriteDumpSector ( struct AdfDevice * const dev,
+                          const int32_t            n,
+                          const int                size,
+                          const uint8_t * const    buf );
 
-RETCODE adfReleaseDumpDevice ( struct AdfDevice * dev );
+RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev );
 
 #endif /* ADF_DUMP_H */
 /*##########################################################################*/

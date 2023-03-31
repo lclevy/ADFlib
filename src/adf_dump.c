@@ -44,9 +44,9 @@
  * adfInitDumpDevice
  *
  */
-RETCODE adfInitDumpDevice ( struct AdfDevice * dev,
-                            char *             name,
-                            BOOL               ro )
+RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
+                            const char * const       name,
+                            const BOOL               ro )
 {
     dev->readOnly = ro;
     errno = 0;
@@ -82,10 +82,10 @@ RETCODE adfInitDumpDevice ( struct AdfDevice * dev,
  * adfReadDumpSector
  *
  */
-RETCODE adfReadDumpSector ( struct AdfDevice * dev,
-                            int32_t            n,
-                            int                size,
-                            uint8_t *          buf )
+RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
+                            const int32_t            n,
+                            const int                size,
+                            uint8_t * const          buf )
 {
     int r;
 /*puts("adfReadDumpSector");*/
@@ -108,10 +108,10 @@ RETCODE adfReadDumpSector ( struct AdfDevice * dev,
  * adfWriteDumpSector
  *
  */
-RETCODE adfWriteDumpSector ( struct AdfDevice * dev,
-                             int32_t            n,
-                             int                size,
-                             uint8_t *          buf )
+RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
+                             const int32_t            n,
+                             const int                size,
+                             const uint8_t * const    buf )
 {
     int r = fseek ( dev->fd, 512 * n, SEEK_SET );
     if (r==-1)
@@ -142,9 +142,9 @@ RETCODE adfReleaseDumpDevice ( struct AdfDevice * dev )
  * adfCreateHdFile
  *
  */
-RETCODE adfCreateHdFile ( struct AdfDevice * dev,
-                          char *             volName,
-                          uint8_t            volType )
+RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                          const char * const       volName,
+                          const uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
@@ -175,9 +175,9 @@ RETCODE adfCreateHdFile ( struct AdfDevice * dev,
  * returns NULL if failed
  */ 
 struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
-                                         int32_t cylinders,
-                                         int32_t heads,
-                                         int32_t sectors )
+                                         const int32_t      cylinders,
+                                         const int32_t      heads,
+                                         const int32_t      sectors )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 /*    int32_t i;*/
