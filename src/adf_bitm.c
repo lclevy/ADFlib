@@ -44,7 +44,7 @@ extern uint32_t bitMask[32];
  * adfUpdateBitmap
  *
  */
-RETCODE adfUpdateBitmap(struct AdfVolume *vol)
+RETCODE adfUpdateBitmap ( const struct AdfVolume * const vol )
 {
 	int i;
     struct bRootBlock root;
@@ -95,9 +95,9 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
  * adfReadBitmap
  *
  */
-RETCODE adfReadBitmap ( struct AdfVolume *  vol,
-                        int32_t             nBlock,
-                        struct bRootBlock * root )
+RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
+                        const int32_t                   nBlock,
+                        const struct bRootBlock * const root )
 {
 	int32_t mapSize, nSect;
 	int32_t j, i;
