@@ -78,7 +78,7 @@ RETCODE adfUpdateBitmap(struct AdfVolume *vol)
  * adfCountFreeBlocks
  *
  */
-uint32_t adfCountFreeBlocks(struct AdfVolume* vol)
+uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
 {
     int j;
 
@@ -184,7 +184,8 @@ RETCODE adfReadBitmap ( struct AdfVolume *  vol,
  * adfIsBlockFree
  *
  */
-BOOL adfIsBlockFree(struct AdfVolume * vol, SECTNUM nSect)
+BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
+                      const SECTNUM nSect )
 {
     assert ( nSect >= 2 );
     int sectOfMap = nSect-2;
