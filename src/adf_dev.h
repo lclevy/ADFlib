@@ -13,7 +13,7 @@ struct Partition {
     int32_t startCyl;
     int32_t lenCyl;
     char* volName;
-    int volType;
+    uint8_t volType;
 };
 
 /* ----- DEVICES ----- */

@@ -16,7 +16,7 @@ typedef struct test_data_s {
     char *          testname;
     char *          adfname;
     char *          volname;
-    int             fstype;   // 0 - OFS, 1 - FFS
+    uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        dblocksize;
     unsigned        chunksize;
     unsigned        offset;

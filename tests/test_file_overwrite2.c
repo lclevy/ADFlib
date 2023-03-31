@@ -15,7 +15,7 @@ typedef struct test_data_s {
     //struct AdfVolume * vol;
     char *          adfname;
     char *          volname;
-    int             fstype;   // 0 - OFS, 1 - FFS
+    uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
 //    char *          openMode;  // "w" or "a"
     unsigned char * buffer;

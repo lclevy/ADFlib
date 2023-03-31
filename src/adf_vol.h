@@ -40,7 +40,7 @@ struct AdfVolume {
     SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
     SECTNUM rootBlock;      /* root block (from firstBlock) */
 
-    char dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
+    uint8_t dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
     BOOL bootCode;
     BOOL readOnly;
     unsigned datablockSize;      /* 488 or 512 */
@@ -77,7 +77,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
                                   int32_t         start,
                                   int32_t         len,
                                   char *          volName,
-                                  int             volType );
+                                  uint8_t         volType );
 
 /*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
 void adfUpdateBitmap(struct AdfVolume*);

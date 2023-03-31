@@ -144,7 +144,7 @@ RETCODE adfReleaseDumpDevice ( struct AdfDevice * dev )
  */
 RETCODE adfCreateHdFile ( struct AdfDevice * dev,
                           char *             volName,
-                          int                volType )
+                          uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");

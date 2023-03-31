@@ -102,7 +102,7 @@ RETCODE adfMountFlop ( struct AdfDevice * dev )
  */
 RETCODE adfCreateFlop ( struct AdfDevice * dev,
                         char *             volName,
-                        int                volType )
+                        uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");

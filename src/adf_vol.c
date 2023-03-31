@@ -192,7 +192,7 @@ struct AdfVolume * adfMount ( struct AdfDevice * dev,
         return NULL;
     }       
     
-	vol->dosType = boot.dosType[3];
+    vol->dosType = (uint8_t) boot.dosType[3];
 	if (isFFS(vol->dosType))
 		vol->datablockSize=512;
 	else
@@ -250,7 +250,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
                                   int32_t            start,
                                   int32_t            len,
                                   char *             volName,
-                                  int                volType )
+                                  uint8_t            volType )
 {
     struct bBootBlock boot;
     struct bRootBlock root;
@@ -294,7 +294,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * dev,
         (*adfEnv.progressBar)(25);
 
     memset(&boot, 0, 1024);
-    boot.dosType[3] = volType;
+    boot.dosType[3] = (char) volType;
 /*printf("first=%d last=%d\n", vol->firstBlock, vol->lastBlock);
 printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
 */
