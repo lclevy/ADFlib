@@ -66,12 +66,12 @@ PREFIX BOOL isSectNumValid ( struct AdfVolume * vol,
                              SECTNUM            nSect );
 
 PREFIX struct AdfVolume * adfMount ( const struct AdfDevice * const dev,
-                                     const int                      nPart,
-                                     const BOOL                     readOnly );
+                                     const int                nPart,
+                                     const BOOL               readOnly );
 
 PREFIX void adfUnMount ( struct AdfVolume * const vol );
 
-PREFIX void adfVolumeInfo ( struct AdfVolume * vol );
+PREFIX void adfVolumeInfo ( const struct AdfVolume * const vol );
 
 struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const int32_t            start,
@@ -86,7 +86,7 @@ PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
                               const int32_t            nSect,
                               uint8_t * const          buf );
 
-PREFIX RETCODE adfWriteBlock ( struct AdfVolume * const vol,
+PREFIX RETCODE adfWriteBlock ( const struct AdfVolume * const vol,
                                const int32_t            nSect,
                                const uint8_t * const    buf );
 

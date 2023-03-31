@@ -96,7 +96,7 @@ BOOL isSectNumValid ( struct AdfVolume * vol,
  * adfVolumeInfo
  *
  */
-void adfVolumeInfo ( struct AdfVolume * vol )
+void adfVolumeInfo ( const struct AdfVolume * const vol )
 {
     struct bRootBlock root;
     char diskName[35];
@@ -167,8 +167,8 @@ void adfVolumeInfo ( struct AdfVolume * vol )
  * 
  */
 PREFIX struct AdfVolume * adfMount ( const struct AdfDevice * const dev,
-                                     const int                      nPart,
-                                     const BOOL                     readOnly )
+                                     const int                nPart,
+                                     const BOOL               readOnly )
 {
     int32_t nBlock;
     struct bRootBlock root;
@@ -419,7 +419,7 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
  * adfWriteBlock
  *
  */
-RETCODE adfWriteBlock ( struct AdfVolume * const vol,
+RETCODE adfWriteBlock ( const struct AdfVolume * const vol,
                         const int32_t            nSect,
                         const uint8_t * const    buf )
 {
