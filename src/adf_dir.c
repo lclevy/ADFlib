@@ -1093,8 +1093,8 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
     newSum = adfNormalSum(buf,20,sizeof(struct bEntryBlock));
     swLong(buf+20, newSum);
 
-    if (adfWriteBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
     return RC_OK;
 }
@@ -1125,8 +1125,8 @@ RETCODE adfWriteDirBlock ( struct AdfVolume * const vol,
     newSum = adfNormalSum(buf,20,sizeof(struct bDirBlock));
     swLong(buf+20, newSum);
 
-    if (adfWriteBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
     return RC_OK;
 }
