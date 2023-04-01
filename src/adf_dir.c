@@ -581,12 +581,11 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
                             struct AdfEntry * const          entry )
 {
     char buf[MAXCMMTLEN+1];
-    int len;
 
 	entry->type = entryBlk->secType;
     entry->parent = entryBlk->parent;
 
-    len = min(entryBlk->nameLen, MAXNAMELEN);
+    unsigned len = min ( entryBlk->nameLen, (unsigned) MAXNAMELEN );
     strncpy(buf, entryBlk->name, len);
     buf[len] = '\0';
     entry->name = strdup(buf);
@@ -607,7 +606,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         break;
     case ST_DIR:
         entry->access = entryBlk->access;
-        len = min(entryBlk->commLen, MAXCMMTLEN);
+        len = min ( entryBlk->commLen, (unsigned) MAXCMMTLEN );
         strncpy(buf, entryBlk->comment, len);
         buf[len] = '\0';
         entry->comment = strdup(buf);
@@ -619,7 +618,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
     case ST_FILE:
         entry->access = entryBlk->access;
         entry->size = entryBlk->byteSize;
-        len = min(entryBlk->commLen, MAXCMMTLEN);
+        len = min ( entryBlk->commLen, (unsigned) MAXCMMTLEN );
         strncpy(buf, entryBlk->comment, len);
         buf[len] = '\0';
         entry->comment = strdup(buf);
