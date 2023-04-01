@@ -74,8 +74,8 @@ PREFIX void adfUnMount ( struct AdfVolume * const vol );
 PREFIX void adfVolumeInfo ( struct AdfVolume * const vol );
 
 struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
-                                  const int32_t            start,
-                                  const int32_t            len,
+                                  const uint32_t           start,
+                                  const uint32_t           len,
                                   const char * const       volName,
                                   const uint8_t            volType );
 
