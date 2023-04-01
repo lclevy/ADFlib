@@ -502,7 +502,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
         return 0;
     }
 
-    int blockSize = file->volume->datablockSize;
+    unsigned blockSize = file->volume->datablockSize;
 /*puts("adfReadFile");*/
     if (file->pos+n > file->fileHdr->byteSize)
         n = file->fileHdr->byteSize - file->pos;
@@ -512,7 +512,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
         ( (struct bOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
-    int32_t bytesRead = 0;
+    uint32_t bytesRead = 0;
     uint8_t *bufPtr = buffer;
 
     while ( bytesRead < n ) {
@@ -529,7 +529,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
             file->posInDataBlk = 0;
         }
 
-        int size = min ( n - bytesRead, blockSize - file->posInDataBlk );
+        unsigned size = min ( n - bytesRead, blockSize - file->posInDataBlk );
         memcpy(bufPtr, dataPtr+file->posInDataBlk, size);
         bufPtr += size;
         file->pos += size;
