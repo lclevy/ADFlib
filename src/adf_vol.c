@@ -102,7 +102,7 @@ void adfVolumeInfo ( struct AdfVolume * const vol )
     char diskName[35];
     int days,month,year;
 	
-    if ( adfReadRootBlock(vol, vol->rootBlock, &root) != RC_OK )
+    if ( adfReadRootBlock(vol, (uint32_t) vol->rootBlock, &root) != RC_OK )
         return;
 	
     memset(diskName, 0, 35);
@@ -203,7 +203,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
     else
        vol->readOnly = readOnly;
 	   	
-	if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         (*adfEnv.wFct)("adfMount : RootBlock invalid");       
         return NULL;
     }
@@ -342,7 +342,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(60);
 
-    if (adfWriteRootBlock(vol, blkList[0], &root)!=RC_OK) {
+    if ( adfWriteRootBlock ( vol, (uint32_t) blkList[0], &root ) != RC_OK ) {
         free(vol->volName); free(vol);
         return NULL;
     }
