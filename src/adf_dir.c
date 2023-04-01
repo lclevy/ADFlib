@@ -57,7 +57,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 {
     struct bEntryBlock parent, previous, entry, nParent;
     SECTNUM nSect2, nSect, prevSect, tmpSect;
-    int hashValueO, hashValueN, len;
+    int hashValueO, hashValueN;
     char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
 	BOOL intl;
     RETCODE rc;
@@ -66,9 +66,9 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         return RC_OK;
     
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
-    len = strlen(newName);
+    unsigned len = (unsigned) strlen ( newName );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t*) newName, len, intl );
-    adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, strlen(oldName), intl );
+    adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, (unsigned) strlen(oldName), intl );
     /* newName == oldName ? */
 
     if (adfReadEntryBlock( vol, pSect, &parent )!=RC_OK)
