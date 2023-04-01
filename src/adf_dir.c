@@ -1037,12 +1037,12 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
 {
     uint8_t buf[512];
 
-    if (adfReadBlock(vol, nSect, buf)!=RC_OK)
+    if ( adfReadBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
         return RC_ERROR;
 
     memcpy(ent, buf, 512);
 #ifdef LITT_ENDIAN
-    int32_t secType = swapLong ( ( uint8_t * ) &ent->secType );
+    int32_t secType = (int32_t) swapLong ( ( uint8_t * ) &ent->secType );
     if ( secType == ST_LFILE ||
          secType == ST_LDIR ||
          secType == ST_LSOFT  )
