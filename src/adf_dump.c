@@ -157,7 +157,7 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    dev->volList[0] = adfCreateVol( dev, 0L, (int32_t)dev->cylinders, volName, volType );
+    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
         return RC_ERROR;
