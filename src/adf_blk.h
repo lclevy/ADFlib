@@ -253,7 +253,7 @@ struct bOFSDataBlock{
 /*000*/	int32_t	type;		/* == 8 */
 /*004*/	int32_t	headerKey;	/* pointer to file_hdr block */
 /*008*/	int32_t	seqNum;	/* file data block number */
-/*00c*/	int32_t	dataSize;	/* <= 0x1e8 */
+/*00c*/	uint32_t dataSize;	/* <= 0x1e8 */
 /*010*/	int32_t	nextData;	/* next data block */
 /*014*/	ULONG	checkSum;
 /*018*/	UCHAR	data[488];
