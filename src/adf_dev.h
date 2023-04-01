@@ -57,12 +57,12 @@ PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
 //struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
 
 RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
-                          const int32_t            pSect,
-                          const int32_t            size,
+                          const uint32_t           pSect,
+                          const uint32_t           size,
                           uint8_t * const          buf );
 
 RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
-                           const int32_t            pSect,
-                           const int32_t            size,
+                           const uint32_t           pSect,
+                           const uint32_t           size,
                            const uint8_t * const    buf );
 #endif

@@ -295,8 +295,8 @@ void adfUnMountDev ( struct AdfDevice * const dev )
 
 
 RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
-                          const int32_t            pSect,
-                          const int32_t            size,
+                          const uint32_t           pSect,
+                          const uint32_t           size,
                           uint8_t * const          buf )
 {
     RETCODE rc;
@@ -313,8 +313,8 @@ RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
 
 
 RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
-                           const int32_t            pSect,
-                           const int32_t            size,
+                           const uint32_t           pSect,
+                           const uint32_t           size,
                            const uint8_t * const    buf )
 {
     RETCODE rc;
