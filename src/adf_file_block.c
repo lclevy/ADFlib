@@ -196,7 +196,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
     uint8_t buf[512];
     struct bOFSDataBlock *dBlock;
 
-    RETCODE rc = adfReadBlock ( vol, nSect, buf );
+    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfReadDataBlock: error reading block %d, volume '%s'",
                        nSect, vol->volName );
@@ -260,9 +260,9 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
         uint32_t newSum = adfNormalSum ( buf, 20, 512 );
         swLong(buf+20,newSum);
 /*        *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
-        rc = adfWriteBlock ( vol, nSect, buf );
+        rc = adfWriteBlock ( vol, (uint32_t) nSect, buf );
     } else {
-        rc = adfWriteBlock ( vol, nSect, data );
+        rc = adfWriteBlock ( vol, (uint32_t) nSect, data );
     }
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfWriteDataBlock: error writing block %d, volume '%s'",
@@ -284,7 +284,7 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
                               struct bFileExtBlock * const fext )
 {
     uint8_t buf[sizeof(struct bFileExtBlock)];
-    RETCODE rc = adfReadBlock ( vol, nSect,buf );
+    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
                        nSect, vol->volName );
@@ -338,7 +338,7 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    RETCODE rc = adfWriteBlock ( vol, nSect, buf );
+    RETCODE rc = adfWriteBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFctf ( "adfWriteFileExtBlock: error wriding block %d, volume '%s'",
                        nSect, vol->volName );
