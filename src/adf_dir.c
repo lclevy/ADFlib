@@ -676,14 +676,14 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
     uint8_t upperName[MAXNAMELEN+1];
     uint8_t upperName2[MAXNAMELEN+1];
     SECTNUM nSect;
-    int nameLen;
     BOOL found;
     SECTNUM updSect;
     BOOL intl;
 
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     hashVal = adfGetHashValue( (uint8_t*)name, intl );
-    nameLen = min(strlen(name), MAXNAMELEN);
+    unsigned nameLen = min ( (unsigned) strlen ( name ),
+                             (unsigned) MAXNAMELEN );
     adfStrToUpper ( upperName, (uint8_t *) name, nameLen, intl );
 
     nSect = ht[hashVal];
