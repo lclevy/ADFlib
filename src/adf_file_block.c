@@ -161,7 +161,6 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
 {
     uint8_t buf[512];
     uint32_t newSum;
-    RETCODE rc = RC_OK;
 /*printf("adfWriteFileHdrBlock %ld\n",nSect);*/
     fhdr->type = T_HEADER;
     fhdr->dataSize = 0;
@@ -175,9 +174,7 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
     swLong(buf+20, newSum);
 /*    *(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    adfWriteBlock(vol, nSect, buf);
-
-    return rc;
+    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 
