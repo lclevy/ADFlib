@@ -1000,7 +1000,7 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
     if (nSect==-1) return RC_ERROR;
 /*printf("new fhdr=%d\n",nSect);*/
     memset(fhdr,0,512);
-    fhdr->nameLen = min(MAXNAMELEN, strlen(name));
+    fhdr->nameLen = (uint8_t) min ( (unsigned) MAXNAMELEN, (unsigned) strlen ( name ) );
     memcpy(fhdr->fileName,name,fhdr->nameLen);
     fhdr->headerKey = nSect;
     if (parent.secType==ST_ROOT)
