@@ -70,7 +70,7 @@ BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
 
 RETCODE adfCreateBitmap ( struct AdfVolume * const vol );
 RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol );
-void adfFreeBitmap ( struct AdfVolume * vol );
+void adfFreeBitmap ( struct AdfVolume * const vol );
 
 #endif /* ADF_BITM_H */
 

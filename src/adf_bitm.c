@@ -554,7 +554,7 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
  * adfFreeBitmap
  *
  */
-void adfFreeBitmap ( struct AdfVolume * vol )
+void adfFreeBitmap ( struct AdfVolume * const vol )
 {
     int i;
 
