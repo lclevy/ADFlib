@@ -264,14 +264,14 @@ uint32_t adfNormalSum ( const UCHAR * const buf,
                         const int           offset,
                         const int           bufLen )
 {
-    int32_t newsum;
+    uint32_t newsum;
     int i;
 
     newsum=0L;
     for(i=0; i < (bufLen/4); i++)
         if ( i != (offset/4) )       /* old chksum */
             newsum+=Long(buf+i*4);
-    newsum=(-newsum);	/* WARNING */
+    newsum = (uint32_t) ( - (int32_t) newsum );	/* WARNING */
 
     return(newsum);
 }
@@ -318,10 +318,9 @@ uint32_t adfBootSum ( const uint8_t * const buf )
 uint32_t adfBootSum2 ( const uint8_t * const buf )
 {
     uint32_t prevsum, newSum;
-    int i;
 
     prevsum = newSum=0L;
-    for(i=0; i<1024/sizeof(uint32_t); i++) {
+    for ( unsigned i = 0; i < 1024 / sizeof(uint32_t) ; i++ ) {
         if (i!=1) {
             prevsum = newSum;
             newSum += Long(buf+i*4);
