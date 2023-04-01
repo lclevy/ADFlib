@@ -114,7 +114,7 @@ int adfGetHashValue( const uint8_t * const name,
 
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,
-                     const int             nlen,
+                     const unsigned        nlen,
                      const BOOL            intl );
 
 PREFIX RETCODE adfChangeDir ( struct AdfVolume * const vol,

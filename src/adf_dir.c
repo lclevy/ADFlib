@@ -873,16 +873,14 @@ uint8_t adfToUpper ( const uint8_t c )
  */
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,
-                     const int             nlen,
+                     const unsigned        nlen,
                      const BOOL            intl )
 {
-    int i;
-
     if (intl)
-        for(i=0; i<nlen; i++)
+        for ( unsigned i = 0 ; i < nlen ; i++ )
             nstr[i]=adfIntlToUpper(ostr[i]);
     else
-        for(i=0; i<nlen; i++)
+        for ( unsigned i = 0 ; i < nlen ; i++ )
             nstr[i]=adfToUpper(ostr[i]);
     nstr[nlen]='\0';
 }
