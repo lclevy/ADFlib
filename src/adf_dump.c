@@ -176,9 +176,9 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
  * returns NULL if failed
  */ 
 struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
-                                         const int32_t      cylinders,
-                                         const int32_t      heads,
-                                         const int32_t      sectors )
+                                         const uint32_t     cylinders,
+                                         const uint32_t     heads,
+                                         const uint32_t     sectors )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 /*    int32_t i;*/
