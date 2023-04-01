@@ -759,7 +759,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 {
     BOOL intl;
     struct bEntryBlock updEntry;
-    int len, hashValue;
+    int hashValue;
     RETCODE rc;
     char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
     SECTNUM nSect, newSect, newSect2;
@@ -768,7 +768,8 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 /*puts("adfCreateEntry in");*/
 
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
-    len = min(strlen(name), MAXNAMELEN) ;
+    unsigned len = min ( (unsigned) strlen(name),
+                         (unsigned) MAXNAMELEN );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
     hashValue = adfGetHashValue((uint8_t*)name, intl);
     nSect = dir->hashTable[ hashValue ];
@@ -789,7 +790,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
             root = (struct bRootBlock*)dir;
             adfTime2AmigaTime(adfGiveCurrentTime(),
                 &(root->cDays),&(root->cMins),&(root->cTicks));
-            rc=adfWriteRootBlock(vol, vol->rootBlock, root);
+            rc = adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, root );
         }
         else {
             adfTime2AmigaTime(adfGiveCurrentTime(),&(dir->days),&(dir->mins),&(dir->ticks));
