@@ -26,10 +26,10 @@ int main ( int     argc,
     }
     
     const char * const floppy_type = argv[2];
-    int       tracks               = 80;
-    const int HEADS                = 2;
+    unsigned       tracks          = 80;
+    const unsigned HEADS           = 2;
 
-    int sectors_per_track;
+    unsigned sectors_per_track;
     if ( strncmp ( floppy_type, "dd", 2 ) == 0 )
         sectors_per_track = 11;
     else if ( strncmp ( floppy_type, "hd", 2 ) == 0 ) {
