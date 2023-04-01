@@ -26,14 +26,14 @@ struct Partition {
 struct AdfDevice {
     int devType;               /* see below */
     BOOL readOnly;
-    int32_t size;                 /* in bytes */
+    uint32_t size;                /* in bytes */
 
     int nVol;                  /* partitions */
     struct AdfVolume** volList;
 
-    int32_t cylinders;            /* geometry */
-    int32_t heads;
-    int32_t sectors;
+    uint32_t cylinders;            /* geometry */
+    uint32_t heads;
+    uint32_t sectors;
 
     BOOL isNativeDev;
     union {
