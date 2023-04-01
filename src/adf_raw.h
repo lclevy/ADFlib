@@ -55,11 +55,11 @@
 #define SWBL_LSEG         11
 
 PREFIX RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
-                                  const int32_t             nSect,
+                                  const uint32_t            nSect,
                                   struct bRootBlock * const root );
 
 PREFIX RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
-                                   const int32_t             nSect,
+                                   const uint32_t            nSect,
                                    struct bRootBlock * const root );
 
 PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
