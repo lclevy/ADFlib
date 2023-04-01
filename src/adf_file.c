@@ -434,7 +434,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     else {     // mode_write || mode_append
         if ( fileAlreadyExists ) {
             memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
-            int seekpos = mode_append ? file->fileHdr->byteSize : 0;
+            unsigned seekpos = ( mode_append ? file->fileHdr->byteSize : 0 );
             if ( adfFileSeek ( file, seekpos ) != RC_OK ) {
                 adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
                                seekpos, file->fileHdr->fileName );
