@@ -249,7 +249,7 @@ void adfUnMount ( struct AdfVolume * const vol )
 struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const int32_t            start,
                                   const int32_t            len,
-                                  char * const             volName,
+                                  const char * const       volName,
                                   const uint8_t            volType )
 {
     struct bBootBlock boot;
@@ -328,9 +328,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 
     memset(&root, 0, LOGICAL_BLOCK_SIZE);
 
-    if (strlen(volName)>MAXNAMELEN)
-        volName[MAXNAMELEN]='\0';
-    root.nameLen = (uint8_t) strlen ( volName );
+    root.nameLen = (uint8_t) strlen ( vol->volName );
     memcpy(root.diskName,volName,root.nameLen);
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.coDays),&(root.coMins),&(root.coTicks));
 

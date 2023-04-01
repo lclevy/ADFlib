@@ -76,7 +76,7 @@ PREFIX void adfVolumeInfo ( struct AdfVolume * const vol );
 struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const int32_t            start,
                                   const int32_t            len,
-                                  char * const             volName,
+                                  const char * const       volName,
                                   const uint8_t            volType );
 
 /*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
