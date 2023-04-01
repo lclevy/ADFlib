@@ -61,7 +61,8 @@ void adfFileTruncate ( struct AdfVolume * vol,
                        SECTNUM            nParent,
                        char *             name )
 {
-
+    // function not implemented (yet?), supressing warnings about unused parameters
+    (void) vol, (void) nParent, (void) name;
 }
 
 
