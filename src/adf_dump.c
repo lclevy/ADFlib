@@ -87,17 +87,18 @@ RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
                             const unsigned           size,
                             uint8_t * const          buf )
 {
-    int r;
 /*puts("adfReadDumpSector");*/
-    r = fseek ( dev->fd, 512 * n, SEEK_SET );
+    int pos = fseek ( dev->fd, 512 * n, SEEK_SET );
 /*printf("nnn=%ld size=%d\n",n,size);*/
-    if (r==-1)
+    if ( pos == -1 )
         return RC_ERROR;
+
+    size_t bytes_read = fread ( buf, 1, size, dev->fd );
 /*puts("123");*/
-    if ( ( r = fread ( buf, 1, size, dev->fd ) ) != size ) {
+    if ( bytes_read != size ) {
 /*printf("rr=%d\n",r);*/
         return RC_ERROR;
-}
+    }
 /*puts("1234");*/
 
     return RC_OK;
