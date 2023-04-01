@@ -83,7 +83,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     }
 
     /* change name and parent dir */
-    entry.nameLen = min(31, strlen(newName));
+    entry.nameLen = (uint8_t) min ( 31u, strlen ( newName ) );
     memcpy(entry.name, newName, entry.nameLen);
     entry.parent = nPSect;
     tmpSect = entry.nextSameHash;
@@ -98,7 +98,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if (prevSect==0) {
         parent.hashTable[hashValueO] = tmpSect;
         if (parent.secType==ST_ROOT)
-            rc = adfWriteRootBlock(vol, pSect, (struct bRootBlock*)&parent);
+            rc = adfWriteRootBlock(vol, (uint32_t) pSect, (struct bRootBlock*)&parent);
         else
             rc = adfWriteDirBlock(vol, pSect, (struct bDirBlock*)&parent);
         if (rc!=RC_OK)
@@ -124,7 +124,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if (nSect2==0) {
         nParent.hashTable[ hashValueN ] = nSect;
         if (nParent.secType==ST_ROOT)
-            rc = adfWriteRootBlock(vol, nPSect, (struct bRootBlock*)&nParent);
+            rc = adfWriteRootBlock(vol, (uint32_t) nPSect, (struct bRootBlock*)&nParent);
         else
             rc = adfWriteDirBlock(vol, nPSect, (struct bDirBlock*)&nParent);
     }
