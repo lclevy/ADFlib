@@ -37,19 +37,19 @@ PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
                                  const char * const       volName,
                                  const uint8_t            volType );
 
-BOOL adfInitDumpDevice ( struct AdfDevice * const dev,
-                         const char * const       name,
-                         const BOOL               ro );
+RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
+                            const char * const       name,
+                            const BOOL               ro );
 
-BOOL adfReadDumpSector ( struct AdfDevice * const dev,
-                         const uint32_t           n,
-                         const unsigned           size,
-                         uint8_t * const          buf );
+RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
+                            const uint32_t           n,
+                            const unsigned           size,
+                            uint8_t * const          buf );
 
-BOOL adfWriteDumpSector ( struct AdfDevice * const dev,
-                          const uint32_t           n,
-                          const unsigned           size,
-                          const uint8_t * const    buf );
+RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
+                             const uint32_t           n,
+                             const unsigned           size,
+                             const uint8_t * const    buf );
 
 RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev );
 
