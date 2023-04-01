@@ -42,7 +42,7 @@
  *
  */
 RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
-                           struct bFileHeaderBlock * const entry,
+                           const struct bFileHeaderBlock * const entry,
                            struct AdfFileBlocks * const    fileBlocks )
 {
     int32_t n, m;
