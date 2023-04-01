@@ -40,8 +40,9 @@ void swLong ( uint8_t * const buf,
 void swShort ( uint8_t * const buf,
                const uint16_t  val );
 
-PREFIX struct AdfList * newCell ( struct AdfList * list,
-                                  void *           content );
+PREFIX struct AdfList * newCell ( struct AdfList * const list,
+                                  void * const           content );
+
 PREFIX void freeList ( struct AdfList * list );
 PREFIX void adfDays2Date(int32_t days, int *yy, int *mm, int *dd);
 BOOL adfIsLeap(int y);

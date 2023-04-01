@@ -63,10 +63,10 @@ void swShort ( uint8_t * const buf,
  *
  * adds a cell at the end the list
  */
-struct AdfList * newCell ( struct AdfList * list,
-                           void *           content )
+struct AdfList * newCell ( struct AdfList * const list,
+                           void * const           content )
 {
-    struct AdfList * cell = ( struct AdfList * )
+    struct AdfList * const cell = ( struct AdfList * )
         malloc ( sizeof ( struct AdfList ) );
     if (!cell) {
         (*adfEnv.eFct)("newCell : malloc");
