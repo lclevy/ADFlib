@@ -121,8 +121,8 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
                           const SECTNUM            nSect,
                           struct GenBlock * const  block )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
-    int len;
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    unsigned len;
     char name[MAXNAMELEN+1];
 
 	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
@@ -139,7 +139,7 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
         case ST_DIR:
         case ST_LFILE:
         case ST_LDIR:
-            len = min(MAXNAMELEN, buf[vol->blockSize-80]);
+            len = min( (unsigned) MAXNAMELEN, buf [ vol->blockSize - 80 ] );
             strncpy(name, (char*)buf+vol->blockSize-79, len);
             name[len] = '\0';
             block->name = strdup(name);
