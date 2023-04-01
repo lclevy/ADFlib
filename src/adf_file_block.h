@@ -47,10 +47,10 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
 RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
                             struct bFileHeaderBlock * const entry );
 
-PREFIX int32_t adfFileRealSize ( uint32_t        size,
-                                 int             blockSize,
-                                 int32_t * const dataN,
-                                 int32_t * const extN );
+PREFIX uint32_t adfFileRealSize ( uint32_t        size,
+                                  unsigned        blockSize,
+                                  int32_t * const dataN,
+                                  int32_t * const extN );
 
 RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
                                const SECTNUM                   nSect,

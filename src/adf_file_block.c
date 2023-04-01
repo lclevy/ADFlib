@@ -54,13 +54,15 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
     adfFileRealSize( entry->byteSize, vol->datablockSize, 
         &(fileBlocks->nbData), &(fileBlocks->nbExtens) );
 
-    fileBlocks->data=(SECTNUM*)malloc(fileBlocks->nbData * sizeof(SECTNUM));
+    fileBlocks->data = (SECTNUM *)
+        malloc ( (unsigned) fileBlocks->nbData * sizeof(SECTNUM) );
     if (!fileBlocks->data) {
         (*adfEnv.eFct)("adfGetFileBlocks : malloc");
         return RC_MALLOC;
     }
 
-    fileBlocks->extens=(SECTNUM*)malloc(fileBlocks->nbExtens * sizeof(SECTNUM));
+    fileBlocks->extens = (SECTNUM *)
+        malloc ( (unsigned) fileBlocks->nbExtens * sizeof(SECTNUM) );
     if (!fileBlocks->extens) {
         (*adfEnv.eFct)("adfGetFileBlocks : malloc");
         return RC_MALLOC;
@@ -120,12 +122,12 @@ RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
  * Compute number of datablocks and file extension blocks
  *
  */
-int32_t adfFileRealSize ( uint32_t        size,
-                          int             blockSize,
-                          int32_t * const dataN,
-                          int32_t * const extN )
+uint32_t adfFileRealSize ( uint32_t        size,
+                           unsigned        blockSize,
+                           int32_t * const dataN,
+                           int32_t * const extN )
 {
-    int32_t data, ext;
+    uint32_t data, ext;
 
    /*--- number of data blocks ---*/
     data = size / blockSize;
@@ -141,9 +143,9 @@ int32_t adfFileRealSize ( uint32_t        size,
     }
 
     if (dataN)
-        *dataN = data;
+        *dataN = (int32_t) data;
     if (extN)
-        *extN = ext;
+        *extN = (int32_t) ext;
 		
     return(ext+data+1);
 }
