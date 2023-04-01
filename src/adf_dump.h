@@ -42,13 +42,13 @@ BOOL adfInitDumpDevice ( struct AdfDevice * const dev,
                          const BOOL               ro );
 
 BOOL adfReadDumpSector ( struct AdfDevice * const dev,
-                         const int32_t            n,
-                         const int                size,
+                         const uint32_t           n,
+                         const unsigned           size,
                          uint8_t * const          buf );
 
 BOOL adfWriteDumpSector ( struct AdfDevice * const dev,
-                          const int32_t            n,
-                          const int                size,
+                          const uint32_t           n,
+                          const unsigned           size,
                           const uint8_t * const    buf );
 
 RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev );

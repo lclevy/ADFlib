@@ -83,8 +83,8 @@ RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
  *
  */
 RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
-                            const int32_t            n,
-                            const int                size,
+                            const uint32_t           n,
+                            const unsigned           size,
                             uint8_t * const          buf )
 {
     int r;
@@ -109,8 +109,8 @@ RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
  *
  */
 RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
-                             const int32_t            n,
-                             const int                size,
+                             const uint32_t           n,
+                             const unsigned           size,
                              const uint8_t * const    buf )
 {
     int r = fseek ( dev->fd, 512 * n, SEEK_SET );
