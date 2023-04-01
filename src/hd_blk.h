@@ -35,19 +35,19 @@
 
 struct bRDSKblock {
 /*000*/	char	id[4];		/* RDSK */
-/*004*/	int32_t 	size; 		/* 64 int32_ts */
+/*004*/	uint32_t 	size; 		/* 64 int32_ts */
 /*008*/	ULONG	checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
-/*010*/ 	int32_t 	blockSize; 	/* 512 bytes */
+/*010*/ 	uint32_t 	blockSize; 	/* 512 bytes */
 /*014*/ 	int32_t 	flags; 		/* 0x17 */
 /*018*/ 	int32_t 	badBlockList;
 /*01c*/ 	int32_t 	partitionList;
 /*020*/ 	int32_t 	fileSysHdrList;
 /*024*/ 	int32_t 	driveInit;
 /*028*/ 	int32_t 	r1[6];		/* -1 */
-/*040*/ 	int32_t 	cylinders;
-/*044*/ 	int32_t 	sectors;
-/*048*/ 	int32_t 	heads;
+/*040*/ uint32_t 	cylinders;
+/*044*/ uint32_t 	sectors;
+/*048*/ uint32_t 	heads;
 /*04c*/ 	int32_t 	interleave;
 /*050*/ 	int32_t 	parkingZone;
 /*054*/	int32_t 	r2[3]; 	 	/* 0 */
@@ -56,10 +56,10 @@ struct bRDSKblock {
 /*068*/	int32_t 	stepRate;
 /*06c*/	int32_t 	r3[5]; 		/* 0 */
 /*080*/	int32_t 	rdbBlockLo;
-/*084*/ 	int32_t 	rdbBlockHi;
-/*088*/ 	int32_t 	loCylinder;
-/*08c*/ 	int32_t 	hiCylinder;
-/*090*/ 	int32_t 	cylBlocks;
+/*084*/ 	uint32_t 	rdbBlockHi;
+/*088*/ 	uint32_t 	loCylinder;
+/*08c*/ 	uint32_t 	hiCylinder;
+/*090*/ 	uint32_t 	cylBlocks;
 /*094*/ 	int32_t 	autoParkSeconds;
 /*098*/ 	int32_t 	highRDSKBlock;
 /*09c*/ 	int32_t 	r4; 		/* 0 */
@@ -82,7 +82,7 @@ struct bBADBentry {
 
 struct bBADBblock {
 /*000*/	char	id[4]; 		/* BADB */
-/*004*/	int32_t 	size; 		/* 128 int32_ts */
+/*004*/	uint32_t 	size; 		/* 128 int32_ts */
 /*008*/	ULONG	checksum; 	
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
@@ -94,7 +94,7 @@ struct bBADBblock {
 
 struct bPARTblock {
 /*000*/	char	id[4]; 		/* PART */
-/*004*/	int32_t 	size; 		/* 64 int32_ts */
+/*004*/	uint32_t 	size; 		/* 64 int32_ts */
 /*008*/	ULONG	checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
@@ -106,7 +106,7 @@ struct bPARTblock {
 /*044*/ 	int32_t 	r2[15];
 
 /*080*/ 	int32_t 	vectorSize; 	/* often 16 int32_ts */
-/*084*/ 	int32_t 	blockSize; 	/* 128 int32_ts */
+/*084*/ uint32_t 	blockSize; 	/* 128 int32_ts */
 /*088*/ 	int32_t 	secOrg;
 /*08c*/ 	int32_t 	surfaces;
 /*090*/ 	int32_t 	sectorsPerBlock; /* == 1 */
@@ -128,7 +128,7 @@ struct bPARTblock {
 
 struct bLSEGblock {
 /*000*/	char	id[4]; 		/* LSEG */
-/*004*/	int32_t 	size; 		/* 128 int32_ts */
+/*004*/	uint32_t 	size; 		/* 128 int32_ts */
 /*008*/	ULONG	checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
@@ -138,7 +138,7 @@ struct bLSEGblock {
 
 struct bFSHDblock {
 /*000*/	char	id[4]; 		/* FSHD */
-/*004*/	int32_t 	size; 		/* 64 */
+/*004*/	uint32_t 	size; 		/* 64 */
 /*008*/	ULONG	checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
