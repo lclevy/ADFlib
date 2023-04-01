@@ -950,7 +950,7 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
     memset(&dir, 0, sizeof(struct bDirBlock));
-    dir.nameLen = min(MAXNAMELEN, strlen(name));
+    dir.nameLen = (uint8_t) min ( (unsigned) MAXNAMELEN, (unsigned) strlen ( name ) );
     memcpy(dir.dirName,name,dir.nameLen);
     dir.headerKey = nSect;
 
