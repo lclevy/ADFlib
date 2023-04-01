@@ -190,6 +190,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
                       SECTNUM            nSect,
                       struct bDirBlock * entry )
 {
+    (void) nSect;
     RETCODE rc;
     struct bEntryBlock parent;
     char name[MAXNAMELEN+1];
@@ -237,6 +238,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
                        SECTNUM                   nSect,
                        struct bFileHeaderBlock * entry )
 {
+    (void) nSect;
     int32_t i;
     char name[MAXNAMELEN+1];
     struct bEntryBlock parent;
