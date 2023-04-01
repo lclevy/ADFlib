@@ -147,7 +147,7 @@ struct bEntryBlock {
 /*018*/	int32_t	 hashTable[HT_SIZE];
         int32_t	 r2[2];
 /*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
-/*144*/	int32_t	 byteSize;
+/*144*/	uint32_t byteSize;
 /*148*/	uint8_t	 commLen;
 /*149*/	char	 comment[MAXCMMTLEN + 1];
         char	 r3[91 - ( MAXCMMTLEN + 1 )];
