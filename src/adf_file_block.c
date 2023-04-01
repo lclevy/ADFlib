@@ -221,7 +221,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
         if ( dBlock->type != T_DATA )
             adfEnv.wFctf ( "adfReadDataBlock : id T_DATA not found, block %d, volume '%s'",
                            nSect, vol->volName );
-        if ( dBlock->dataSize < 0 || dBlock->dataSize > 488 )
+        if ( dBlock->dataSize > 488 )
             adfEnv.wFctf ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
                            dBlock->dataSize, dBlock->dataSize, nSect, vol->volName );
         if ( ! isSectNumValid ( vol, dBlock->headerKey ) )
