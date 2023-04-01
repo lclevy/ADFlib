@@ -280,7 +280,7 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    entry.commLen = min(MAXCMMTLEN, strlen(newCmt));
+    entry.commLen = (uint8_t) min ( (unsigned) MAXCMMTLEN, strlen ( newCmt ) );
     memcpy(entry.comment, newCmt, entry.commLen);
 
     if (entry.secType==ST_DIR)
