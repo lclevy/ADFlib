@@ -417,11 +417,9 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
  *
  */
 RETCODE adfWriteBlock ( struct AdfVolume * const vol,
-                        const int32_t            nSect,
+                        const uint32_t           nSect,
                         const uint8_t * const    buf )
 {
-    int32_t pSect;
-
     if (!vol->mounted) {
         (*adfEnv.eFct)("the volume isn't mounted, adfWriteBlock not possible");
         return RC_ERROR;
@@ -432,13 +430,13 @@ RETCODE adfWriteBlock ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    pSect = nSect+vol->firstBlock;
+    unsigned pSect = nSect + (unsigned) vol->firstBlock;
 /*printf("write nsect=%ld psect=%ld\n",nSect,pSect);*/
 
     if (adfEnv.useRWAccess)
-        (*adfEnv.rwhAccess)(pSect,nSect,TRUE);
+        adfEnv.rwhAccess ( (SECTNUM) pSect, (SECTNUM) nSect, TRUE );
  
-    if (pSect<vol->firstBlock || pSect>vol->lastBlock) {
+    if (pSect< (unsigned) vol->firstBlock || pSect> (unsigned) vol->lastBlock) {
         (*adfEnv.wFct)("adfWriteBlock : nSect out of range");
     }
 
