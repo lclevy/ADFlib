@@ -137,7 +137,7 @@ RETCODE adfMountHd ( struct AdfDevice * dev )
     struct AdfList *vList, *listRoot;
     int i;
     struct AdfVolume * vol;
-    int len;
+    unsigned len;
 
     if (adfReadRDSKblock( dev, &rdsk )!=RC_OK)
         return RC_ERROR;
@@ -172,7 +172,7 @@ RETCODE adfMountHd ( struct AdfDevice * dev )
         vol->rootBlock = (vol->lastBlock - vol->firstBlock+1)/2;
         vol->blockSize = part.blockSize*4;
 
-        len = min(31, part.nameLen);
+        len = (unsigned) min ( 31, part.nameLen );
         vol->volName = (char*)malloc(len+1);
         if (!vol->volName) { 
             adfFreeTmpVolList(listRoot);
