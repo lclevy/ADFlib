@@ -71,7 +71,7 @@ RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
 
     /* determines size */
     fseek ( dev->fd, 0, SEEK_END );
-    dev->size = ftell ( dev->fd );
+    dev->size = (uint32_t) ftell ( dev->fd );
     fseek ( dev->fd, 0, SEEK_SET );
 
     return RC_OK;
