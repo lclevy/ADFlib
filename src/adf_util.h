@@ -43,8 +43,13 @@ void swShort ( uint8_t * const buf,
 PREFIX struct AdfList * newCell ( struct AdfList * const list,
                                   void * const           content );
 
-PREFIX void freeList ( struct AdfList * list );
-PREFIX void adfDays2Date(int32_t days, int *yy, int *mm, int *dd);
+PREFIX void freeList ( struct AdfList * const list );
+
+PREFIX void adfDays2Date( int32_t       days,
+                          int * const   yy,
+                          int * const   mm,
+                          int * const   dd );
+
 BOOL adfIsLeap(int y);
     void
 adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks );

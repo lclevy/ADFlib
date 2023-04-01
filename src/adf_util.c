@@ -85,7 +85,7 @@ struct AdfList * newCell ( struct AdfList * const list,
  * freeList
  *
  */
-void freeList ( struct AdfList * list )
+void freeList ( struct AdfList * const list )
 {
     if (list==NULL) 
         return;
@@ -104,8 +104,10 @@ void freeList ( struct AdfList * list )
  * amiga disk date format (days) to normal dd/mm/yy format (out)
  */
 
-void 
-adfDays2Date(int32_t days, int *yy, int *mm, int *dd)
+void adfDays2Date ( int32_t       days,
+                    int * const   yy,
+                    int * const   mm,
+                    int * const   dd )
 {
     int y,m;
     int nd;
