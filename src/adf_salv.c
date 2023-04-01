@@ -291,9 +291,9 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
  * adfUndelEntry
  *
  */
-RETCODE adfUndelEntry ( struct AdfVolume * vol,
-                        SECTNUM            parent,
-                        SECTNUM            nSect )
+RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                        const SECTNUM            parent,
+                        const SECTNUM            nSect )
 {
     struct bEntryBlock entry;
 
@@ -393,9 +393,9 @@ RETCODE adfCheckDir ( const struct AdfVolume * const vol,
  * adfCheckEntry
  *
  */
-RETCODE adfCheckEntry ( struct AdfVolume * vol,
-                        SECTNUM            nSect,
-                        int                level )
+RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                        const SECTNUM            nSect,
+                        const int                level )
 {
     struct bEntryBlock entry;
     RETCODE rc;

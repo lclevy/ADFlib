@@ -44,13 +44,13 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
                           const SECTNUM            nSect,
                           struct GenBlock * const  block );
 
-PREFIX RETCODE adfCheckEntry ( struct AdfVolume * vol,
-                               SECTNUM            nSect,
-                               int                level );
+PREFIX RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                               const SECTNUM            nSect,
+                               const int                level );
 
-PREFIX RETCODE adfUndelEntry ( struct AdfVolume * vol,
-                               SECTNUM            parent,
-                               SECTNUM            nSect );
+PREFIX RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                               const SECTNUM            parent,
+                               const SECTNUM            nSect );
 
 PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
 PREFIX void adfFreeDelList ( struct AdfList * const list );
