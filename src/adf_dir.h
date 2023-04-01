@@ -109,8 +109,8 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
 
 char* adfAccess2String(int32_t acc);
 uint8_t adfIntlToUpper ( const uint8_t c );
-int adfGetHashValue( const uint8_t * const name,
-                     const BOOL            intl );
+unsigned adfGetHashValue( const uint8_t * const name,
+                          const BOOL            intl );
 
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,

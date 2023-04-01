@@ -57,7 +57,6 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 {
     struct bEntryBlock parent, previous, entry, nParent;
     SECTNUM nSect2, nSect, prevSect, tmpSect;
-    int hashValueO, hashValueN;
     char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
 	BOOL intl;
     RETCODE rc;
@@ -74,7 +73,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if (adfReadEntryBlock( vol, pSect, &parent )!=RC_OK)
 		return RC_ERROR;
 
-    hashValueO = adfGetHashValue((uint8_t*)oldName, intl);
+    unsigned hashValueO = adfGetHashValue ( (uint8_t *) oldName, intl );
 
     nSect = adfNameToEntryBlk(vol, parent.hashTable, oldName, &entry, &prevSect);
     if (nSect==-1) {
@@ -118,7 +117,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if (adfReadEntryBlock( vol, nPSect, &nParent )!=RC_OK)
 		return RC_ERROR;
 
-    hashValueN = adfGetHashValue((uint8_t*)newName, intl);
+    unsigned hashValueN = adfGetHashValue ( (uint8_t * ) newName, intl );
     nSect2 = nParent.hashTable[ hashValueN ];
     /* no list */
     if (nSect2==0) {
@@ -192,7 +191,6 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
 {
     struct bEntryBlock parent, previous, entry;
     SECTNUM nSect2, nSect;
-    int hashVal;
     BOOL intl;
     char buf[200];
 
@@ -215,7 +213,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     /* in parent hashTable */
     if (nSect2==0) {
         intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
-        hashVal = adfGetHashValue( (uint8_t*)name, intl );
+        unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
 /*printf("hashTable=%d nexthash=%d\n",parent.hashTable[hashVal],
  entry.nextSameHash);*/
         parent.hashTable[hashVal] = entry.nextSameHash;
@@ -672,7 +670,6 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
                             struct bEntryBlock * const entry,
                             SECTNUM * const            nUpdSect )
 {
-    int hashVal;
     uint8_t upperName[MAXNAMELEN+1];
     uint8_t upperName2[MAXNAMELEN+1];
     SECTNUM nSect;
@@ -681,14 +678,14 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
     BOOL intl;
 
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
-    hashVal = adfGetHashValue( (uint8_t*)name, intl );
+    unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
     unsigned nameLen = min ( (unsigned) strlen ( name ),
                              (unsigned) MAXNAMELEN );
     adfStrToUpper ( upperName, (uint8_t *) name, nameLen, intl );
 
     nSect = ht[hashVal];
 /*printf("name=%s ht[%d]=%d upper=%s len=%d\n",name,hashVal,nSect,upperName,nameLen);
-printf("hashVal=%d\n",adfGetHashValue(upperName, intl ));
+printf("hashVal=%u\n",adfGetHashValue(upperName, intl ));
 if (!strcmp("españa.country",name)) {
 int i;
 for(i=0; i<HT_SIZE; i++) printf("ht[%d]=%d    ",i,ht[i]);
@@ -759,7 +756,6 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 {
     BOOL intl;
     struct bEntryBlock updEntry;
-    int hashValue;
     RETCODE rc;
     char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
     SECTNUM nSect, newSect, newSect2;
@@ -771,7 +767,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
     unsigned len = min ( (unsigned) strlen(name),
                          (unsigned) MAXNAMELEN );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
-    hashValue = adfGetHashValue((uint8_t*)name, intl);
+    unsigned hashValue = adfGetHashValue ( (uint8_t *) name, intl );
     nSect = dir->hashTable[ hashValue ];
 
     if ( nSect==0 ) {
@@ -890,19 +886,19 @@ void adfStrToUpper ( uint8_t * const       nstr,
  * adfGetHashValue
  * 
  */
-int adfGetHashValue ( const uint8_t * const name,
-                      const BOOL            intl )
+unsigned adfGetHashValue ( const uint8_t * const name,
+                           const BOOL            intl )
 {
     uint32_t hash, len;
     unsigned int i;
     uint8_t upper;
 
-    len = hash = strlen((char*)name);
+    len = hash = (uint32_t) strlen ( (const char * const) name );
     for(i=0; i<len; i++) {
         if (intl)
             upper = adfIntlToUpper(name[i]);
         else
-            upper = toupper(name[i]);
+            upper = (uint8_t) toupper ( name[i] );
         hash = (hash * 13 + upper) & 0x7ff;
     }
     hash = hash % HT_SIZE;
