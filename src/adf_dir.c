@@ -1061,7 +1061,9 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
         (*adfEnv.wFct)("adfReadEntryBlock : T_HEADER id not found");
         return RC_ERROR;
     }
-    if (ent->nameLen<0 || ent->nameLen>MAXNAMELEN || ent->commLen>MAXCMMTLEN) {
+    if ( ent->nameLen > MAXNAMELEN ||
+         ent->commLen > MAXCMMTLEN )
+    {
         (*adfEnv.wFct)("adfReadEntryBlock : nameLen or commLen incorrect"); 
         printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
             ent->nameLen,ent->commLen,ent->name, ent->headerKey);
