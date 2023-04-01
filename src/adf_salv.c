@@ -318,10 +318,10 @@ RETCODE adfUndelEntry ( struct AdfVolume * vol,
  * adfCheckFile
  *
  */
-RETCODE adfCheckFile ( struct AdfVolume *        vol,
-                       SECTNUM                   nSect,
-                       struct bFileHeaderBlock * file,
-                       int                       level )
+RETCODE adfCheckFile ( struct AdfVolume * const              vol,
+                       const SECTNUM                         nSect,
+                       const struct bFileHeaderBlock * const file,
+                       const int                             level )
 {
     (void) nSect, (void) level;
     struct bFileExtBlock extBlock;
@@ -376,10 +376,10 @@ RETCODE adfCheckFile ( struct AdfVolume *        vol,
  * adfCheckDir
  *
  */
-RETCODE adfCheckDir ( struct AdfVolume * vol,
-                      SECTNUM            nSect,
-                      struct bDirBlock * dir,
-                      int                level )
+RETCODE adfCheckDir ( const struct AdfVolume * const vol,
+                      const SECTNUM                  nSect,
+                      const struct bDirBlock * const dir,
+                      const int                      level )
 {
     // function to implement???
     // for now - suppressing warnings about unused parameters
