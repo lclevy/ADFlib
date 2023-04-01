@@ -321,6 +321,7 @@ RETCODE adfCheckFile ( struct AdfVolume *        vol,
                        struct bFileHeaderBlock * file,
                        int                       level )
 {
+    (void) nSect, (void) level;
     struct bFileExtBlock extBlock;
     struct bOFSDataBlock dataBlock;
     struct AdfFileBlocks fileBlocks;
