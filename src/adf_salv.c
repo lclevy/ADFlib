@@ -143,7 +143,7 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
             strncpy(name, (char*)buf+vol->blockSize-79, len);
             name[len] = '\0';
             block->name = strdup(name);
-            block->parent = swapLong(buf+vol->blockSize-12);
+            block->parent = (int32_t) swapLong ( buf + vol->blockSize - 12 );
             break;
         case ST_ROOT:
             break;
