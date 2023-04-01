@@ -338,7 +338,7 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
             adfReadDataBlock(vol,fileBlocks.data[n],&dataBlock);
             if (dataBlock.headerKey!=fileBlocks.header)
                 (*adfEnv.wFct)("adfCheckFile : headerKey incorrect");
-            if (dataBlock.seqNum!=n+1)
+            if ( dataBlock.seqNum != (unsigned) n + 1 )
                 (*adfEnv.wFct)("adfCheckFile : seqNum incorrect");
             if (n<fileBlocks.nbData-1) {
                 if (dataBlock.nextData!=fileBlocks.data[n+1])
