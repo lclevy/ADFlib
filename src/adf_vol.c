@@ -381,8 +381,6 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
                        const uint32_t           nSect,
                        uint8_t * const          buf )
 {
-  /*    char strBuf[80];*/
-
     if (!vol->mounted) {
         (*adfEnv.eFct)("the volume isn't mounted, adfReadBlock not possible");
         return RC_ERROR;
@@ -394,15 +392,15 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
     if (adfEnv.useRWAccess)
         (*adfEnv.rwhAccess)( (SECTNUM) pSect, (SECTNUM) nSect, FALSE );
 
-/*printf("psect=%ld nsect=%ld\n",pSect,nSect);*/
-/*    sprintf(strBuf,"ReadBlock : accessing logical block #%ld", nSect);	
-    (*adfEnv.vFct)(strBuf);
+/*  char strBuf[80];
+    printf("psect=%ld nsect=%ld\n",pSect,nSect);
+    sprintf(strBuf,"ReadBlock : accessing logical block #%ld", nSect);
+    adfEnv.vFct(strBuf);
 */
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )
     {
         (*adfEnv.wFct)("adfReadBlock : nSect out of range");
-        
     }
 
     RETCODE rc = adfReadBlockDev ( vol->dev, pSect, 512, buf );
