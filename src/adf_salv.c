@@ -73,7 +73,7 @@ void adfFreeDelList ( struct AdfList * const list )
  * adfGetDelEnt
  *
  */
-struct AdfList * adfGetDelEnt ( struct AdfVolume * vol )
+struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
 {
     struct GenBlock *block;
     int32_t i;
