@@ -129,7 +129,7 @@ RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
  * adfReleaseDumpDevice
  *
  */
-RETCODE adfReleaseDumpDevice ( struct AdfDevice * dev )
+RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
 {
     fclose ( dev->fd );
 
