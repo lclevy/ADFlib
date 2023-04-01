@@ -40,9 +40,9 @@ struct GenBlock {
 };
 
 
-RETCODE adfReadGenBlock ( struct AdfVolume * vol,
-                          SECTNUM            nSect,
-                          struct GenBlock *  block );
+RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
+                          const SECTNUM            nSect,
+                          struct GenBlock * const  block );
 
 PREFIX RETCODE adfCheckEntry ( struct AdfVolume * vol,
                                SECTNUM            nSect,

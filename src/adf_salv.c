@@ -117,9 +117,9 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
  * adfReadGenBlock
  *
  */
-RETCODE adfReadGenBlock ( struct AdfVolume * vol,
-                          SECTNUM            nSect,
-                          struct GenBlock *  block )
+RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
+                          const SECTNUM            nSect,
+                          struct GenBlock * const  block )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
     int len;
