@@ -73,7 +73,6 @@ RETCODE adfMountHdFile ( struct AdfDevice * dev )
 {
     struct AdfVolume * vol;
     uint8_t buf[512];
-    int32_t size;
     BOOL found;
 
     dev->devType = DEVTYPE_HARDFILE;
@@ -100,12 +99,12 @@ RETCODE adfMountHdFile ( struct AdfDevice * dev )
 
     vol->firstBlock = 0;
 
-    size = dev->size + 512-(dev->size%512);
+    unsigned size = dev->size + 512 - ( dev->size % 512 );
 /*printf("size=%ld\n",size);*/
-    vol->rootBlock = (size/512)/2;
+    vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
     do {
-        adfReadDumpSector(dev, vol->rootBlock, 512, buf);
+        adfReadDumpSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
         found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
         if (!found)
             (vol->rootBlock)--;
