@@ -107,6 +107,7 @@ void Verbosef ( const char * const format, ... )
 
 void Changed(SECTNUM nSect, int changedType)
 {
+    (void) nSect, (void) changedType;
 /*    switch(changedType) {
     case ST_FILE:
         fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
