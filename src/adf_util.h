@@ -50,13 +50,16 @@ PREFIX void adfDays2Date( int32_t       days,
                           int * const   mm,
                           int * const   dd );
 
-BOOL adfIsLeap(int y);
-    void
-adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks );
-    struct DateTime
-adfGiveCurrentTime( void );
+BOOL adfIsLeap ( const int y );
 
-void dumpBlock(uint8_t *buf);
+void adfTime2AmigaTime ( struct DateTime dt,
+                         int32_t * const day,
+                         int32_t * const min,
+                         int32_t * const ticks );
+
+struct DateTime adfGiveCurrentTime ( void );
+
+void dumpBlock ( const uint8_t * const buf );
 
 /*##########################################################################*/
 #endif /* _ADF_UTIL_H */

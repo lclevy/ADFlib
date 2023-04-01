@@ -151,9 +151,7 @@ void adfDays2Date ( int32_t       days,
  *
  * true if a year (y) is leap
  */
-
-    BOOL 
-adfIsLeap(int y)
+BOOL adfIsLeap ( const int y )
 {
     return( (BOOL) ( !(y%100) ? !(y%400) : !(y%4) ) );
 }
@@ -164,8 +162,7 @@ adfIsLeap(int y)
  *
  * return the current system date and time
  */
-    struct DateTime
-adfGiveCurrentTime( void )
+struct DateTime adfGiveCurrentTime ( void )
 {
     struct tm *local;
     time_t cal;
@@ -190,8 +187,10 @@ adfGiveCurrentTime( void )
  *
  * converts date and time (dt) into Amiga format : day, min, ticks
  */
-    void
-adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks )
+void adfTime2AmigaTime ( struct DateTime dt,
+                         int32_t * const day,
+                         int32_t * const min,
+                         int32_t * const ticks )
 {
     int jm[12]={ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -235,7 +234,7 @@ adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks
  * debug function : to dump a block before writing the check its contents
  *
  */
-void dumpBlock(uint8_t *buf)
+void dumpBlock ( const uint8_t * const buf )
 {
 	int i, j;
 
