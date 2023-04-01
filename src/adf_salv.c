@@ -42,7 +42,7 @@
  * adfFreeGenBlock
  *
  */
-void adfFreeGenBlock(struct GenBlock* block)
+static void adfFreeGenBlock ( struct GenBlock * const block )
 {
     if ( block != NULL ) {
         if ( block->name != NULL )
@@ -56,7 +56,7 @@ void adfFreeGenBlock(struct GenBlock* block)
  * adfFreeDelList
  *
  */
-void adfFreeDelList ( struct AdfList * list )
+void adfFreeDelList ( struct AdfList * const list )
 {
     struct AdfList *cell;
 
