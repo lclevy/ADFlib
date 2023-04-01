@@ -378,9 +378,9 @@ RETCODE adfCheckDir ( struct AdfVolume * vol,
                       struct bDirBlock * dir,
                       int                level )
 {
-
-
-
+    // function to implement???
+    // for now - suppressing warnings about unused parameters
+    (void) vol, (void) nSect, (void) dir, (void) level;
 
     return RC_OK;
 }
