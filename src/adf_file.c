@@ -642,13 +642,13 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
 {
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
-    const int blockSize = file->volume->datablockSize;
+    const unsigned blockSize = file->volume->datablockSize;
 
     uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
         ( (struct bOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
-    int32_t bytesWritten = 0;
+    uint32_t bytesWritten = 0;
     const uint8_t *bufPtr = buffer;
     while( bytesWritten<n ) {
 
@@ -683,7 +683,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
             file->posInDataBlk = 0;
         }
 
-        const int size = min ( n - bytesWritten, blockSize - file->posInDataBlk );
+        const unsigned size = min ( n - bytesWritten, blockSize - file->posInDataBlk );
         memcpy(dataPtr+file->posInDataBlk, bufPtr, size);
         bufPtr += size;
         file->pos += size;
