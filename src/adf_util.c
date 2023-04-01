@@ -52,8 +52,8 @@ void swLong(uint8_t* buf, uint32_t val)
 
 void swShort(uint8_t* buf, uint16_t val)
 {
-	buf[0]= (val & 0xff00) >>8UL;
-	buf[1]= (val & 0x00ff) ;
+    buf[0] = (uint8_t) ( (val & 0xff00u) >> 8UL );
+    buf[1] = ( val & 0x00ffu );
 }
 
 /*
