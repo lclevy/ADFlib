@@ -53,14 +53,14 @@ struct AdfNativeFunctions {
 
     /* called by adfReadBlock() */
     RETCODE (*adfNativeReadSector)( struct AdfDevice * const dev,
-                                    const int32_t            n,
-                                    const int                size,
+                                    const uint32_t           n,
+                                    const unsigned           size,
                                     uint8_t * const          buf );
 
     /* called by adfWriteBlock() */
     RETCODE (*adfNativeWriteSector)( struct AdfDevice * const dev,
-                                     const int32_t            n,
-                                     const int                size,
+                                     const uint32_t           n,
+                                     const unsigned           size,
                                      const uint8_t * const    buf );
 
     /* called by adfMount() */
@@ -76,13 +76,13 @@ RETCODE myInitDevice ( struct AdfDevice * const dev,
 RETCODE myReleaseDevice ( struct AdfDevice * const dev );
 
 RETCODE myReadSector ( struct AdfDevice * const dev,
-                       const int32_t            n,
-                       const int                size,
+                       const uint32_t           n,
+                       const unsigned           size,
                        uint8_t * const          buf );
 
 RETCODE myWriteSector ( struct AdfDevice * const dev,
-                        const int32_t            n,
-                        const int                size,
+                        const uint32_t           n,
+                        const unsigned           size,
                         const uint8_t * const    buf );
 
 BOOL myIsDevNative ( const char * const );

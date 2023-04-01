@@ -64,8 +64,8 @@ RETCODE myInitDevice ( struct AdfDevice * const dev,
  *
  */
 RETCODE myReadSector ( struct AdfDevice * const dev,
-                       const int32_t            n,
-                       const int                size,
+                       const uint32_t           n,
+                       const unsigned           size,
                        uint8_t * const          buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
@@ -78,8 +78,8 @@ RETCODE myReadSector ( struct AdfDevice * const dev,
  *
  */
 RETCODE myWriteSector ( struct AdfDevice * const dev,
-                        const int32_t            n,
-                        const int                size,
+                        const uint32_t           n,
+                        const unsigned           size,
                         const uint8_t * const    buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;

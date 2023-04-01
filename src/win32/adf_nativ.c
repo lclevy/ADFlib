@@ -98,14 +98,14 @@ RETCODE Win32InitDevice ( struct AdfDevice * const dev,
 
 
 RETCODE Win32ReadSector ( struct AdfDevice * const dev,
-                          const int32_t            n,
-                          const int                size,
+                          const uint32_t           n,
+                          const unsigned           size,
                           uint8_t * const          buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
 
-	if (! NT4ReadSector(tDev->hDrv, n, size, buf)) {
+	if (! NT4ReadSector(tDev->hDrv, (long) n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4ReadSector");
 		return RC_ERROR;													/* BV */
 	}
@@ -115,14 +115,14 @@ RETCODE Win32ReadSector ( struct AdfDevice * const dev,
 
 
 RETCODE Win32WriteSector ( struct AdfDevice * const dev,
-                           const int32_t            n,
-                           const int                size,
+                           const uint32_t           n,
+                           const unsigned           size,
                            const uint8_t * const    buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
 
-	if (! NT4WriteSector(tDev->hDrv, n, size, buf)) {
+	if (! NT4WriteSector(tDev->hDrv, (long) n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4WriteSector");
 		return RC_ERROR;													/* BV */
 	}

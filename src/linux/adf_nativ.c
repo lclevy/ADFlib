@@ -127,8 +127,8 @@ RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
  *
  */
 RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                             const int32_t            n,
-                             const int                size,
+                             const uint32_t           n,
+                             const unsigned           size,
                              uint8_t * const          buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -150,8 +150,8 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
  *
  */
 RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                              const int32_t            n,
-                              const int                size,
+                              const uint32_t           n,
+                              const unsigned           size,
                               const uint8_t * const    buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;

@@ -73,7 +73,7 @@ BOOL NT4CloseDrive ( const HANDLE hDrv )
 
 BOOL NT4ReadSector ( const HANDLE hDrv,
                      const long   iSect,
-                     const int    iSize,
+                     const size_t iSize,
                      void * const lpvoidBuf )
 {
 	void *lpvoidTempBuf;
@@ -99,7 +99,7 @@ BOOL NT4ReadSector ( const HANDLE hDrv,
 
 BOOL NT4WriteSector ( const HANDLE       hDrv,
                       const long         iSect,
-                      const int          iSize,
+                      const size_t       iSize,
                       const void * const lpvoidBuf )
 {
 	void *lpvoidTempBuf;
