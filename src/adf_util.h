@@ -34,9 +34,11 @@ struct DateTime {
     int year, mon, day, hour, min, sec;
 };
 
+void swLong ( uint8_t * const buf,
+              const uint32_t  val );
 
-void swLong(uint8_t* buf, uint32_t val);
-void swShort(uint8_t* buf, uint16_t val);
+void swShort ( uint8_t * const buf,
+               const uint16_t  val );
 
 PREFIX struct AdfList * newCell ( struct AdfList * list,
                                   void *           content );

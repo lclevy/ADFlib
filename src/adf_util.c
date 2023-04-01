@@ -42,7 +42,8 @@
  * 
  * used in adfWrite----Block() functions
  */
-void swLong(uint8_t* buf, uint32_t val)
+void swLong ( uint8_t * const buf,
+              const uint32_t  val )
 {
 	buf[0]= (uint8_t)((val & 0xff000000) >>24UL);
 	buf[1]= (uint8_t)((val & 0x00ff0000) >>16UL);
@@ -50,7 +51,8 @@ void swLong(uint8_t* buf, uint32_t val)
 	buf[3]= (uint8_t)(val & 0x000000ff);
 }
 
-void swShort(uint8_t* buf, uint16_t val)
+void swShort ( uint8_t * const buf,
+               const uint16_t  val )
 {
     buf[0] = (uint8_t) ( (val & 0xff00u) >> 8UL );
     buf[1] = ( val & 0x00ffu );
