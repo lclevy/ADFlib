@@ -829,7 +829,7 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
         // data block index in ext. block
         *posInExtBlk = ( offsetInExt / blockSize ) % MAX_DATABLK;
 
-        return extBlock;
+        return (int32_t) extBlock;
     }
 }
 
