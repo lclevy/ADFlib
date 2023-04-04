@@ -309,7 +309,7 @@ RETCODE adfDelFromCache ( struct AdfVolume *   vol,
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
             adfGetCacheEntry(&dirc, &offset, &caEntry);
-            found = (caEntry.header==headerKey);
+            found = ( caEntry.header == (uint32_t) headerKey );
             if (found) {
                 entryLen = offset-oldOffset;
                 if (dirc.recordsNb>1 || prevSect==-1) {
