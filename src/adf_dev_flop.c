@@ -66,12 +66,12 @@ RETCODE adfMountFlop ( struct AdfDevice * dev )
 
     vol->mounted = TRUE;
     vol->firstBlock = 0;
-    vol->lastBlock =(dev->cylinders * dev->heads * dev->sectors)-1;
+    vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     vol->rootBlock = (vol->lastBlock+1 - vol->firstBlock)/2;
     vol->blockSize = 512;
     vol->dev = dev;
  
-    if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         free ( vol );
         return RC_ERROR;
     }
