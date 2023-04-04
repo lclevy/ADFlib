@@ -558,7 +558,7 @@ RETCODE adfReadFSHDblock ( struct AdfDevice *  dev,
 {
     UCHAR buf[sizeof(struct bFSHDblock)];
 
-    RETCODE rc = adfReadBlockDev ( dev, nSect, sizeof(struct bFSHDblock), buf );
+    RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
     if (rc!=RC_OK)
         return RC_ERROR;
 		
@@ -613,7 +613,7 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice *  dev,
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfWriteBlockDev ( dev, nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfWriteBlockDev ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 
