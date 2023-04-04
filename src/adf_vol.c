@@ -210,7 +210,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
     nBlock = vol->lastBlock - vol->firstBlock +1 - 2;
 
-	adfReadBitmap( vol, nBlock, &root );
+    adfReadBitmap ( vol, (uint32_t) nBlock, &root );
     vol->curDirPtr = vol->rootBlock;
 
 /*printf("blockSize=%d\n",vol->blockSize);*/
