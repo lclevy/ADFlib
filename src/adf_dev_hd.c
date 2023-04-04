@@ -48,7 +48,7 @@
  * adfFreeTmpVolList
  *
  */
-static void adfFreeTmpVolList ( struct AdfList * root )
+static void adfFreeTmpVolList ( struct AdfList * const root )
 {
     struct AdfList *cell;
     struct AdfVolume *vol;
@@ -69,7 +69,7 @@ static void adfFreeTmpVolList ( struct AdfList * root )
  * adfMountHdFile
  *
  */
-RETCODE adfMountHdFile ( struct AdfDevice * dev )
+RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 {
     struct AdfVolume * vol;
     uint8_t buf[512];
@@ -127,7 +127,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * dev )
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */
-RETCODE adfMountHd ( struct AdfDevice * dev )
+RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
     struct bRDSKblock rdsk;
     struct bPARTblock part;

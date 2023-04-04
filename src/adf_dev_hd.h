@@ -33,8 +33,8 @@
 #include "adf_dev.h"
 #include "hd_blk.h"
 
-RETCODE adfMountHd ( struct AdfDevice * dev );
-RETCODE adfMountHdFile ( struct AdfDevice * dev );
+RETCODE adfMountHd ( struct AdfDevice * const dev );
+RETCODE adfMountHdFile ( struct AdfDevice * const dev );
 
 RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
                             int                 n,
