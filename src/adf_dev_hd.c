@@ -253,6 +253,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
                             int                 n,
                             struct Partition ** partList )
 {
+    (void) n;
     int i;
     struct bRDSKblock rdsk;
     struct bPARTblock part;
