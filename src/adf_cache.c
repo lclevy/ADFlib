@@ -101,7 +101,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * vol,
                 free(entry->name); adfFreeDirList(head);
                 return NULL;
             }
-            entry->size = caEntry.size;
+            entry->size = (uint32_t) caEntry.size;
             entry->access = caEntry.protect;
             adfDays2Date( caEntry.days, &(entry->year), &(entry->month), 
                 &(entry->days) );
