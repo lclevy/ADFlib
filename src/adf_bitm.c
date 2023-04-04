@@ -100,7 +100,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                         const struct bRootBlock * const root )
 {
     uint32_t i, j;
-	struct bBitmapExtBlock bmExt;
+    struct bBitmapExtBlock bmExt;
 
     uint32_t mapSize = nBlock / (127*32);
     if ( (nBlock%(127*32))!=0 )
@@ -109,72 +109,72 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 
     vol->bitmapTable = (struct bBitmapBlock**) malloc(sizeof(struct bBitmapBlock*)*mapSize);
     if (!vol->bitmapTable) { 
-		(*adfEnv.eFct)("adfReadBitmap : malloc, vol->bitmapTable");
+        adfEnv.eFct("adfReadBitmap : malloc, vol->bitmapTable");
         return RC_MALLOC;
     }
 	vol->bitmapBlocks = (SECTNUM*) malloc(sizeof(SECTNUM)*mapSize);
     if (!vol->bitmapBlocks) {
         free(vol->bitmapTable);
-		(*adfEnv.eFct)("adfReadBitmap : malloc, vol->bitmapBlocks");
+        adfEnv.eFct("adfReadBitmap : malloc, vol->bitmapBlocks");
         return RC_MALLOC;
     }
 	vol->bitmapBlocksChg = (BOOL*) malloc(sizeof(BOOL)*mapSize);
     if (!vol->bitmapBlocksChg) { 
         free(vol->bitmapTable); free(vol->bitmapBlocks);
-		(*adfEnv.eFct)("adfReadBitmap : malloc, vol->bitmapBlocks");
+        adfEnv.eFct("adfReadBitmap : malloc, vol->bitmapBlocks");
         return RC_MALLOC;
     }
     for(i=0; i<mapSize; i++) {
         vol->bitmapBlocksChg[i] = FALSE;
 
-		vol->bitmapTable[i] = (struct bBitmapBlock*)malloc(sizeof(struct bBitmapBlock));
-		if (!vol->bitmapTable[i]) {
+        vol->bitmapTable[i] = (struct bBitmapBlock*) malloc ( sizeof(struct bBitmapBlock) );
+        if (!vol->bitmapTable[i]) {
             free(vol->bitmapBlocksChg); free(vol->bitmapBlocks);
             for(j=0; j<i; j++) 
                 free(vol->bitmapTable[j]);
             free(vol->bitmapTable);
-	        (*adfEnv.eFct)("adfReadBitmap : malloc, vol->bitmapBlocks");
+            adfEnv.eFct("adfReadBitmap : malloc, vol->bitmapBlocks");
             return RC_MALLOC;
         }
     }
 
-	j=0; i=0;
+    j=0; i=0;
     /* bitmap pointers in rootblock : 0 <= i <BM_SIZE */
     SECTNUM nSect;
-	while(i<BM_SIZE && root->bmPages[i]!=0) {
-		vol->bitmapBlocks[j] = nSect = root->bmPages[i];
+    while ( i < BM_SIZE && root->bmPages[i] != 0 ) {
+            vol->bitmapBlocks[j] = nSect = root->bmPages[i];
         if ( !isSectNumValid(vol,nSect) ) {
-			(*adfEnv.wFct)("adfReadBitmap : sector out of range");
+            adfEnv.wFct("adfReadBitmap : sector out of range");
         }
 
-		if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
+        if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
             adfFreeBitmap(vol);
             return RC_ERROR;
-		}
-		j++; i++;
-	}
-	nSect = root->bmExt;
-	while(nSect!=0) {
+        }
+        j++; i++;
+    }
+    nSect = root->bmExt;
+    while ( nSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
         if (adfReadBitmapExtBlock(vol, nSect, &bmExt)!=RC_OK) {
             adfFreeBitmap(vol);
             return RC_ERROR;
         }
-		i=0;
-		while(i<127 && j<mapSize) {
+        i=0;
+        while ( i < 127 && j < mapSize ) {
             nSect = bmExt.bmPages[i];
             if ( !isSectNumValid(vol,nSect) )
                 (*adfEnv.wFct)("adfReadBitmap : sector out of range");
-			vol->bitmapBlocks[j] = nSect;
+            vol->bitmapBlocks[j] = nSect;
 
-			if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
+            if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
                 adfFreeBitmap(vol);
                 return RC_ERROR;
             }
-			i++; j++;
-		}
-		nSect = bmExt.nextBlock;
-	}
+            i++; j++;
+        }
+        nSect = bmExt.nextBlock;
+    }
 
     return RC_OK;
 }
