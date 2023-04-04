@@ -372,7 +372,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
     SECTNUM *sectList;
     struct bRootBlock root;
 
-    sectList=(SECTNUM*)malloc(sizeof(SECTNUM)*vol->bitmapSize);
+    sectList = (SECTNUM *) malloc ( sizeof(SECTNUM) * (unsigned) vol->bitmapSize );
     if (!sectList) {
 		(*adfEnv.eFct)("adfCreateBitmap : sectList");
         return RC_MALLOC;
@@ -383,7 +383,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 		return RC_ERROR;
     }
 	
-    if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         free(sectList);
 		return RC_ERROR;
     }
@@ -401,7 +401,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
         if ((vol->bitmapSize-BM_SIZE)%127)
             nExtBlock++;
 
-        bitExtBlock=(SECTNUM*)malloc(sizeof(SECTNUM)*nExtBlock);
+        bitExtBlock = (SECTNUM *) malloc ( sizeof(SECTNUM) * (unsigned) nExtBlock );
         if (!bitExtBlock) {
             free(sectList);
 			adfEnv.eFct("adfWriteNewBitmap : malloc failed");
@@ -437,7 +437,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
     }
     free( sectList);
 
-    if (adfWriteRootBlock(vol,vol->rootBlock,&root)!=RC_OK)
+    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
         return RC_ERROR;
     
     return RC_OK;
