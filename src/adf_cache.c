@@ -254,15 +254,15 @@ int adfEntry2CacheEntry ( struct bEntryBlock *   entry,
     int entryLen;
 
     /* new entry */
-    newEntry->header = entry->headerKey;
+    newEntry->header = (uint32_t) entry->headerKey;
     if (entry->secType==ST_FILE)
         newEntry->size = entry->byteSize;
     else
         newEntry->size = 0L;
-    newEntry->protect = entry->access;
-    newEntry->days = (short)entry->days;
-    newEntry->mins = (short)entry->mins;
-    newEntry->ticks  = (short)entry->ticks;
+    newEntry->protect = (uint32_t) entry->access;
+    newEntry->days    = (uint16_t) entry->days;
+    newEntry->mins    = (uint16_t) entry->mins;
+    newEntry->ticks   = (uint16_t) entry->ticks;
     newEntry->type = (signed char)entry->secType;
     newEntry->nLen = entry->nameLen;
     memcpy(newEntry->name, entry->name, newEntry->nLen);
