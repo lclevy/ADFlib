@@ -95,14 +95,14 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * vol,
                 free(entry); adfFreeDirList(head);
                 return NULL;
             }
-            entry->sector = caEntry.header;
+            entry->sector = (int32_t) caEntry.header;
             entry->comment = strdup(caEntry.comm);
             if (entry->comment==NULL) {
                 free(entry->name); adfFreeDirList(head);
                 return NULL;
             }
             entry->size = (uint32_t) caEntry.size;
-            entry->access = caEntry.protect;
+            entry->access = (int32_t) caEntry.protect;
             adfDays2Date( caEntry.days, &(entry->year), &(entry->month), 
                 &(entry->days) );
             entry->hour = caEntry.mins/60;
