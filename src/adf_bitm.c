@@ -509,12 +509,12 @@ RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
                                 const SECTNUM                  nSect,
                                 struct bBitmapExtBlock * const bitme )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfReadBlock ( vol, nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
-	memcpy(bitme, buf, LOGICAL_BLOCK_SIZE);
+    memcpy ( bitme, buf, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     swapEndian((uint8_t*)bitme, SWBL_BITMAP);
 #endif
@@ -531,17 +531,17 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
                                  const SECTNUM                        nSect,
                                  const struct bBitmapExtBlock * const bitme )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
 	
-	memcpy(buf,bitme, LOGICAL_BLOCK_SIZE);
+    memcpy ( buf, bitme, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* little to big */
     swapEndian(buf, SWBL_BITMAPE);
 #endif
 
 /*	dumpBlock((uint8_t*)buf);*/
-	if (adfWriteBlock(vol, nSect, (uint8_t*)buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteBlock ( vol, nSect, (uint8_t*) buf) != RC_OK )
+        return RC_ERROR;
 
     return RC_OK;
 }
