@@ -167,8 +167,8 @@ RETCODE adfMountHd ( struct AdfDevice * dev )
         vol->volName=NULL;
         dev->nVol++;
 
-        vol->firstBlock = rdsk.cylBlocks * part.lowCyl;
-        vol->lastBlock = (part.highCyl+1)*rdsk.cylBlocks -1 ;
+        vol->firstBlock = (int32_t) rdsk.cylBlocks * part.lowCyl;
+        vol->lastBlock = ( part.highCyl + 1 ) * (int32_t) rdsk.cylBlocks - 1;
         vol->rootBlock = (vol->lastBlock - vol->firstBlock+1)/2;
         vol->blockSize = part.blockSize*4;
 
@@ -201,7 +201,7 @@ RETCODE adfMountHd ( struct AdfDevice * dev )
 
     /* stores the list in an array */
     dev->volList = (struct AdfVolume **) malloc (
-        sizeof(struct AdfVolume *) * dev->nVol );
+        sizeof(struct AdfVolume *) * (unsigned) dev->nVol );
     if (!dev->volList) { 
         adfFreeTmpVolList(listRoot);
         (*adfEnv.eFct)("adfMount : unknown device type");
@@ -259,7 +259,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
     struct bFSHDblock fshd;
     struct bLSEGblock lseg;
     SECTNUM j;
-    int len;
+    unsigned len;
 
     /* RDSK */ 
  
@@ -293,12 +293,13 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
         else
             part.next = -1;
 
-        len = min(MAXNAMELEN,strlen(partList[i]->volName));
-        part.nameLen = len;
+        len = min ( (unsigned) MAXNAMELEN,
+                    (unsigned) strlen ( partList[i]->volName ) );
+        part.nameLen = (char) len;
         strncpy(part.name, partList[i]->volName, len);
 
-        part.surfaces = dev->heads;
-        part.blocksPerTrack = dev->sectors;
+        part.surfaces       = (int32_t) dev->heads;
+        part.blocksPerTrack = (int32_t) dev->sectors;
         part.lowCyl = partList[i]->startCyl;
         part.highCyl = partList[i]->startCyl + partList[i]->lenCyl -1;
         memcpy ( part.dosType, "DOS", 3 );
@@ -313,7 +314,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
     /* FSHD */
 
     memcpy ( fshd.dosType, "DOS", 3 );
-    fshd.dosType[3] = partList[0]->volType;
+    fshd.dosType[3] = (char) partList[0]->volType;
     fshd.next = -1;
     fshd.segListBlock = j+1;
     if (adfWriteFSHDblock(dev, j, &fshd)!=RC_OK)
