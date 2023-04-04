@@ -41,7 +41,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
                             struct Partition ** partList );
 
 PREFIX RETCODE adfCreateHd ( struct AdfDevice *  dev,
-                             int                 n,
+                             unsigned            n,
                              struct Partition ** partList );
 
 RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,

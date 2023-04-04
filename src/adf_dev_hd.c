@@ -340,14 +340,14 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
  *
  */
 RETCODE adfCreateHd ( struct AdfDevice *  dev,
-                      int                 n,
+                      unsigned            n,
                       struct Partition ** partList )
 {
-    int i, j;
+    unsigned i, j;
 
 /*struct AdfVolume *vol;*/
 
-    if (dev==NULL || partList==NULL || n<=0) {
+    if ( dev == NULL || partList == NULL ) {
         (*adfEnv.eFct)("adfCreateHd : illegal parameter(s)");
         return RC_ERROR;
     }
