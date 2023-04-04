@@ -33,15 +33,15 @@
 
 
 struct AdfCacheEntry {
-    int32_t header,
+    uint32_t header,
             size,
             protect;
-    short days,
-          mins,
-          ticks;
+    uint16_t days,
+             mins,
+             ticks;
     signed char type;
-    char nLen,
-         cLen;
+    uint8_t nLen,
+            cLen;
     char name[MAXNAMELEN+1],
          comm[MAXCMMTLEN+1];
 /*    char *name, *comm;*/
