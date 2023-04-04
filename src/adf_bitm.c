@@ -452,20 +452,20 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
                              SECTNUM               nSect,
                              struct bBitmapBlock * bitm )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
 
 /*printf("bitmap %ld\n",nSect);*/
-	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfReadBlock ( vol, nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
-	memcpy(bitm, buf, LOGICAL_BLOCK_SIZE);
+    memcpy ( bitm, buf, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
     swapEndian((uint8_t*)bitm, SWBL_BITMAP);
 #endif
 
-	if (bitm->checkSum!=adfNormalSum(buf,0,LOGICAL_BLOCK_SIZE))
-		(*adfEnv.wFct)("adfReadBitmapBlock : invalid checksum");
+    if ( bitm->checkSum != adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE ) )
+        adfEnv.wFct("adfReadBitmapBlock : invalid checksum");
 
     return RC_OK;
 }
