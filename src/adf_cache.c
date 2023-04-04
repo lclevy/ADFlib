@@ -581,8 +581,8 @@ RETCODE adfReadDirCBlock ( struct AdfVolume *      vol,
 {
     uint8_t buf[512];
 
-    if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfReadBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
     memcpy(dirc,buf,512);
 #ifdef LITT_ENDIAN
@@ -622,8 +622,8 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume *      vol,
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    if (adfWriteBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
+        return RC_ERROR;
 /*puts("adfWriteDirCBlock");*/
 
     return RC_OK;
