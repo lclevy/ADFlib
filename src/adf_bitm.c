@@ -96,17 +96,16 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
  *
  */
 RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
-                        const int32_t                   nBlock,
+                        const uint32_t                  nBlock,
                         const struct bRootBlock * const root )
 {
-	int32_t mapSize, nSect;
-	int32_t j, i;
+    uint32_t i, j;
 	struct bBitmapExtBlock bmExt;
 
-    mapSize = nBlock / (127*32);
+    uint32_t mapSize = nBlock / (127*32);
     if ( (nBlock%(127*32))!=0 )
         mapSize++;
-    vol->bitmapSize = mapSize;
+    vol->bitmapSize = (int32_t) mapSize;
 
     vol->bitmapTable = (struct bBitmapBlock**) malloc(sizeof(struct bBitmapBlock*)*mapSize);
     if (!vol->bitmapTable) { 
@@ -141,6 +140,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 
 	j=0; i=0;
     /* bitmap pointers in rootblock : 0 <= i <BM_SIZE */
+    SECTNUM nSect;
 	while(i<BM_SIZE && root->bmPages[i]!=0) {
 		vol->bitmapBlocks[j] = nSect = root->bmPages[i];
         if ( !isSectNumValid(vol,nSect) ) {

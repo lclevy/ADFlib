@@ -52,7 +52,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol );
 PREFIX uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol );
 
 RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
-                        const int32_t                   nBlock,
+                        const uint32_t                  nBlock,
                         const struct bRootBlock * const root );
 
 BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
