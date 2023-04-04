@@ -360,8 +360,8 @@ RETCODE adfCreateHd ( struct AdfDevice *  dev,
     }
     for(i=0; i<n; i++) {
         dev->volList[i] = adfCreateVol( dev, 
-					partList[i]->startCyl, 
-					partList[i]->lenCyl, 
+					(uint32_t) partList[i]->startCyl,
+					(uint32_t) partList[i]->lenCyl,
 					partList[i]->volName, 
 					partList[i]->volType );
         if (dev->volList[i]==NULL) {
@@ -374,14 +374,14 @@ RETCODE adfCreateHd ( struct AdfDevice *  dev,
         }
         dev->volList[i]->blockSize = 512;
     }
-    dev->nVol = n;
+    dev->nVol = (int) n;
 /*
 vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
 
-    if (adfCreateHdHeader(dev, n, partList )!=RC_OK)
+    if ( adfCreateHdHeader ( dev, (int) n, partList ) != RC_OK )
         return RC_ERROR;
     return RC_OK;
 }
