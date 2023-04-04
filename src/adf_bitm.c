@@ -51,12 +51,12 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
 
 /*printf("adfUpdateBitmap\n");*/
         
-    if (adfReadRootBlock(vol, vol->rootBlock,&root)!=RC_OK)
-		return RC_ERROR;
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
+        return RC_ERROR;
 
     root.bmFlag = BM_INVALID;
-    if (adfWriteRootBlock(vol,vol->rootBlock,&root)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
+        return RC_ERROR;
 
     for(i=0; i<vol->bitmapSize; i++)
     if (vol->bitmapBlocksChg[i]) {
@@ -67,8 +67,8 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
 
     root.bmFlag = BM_VALID;
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.days),&(root.mins),&(root.ticks));
-    if (adfWriteRootBlock(vol,vol->rootBlock,&root)!=RC_OK)
-		return RC_ERROR;
+    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
+        return RC_ERROR;
 
     return RC_OK;
 }
