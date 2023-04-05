@@ -248,8 +248,8 @@ int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
  *
  * converts one dir entry into a cache entry, and return its future length in records[]
  */
-int adfEntry2CacheEntry ( struct bEntryBlock *   entry,
-                          struct AdfCacheEntry * newEntry )
+int adfEntry2CacheEntry ( const struct bEntryBlock * const entry,
+                          struct AdfCacheEntry * const     newEntry )
 {
     int entryLen;
 
