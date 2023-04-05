@@ -140,9 +140,9 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
  * Returns a cache entry, starting from the offset p (the index into records[])
  * This offset is updated to the end of the returned entry.
  */
-void adfGetCacheEntry ( struct bDirCacheBlock * dirc,
-                        int *                   p,
-                        struct AdfCacheEntry *  cEntry )
+void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
+                        int * const                   p,
+                        struct AdfCacheEntry * const  cEntry )
 {
     int ptr;
 

@@ -48,9 +48,9 @@ struct AdfCacheEntry {
 };
 
 
-void adfGetCacheEntry ( struct bDirCacheBlock * dirc,
-                        int *                   p,
-                        struct AdfCacheEntry *  cEntry );
+void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
+                        int * const                   p,
+                        struct AdfCacheEntry * const  cEntry );
 
 int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
                        int *                   p,
