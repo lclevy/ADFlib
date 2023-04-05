@@ -198,9 +198,9 @@ void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
  *
  * remplaces one cache entry at the p offset, and returns its length
  */
-int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
-                       int *                   p,
-                       struct AdfCacheEntry *  cEntry )
+int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
+                       const int * const                   p,
+                       const struct AdfCacheEntry * const  cEntry )
 {
     int ptr, l;
 

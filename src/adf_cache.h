@@ -52,9 +52,9 @@ void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
                         int * const                   p,
                         struct AdfCacheEntry * const  cEntry );
 
-int adfPutCacheEntry ( struct bDirCacheBlock * dirc,
-                       int *                   p,
-                       struct AdfCacheEntry *  cEntry );
+int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
+                       const int * const                   p,
+                       const struct AdfCacheEntry * const  cEntry );
 
 struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                                      const SECTNUM            dir,
