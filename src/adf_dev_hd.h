@@ -58,13 +58,13 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
                             const int32_t             nSect,
                             struct bPARTblock * const part );
 
-RETCODE adfReadFSHDblock ( struct AdfDevice *  dev,
-                           int32_t             nSect,
-                           struct bFSHDblock * blk );
+RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bFSHDblock * const blk );
 
-RETCODE adfWriteFSHDblock ( struct AdfDevice *  dev,
-                            int32_t             nSect,
-                            struct bFSHDblock * fshd );
+RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bFSHDblock * const fshd );
 
 RETCODE adfReadLSEGblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
