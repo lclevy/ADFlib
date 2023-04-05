@@ -73,9 +73,9 @@ RETCODE adfUpdateCache ( struct AdfVolume *   vol,
                          struct bEntryBlock * entry,
                          BOOL                 entryLenChg );
 
-RETCODE adfDelFromCache ( struct AdfVolume *   vol,
-                          struct bEntryBlock * parent,
-                          SECTNUM              headerKey );
+RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
+                          const struct bEntryBlock * const parent,
+                          const SECTNUM                    headerKey );
 
 RETCODE adfReadDirCBlock ( struct AdfVolume *      vol,
                            SECTNUM                 nSect,

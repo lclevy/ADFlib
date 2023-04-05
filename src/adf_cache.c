@@ -287,9 +287,9 @@ printf("newEntry->nLen %d newEntry->cLen %d\n",newEntry->nLen,newEntry->cLen);
  *
  * delete one cache entry from its block. don't do 'records garbage collecting'
  */
-RETCODE adfDelFromCache ( struct AdfVolume *   vol,
-                          struct bEntryBlock * parent,
-                          SECTNUM              headerKey )
+RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
+                          const struct bEntryBlock * const parent,
+                          const SECTNUM                    headerKey )
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect, prevSect;
