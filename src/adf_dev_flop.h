@@ -8,7 +8,7 @@
 
 RETCODE adfMountFlop ( struct AdfDevice * dev );
 
-PREFIX RETCODE adfCreateFlop ( struct AdfDevice * dev,
-                               char *             volName,
-                               uint8_t            volType );
+PREFIX RETCODE adfCreateFlop ( struct AdfDevice * const dev,
+                               const char * const       volName,
+                               const uint8_t            volType );
 #endif
