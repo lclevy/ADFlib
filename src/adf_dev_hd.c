@@ -473,9 +473,9 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
  * ReadPARTblock
  *
  */
-RETCODE adfReadPARTblock ( struct AdfDevice *  dev,
-                           int32_t             nSect,
-                           struct bPARTblock * blk )
+RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bPARTblock * const blk )
 {
     UCHAR buf[ sizeof(struct bPARTblock) ];
     RETCODE rc2, rc = RC_OK;
@@ -514,9 +514,9 @@ RETCODE adfReadPARTblock ( struct AdfDevice *  dev,
  * adfWritePARTblock
  *
  */
-RETCODE adfWritePARTblock ( struct AdfDevice *  dev,
-                            int32_t             nSect,
-                            struct bPARTblock * part )
+RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bPARTblock * const part )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

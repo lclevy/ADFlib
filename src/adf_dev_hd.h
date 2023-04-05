@@ -50,13 +50,13 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
 RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
                             struct bRDSKblock * const rdsk );
 
-RETCODE adfReadPARTblock ( struct AdfDevice *  dev,
-                           int32_t             nSect,
-                           struct bPARTblock * blk );
+RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bPARTblock * const blk );
 
-RETCODE adfWritePARTblock ( struct AdfDevice *  dev,
-                            int32_t             nSect,
-                            struct bPARTblock * part );
+RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bPARTblock * const part );
 
 RETCODE adfReadFSHDblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
