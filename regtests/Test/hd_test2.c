@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
 
     partList[0] = &part1;
-    adfCreateHd(hd,1,partList);
+    adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
 

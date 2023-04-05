@@ -36,13 +36,13 @@
 RETCODE adfMountHd ( struct AdfDevice * const dev );
 RETCODE adfMountHdFile ( struct AdfDevice * const dev );
 
-RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
-                            int                 n,
-                            struct Partition ** partList );
+RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
+                            const int                              n,
+                            const struct Partition * const * const partList );
 
-PREFIX RETCODE adfCreateHd ( struct AdfDevice *  dev,
-                             unsigned            n,
-                             struct Partition ** partList );
+PREFIX RETCODE adfCreateHd ( struct AdfDevice * const               dev,
+                             const unsigned                         n,
+                             const struct Partition * const * const partList );
 
 RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,
                            struct bRDSKblock * blk );

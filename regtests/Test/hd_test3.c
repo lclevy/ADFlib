@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     partList[0] = &part1;
     partList[1] = &part2;
 
-    adfCreateHd(hd,2,partList);
+    adfCreateHd ( hd, 2, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
     free(part2.volName);

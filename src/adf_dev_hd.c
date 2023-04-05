@@ -249,9 +249,9 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
  * do not fill dev->volList[]
  * called by adfCreateHd()
  */
-RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
-                            int                 n,
-                            struct Partition ** partList )
+RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
+                            const int                              n,
+                            const struct Partition * const * const partList )
 {
     (void) n;
     int i;
@@ -339,9 +339,9 @@ RETCODE adfCreateHdHeader ( struct AdfDevice *  dev,
  * fills dev->volList[]
  *
  */
-RETCODE adfCreateHd ( struct AdfDevice *  dev,
-                      unsigned            n,
-                      struct Partition ** partList )
+RETCODE adfCreateHd ( struct AdfDevice * const               dev,
+                      const unsigned                         n,
+                      const struct Partition * const * const partList )
 {
     unsigned i, j;
 
