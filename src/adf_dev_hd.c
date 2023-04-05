@@ -391,8 +391,8 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  * ReadRDSKblock
  *
  */
-RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,
-                           struct bRDSKblock * blk )
+RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
+                           struct bRDSKblock * const blk )
 {
     UCHAR buf[256];
     RETCODE rc = RC_OK;
@@ -435,8 +435,8 @@ RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,
  * adfWriteRDSKblock
  *
  */
-RETCODE adfWriteRDSKblock ( struct AdfDevice *  dev,
-                            struct bRDSKblock * rdsk )
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
+                            struct bRDSKblock * const rdsk )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

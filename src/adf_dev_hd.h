@@ -44,11 +44,11 @@ PREFIX RETCODE adfCreateHd ( struct AdfDevice * const               dev,
                              const unsigned                         n,
                              const struct Partition * const * const partList );
 
-RETCODE adfReadRDSKblock ( struct AdfDevice *  dev,
-                           struct bRDSKblock * blk );
+RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
+                           struct bRDSKblock * const blk );
 
-RETCODE adfWriteRDSKblock ( struct AdfDevice *  dev,
-                            struct bRDSKblock * rdsk );
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
+                            struct bRDSKblock * const rdsk );
 
 RETCODE adfReadPARTblock ( struct AdfDevice *  dev,
                            int32_t             nSect,
