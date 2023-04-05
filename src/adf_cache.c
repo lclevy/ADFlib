@@ -575,9 +575,9 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
  * adfReadDirCBlock
  *
  */
-RETCODE adfReadDirCBlock ( struct AdfVolume *      vol,
-                           SECTNUM                 nSect,
-                           struct bDirCacheBlock * dirc )
+RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
+                           const SECTNUM                 nSect,
+                           struct bDirCacheBlock * const dirc )
 {
     uint8_t buf[512];
 
@@ -603,9 +603,9 @@ RETCODE adfReadDirCBlock ( struct AdfVolume *      vol,
  * adfWriteDirCblock
  *
  */
-RETCODE adfWriteDirCBlock ( struct AdfVolume *      vol,
-                            int32_t                 nSect,
-                            struct bDirCacheBlock * dirc )
+RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
+                            const int32_t                 nSect,
+                            struct bDirCacheBlock * const dirc )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

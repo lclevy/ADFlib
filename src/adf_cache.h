@@ -77,13 +77,13 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
                           const struct bEntryBlock * const parent,
                           const SECTNUM                    headerKey );
 
-RETCODE adfReadDirCBlock ( struct AdfVolume *      vol,
-                           SECTNUM                 nSect,
-                           struct bDirCacheBlock * dirc );
+RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
+                           const SECTNUM                 nSect,
+                           struct bDirCacheBlock * const dirc );
 
-RETCODE adfWriteDirCBlock ( struct AdfVolume *      vol,
-                            int32_t                 nSect,
-                            struct bDirCacheBlock * dirc );
+RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
+                            const int32_t                 nSect,
+                            struct bDirCacheBlock * const dirc );
 
 #endif /* _ADF_CACHE_H */
 
