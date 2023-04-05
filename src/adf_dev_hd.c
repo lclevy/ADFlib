@@ -621,9 +621,9 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
  * ReadLSEGblock
  *
  */
-RETCODE adfReadLSEGblock ( struct AdfDevice *  dev,
-                           int32_t             nSect,
-                           struct bLSEGblock * blk )
+RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bLSEGblock * const blk )
 {
     UCHAR buf[sizeof(struct bLSEGblock)];
 
@@ -657,9 +657,9 @@ RETCODE adfReadLSEGblock ( struct AdfDevice *  dev,
  * adfWriteLSEGblock
  *
  */
-RETCODE adfWriteLSEGblock ( struct AdfDevice *  dev,
-                            int32_t             nSect,
-                            struct bLSEGblock * lseg )
+RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bLSEGblock * const lseg )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
