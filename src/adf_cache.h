@@ -64,9 +64,9 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume *   vol,
                               struct bEntryBlock * parent,
                               SECTNUM              nSect );
 
-RETCODE adfAddInCache ( struct AdfVolume *   vol,
-                        struct bEntryBlock * parent,
-                        struct bEntryBlock * entry );
+RETCODE adfAddInCache ( struct AdfVolume * const  vol,
+                        const struct bEntryBlock * const parent,
+                        const struct bEntryBlock * const entry );
 
 RETCODE adfUpdateCache ( struct AdfVolume *   vol,
                          struct bEntryBlock * parent,
