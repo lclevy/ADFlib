@@ -68,10 +68,10 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
                         const struct bEntryBlock * const parent,
                         const struct bEntryBlock * const entry );
 
-RETCODE adfUpdateCache ( struct AdfVolume *   vol,
-                         struct bEntryBlock * parent,
-                         struct bEntryBlock * entry,
-                         BOOL                 entryLenChg );
+RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
+                         const struct bEntryBlock * const parent,
+                         const struct bEntryBlock * const entry,
+                         const BOOL                 entryLenChg );
 
 RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
                           const struct bEntryBlock * const parent,

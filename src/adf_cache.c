@@ -447,10 +447,10 @@ dumpBlock(&dirc);
  * adfUpdateCache
  *
  */
-RETCODE adfUpdateCache ( struct AdfVolume *   vol,
-                         struct bEntryBlock * parent,
-                         struct bEntryBlock * entry,
-                         BOOL                 entryLenChg )
+RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
+                         const struct bEntryBlock * const parent,
+                         const struct bEntryBlock * const entry,
+                         const BOOL                 entryLenChg )
 {
     struct bDirCacheBlock dirc;
     SECTNUM nSect;
