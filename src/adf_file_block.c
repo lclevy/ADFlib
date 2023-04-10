@@ -122,8 +122,8 @@ RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
  * Compute number of datablocks and file extension blocks
  *
  */
-uint32_t adfFileRealSize ( uint32_t        size,
-                           unsigned        blockSize,
+uint32_t adfFileRealSize ( const uint32_t  size,
+                           const unsigned  blockSize,
                            int32_t * const dataN,
                            int32_t * const extN )
 {

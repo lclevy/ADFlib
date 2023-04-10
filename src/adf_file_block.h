@@ -47,8 +47,8 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
 RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
                             struct bFileHeaderBlock * const entry );
 
-PREFIX uint32_t adfFileRealSize ( uint32_t        size,
-                                  unsigned        blockSize,
+PREFIX uint32_t adfFileRealSize ( const uint32_t  size,
+                                  const unsigned  blockSize,
                                   int32_t * const dataN,
                                   int32_t * const extN );
 
