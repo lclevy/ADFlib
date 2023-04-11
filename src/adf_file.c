@@ -281,8 +281,10 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
         return RC_OK;
     }
 
-    if ( file->writeMode )
+    if ( file->writeMode && file->currentDataBlockChanged ) {
         adfFileFlush ( file );
+        file->currentDataBlockChanged = FALSE;
+    }
 
     if ( pos == 0 )
         return adfFileSeekStart ( file );
@@ -422,6 +424,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
+    file->currentDataBlockChanged = FALSE;
 
     if ( mode_read ) {
         memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
@@ -527,6 +530,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
                 return bytesRead;
             }
             file->posInDataBlk = 0;
+            file->currentDataBlockChanged = FALSE;
         }
 
         unsigned size = min ( n - bytesRead, blockSize - file->posInDataBlk );
@@ -656,7 +660,9 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
 
             if ( file->pos == file->fileHdr->byteSize ) {   // at EOF ?
                 // ...  create a new block
-                if ( adfFileCreateNextBlock ( file ) == -1 ) {
+                RETCODE rc = adfFileCreateNextBlock ( file );
+                file->currentDataBlockChanged = FALSE;
+                if ( rc == -1 ) {
                     /* bug found by Rikard */
                     adfEnv.wFct ( "adfWritefile : no more free sectors available" );
                     //file->curDataPtr = 0; // invalidate data ptr
@@ -667,7 +673,10 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                 // inside the existing data (at the end of a data block )
 
                 // write the block stored currently in the memory
-                adfFileFlush ( file ); // to optimize (?)
+                if ( file->currentDataBlockChanged ) {
+                    adfFileFlush ( file ); // to optimize (?)
+                    file->currentDataBlockChanged = FALSE;
+                }
 
                 // - and read the next block
                 RETCODE rc = adfFileReadNextBlock ( file );
@@ -689,6 +698,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
         file->pos += size;
         bytesWritten += size;
         file->posInDataBlk += size;
+        file->currentDataBlockChanged = TRUE;
 
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,

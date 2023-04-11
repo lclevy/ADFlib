@@ -48,6 +48,7 @@ struct AdfFile {
     unsigned posInDataBlk;
     unsigned posInExtBlk;
     BOOL writeMode;
+    BOOL currentDataBlockChanged;
 };
 
 
