@@ -22,14 +22,14 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct File *file;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfFile *file;
     unsigned char buf[600];
     long n;
     FILE *out;
     long len;
-    struct List *list;
+    struct AdfList *list;
  
     adfEnvInitDefault();
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     /* the directory */
 /*    list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint(list->content);
         adfFreeEntry(list->content);
         list = list->next;
     }

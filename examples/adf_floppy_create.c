@@ -26,10 +26,10 @@ int main ( int     argc,
     }
     
     const char * const floppy_type = argv[2];
-    int       tracks               = 80;
-    const int HEADS                = 2;
+    unsigned       tracks          = 80;
+    const unsigned HEADS           = 2;
 
-    int sectors_per_track;
+    unsigned sectors_per_track;
     if ( strncmp ( floppy_type, "dd", 2 ) == 0 )
         sectors_per_track = 11;
     else if ( strncmp ( floppy_type, "hd", 2 ) == 0 ) {
@@ -57,8 +57,8 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct Device * device = adfCreateDumpDevice ( adfname, tracks, HEADS,
-                                                   sectors_per_track );
+    struct AdfDevice * device = adfCreateDumpDevice ( adfname, tracks, HEADS,
+                                                      sectors_per_track );
     if ( ! device ) {
         fprintf ( stderr, "Error creating floppy (%s) disk image %s.\n",
                   floppy_type, adfname );
@@ -76,7 +76,7 @@ int main ( int     argc,
 
 void usage ( void )
 {
-    printf ( "Usage:  adf_create_floppy filename fdtype\n\n"
+    printf ( "Usage:  adf_floppy_create filename fdtype\n\n"
              "   fdtype can be:\n"
              "     'dd' -> 880K\n"
              "     'hd' -> 1760K\n"

@@ -26,24 +26,40 @@
  *
  */
 
-#include"prefix.h"
+#include "adf_defs.h"
+#include "prefix.h"
 
-#include "adf_str.h"
 
+struct DateTime {
+    int year, mon, day, hour, min, sec;
+};
 
-void swLong(uint8_t* buf, uint32_t val);
-void swShort(uint8_t* buf, uint16_t val);
+void swLong ( uint8_t * const buf,
+              const uint32_t  val );
 
-PREFIX struct List* newCell(struct List* list, void* content);
-PREFIX void freeList(struct List* list);
-void adfDays2Date(int32_t days, int *yy, int *mm, int *dd);
-BOOL adfIsLeap(int y);
-    void
-adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks );
-    struct DateTime
-adfGiveCurrentTime( void );
+void swShort ( uint8_t * const buf,
+               const uint16_t  val );
 
-void dumpBlock(uint8_t *buf);
+PREFIX struct AdfList * newCell ( struct AdfList * const list,
+                                  void * const           content );
+
+PREFIX void freeList ( struct AdfList * const list );
+
+PREFIX void adfDays2Date( int32_t       days,
+                          int * const   yy,
+                          int * const   mm,
+                          int * const   dd );
+
+BOOL adfIsLeap ( const int y );
+
+void adfTime2AmigaTime ( struct DateTime dt,
+                         int32_t * const day,
+                         int32_t * const min,
+                         int32_t * const ticks );
+
+struct DateTime adfGiveCurrentTime ( void );
+
+void dumpBlock ( const uint8_t * const buf );
 
 /*##########################################################################*/
 #endif /* _ADF_UTIL_H */

@@ -1,8 +1,0 @@
-
-# Generate configuration to build a shared library
-#
-# Related discussion and info:
-# https://stackoverflow.com/questions/2152077/is-it-possible-to-get-cmake-to-build-both-a-static-and-shared-library-at-the-sam
-#
-
-cmake -DBUILD_SHARED_LIBS:BOOL=ON -B build/shared -S .

@@ -28,13 +28,32 @@
 
 #include"prefix.h"
 
-#include "adf_str.h"
+#include "adf_defs.h"
+#include "adf_vol.h"
 
-RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *block);
-PREFIX RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level);
-PREFIX RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect);
-PREFIX struct List* adfGetDelEnt(struct Volume *vol);
-PREFIX void adfFreeDelList(struct List* list);
+struct GenBlock {
+    SECTNUM sect;
+    SECTNUM parent;
+    int type;
+    int secType;
+    char *name;	/* if (type == 2 and (secType==2 or secType==-3)) */
+};
+
+
+RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
+                          const SECTNUM            nSect,
+                          struct GenBlock * const  block );
+
+PREFIX RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                               const SECTNUM            nSect,
+                               const int                level );
+
+PREFIX RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                               const SECTNUM            parent,
+                               const SECTNUM            nSect );
+
+PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
+PREFIX void adfFreeDelList ( struct AdfList * const list );
 
 
 /*##########################################################################*/

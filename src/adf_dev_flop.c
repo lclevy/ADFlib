@@ -30,9 +30,10 @@
 
 #include "adf_dev_flop.h"
 
-#include "adf_disk.h"
 #include "adf_env.h"
+#include "adf_err.h"
 #include "adf_raw.h"
+#include "adf_vol.h"
 
 
 
@@ -44,9 +45,9 @@
  * use dev->devType to choose between DD and HD
  * fills geometry and the volume list with one volume
  */
-RETCODE adfMountFlop(struct Device* dev)
+RETCODE adfMountFlop ( struct AdfDevice * const dev )
 {
-    struct Volume *vol;
+    struct AdfVolume *vol;
     struct bRootBlock root;
     char diskName[35];
 	
@@ -57,7 +58,7 @@ RETCODE adfMountFlop(struct Device* dev)
     else 
         dev->sectors = 22;
 
-    vol=(struct Volume*)malloc(sizeof(struct Volume));
+    vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
         (*adfEnv.eFct)("adfMount : malloc");
         return RC_ERROR;
@@ -65,12 +66,12 @@ RETCODE adfMountFlop(struct Device* dev)
 
     vol->mounted = TRUE;
     vol->firstBlock = 0;
-    vol->lastBlock =(dev->cylinders * dev->heads * dev->sectors)-1;
+    vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     vol->rootBlock = (vol->lastBlock+1 - vol->firstBlock)/2;
     vol->blockSize = 512;
     vol->dev = dev;
  
-    if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         free ( vol );
         return RC_ERROR;
     }
@@ -79,7 +80,7 @@ RETCODE adfMountFlop(struct Device* dev)
 
     vol->volName = strdup(diskName);
 	
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) {
         free(vol);
         (*adfEnv.eFct)("adfMount : malloc");
@@ -99,7 +100,9 @@ RETCODE adfMountFlop(struct Device* dev)
  * create a filesystem on a floppy device
  * fills dev->volList[]
  */
-RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType )
+RETCODE adfCreateFlop ( struct AdfDevice * const dev,
+                        const char * const       volName,
+                        const uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");
@@ -109,7 +112,7 @@ RETCODE adfCreateFlop(struct Device* dev, char* volName, int volType )
         (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
         return RC_ERROR;
     }
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) { 
         (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;

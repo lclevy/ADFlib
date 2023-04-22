@@ -30,9 +30,10 @@
 #include <string.h>
 #include<errno.h>
 
+#include "adf_blk.h"
 #include"adf_defs.h"
 #include"adf_str.h"
-#include"adf_disk.h"
+#include "adf_vol.h"
 #include"adf_nativ.h"
 #include"adf_err.h"
 #include"adf_dump.h"
@@ -43,7 +44,9 @@
  * adfInitDumpDevice
  *
  */
-RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
+RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
+                            const char * const       name,
+                            const BOOL               ro )
 {
     dev->readOnly = ro;
     errno = 0;
@@ -68,7 +71,7 @@ RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
 
     /* determines size */
     fseek ( dev->fd, 0, SEEK_END );
-    dev->size = ftell ( dev->fd );
+    dev->size = (uint32_t) ftell ( dev->fd );
     fseek ( dev->fd, 0, SEEK_SET );
 
     return RC_OK;
@@ -79,19 +82,23 @@ RETCODE adfInitDumpDevice(struct Device* dev, char* name, BOOL ro)
  * adfReadDumpSector
  *
  */
-RETCODE adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
+RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
+                            const uint32_t           n,
+                            const unsigned           size,
+                            uint8_t * const          buf )
 {
-    int r;
 /*puts("adfReadDumpSector");*/
-    r = fseek ( dev->fd, 512 * n, SEEK_SET );
+    int pos = fseek ( dev->fd, 512 * n, SEEK_SET );
 /*printf("nnn=%ld size=%d\n",n,size);*/
-    if (r==-1)
+    if ( pos == -1 )
         return RC_ERROR;
+
+    size_t bytes_read = fread ( buf, 1, size, dev->fd );
 /*puts("123");*/
-    if ( ( r = fread ( buf, 1, size, dev->fd ) ) != size ) {
+    if ( bytes_read != size ) {
 /*printf("rr=%d\n",r);*/
         return RC_ERROR;
-}
+    }
 /*puts("1234");*/
 
     return RC_OK;
@@ -102,7 +109,10 @@ RETCODE adfReadDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
  * adfWriteDumpSector
  *
  */
-RETCODE adfWriteDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
+RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
+                             const uint32_t           n,
+                             const unsigned           size,
+                             const uint8_t * const    buf )
 {
     int r = fseek ( dev->fd, 512 * n, SEEK_SET );
     if (r==-1)
@@ -119,7 +129,7 @@ RETCODE adfWriteDumpSector(struct Device *dev, int32_t n, int size, uint8_t* buf
  * adfReleaseDumpDevice
  *
  */
-RETCODE adfReleaseDumpDevice(struct Device *dev)
+RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
 {
     fclose ( dev->fd );
 
@@ -133,20 +143,21 @@ RETCODE adfReleaseDumpDevice(struct Device *dev)
  * adfCreateHdFile
  *
  */
-RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType)
+RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                          const char * const       volName,
+                          const uint8_t            volType )
 {
-	
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
         return RC_ERROR;
     }
-    dev->volList =(struct Volume**) malloc(sizeof(struct Volume*));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct Volume *));
     if (!dev->volList) { 
                 (*adfEnv.eFct)("adfCreateHdFile : unknown device type");
         return RC_ERROR;
     }
 
-    dev->volList[0] = adfCreateVol( dev, 0L, (int32_t)dev->cylinders, volName, volType );
+    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
         return RC_ERROR;
@@ -164,15 +175,17 @@ RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType)
  *
  * returns NULL if failed
  */ 
-    struct Device*
-adfCreateDumpDevice(char* filename, int32_t cylinders, int32_t heads, int32_t sectors)
+struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
+                                         const uint32_t     cylinders,
+                                         const uint32_t     heads,
+                                         const uint32_t     sectors )
 {
-    struct Device* dev;
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 /*    int32_t i;*/
     int r;
 	
-    dev=(struct Device*)malloc(sizeof(struct Device));
+    struct AdfDevice * dev = (struct AdfDevice *)
+        malloc (sizeof(struct AdfDevice));
     if (!dev) { 
         (*adfEnv.eFct)("adfCreateDumpDevice : malloc dev");
         return NULL;

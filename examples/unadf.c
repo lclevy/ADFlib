@@ -1,7 +1,7 @@
 /*
- * unadf 1.1
+ * unadf
  *
- * tested under Linux and Windows
+ * an unzip-like utility for Amiga disk images (ADF)
  *
  *  This file is part of ADFLib.
  *
@@ -33,10 +33,17 @@
 
 
 #ifdef WIN32
-//#if !defined(__GNUC__)
-#if !defined(__MINGW32__)
+
+ //#if !defined(__GNUC__)
+#if !defined(__MINGW32__) && !defined(_CYGWIN)
+#include <io.h>         // for open(), write(), ...
 typedef uint32_t mode_t;
 #endif
+
+#if defined _MSC_VER
+#include <direct.h>     // for _mkdir()
+#endif
+
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 # include <sys/utime.h>
 # define DIRSEP '\\'
@@ -46,7 +53,7 @@ typedef uint32_t mode_t;
 # define DIRSEP '/'
 #endif
 
-#define UNADF_VERSION "1.1"
+#define UNADF_VERSION "1.2"
 #define EXTRACT_BUFFER_SIZE 8192
 
 /* command-line arguments */
@@ -54,29 +61,29 @@ BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
      show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
-struct List *file_list = NULL;
+struct AdfList *file_list = NULL;
 
 /* prototypes */
 void parse_args(int argc, char *argv[]);
 void help();
-void print_device(struct Device *dev);
-void print_volume(struct Volume *vol);
-void print_tree(struct List *node, char *path);
-void print_entry(struct Entry *e, char *path);
-void extract_tree(struct Volume *vol, struct List *node, char *path);
-void extract_filepath(struct Volume *vol, char *filepath);
-void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms);
+void print_device(struct AdfDevice *dev);
+void print_volume(struct AdfVolume * vol);
+void print_tree(struct AdfList *node, char *path);
+void print_entry(struct AdfEntry *e, char *path);
+void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path);
+void extract_filepath(struct AdfVolume *vol, char *filepath);
+void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms);
 char *output_name(char *path, char *name);
 char *join_path(char *path, char *name);
-void set_file_date(char *out, struct Entry *e);
+void set_file_date(char *out, struct AdfEntry *e);
 void mkdir_if_needed(char *path, mode_t perms);
-mode_t permissions(struct Entry *e);
+mode_t permissions(struct AdfEntry *e);
 int replace_not_allowed_chars ( char * const path );
 
 int main(int argc, char *argv[]) {
-    struct Device *dev = NULL;
-    struct Volume *vol = NULL;
-    struct List *list, *node;
+    struct AdfDevice *dev = NULL;
+    struct AdfVolume *vol = NULL;
+    struct AdfList *list, *node;
 
     fprintf(stderr, "unADF v%s : a unzip like for .ADF files, powered by ADFlib (v%s - %s)\n\n",
         UNADF_VERSION, adfGetVersionNumber(), adfGetVersionDate());
@@ -165,8 +172,9 @@ error_handler:
 
 /* parses the command line arguments into global variables */
 void parse_args(int argc, char *argv[]) {
-    struct List *list = NULL;
-    int i, j;
+    struct AdfList *list = NULL;
+    int i;
+    size_t j;
 
     /* parse flags */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
@@ -230,7 +238,8 @@ void help() {
 }
 
 /* prints one line of information about a device */
-void print_device(struct Device *dev) {
+void print_device(struct AdfDevice *dev)
+{
     printf("Device : %s. Cylinders = %d, Heads = %d, Sectors = %d. Volumes = %d\n",
         dev->devType == DEVTYPE_FLOPDD   ? "Floppy DD" :
         dev->devType == DEVTYPE_FLOPHD   ? "Floppy HD" :
@@ -240,7 +249,8 @@ void print_device(struct Device *dev) {
 }
 
 /* prints one line of information about a volume */
-void print_volume(struct Volume *vol) {
+void print_volume(struct AdfVolume *vol)
+{
     SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
 
     switch (vol->dev->devType) {
@@ -274,11 +284,12 @@ void print_volume(struct Volume *vol) {
 }
 
 /* recurses through all directories/files and calls print_entry() on them */
-void print_tree(struct List *node, char *path) {
+void print_tree(struct AdfList *node, char *path)
+{
     for (; node; node = node->next) {
         print_entry(node->content, path);
         if (node->subdir) {
-            struct Entry *e = (struct Entry *) node->content;
+            struct AdfEntry *e = (struct AdfEntry *) node->content;
             char *newpath = join_path(path, e->name);
             print_tree(node->subdir, newpath);
             free(newpath);
@@ -287,7 +298,7 @@ void print_tree(struct List *node, char *path) {
 }
 
 /* prints one line of information about a directory/file entry */
-void print_entry(struct Entry *e, char *path) {
+void print_entry(struct AdfEntry *e, char *path) {
     BOOL is_dir = e->type == ST_DIR;
     BOOL print_comment = show_comments && e->comment && *e->comment;
 
@@ -313,9 +324,10 @@ void print_entry(struct Entry *e, char *path) {
 }
 
 /* extracts all files, recursing into directories */
-void extract_tree(struct Volume *vol, struct List *node, char *path) {
+void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
+{
     for (; node; node = node->next) {
-        struct Entry *e = node->content;
+        struct AdfEntry *e = node->content;
 
         /* extract file or create directory */
         char *out = output_name(path, e->name);
@@ -350,7 +362,8 @@ void extract_tree(struct Volume *vol, struct List *node, char *path) {
 }
 
 /* follows a path to a file on disk and extracts just that file */
-void extract_filepath(struct Volume *vol, char *filepath) {
+void extract_filepath(struct AdfVolume *vol, char *filepath)
+{
     char *p, *element, *out;
 
     /* skip any leading slashes */
@@ -391,12 +404,13 @@ void extract_filepath(struct Volume *vol, char *filepath) {
 }
 
 /* copies a file from the volume to a given output filename */
-void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
-    struct File *f = NULL;
+void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms)
+{
+    struct AdfFile *f = NULL;
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;
 
-    if (!(f = adfOpenFile(vol, filename, "r"))) {
+    if ( ( f = adfFileOpen ( vol, filename, "r" ) ) == NULL )  {
         fprintf(stderr, "%s: can't find file %s in volume\n", adf_file, filename);
         goto error_handler;
     }
@@ -416,7 +430,7 @@ void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
 
     /* copy from volume to local file until EOF */
     while (!adfEndOfFile(f)) {
-        int32_t n = adfReadFile(f, sizeof(buf), buf);
+        unsigned n = adfFileRead ( f, sizeof(buf), buf );
         if (write(fd, buf, n) != n) {
             perror(out);
             goto error_handler;
@@ -425,7 +439,7 @@ void extract_file(struct Volume *vol, char *filename, char *out, mode_t perms) {
 
 error_handler:
     if (fd && !pipe_mode) close(fd);
-    if (f) adfCloseFile(f);
+    if (f) adfFileClose(f);
 }
 
 /* combines path and file to "path/file", or just "file" if path is blank */
@@ -441,7 +455,7 @@ char *join_path(char *path, char *file) {
 
 /* creates a suitable output filename from the amiga filename */
 char *output_name(char *path, char *name) {
-    int dirlen = extract_dir ? strlen(extract_dir) + 1 : 0;
+    size_t dirlen = ( extract_dir ? strlen(extract_dir) + 1 : 0 );
     char *out = malloc(dirlen + strlen(path) + strlen(name) + 2), *s, *o;
     if (!out) {
         perror(adf_file);
@@ -495,7 +509,7 @@ char *output_name(char *path, char *name) {
 }
 
 /* set amiga file date on output file */
-void set_file_date(char *out, struct Entry *e) {
+void set_file_date(char *out, struct AdfEntry *e) {
     time_t time;
 #ifdef WIN32
     struct utimbuf times;
@@ -531,22 +545,35 @@ void set_file_date(char *out, struct Entry *e) {
 #endif
 }
 
+/* OS-agnostic make directory function */
+static inline int makedir(char* path, mode_t perms)
+{
+#if defined _MSC_VER
+    (void) perms;
+    return _mkdir(path);
+#else
+#if defined(__MINGW32__)
+    (void) perms;
+    return mkdir(path);
+#else
+    return mkdir(path, perms);
+#endif
+#endif
+}
+
+
 /* creates directory, if it does not already exist */
 void mkdir_if_needed(char *path, mode_t perms) {
     struct stat st;
     if (stat(path, &st) != 0 || !S_ISDIR(st.st_mode)) {
-#if defined(__MINGW32__)
-        if (mkdir(path) != 0) {
-#else
-        if (mkdir(path, perms) != 0) {
-#endif
+        if (makedir(path, perms) != 0) {
             perror(path);
         }
     }
 }
 
 /* convert amiga permissions to unix permissions */
-mode_t permissions(struct Entry *e) {
+mode_t permissions(struct AdfEntry *e) {
     return (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
         (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */

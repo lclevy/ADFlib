@@ -28,30 +28,61 @@ endif()
 
 #add_compile_options(-pthread)
 
-#configure_file (config.h.cmake.in config.h)
-#include_directories(${PROJECT_BINARY_DIR}/src)
-
 include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_BINARY_DIR}/src)
 
 #message ("Check include dir: ${CHECK_INCLUDE_DIR}, libraries: ${CHECK_LIBRARIES}")
-include_directories(${CHECK_INCLUDE_DIR})
+#if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+#include_directories(${CHECK_INCLUDE_DIR})
+#else()
+add_compile_options(${CHECK_CFLAGS})
+#endif()
+
+add_executable ( test_test_util
+                 test_test_util.c
+                 test_util.c )
 
 add_executable ( test_adfPos2DataBlock
-  test_adfPos2DataBlock.c
-)
+                 test_adfPos2DataBlock.c )
 
 add_executable ( test_adfDays2Date
-  test_adfDays2Date.c
-)
+                 test_adfDays2Date.c )
 
-add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
-add_test ( test_adfDays2Date test_adfDays2Date )
+add_executable ( test_file_create
+                 test_file_create.c )
+
+add_executable ( test_file_append
+                 test_file_append.c )
+
+add_executable ( test_file_write
+                 test_file_write.c
+	         test_util.c )
+
+add_executable ( test_file_write_chunks
+                 test_file_write_chunks.c
+	         test_util.c )
+
+add_executable ( test_file_overwrite
+                 test_file_overwrite.c )
+
+add_executable ( test_file_overwrite2
+                 test_file_overwrite2.c
+                 test_util.c )
+
+add_executable ( test_file_seek_after_write
+                 test_file_seek_after_write.c
+                 test_util.c )
 
 if ( "${CHECK_LIBRARIES}" STREQUAL "" )
   set (CHECK_LIBRARIES Check::check)
 else()
-  set (CHECK_LIBRARIES "${CHECK_LIBRARIES} -pthread")
+  #set (CHECK_LIBRARIES "${CHECK_LIBRARIES} -pthread")
+  set (CHECK_LIBRARIES "${CHECK_LDFLAGS}")
 endif()
+
+target_link_libraries ( test_test_util PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
 
 target_link_libraries ( test_adfPos2DataBlock PUBLIC
   adf
@@ -62,3 +93,47 @@ target_link_libraries ( test_adfDays2Date PUBLIC
   adf
   ${CHECK_LIBRARIES}
 )
+
+target_link_libraries ( test_file_create PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_append PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_write PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_write_chunks PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_overwrite PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_overwrite2 PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_file_seek_after_write PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
+
+
+configure_file(test_examples test_examples COPYONLY)
+configure_file(arccsh.adf arccsh.adf COPYONLY)
+
+add_test ( test_test_util test_test_util )
+add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
+add_test ( test_adfDays2Date test_adfDays2Date )
+add_test ( test_file_create test_file_create )
+add_test ( test_file_append test_file_append )
+add_test ( test_file_write test_file_write )
+add_test ( test_file_write_chunks test_file_write_chunks )
+add_test ( test_file_overwrite test_file_overwrite )
+add_test ( test_file_overwrite2 test_file_overwrite2 )
+add_test ( test_file_seek_after_write test_file_seek_after_write )
+add_test ( test_examples ${BASH_PROGRAM} test_examples )

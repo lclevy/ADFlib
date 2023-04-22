@@ -14,4 +14,23 @@ TARGET_LINK_LIBRARIES ( adf_floppy_create adf )
 add_executable ( adf_floppy_format adf_floppy_format.c )
 TARGET_LINK_LIBRARIES ( adf_floppy_format adf )
 
-install (TARGETS unadf adf_floppy_create adf_floppy_format )
+add_executable ( adf_show_metadata
+  adf_show_metadata.c
+  adf_show_metadata_common.c
+  adf_show_metadata_common.h
+  adf_show_metadata_dir.c
+  adf_show_metadata_dir.h
+  adf_show_metadata_file.c
+  adf_show_metadata_file.h
+  adf_show_metadata_volume.c
+  adf_show_metadata_volume.h
+)
+
+TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
+
+install ( TARGETS
+  unadf
+  adf_floppy_create
+  adf_floppy_format
+  adf_show_metadata
+)

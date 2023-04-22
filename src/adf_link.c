@@ -23,6 +23,12 @@
  *
  */
 
+
+#if defined (__ANY_IDEA_WHAT_IS_THIS_FOR__)
+// the code below is not used anywhere and seems unfinished
+// (not clear what it was meant for...)
+// -> disabling it for now
+
 #include<string.h>
 
 #include"adf_defs.h"
@@ -36,11 +42,14 @@
  *
  *
  */
-RETCODE adfBlockPtr2EntryName(struct Volume *vol, SECTNUM nSect, SECTNUM lPar, 
-	char **name, int32_t *size)
+RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
+                                SECTNUM            nSect,
+                                SECTNUM            lPar,
+                                char **            name,
+                                int32_t *          size )
 {
     struct bEntryBlock entryBlk;
-    struct Entry entry;
+    struct AdfEntry entry;
 
     if (*name==0) {
         adfReadEntryBlock(vol, nSect, &entryBlk);
@@ -59,5 +68,7 @@ return RC_OK;
 
     return RC_OK;
 }
+
+#endif
 
 /*##################################################################################*/

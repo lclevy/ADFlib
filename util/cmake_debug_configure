@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#https://blog.feabhas.com/2021/07/cmake-part-2-release-and-debug-builds/
+cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=DEBUG
+

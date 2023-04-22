@@ -23,12 +23,13 @@
  *
  */
 
-#include<stdlib.h>
-#include<time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "adf_util.h"
 #include "adf_err.h"
-#include "adf_disk.h"
+#include "adf_vol.h"
 #include "adf_env.h"
 
 
@@ -41,7 +42,8 @@
  * 
  * used in adfWrite----Block() functions
  */
-void swLong(uint8_t* buf, uint32_t val)
+void swLong ( uint8_t * const buf,
+              const uint32_t  val )
 {
 	buf[0]= (uint8_t)((val & 0xff000000) >>24UL);
 	buf[1]= (uint8_t)((val & 0x00ff0000) >>16UL);
@@ -49,10 +51,11 @@ void swLong(uint8_t* buf, uint32_t val)
 	buf[3]= (uint8_t)(val & 0x000000ff);
 }
 
-void swShort(uint8_t* buf, uint16_t val)
+void swShort ( uint8_t * const buf,
+               const uint16_t  val )
 {
-	buf[0]= (val & 0xff00) >>8UL;
-	buf[1]= (val & 0x00ff) ;
+    buf[0] = (uint8_t) ( (val & 0xff00u) >> 8UL );
+    buf[1] = ( val & 0x00ffu );
 }
 
 /*
@@ -60,11 +63,11 @@ void swShort(uint8_t* buf, uint16_t val)
  *
  * adds a cell at the end the list
  */
-struct List* newCell(struct List* list, void* content)
+struct AdfList * newCell ( struct AdfList * const list,
+                           void * const           content )
 {
-    struct List* cell;
-
-    cell=(struct List*)malloc(sizeof(struct List));
+    struct AdfList * const cell = ( struct AdfList * )
+        malloc ( sizeof ( struct AdfList ) );
     if (!cell) {
         (*adfEnv.eFct)("newCell : malloc");
         return NULL;
@@ -82,7 +85,7 @@ struct List* newCell(struct List* list, void* content)
  * freeList
  *
  */
-void freeList(struct List* list)
+void freeList ( struct AdfList * const list )
 {
     if (list==NULL) 
         return;
@@ -101,8 +104,10 @@ void freeList(struct List* list)
  * amiga disk date format (days) to normal dd/mm/yy format (out)
  */
 
-void 
-adfDays2Date(int32_t days, int *yy, int *mm, int *dd)
+void adfDays2Date ( int32_t       days,
+                    int * const   yy,
+                    int * const   mm,
+                    int * const   dd )
 {
     int y,m;
     int nd;
@@ -146,9 +151,7 @@ adfDays2Date(int32_t days, int *yy, int *mm, int *dd)
  *
  * true if a year (y) is leap
  */
-
-    BOOL 
-adfIsLeap(int y)
+BOOL adfIsLeap ( const int y )
 {
     return( (BOOL) ( !(y%100) ? !(y%400) : !(y%4) ) );
 }
@@ -159,8 +162,7 @@ adfIsLeap(int y)
  *
  * return the current system date and time
  */
-    struct DateTime
-adfGiveCurrentTime( void )
+struct DateTime adfGiveCurrentTime ( void )
 {
     struct tm *local;
     time_t cal;
@@ -185,8 +187,10 @@ adfGiveCurrentTime( void )
  *
  * converts date and time (dt) into Amiga format : day, min, ticks
  */
-    void
-adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks )
+void adfTime2AmigaTime ( struct DateTime dt,
+                         int32_t * const day,
+                         int32_t * const min,
+                         int32_t * const ticks )
 {
     int jm[12]={ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -230,7 +234,7 @@ adfTime2AmigaTime(struct DateTime dt, int32_t *day, int32_t *min, int32_t *ticks
  * debug function : to dump a block before writing the check its contents
  *
  */
-void dumpBlock(uint8_t *buf)
+void dumpBlock ( const uint8_t * const buf )
 {
 	int i, j;
 

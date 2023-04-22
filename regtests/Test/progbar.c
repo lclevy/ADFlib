@@ -22,8 +22,9 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
+    (void) argc, (void) argv;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
     BOOL true = TRUE;
  
     adfEnvInitDefault();

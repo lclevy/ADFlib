@@ -2,27 +2,67 @@
 #ifndef __ADF_DEV_H__
 #define __ADF_DEV_H__
 
+#include <stdio.h>
+
 #include "adf_defs.h"
+#include "adf_vol.h"
 #include "prefix.h"
 
-PREFIX struct Device * adfOpenDev ( char * filename, BOOL ro );
-PREFIX void adfCloseDev ( struct Device * dev );
 
-int adfDevType ( struct Device * dev );
-PREFIX void adfDeviceInfo ( struct Device * dev );
+struct Partition {
+    int32_t startCyl;
+    int32_t lenCyl;
+    char* volName;
+    uint8_t volType;
+};
 
-PREFIX struct Device* adfMountDev ( char* filename, BOOL ro );
-PREFIX void adfUnMountDev ( struct Device * dev );
+/* ----- DEVICES ----- */
 
-//struct Device* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
+#define DEVTYPE_FLOPDD 		1
+#define DEVTYPE_FLOPHD 		2
+#define DEVTYPE_HARDDISK 	3
+#define DEVTYPE_HARDFILE 	4
 
-RETCODE adfReadBlockDev ( struct Device * dev,
-                          int32_t         pSect,
-                          int32_t         size,
-                          uint8_t *       buf );
+struct AdfDevice {
+    int devType;               /* see below */
+    BOOL readOnly;
+    uint32_t size;                /* in bytes */
 
-RETCODE adfWriteBlockDev ( struct Device * dev,
-                           int32_t         pSect,
-                           int32_t         size,
-                           uint8_t *       buf );
+    int nVol;                  /* partitions */
+    struct AdfVolume** volList;
+
+    uint32_t cylinders;            /* geometry */
+    uint32_t heads;
+    uint32_t sectors;
+
+    BOOL isNativeDev;
+    union {
+        void *nativeDev;
+        FILE *fd;
+    };
+};
+
+
+PREFIX struct AdfDevice * adfOpenDev ( const char * const filename,
+                                       const BOOL         ro );
+PREFIX void adfCloseDev ( struct AdfDevice * const dev );
+
+PREFIX int adfDevType ( struct AdfDevice * dev );
+PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
+
+PREFIX struct AdfDevice * adfMountDev ( const char * const filename,
+                                        const BOOL         ro );
+PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
+
+//struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
+
+RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
+                          const uint32_t           pSect,
+                          const uint32_t           size,
+                          uint8_t * const          buf );
+
+RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
+                           const uint32_t           pSect,
+                           const uint32_t           size,
+                           const uint8_t * const    buf );
 #endif

@@ -25,7 +25,7 @@
 #define ADF_NATIV_H
 
 #include<stdio.h>
-#include"adf_str.h"
+#include"adf_dev.h"
 
 #define NATIVE_FILE  8001
 
@@ -37,31 +37,55 @@
 #define RETCODE int32_t
 #endif
 
-struct nativeDevice{
+struct AdfNativeDevice {
     FILE* fd;
 };
 
-struct nativeFunctions{
+struct AdfNativeFunctions {
+
     /* called by adfMount() */
-    RETCODE (*adfInitDevice)(struct Device*, char*,BOOL);
-    /* called by adfReadBlock() */
-    RETCODE (*adfNativeReadSector)(struct Device*, int32_t, int, uint8_t*);
-    /* called by adfWriteBlock() */
-    RETCODE (*adfNativeWriteSector)(struct Device*, int32_t, int, uint8_t*);
-    /* called by adfMount() */
-    BOOL (*adfIsDevNative)(char*);
+    RETCODE (*adfInitDevice)( struct AdfDevice * const dev,
+                              const char * const       name,
+                              const BOOL               ro );
+
     /* called by adfUnMount() */
-    RETCODE (*adfReleaseDevice)(struct Device* dev);
+    RETCODE (*adfReleaseDevice)(struct AdfDevice * const dev);
+
+    /* called by adfReadBlock() */
+    RETCODE (*adfNativeReadSector)( struct AdfDevice * const dev,
+                                    const uint32_t           n,
+                                    const unsigned           size,
+                                    uint8_t * const          buf );
+
+    /* called by adfWriteBlock() */
+    RETCODE (*adfNativeWriteSector)( struct AdfDevice * const dev,
+                                     const uint32_t           n,
+                                     const unsigned           size,
+                                     const uint8_t * const    buf );
+
+    /* called by adfMount() */
+    BOOL (*adfIsDevNative)( const char * const devName );
 };
 
 void adfInitNativeFct();
 
+RETCODE myInitDevice ( struct AdfDevice * const dev,
+                       const char * const       name,
+                       const BOOL               ro );
 
-RETCODE myReadSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-RETCODE myWriteSector(struct Device *dev, int32_t n, int size, uint8_t* buf);
-RETCODE myInitDevice(struct Device *dev, char* name,BOOL);
-RETCODE myReleaseDevice(struct Device *dev);
-BOOL myIsDevNative(char*);
+RETCODE myReleaseDevice ( struct AdfDevice * const dev );
+
+RETCODE myReadSector ( struct AdfDevice * const dev,
+                       const uint32_t           n,
+                       const unsigned           size,
+                       uint8_t * const          buf );
+
+RETCODE myWriteSector ( struct AdfDevice * const dev,
+                        const uint32_t           n,
+                        const unsigned           size,
+                        const uint8_t * const    buf );
+
+BOOL myIsDevNative ( const char * const );
 
 #endif /* ADF_NATIV_H */
 

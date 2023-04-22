@@ -31,9 +31,6 @@
 
 #include "adf_defs.h"
 
-#define ULONG   uint32_t
-#define USHORT  uint16_t
-#define UCHAR   uint8_t
 
 #define LOGICAL_BLOCK_SIZE    512
 
@@ -126,7 +123,7 @@ struct bRootBlock {
 /*1a4*/	int32_t	cDays; 	/* creation date FFS and OFS */
 /*1a8*/	int32_t	cMins;
 /*1ac*/	int32_t	cTicks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	diskName[MAXNAMELEN+1];
         char	r2[8];
 /*1d8*/	int32_t	days;		/* last access : days after 1 jan 1978 */
@@ -142,6 +139,34 @@ struct bRootBlock {
 };
 
 
+struct bEntryBlock {
+/*000*/	int32_t	 type;		/* T_HEADER == 2 */
+/*004*/	int32_t	 headerKey;	/* current block number */
+        int32_t	 r1[3];
+/*014*/	uint32_t checkSum;
+/*018*/	int32_t	 hashTable[HT_SIZE];
+        int32_t	 r2[2];
+/*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
+/*144*/	uint32_t byteSize;
+/*148*/	uint8_t	 commLen;
+/*149*/	char	 comment[MAXCMMTLEN + 1];
+        char	 r3[91 - ( MAXCMMTLEN + 1 )];
+/*1a4*/	int32_t	 days;
+/*1a8*/	int32_t	 mins;
+/*1ac*/	int32_t	 ticks;
+/*1b0*/	uint8_t	 nameLen;
+/*1b1*/	char	 name[MAXNAMELEN + 1];
+        int32_t	 r4;
+/*1d4*/	int32_t	 realEntry;
+/*1d8*/	int32_t	 nextLink;
+        int32_t	 r5[5];
+/*1f0*/	int32_t	 nextSameHash;
+/*1f4*/	int32_t	 parent;
+/*1f8*/	int32_t	 extension;
+/*1fc*/	int32_t	 secType;
+};
+
+
 struct bFileHeaderBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* current block number */
@@ -154,13 +179,13 @@ struct bFileHeaderBlock {
 /*13c*/	int32_t	r2;
 /*140*/	int32_t	access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t	byteSize;
-/*148*/	char	commLen;
+/*148*/	uint8_t	commLen;
 /*149*/	char	comment[MAXCMMTLEN+1];
         char	r3[91-(MAXCMMTLEN+1)];
 /*1a4*/	int32_t	days;
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char	fileName[MAXNAMELEN+1];
         int32_t	r4;
 /*1d4*/	int32_t	real;		/* unused == 0 */
@@ -204,13 +229,13 @@ struct bDirBlock {
         int32_t	r2[2];
 /*140*/	int32_t	access;
         int32_t	r4;		/* == 0 */
-/*148*/	char	commLen;
+/*148*/	uint8_t	commLen;
 /*149*/	char	comment[MAXCMMTLEN+1];
         char	r5[91-(MAXCMMTLEN+1)];
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	dirName[MAXNAMELEN+1];
         int32_t	r6;
 /*1d4*/	int32_t	real;		/* ==0 */
@@ -227,8 +252,8 @@ struct bDirBlock {
 struct bOFSDataBlock{
 /*000*/	int32_t	type;		/* == 8 */
 /*004*/	int32_t	headerKey;	/* pointer to file_hdr block */
-/*008*/	int32_t	seqNum;	/* file data block number */
-/*00c*/	int32_t	dataSize;	/* <= 0x1e8 */
+/*008*/	uint32_t seqNum;	/* file data block number */
+/*00c*/	uint32_t dataSize;	/* <= 0x1e8 */
 /*010*/	int32_t	nextData;	/* next data block */
 /*014*/	ULONG	checkSum;
 /*018*/	UCHAR	data[488];
@@ -259,7 +284,7 @@ struct bLinkBlock {
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
-/*1b0*/	char	nameLen;
+/*1b0*/	uint8_t	nameLen;
 /*1b1*/	char 	name[MAXNAMELEN+1];
         int32_t	r3;
 /*1d4*/	int32_t	realEntry;

@@ -26,9 +26,9 @@ typedef struct reading_test_s {
 
 int test_hlink_read ( reading_test_t * test_data );
 
-int test_single_read ( struct File * const file_adf,
-                       unsigned int        offset,
-                       unsigned char       expected_value );
+int test_single_read ( struct AdfFile * const file_adf,
+                       unsigned int           offset,
+                       unsigned char          expected_value );
 
 
 int main ( int argc, char * argv[] )
@@ -109,14 +109,14 @@ int test_hlink_read ( reading_test_t * test_data )
              test_data->real_file );
 #endif
 
-    struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         return 1;
     }
 
-    struct Volume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image_filename );
@@ -145,7 +145,7 @@ int test_hlink_read ( reading_test_t * test_data )
         }
     }
 
-    struct File * const file_adf = adfOpenFile ( vol, test_data->hlink_name, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );
@@ -159,7 +159,7 @@ int test_hlink_read ( reading_test_t * test_data )
                                      test_data->checks[i].value );
     }
 
-    adfCloseFile ( file_adf );
+    adfFileClose ( file_adf );
 
     // clean-up
 clean_up:
@@ -171,9 +171,9 @@ clean_up:
 }
 
 
-int test_single_read ( struct File * const file_adf,
-                       unsigned int        offset,
-                       unsigned char       expected_value )
+int test_single_read ( struct AdfFile * const file_adf,
+                       unsigned int           offset,
+                       unsigned char          expected_value )
 {
 #if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
@@ -183,7 +183,7 @@ int test_single_read ( struct File * const file_adf,
     adfFileSeek ( file_adf, offset );
 
     unsigned char c;
-    int n = adfReadFile ( file_adf, 1, &c );
+    unsigned n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );

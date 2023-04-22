@@ -38,14 +38,12 @@
 #include "nt4_dev.h"
 
 
-RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
+RETCODE Win32InitDevice ( struct AdfDevice * const dev,
+                          const char * const       lpstrName,
+                          const BOOL               ro )
 {
-	struct nativeDevice* nDev;
-	char strTempName[3];
-
-	nDev = (struct nativeDevice*)dev->nativeDev;
-
-	nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
+	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
+            malloc ( sizeof(struct AdfNativeDevice) );
 	if (!nDev) {
 		(*adfEnv.eFct)("Win32InitDevice : malloc");
 		return RC_ERROR;													/* BV */
@@ -57,6 +55,7 @@ RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
 		return RC_ERROR;													/* BV */
 	}
 
+	char strTempName[3];
 	strTempName[0] = lpstrName[1];
 	strTempName[1] = lpstrName[2];
 	strTempName[2] = '\0';
@@ -98,13 +97,15 @@ RETCODE Win32InitDevice(struct Device* dev, char* lpstrName, BOOL ro)
 }
 
 
-RETCODE Win32ReadSector(struct Device *dev, long n, int size, unsigned char* buf)
+RETCODE Win32ReadSector ( struct AdfDevice * const dev,
+                          const uint32_t           n,
+                          const unsigned           size,
+                          uint8_t * const          buf )
 {
-	struct nativeDevice* tDev;
+	struct AdfNativeDevice * tDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
-	tDev = (struct nativeDevice*)dev->nativeDev;
-
-	if (! NT4ReadSector(tDev->hDrv, n, size, buf)) {
+	if (! NT4ReadSector(tDev->hDrv, (long) n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4ReadSector");
 		return RC_ERROR;													/* BV */
 	}
@@ -113,13 +114,15 @@ RETCODE Win32ReadSector(struct Device *dev, long n, int size, unsigned char* buf
 }
 
 
-RETCODE Win32WriteSector(struct Device *dev, long n, int size, unsigned char* buf)
+RETCODE Win32WriteSector ( struct AdfDevice * const dev,
+                           const uint32_t           n,
+                           const unsigned           size,
+                           const uint8_t * const    buf )
 {
-	struct nativeDevice* tDev;
+	struct AdfNativeDevice * tDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
-	tDev = (struct nativeDevice*)dev->nativeDev;
-
-	if (! NT4WriteSector(tDev->hDrv, n, size, buf)) {
+	if (! NT4WriteSector(tDev->hDrv, (long) n, size, buf)) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4WriteSector");
 		return RC_ERROR;													/* BV */
 	}
@@ -128,11 +131,10 @@ RETCODE Win32WriteSector(struct Device *dev, long n, int size, unsigned char* bu
 }
 
 
-RETCODE Win32ReleaseDevice(struct Device *dev)
+RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
-	struct nativeDevice* nDev;
-
-	nDev = (struct nativeDevice*)dev->nativeDev;
+	struct AdfNativeDevice * nDev =
+            ( struct AdfNativeDevice * ) dev->nativeDev;
 
 	if (! NT4CloseDrive(nDev->hDrv))
 		return RC_ERROR;													/* BV */
@@ -145,9 +147,8 @@ RETCODE Win32ReleaseDevice(struct Device *dev)
 
 void adfInitNativeFct()
 {
-	struct nativeFunctions *nFct;
-
-	nFct = (struct nativeFunctions*)adfEnv.nativeFct;
+	struct AdfNativeFunctions * nFct =
+            ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
 	nFct->adfInitDevice = Win32InitDevice;
 	nFct->adfNativeReadSector = Win32ReadSector;
@@ -157,7 +158,7 @@ void adfInitNativeFct()
 }
 
 
-BOOL Win32IsDevNative(char *devName)
+BOOL Win32IsDevNative ( const char * const devName )
 {
 	return devName[0] == '|';
 }

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include "nt4_dev.h"
 
-HANDLE NT4OpenDrive(char *lpstrDrive)
+HANDLE NT4OpenDrive ( const char * const lpstrDrive )
 {
 	char strDriveFile[40];
 	HANDLE hDrv;
@@ -55,7 +55,7 @@ HANDLE NT4OpenDrive(char *lpstrDrive)
 	return hDrv;
 }
 
-BOOL NT4CloseDrive(HANDLE hDrv)
+BOOL NT4CloseDrive ( const HANDLE hDrv )
 {
 	DWORD dwRet;
 
@@ -71,7 +71,10 @@ BOOL NT4CloseDrive(HANDLE hDrv)
 	return TRUE;
 }
 
-BOOL NT4ReadSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf)
+BOOL NT4ReadSector ( const HANDLE hDrv,
+                     const long   iSect,
+                     const size_t iSize,
+                     void * const lpvoidBuf )
 {
 	void *lpvoidTempBuf;
 	DWORD dwActual;
@@ -94,7 +97,10 @@ BOOL NT4ReadSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf)
 	return TRUE;
 }
 
-BOOL NT4WriteSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf)
+BOOL NT4WriteSector ( const HANDLE       hDrv,
+                      const long         iSect,
+                      const size_t       iSize,
+                      const void * const lpvoidBuf )
 {
 	void *lpvoidTempBuf;
 	DWORD dwActual;
@@ -121,7 +127,7 @@ BOOL NT4WriteSector(HANDLE hDrv, long iSect, int iSize, void *lpvoidBuf)
 	return TRUE;
 }
 
-ULONG NT4GetDriveSize(HANDLE hDrv)
+ULONG NT4GetDriveSize ( const HANDLE hDrv )
 {
 	DWORD dwActual;
 	DISK_GEOMETRY dgGeom;
@@ -140,7 +146,7 @@ ULONG NT4GetDriveSize(HANDLE hDrv)
 }
 
 
-BOOL NT4GetDriveGeometry ( HANDLE                     hDrv,
+BOOL NT4GetDriveGeometry ( const HANDLE               hDrv,
                            NT4DriveGeometry_t * const geometry )
 {
     DWORD dwActual;

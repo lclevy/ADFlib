@@ -1,0 +1,40 @@
+name: ADFlib deb build/packaging
+
+on:
+  push:
+    branches: [ "citest" ]
+  pull_request:
+    branches: [ "citest" ]
+
+jobs:
+  ubuntu_deb:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run:
+        sudo apt-get update &&
+        sudo apt-get install -y check devscripts debhelper
+    - name: debuild
+      run: util/deb_build.sh
+    - name: list packages
+      run: ls ..
+    - name: install packages
+      run: sudo dpkg -i ../*.deb ../*.ddeb
+    - name: check installation
+      run:
+        dpkg -l 'libadf*' ;
+        dpkg -l 'libadf*' | grep "libadf" |
+        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples
+    #https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    - name: copy artifacts
+      run:
+        mkdir -v artifacts ;
+        cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu-deb
+        path: |
+          artifacts/

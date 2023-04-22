@@ -22,9 +22,15 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct List *list;
+    if ( argc < 2 ) {
+        fprintf ( stderr,
+                  "required parameter (image/device) absent - aborting...\n");
+        return 1;
+    }
+
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfList *list;
     SECTNUM nSect;
  
     adfEnvInitDefault();
@@ -47,7 +53,7 @@ int main(int argc, char *argv[])
 
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }
@@ -62,7 +68,7 @@ int main(int argc, char *argv[])
 
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }
@@ -82,7 +88,7 @@ int main(int argc, char *argv[])
 
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }
@@ -96,7 +102,7 @@ int main(int argc, char *argv[])
 
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
-        printEntry(list->content);
+        adfEntryPrint ( list->content );
         adfFreeEntry(list->content);
         list = list->next;
     }

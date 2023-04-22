@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Preform installation with CMake
+#
+# Installation prefix (directory) can be given as a parameter
+# (otherwise the installation is peformed to the default place).
+#
+
+BUILD_DIR=build/static
+
+CUR_DIR=`pwd`
+cd ${BUILD_DIR}
+
+if [ $# -ge 1 ]
+then
+    cmake --install . --prefix ${1} -v
+else
+    cmake --install . -v
+fi
+
+cd $CUR_DIR
+
+#cmake --install build/static --prefix install

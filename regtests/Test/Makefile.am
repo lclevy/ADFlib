@@ -2,20 +2,48 @@
 
 AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
     -D_GNU_SOURCE
-AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -I$(top_srcdir)/src
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
+    -Werror-implicit-function-declaration \
+    -I$(top_srcdir)/src
 
-check_PROGRAMS = fl_test fl_test2 dir_test dir_test2 dir_test_chdir hd_test \
-        hd_test2 hd_test3 file_test file_test2 file_test3 file_seek_test \
-        file_seek_test2 file_read_hard_link_test del_test bootdisk \
-        rename hardfile rename2 hardfile2 access comment undel readonly \
-	undel2 dispsect progbar undel3 floppy_overfilling_test
+check_PROGRAMS = \
+	access \
+	bootdisk \
+	comment \
+	del_test \
+	dir_test \
+	dir_test2 \
+	dir_test_chdir \
+	dispsect \
+	file_test \
+	file_test2 \
+	file_test3 \
+	file_read_hard_link_test \
+	file_seek_test \
+	file_seek_test2 \
+	file_seek_after_write \
+	fl_test \
+	fl_test2 \
+	floppy_overfilling_test \
+	hardfile \
+	hardfile2 \
+	hd_test \
+	hd_test2 \
+	hd_test3 \
+	progbar \
+	readonly \
+	rename \
+	rename2 \
+	undel \
+	undel2 \
+	undel3
 
 #TESTS = $(check_PROGRAMS)
 TESTS = floppy.sh bigdev.sh
 #EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if HOSTOSCYGWIN
+if ADFLIB_OS_CYGWIN
     ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
 endif
 
@@ -70,6 +98,10 @@ file_seek_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
 file_seek_test2_SOURCES = file_seek_test2.c
 file_seek_test2_LDADD = $(ADFLIBS)
 file_seek_test2_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+file_seek_after_write_SOURCES = file_seek_after_write.c
+file_seek_after_write_LDADD = $(ADFLIBS)
+file_seek_after_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 file_read_hard_link_test_SOURCES = file_read_hard_link_test.c
 file_read_hard_link_test_LDADD = $(ADFLIBS)

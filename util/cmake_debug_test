@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Execute tests for the debug version of the library
+#
+
+CUR_DIR=`pwd`
+
+#[ ! -e build/debug/tests/testdata ] && { ln -vs -t build/debug/tests ${CUR_DIR}/tests/testdata ; }
+
+cd build/debug
+#make test
+ctest -C CTestTestfile.cmake  --progress -VV
+cd ${CUR_DIR}

@@ -29,10 +29,11 @@
 #include "adf_util.h"
 
 
-void adfVolumeInfoWin(HWND hWnd, struct Volume *vol)
+void adfVolumeInfoWin ( HWND               hWnd,
+                        struct AdfVolume * vol )
 /* Windows version of adfVolumeInfo().
 ** Input:  Receives a handle to the window on which to display the dialogue and a pointer
-**         to a ADFLib Volume structure.
+**         to a ADFLib adfVolume structure.
 ** Output: Nil. Displays a windows dialogue containing the disk file data.
 */
 {

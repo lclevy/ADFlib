@@ -22,8 +22,9 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol, *vol2;
+    (void) argc, (void) argv;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol, *vol2;
     struct Partition part1;
     struct Partition part2;
     struct Partition **partList;
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     partList[0] = &part1;
     partList[1] = &part2;
 
-    adfCreateHd(hd,2,partList);
+    adfCreateHd ( hd, 2, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
     free(part2.volName);

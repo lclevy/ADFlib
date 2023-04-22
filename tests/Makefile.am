@@ -1,23 +1,74 @@
 
-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
+AM_CPPFLAGS = -std=c99 -Wall -Wextra -pedantic \
+    -Werror-implicit-function-declaration \
+    -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
 
 check_PROGRAMS = \
     test_adfDays2Date \
-    test_adfPos2DataBlock
+    test_adfPos2DataBlock \
+    test_file_append \
+    test_file_create \
+    test_file_overwrite \
+    test_file_overwrite2 \
+    test_file_seek_after_write \
+    test_file_write \
+    test_file_write_chunks \
+    test_test_util
 
-TESTS = $(check_PROGRAMS)
+TESTS = $(check_PROGRAMS) \
+    test_examples
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if HOSTOSCYGWIN
+if ADFLIB_OS_CYGWIN
     ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
 endif
 
 test_adfDays2Date_SOURCES = test_adfDays2Date.c
-test_adfDays2Date_CFLAGS = $(CHECK_FLAGS)
+test_adfDays2Date_CFLAGS = $(CHECK_CFLAGS)
 test_adfDays2Date_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfDays2Date_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 test_adfPos2DataBlock_SOURCES = test_adfPos2DataBlock.c
-test_adfPos2DataBlock_CFLAGS = $(CHECK_FLAGS)
+test_adfPos2DataBlock_CFLAGS = $(CHECK_CFLAGS)
 test_adfPos2DataBlock_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfPos2DataBlock_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_create_SOURCES = test_file_create.c
+test_file_create_CFLAGS = $(CHECK_CFLAGS)
+test_file_create_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_create_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_append_SOURCES = test_file_append.c
+test_file_append_CFLAGS = $(CHECK_CFLAGS)
+test_file_append_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_append_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_write_SOURCES = test_file_write.c test_util.c test_util.h
+test_file_write_CFLAGS = $(CHECK_CFLAGS)
+test_file_write_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_write_chunks_SOURCES = test_file_write_chunks.c test_util.c test_util.h
+test_file_write_chunks_CFLAGS = $(CHECK_CFLAGS)
+test_file_write_chunks_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_write_chunks_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_overwrite_SOURCES = test_file_overwrite.c
+test_file_overwrite_CFLAGS = $(CHECK_CFLAGS)
+test_file_overwrite_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_overwrite_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_overwrite2_SOURCES = test_file_overwrite2.c test_util.c test_util.h
+test_file_overwrite2_CFLAGS = $(CHECK_CFLAGS)
+test_file_overwrite2_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_overwrite2_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_seek_after_write_SOURCES = test_file_seek_after_write.c test_util.c test_util.h
+test_file_seek_after_write_CFLAGS = $(CHECK_CFLAGS)
+test_file_seek_after_write_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_seek_after_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_test_util_SOURCES = test_test_util.c test_util.c test_util.h
+test_test_util_CFLAGS = $(CHECK_CFLAGS)
+test_test_util_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_test_util_DEPENDENCIES = $(top_builddir)/src/libadf.la

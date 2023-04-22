@@ -22,11 +22,12 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct File *fic;
+    (void) argc, (void) argv;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfFile *fic;
     unsigned char buf[1];
-    struct List *list, *cell;
+    struct AdfList *list, *cell;
     struct GenBlock *block;
     BOOL true = TRUE;
  
@@ -59,10 +60,10 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    fic = adfOpenFile(vol, "file_1a","w");
+    fic = adfFileOpen ( vol, "file_1a", "w" );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
-    adfWriteFile(fic,1,buf);
-    adfCloseFile(fic);
+    adfFileWrite ( fic, 1, buf );
+    adfFileClose ( fic );
 
     puts("\ncreate file_1a");
     adfVolumeInfo(vol);
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -89,8 +90,11 @@ int main(int argc, char *argv[])
     cell = list = adfGetDelEnt(vol);
     while(cell) {
         block =(struct GenBlock*) cell->content;
-       printf("%s %d %d %ld\n",block->name,block->type,block->secType,
-            block->sect);
+        printf ( "%s %d %d %d\n",
+                 block->name,
+                 block->type,
+                 block->secType,
+                 block->sect);
         cell = cell->next;
     }
     adfFreeDelList(list);
@@ -105,7 +109,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);

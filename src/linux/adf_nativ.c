@@ -42,12 +42,12 @@
  *
  * must fill 'dev->size'
  */
-RETCODE adfLinuxInitDevice ( struct Device * dev,
-                             char *          name,
-                             BOOL            ro )
+RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
+                             const char * const       name,
+                             const BOOL               ro )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * )
-        malloc ( sizeof ( struct nativeDevice ) );
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
+        malloc ( sizeof ( struct AdfNativeDevice ) );
 
     if ( ! nDev ) {
         (*adfEnv.eFct)("adfLinuxInitDevice : malloc");
@@ -113,9 +113,9 @@ RETCODE adfLinuxInitDevice ( struct Device * dev,
  *
  * free native device
  */
-RETCODE adfLinuxReleaseDevice ( struct Device * dev )
+RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
     free ( nDev );
     return RC_OK;
@@ -126,12 +126,12 @@ RETCODE adfLinuxReleaseDevice ( struct Device * dev )
  * adfLinuxReadSector
  *
  */
-RETCODE adfLinuxReadSector ( struct Device * dev,
-                             int32_t         n,
-                             int             size,
-                             uint8_t *       buf )
+RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                             const uint32_t           n,
+                             const unsigned           size,
+                             uint8_t * const          buf )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
     off_t offset = n * 512;
     if ( lseek ( nDev->fd, offset, SEEK_SET ) != offset ) {
@@ -149,19 +149,19 @@ RETCODE adfLinuxReadSector ( struct Device * dev,
  * adfLinuxWriteSector
  *
  */
-RETCODE adfLinuxWriteSector ( struct Device * dev,
-                              int32_t         n,
-                              int             size,
-                              uint8_t *       buf )
+RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                              const uint32_t           n,
+                              const unsigned           size,
+                              const uint8_t * const    buf )
 {
-    struct nativeDevice * nDev = ( struct nativeDevice * ) dev->nativeDev;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
     off_t offset = n * 512;
     if ( lseek ( nDev->fd, offset, SEEK_SET ) != offset ) {
         return RC_ERROR;
     }
 
-    if ( read ( nDev->fd, buf, (size_t) size ) != size )
+    if ( read ( nDev->fd, (void *) buf, (size_t) size ) != size )
         return RC_ERROR;
 
     return RC_OK;
@@ -174,8 +174,8 @@ RETCODE adfLinuxWriteSector ( struct Device * dev,
  */
 void adfInitNativeFct()
 {
-    struct nativeFunctions * nFct =
-        ( struct nativeFunctions * ) adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct =
+        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
     nFct->adfInitDevice        = adfLinuxInitDevice;
     nFct->adfNativeReadSector  = adfLinuxReadSector;
@@ -189,7 +189,7 @@ void adfInitNativeFct()
  * adfLinuxIsDevNative
  *
  */
-BOOL adfLinuxIsDevNative ( char * devName )
+BOOL adfLinuxIsDevNative ( const char * const devName )
 {
     //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
 

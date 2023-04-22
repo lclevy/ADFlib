@@ -1,0 +1,54 @@
+name: ADFlib autotools
+
+on:
+  push:
+    branches: [ "citest" ]
+  pull_request:
+    branches: [ "citest" ]
+
+jobs:
+  ubuntu_native_default:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples
+
+  ubuntu_native_generic:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --enable-native-generic
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make install
+      run: sudo make install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test installed command-line utils
+      run: cd tests ; ./test_examples

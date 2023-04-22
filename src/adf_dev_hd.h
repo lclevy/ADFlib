@@ -30,26 +30,49 @@
 
 #include"prefix.h"
 
-#include "adf_str.h"
+#include "adf_dev.h"
 #include "hd_blk.h"
 
-RETCODE adfMountHd(struct Device *dev);
-RETCODE adfMountHdFile(struct Device *dev);
+RETCODE adfMountHd ( struct AdfDevice * const dev );
+RETCODE adfMountHdFile ( struct AdfDevice * const dev );
 
-RETCODE adfCreateHdHeader(struct Device* dev, int n, struct Partition** partList );
-PREFIX RETCODE adfCreateHd(struct Device* dev, int n, struct Partition** partList );
-PREFIX RETCODE adfCreateHdFile(struct Device* dev, char* volName, int volType);
+RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
+                            const int                              n,
+                            const struct Partition * const * const partList );
 
-RETCODE adfReadRDSKblock( struct Device* dev, struct bRDSKblock* blk );
-RETCODE adfWriteRDSKblock(struct Device *dev, struct bRDSKblock* rdsk);
-RETCODE adfReadPARTblock( struct Device* dev, int32_t nSect, struct bPARTblock* blk );
-RETCODE adfWritePARTblock(struct Device *dev, int32_t nSect, struct bPARTblock* part);
-RETCODE adfReadFSHDblock( struct Device* dev, int32_t nSect, struct bFSHDblock* blk);
-RETCODE adfWriteFSHDblock(struct Device *dev, int32_t nSect, struct bFSHDblock* fshd);
-RETCODE adfReadLSEGblock(struct Device* dev, int32_t nSect, struct bLSEGblock* blk);
-RETCODE adfWriteLSEGblock(struct Device *dev, int32_t nSect, struct bLSEGblock* lseg);
+PREFIX RETCODE adfCreateHd ( struct AdfDevice * const               dev,
+                             const unsigned                         n,
+                             const struct Partition * const * const partList );
 
+RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
+                           struct bRDSKblock * const blk );
 
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
+                            struct bRDSKblock * const rdsk );
+
+RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bPARTblock * const blk );
+
+RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bPARTblock * const part );
+
+RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bFSHDblock * const blk );
+
+RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bFSHDblock * const fshd );
+
+RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
+                           const int32_t             nSect,
+                           struct bLSEGblock * const blk );
+
+RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
+                            const int32_t             nSect,
+                            struct bLSEGblock * const lseg );
 #endif /* _ADF_HD_H */
 
 /*##########################################################################*/

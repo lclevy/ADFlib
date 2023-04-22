@@ -28,20 +28,62 @@
  */
 
 
-#include "adf_str.h"
+#include "adf_blk.h"
+#include "adf_vol.h"
 
-void adfGetCacheEntry(struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
-int adfPutCacheEntry( struct bDirCacheBlock *dirc, int *p, struct CacheEntry *cEntry);
 
-struct List* adfGetDirEntCache(struct Volume *vol, SECTNUM dir, BOOL recurs);
+struct AdfCacheEntry {
+    uint32_t header,
+            size,
+            protect;
+    uint16_t days,
+             mins,
+             ticks;
+    signed char type;
+    uint8_t nLen,
+            cLen;
+    char name[MAXNAMELEN+1],
+         comm[MAXCMMTLEN+1];
+/*    char *name, *comm;*/
+};
 
-RETCODE adfCreateEmptyCache(struct Volume *vol, struct bEntryBlock *parent, SECTNUM nSect);
-RETCODE adfAddInCache(struct Volume *vol, struct bEntryBlock *parent, struct bEntryBlock *entry);
-RETCODE adfUpdateCache(struct Volume *vol, struct bEntryBlock *parent, struct bEntryBlock *entry, BOOL);
-RETCODE adfDelFromCache(struct Volume *vol, struct bEntryBlock *parent, SECTNUM);
 
-RETCODE adfReadDirCBlock(struct Volume *vol, SECTNUM nSect, struct bDirCacheBlock *dirc);
-RETCODE adfWriteDirCBlock(struct Volume*, int32_t, struct bDirCacheBlock* dirc);
+void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
+                        int * const                   p,
+                        struct AdfCacheEntry * const  cEntry );
+
+int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
+                       const int * const                   p,
+                       const struct AdfCacheEntry * const  cEntry );
+
+struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
+                                     const SECTNUM            dir,
+                                     const BOOL               recurs );
+
+RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
+                              struct bEntryBlock * const parent,
+                              const SECTNUM              nSect );
+
+RETCODE adfAddInCache ( struct AdfVolume * const  vol,
+                        const struct bEntryBlock * const parent,
+                        const struct bEntryBlock * const entry );
+
+RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
+                         const struct bEntryBlock * const parent,
+                         const struct bEntryBlock * const entry,
+                         const BOOL                 entryLenChg );
+
+RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
+                          const struct bEntryBlock * const parent,
+                          const SECTNUM                    headerKey );
+
+RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
+                           const SECTNUM                 nSect,
+                           struct bDirCacheBlock * const dirc );
+
+RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
+                            const int32_t                 nSect,
+                            struct bDirCacheBlock * const dirc );
 
 #endif /* _ADF_CACHE_H */
 

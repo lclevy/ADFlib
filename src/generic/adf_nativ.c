@@ -21,10 +21,9 @@
  *
  */
 
-#include<stdio.h>
+
 #include<stdlib.h>
 #include<string.h>
-#include"adf_str.h"
 #include"adf_nativ.h"
 #include"adf_err.h"
 #include "adf_env.h"
@@ -35,13 +34,13 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice(struct Device* dev, char* name,BOOL ro)
+RETCODE myInitDevice ( struct AdfDevice * const dev,
+                       const char * const       name,
+                       const BOOL               ro )
 {
-    struct nativeDevice* nDev;
-
-    nDev = (struct nativeDevice*)dev->nativeDev;
-
-    nDev = (struct nativeDevice*)malloc(sizeof(struct nativeDevice));
+    (void) name;
+    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
+        malloc ( sizeof ( struct AdfNativeDevice ) );
     if (!nDev) {
         (*adfEnv.eFct)("myInitDevice : malloc");
         return RC_ERROR;
@@ -64,9 +63,13 @@ RETCODE myInitDevice(struct Device* dev, char* name,BOOL ro)
  * myReadSector
  *
  */
-RETCODE myReadSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
+RETCODE myReadSector ( struct AdfDevice * const dev,
+                       const uint32_t           n,
+                       const unsigned           size,
+                       uint8_t * const          buf )
 {
-     return RC_OK;   
+    (void) dev, (void) n, (void) size, (void) buf;
+    return RC_OK;
 }
 
 
@@ -74,8 +77,12 @@ RETCODE myReadSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
  * myWriteSector
  *
  */
-RETCODE myWriteSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
+RETCODE myWriteSector ( struct AdfDevice * const dev,
+                        const uint32_t           n,
+                        const unsigned           size,
+                        const uint8_t * const    buf )
 {
+    (void) dev, (void) n, (void) size, (void) buf;
     return RC_OK;
 }
 
@@ -85,11 +92,11 @@ RETCODE myWriteSector(struct Device *dev, int32_t n, int size, uint8_t* buf)
  *
  * free native device
  */
-RETCODE myReleaseDevice(struct Device *dev)
+RETCODE myReleaseDevice ( struct AdfDevice * const dev )
 {
-    struct nativeDevice* nDev;
+    struct AdfNativeDevice * nDev;
 
-    nDev = (struct nativeDevice*)dev->nativeDev;
+    nDev = (struct AdfNativeDevice *) dev->nativeDev;
 
 	free(nDev);
 
@@ -103,9 +110,8 @@ RETCODE myReleaseDevice(struct Device *dev)
  */
 void adfInitNativeFct()
 {
-    struct nativeFunctions *nFct;
-
-    nFct = (struct nativeFunctions*)adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct =
+        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
     nFct->adfInitDevice = myInitDevice ;
     nFct->adfNativeReadSector = myReadSector ;
@@ -119,7 +125,7 @@ void adfInitNativeFct()
  * myIsDevNative
  *
  */
-BOOL myIsDevNative(char *devName)
+BOOL myIsDevNative ( const char * const devName )
 {
     return (strncmp(devName,"/dev/",5)==0);
 }

@@ -22,9 +22,9 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct List *list, *cell;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfList *list, *cell;
     BOOL boolPr;
  
     adfEnvInitDefault();
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);

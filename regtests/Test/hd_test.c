@@ -22,8 +22,14 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol, *vol2;
+    if ( argc < 2 ) {
+        fprintf ( stderr,
+                  "required parameter (image/device) absent - aborting...\n");
+        return 1;
+    }
+
+    struct AdfDevice *hd;
+    struct AdfVolume *vol, *vol2;
 
     /* initialisation */
     adfEnvInitDefault();

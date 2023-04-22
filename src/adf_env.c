@@ -25,22 +25,25 @@
  *
  */
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include"adf_defs.h"
-#include"adf_str.h"
-#include"adf_nativ.h"
-#include"adf_env.h"
+#include "adf_blk.h"
+#include "adf_defs.h"
+#include "adf_str.h"
+#include "adf_nativ.h"
+#include "adf_env.h"
 
-#include"defendian.h"
+#include "defendian.h"
 
 union u{
     int32_t l;
     char c[4];
     };
 
-struct Env adfEnv;
+struct AdfEnv adfEnv;
+
 
 void rwHeadAccess(SECTNUM physical, SECTNUM logical, BOOL write)
 {
@@ -67,8 +70,44 @@ void Verbose(char* msg) {
     fprintf(stderr,"Verbose <%s>\n",msg);
 }
 
+
+void Warningf ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Warning <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+}
+
+
+void Errorf ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Error <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+/*    exit(1);*/
+}
+
+
+void Verbosef ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Verbose <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+}
+
+
 void Changed(SECTNUM nSect, int changedType)
 {
+    (void) nSect, (void) changedType;
 /*    switch(changedType) {
     case ST_FILE:
         fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
@@ -133,6 +172,9 @@ void adfEnvInitDefault()
     adfEnv.wFct = Warning;
     adfEnv.eFct = Error;
     adfEnv.vFct = Verbose;
+    adfEnv.wFctf = Warningf;
+    adfEnv.eFctf = Errorf;
+    adfEnv.vFctf = Verbosef;
     adfEnv.notifyFct = Changed;
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
@@ -145,7 +187,7 @@ void adfEnvInitDefault()
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
 */
-    adfEnv.nativeFct=(struct nativeFunctions*)malloc(sizeof(struct nativeFunctions));
+    adfEnv.nativeFct=(struct AdfNativeFunctions*)malloc(sizeof(struct AdfNativeFunctions));
     if (!adfEnv.nativeFct) (*adfEnv.wFct)("adfInitDefaultEnv : malloc");
 
     adfInitNativeFct();

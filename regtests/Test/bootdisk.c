@@ -22,8 +22,13 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
+    if ( argc < 2 ) {
+        fprintf ( stderr,
+                  "required parameter (bootcode file) absent - aborting...\n");
+        return 1;
+    }
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
     FILE* boot;
     unsigned char bootcode[1024];
  

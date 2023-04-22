@@ -31,9 +31,9 @@
 #include "adf_salv.h"
 #include "adf_bitm.h"
 #include "adf_util.h"
-#include "adf_disk.h"
+#include "adf_vol.h"
 #include "adf_dir.h"
-#include "adf_file.h"
+#include "adf_file_block.h"
 #include "adf_cache.h"
 #include "adf_env.h"
 
@@ -42,7 +42,7 @@
  * adfFreeGenBlock
  *
  */
-void adfFreeGenBlock(struct GenBlock* block)
+static void adfFreeGenBlock ( struct GenBlock * const block )
 {
     if ( block != NULL ) {
         if ( block->name != NULL )
@@ -56,9 +56,9 @@ void adfFreeGenBlock(struct GenBlock* block)
  * adfFreeDelList
  *
  */
-void adfFreeDelList(struct List* list)
+void adfFreeDelList ( struct AdfList * const list )
 {
-    struct List *cell;
+    struct AdfList *cell;
 
     cell = list;
     while(cell!=NULL) {
@@ -73,11 +73,11 @@ void adfFreeDelList(struct List* list)
  * adfGetDelEnt
  *
  */
-struct List* adfGetDelEnt(struct Volume *vol)
+struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
 {
     struct GenBlock *block;
     int32_t i;
-    struct List *list, *head;
+    struct AdfList *list, *head;
     BOOL delEnt;
 
     list = head = NULL;
@@ -117,14 +117,16 @@ struct List* adfGetDelEnt(struct Volume *vol)
  * adfReadGenBlock
  *
  */
-RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *block)
+RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
+                          const SECTNUM            nSect,
+                          struct GenBlock * const  block )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
-    int len;
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    unsigned len;
     char name[MAXNAMELEN+1];
 
-	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    if ( adfReadBlock ( vol, (unsigned) nSect, buf ) != RC_OK )
+        return RC_ERROR;
 
     block->type =(int) swapLong(buf);
     block->secType =(int) swapLong(buf+vol->blockSize-4);
@@ -137,11 +139,11 @@ RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *bloc
         case ST_DIR:
         case ST_LFILE:
         case ST_LDIR:
-            len = min(MAXNAMELEN, buf[vol->blockSize-80]);
+            len = min( (unsigned) MAXNAMELEN, buf [ vol->blockSize - 80 ] );
             strncpy(name, (char*)buf+vol->blockSize-79, len);
             name[len] = '\0';
             block->name = strdup(name);
-            block->parent = swapLong(buf+vol->blockSize-12);
+            block->parent = (int32_t) swapLong ( buf + vol->blockSize - 12 );
             break;
         case ST_ROOT:
             break;
@@ -157,7 +159,8 @@ RETCODE adfReadGenBlock(struct Volume *vol, SECTNUM nSect, struct GenBlock *bloc
  * adfCheckParent
  *
  */
-RETCODE adfCheckParent(struct Volume* vol, SECTNUM pSect)
+RETCODE adfCheckParent ( struct AdfVolume * vol,
+                         SECTNUM            pSect )
 {
     struct GenBlock block;
 
@@ -182,9 +185,12 @@ RETCODE adfCheckParent(struct Volume* vol, SECTNUM pSect)
  * adfUndelDir
  *
  */
-RETCODE adfUndelDir(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, 
-    struct bDirBlock* entry)
+RETCODE adfUndelDir ( struct AdfVolume * vol,
+                      SECTNUM            pSect,
+                      SECTNUM            nSect,
+                      struct bDirBlock * entry )
 {
+    (void) nSect;
     RETCODE rc;
     struct bEntryBlock parent;
     char name[MAXNAMELEN+1];
@@ -227,13 +233,17 @@ RETCODE adfUndelDir(struct Volume* vol, SECTNUM pSect, SECTNUM nSect,
  * adfUndelFile
  *
  */
-RETCODE adfUndelFile(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, struct bFileHeaderBlock* entry)
+RETCODE adfUndelFile ( struct AdfVolume *        vol,
+                       SECTNUM                   pSect,
+                       SECTNUM                   nSect,
+                       struct bFileHeaderBlock * entry )
 {
+    (void) nSect;
     int32_t i;
     char name[MAXNAMELEN+1];
     struct bEntryBlock parent;
     RETCODE rc;
-    struct FileBlocks fileBlocks;
+    struct AdfFileBlocks fileBlocks;
 
     /* check if the given parent sector pointer seems OK */
     if ( (rc=adfCheckParent(vol,pSect)) != RC_OK)
@@ -281,7 +291,9 @@ RETCODE adfUndelFile(struct Volume* vol, SECTNUM pSect, SECTNUM nSect, struct bF
  * adfUndelEntry
  *
  */
-RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect)
+RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                        const SECTNUM            parent,
+                        const SECTNUM            nSect )
 {
     struct bEntryBlock entry;
 
@@ -306,12 +318,15 @@ RETCODE adfUndelEntry(struct Volume* vol, SECTNUM parent, SECTNUM nSect)
  * adfCheckFile
  *
  */
-RETCODE adfCheckFile(struct Volume* vol, SECTNUM nSect,
-    struct bFileHeaderBlock* file, int level)
+RETCODE adfCheckFile ( struct AdfVolume * const              vol,
+                       const SECTNUM                         nSect,
+                       const struct bFileHeaderBlock * const file,
+                       const int                             level )
 {
+    (void) nSect, (void) level;
     struct bFileExtBlock extBlock;
     struct bOFSDataBlock dataBlock;
-    struct FileBlocks fileBlocks;
+    struct AdfFileBlocks fileBlocks;
     int n;
  
     adfGetFileBlocks(vol,file,&fileBlocks);
@@ -323,7 +338,7 @@ RETCODE adfCheckFile(struct Volume* vol, SECTNUM nSect,
             adfReadDataBlock(vol,fileBlocks.data[n],&dataBlock);
             if (dataBlock.headerKey!=fileBlocks.header)
                 (*adfEnv.wFct)("adfCheckFile : headerKey incorrect");
-            if (dataBlock.seqNum!=n+1)
+            if ( dataBlock.seqNum != (unsigned) n + 1 )
                 (*adfEnv.wFct)("adfCheckFile : seqNum incorrect");
             if (n<fileBlocks.nbData-1) {
                 if (dataBlock.nextData!=fileBlocks.data[n+1])
@@ -361,12 +376,14 @@ RETCODE adfCheckFile(struct Volume* vol, SECTNUM nSect,
  * adfCheckDir
  *
  */
-RETCODE adfCheckDir(struct Volume* vol, SECTNUM nSect, struct bDirBlock* dir, 
-    int level)
+RETCODE adfCheckDir ( const struct AdfVolume * const vol,
+                      const SECTNUM                  nSect,
+                      const struct bDirBlock * const dir,
+                      const int                      level )
 {
-
-
-
+    // function to implement???
+    // for now - suppressing warnings about unused parameters
+    (void) vol, (void) nSect, (void) dir, (void) level;
 
     return RC_OK;
 }
@@ -376,7 +393,9 @@ RETCODE adfCheckDir(struct Volume* vol, SECTNUM nSect, struct bDirBlock* dir,
  * adfCheckEntry
  *
  */
-RETCODE adfCheckEntry(struct Volume* vol, SECTNUM nSect, int level)
+RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                        const SECTNUM            nSect,
+                        const int                level )
 {
     struct bEntryBlock entry;
     RETCODE rc;

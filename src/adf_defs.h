@@ -29,9 +29,16 @@
 #define _ADF_DEFS_H 1
 
 #include <stdint.h>
+#include <stdlib.h>   // for min(), max() on Windows/MSVC
 
-#define ADFLIB_VERSION "0.7.11a"
-#define ADFLIB_DATE "January 20th, 2007"
+//#include "config.h"
+/* autotools defines this */
+//#ifdef PACKAGE_VERSION
+//#define ADFLIB_VERSION PACKAGE_VERSION
+//#endif
+#define ADFLIB_VERSION "0.7.13"
+#define ADFLIB_DATE "January 25th, 2022"
+
 
 #define SECTNUM int32_t
 #define RETCODE int32_t
@@ -75,16 +82,36 @@
 
 /* (*byte) to (*short) and (*byte) to (*long) conversion */
 
-#define Short(p) ((p)[0]<<8 | (p)[1])
-#define Long(p) (Short(p)<<16 | Short(p+2))
+//#define Short(p) ((p)[0]<<8 | (p)[1])
+//#define Long(p) (Short(p)<<16 | Short(p+2))
+
+static inline uint16_t Short ( const uint8_t * const p )
+{
+    return (uint16_t) ( ( p[0] << 8u ) | p[1] );
+}
+
+static inline uint32_t Long ( const uint8_t * const p )
+{
+    return (uint32_t) ( Short( p ) << 16 |
+                        Short( p + 2 ) );
+}
 
 
 /* swap short and swap long macros for little endian machines */
 
-#define swapShort(p) ((p)[0]<<8 | (p)[1])
-#define swapLong(p) (swapShort(p)<<16 | swapShort(p+2))
+//#define swapShort(p) ((p)[0]<<8 | (p)[1])
+//#define swapLong(p) (swapShort(p)<<16 | swapShort(p+2))
 
+static inline uint16_t swapShort ( const uint8_t * const p )
+{
+    return (uint16_t) ( ( p[0] << 8 ) | p[1] );
+}
 
+static inline uint32_t swapLong ( const uint8_t * const p )
+{
+    return (uint32_t) ( ( swapShort(p) << 16 ) |
+                        swapShort( p + 2 ) );
+}
 
 #endif /* _ADF_DEFS_H */
 /*##########################################################################*/

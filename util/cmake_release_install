@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# Preform installation with CMake
+#
+# Installation prefix (directory) can be given as a parameter
+# (otherwise the installation is peformed to the default place).
+#
+
+util/cmake_install_static $@
+util/cmake_install_shared $@

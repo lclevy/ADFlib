@@ -18,6 +18,8 @@ typedef struct test_file_s {
     char * filename_local;
 
     unsigned int len;
+
+    int max_errors;
 } test_file_t;
 
 
@@ -26,7 +28,8 @@ typedef struct test_file_s {
 test_file_t test_file_ofs = {
     .filename_adf = "moon.gif",
     .filename_local = "../Files/testofs_adf/MOON.GIF",
-    .len = 173847
+    .len = 173847,
+    .max_errors = 10
 };
 
 
@@ -36,15 +39,16 @@ test_file_t test_file_ofs = {
 test_file_t test_file_ffs = {
     .filename_adf = "mod.And.DistantCall",
     .filename_local = "../Files/testffs_adf/mod.And.DistantCall",
-    .len = 145360
+    .len = 145360,
+    .max_errors = 10
 };
 
 
 int run_multiple_seek_tests ( test_file_t * test_data );
 
-int test_single_seek ( struct File * const file_adf,
-                       FILE * const        file_local,
-                       unsigned int        offset );
+int test_single_seek ( struct AdfFile * const file_adf,
+                       FILE * const           file_local,
+                       unsigned int           offset );
 
 
 int main ( int argc, char * argv[] )
@@ -78,14 +82,14 @@ int run_multiple_seek_tests ( test_file_t * test_data )
              test_data->filename_local );
 #endif
 
-    struct Device * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         return 1;
     }
 
-    struct Volume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         printf ( "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
@@ -97,7 +101,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct File * const file_adf = adfOpenFile ( vol, test_data->filename_adf, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf, "r" );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );
@@ -112,15 +116,19 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         goto cleanup_adffile;
     }
 
+    int errors = 0;
     for ( int i = 0 ; i < NUM_TESTS && status < MAX_ERRORS ; ++i ) {
-        status += test_single_seek ( file_adf, file_local,
-                                     rand() % test_data->len );
+        errors += test_single_seek ( file_adf, file_local,
+                                     (unsigned) rand() % test_data->len );
+        if ( errors > test_data->max_errors )
+            break;
     }
+    status += errors;
 
     fclose ( file_local );
 
 cleanup_adffile:
-    adfCloseFile ( file_adf );
+    adfFileClose ( file_adf );
 
 cleanup:
     adfUnMount ( vol );
@@ -130,19 +138,24 @@ cleanup:
 }
 
 
-int test_single_seek ( struct File * const file_adf,
-                       FILE * const        file_local,
-                       unsigned int        offset )
+int test_single_seek ( struct AdfFile * const file_adf,
+                       FILE * const           file_local,
+                       unsigned int           offset )
 {
 #if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
 #endif
 
-    adfFileSeek ( file_adf, offset );
+    RETCODE rc = adfFileSeek ( file_adf, offset );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
+                  offset, offset );
+        return 1;
+    }
 
     unsigned char c;
-    int n = adfReadFile ( file_adf, 1, &c );
+    unsigned n = adfFileRead ( file_adf, 1, &c );
 
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );

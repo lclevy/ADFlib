@@ -1,4 +1,5 @@
 #include <check.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 //#include "adflib.h"
@@ -14,21 +15,21 @@ END_TEST
 
 START_TEST ( test_adfPos2DataBlock )
 {
-    int32_t
+    uint32_t
         dataBlockIndexInExtBlock,
         posInDataBlock,
-        dataBlockNumber,
-        extBlockNumber;
+        dataBlockNumber;
+    int32_t extBlockNumber;
 
     typedef struct test_data_s {
       // input
-        int32_t offset;
-        int     blocksize;
+        uint32_t offset;
+        unsigned blocksize;
 
       //output
-        int     dataBlockIndexInExtBlock,
-                posInDataBlock,
-                dataBlockNumber;
+        unsigned dataBlockIndexInExtBlock,
+                 posInDataBlock,
+                 dataBlockNumber;
         int32_t extBlockNumber;
     } test_data_t;
 
@@ -72,9 +73,9 @@ START_TEST ( test_adfPos2DataBlock )
         { 0x2a716,          488, 68, 118, 356, 3 }
     };
 
-    const int NTESTS = sizeof ( test_data ) / sizeof ( test_data_t );
+    const unsigned NTESTS = sizeof ( test_data ) / sizeof ( test_data_t );
     
-    for ( int i = 0; i < NTESTS ; ++i ) {
+    for ( unsigned i = 0; i < NTESTS ; ++i ) {
         extBlockNumber = adfPos2DataBlock (
             // input
             test_data[i].offset,

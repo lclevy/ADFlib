@@ -1,0 +1,30 @@
+#!/bin/bash
+# Generate configuration to build a shared library
+#
+# Related discussion and info:
+# https://stackoverflow.com/questions/2152077/is-it-possible-to-get-cmake-to-build-both-a-static-and-shared-library-at-the-sam
+#
+
+#BUILD_DLL=
+#if [ "x${OSTYPE}" == "xcygwin" -o ]
+#then
+#    BUILD_DLL=-DADFLIB_BUILD_DLL=ON
+#fi
+
+echo "OSTYPE: ${OSTYPE}"
+uname
+
+case "$OSTYPE" in
+    cygwin*)
+	echo "Configuring DLL build (CygWin)"
+	BUILD_DLL=-DADFLIB_BUILD_DLL=ON
+	;;
+    msys*)
+	echo "Configuring DLL build (Windows)"
+	BUILD_DLL=-DADFLIB_BUILD_DLL=ON
+	;;
+    *)
+	BUILD_DLL=
+esac
+
+cmake -DBUILD_SHARED_LIBS:BOOL=ON ${BUILD_DLL} -B build/shared -S .

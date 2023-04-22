@@ -28,6 +28,42 @@
 
 #include"prefix.h"
 
+/* ----- ENVIRONMENT ----- */
+
+#define PR_VFCT			1
+#define PR_WFCT			2
+#define PR_EFCT			3
+#define PR_NOTFCT		4
+#define PR_USEDIRC		5
+#define PR_USE_NOTFCT 	6
+#define PR_PROGBAR 		7
+#define PR_USE_PROGBAR 	8
+#define PR_RWACCESS 	9
+#define PR_USE_RWACCESS 10
+
+struct AdfEnv {
+    void (*vFct)(char*);       /* verbose callback function */
+    void (*wFct)(char*);       /* warning callback function */
+    void (*eFct)(char*);       /* error callback function */
+    void (*vFctf)(const char * const format, ...); /* verbose cb formatted */
+    void (*wFctf)(const char * const format, ...); /* warning cb formatted */
+    void (*eFctf)(const char * const format, ...); /* error cb formatted */
+
+    void (*notifyFct)(SECTNUM, int);
+    BOOL useNotify;
+
+    void (*rwhAccess)(SECTNUM,SECTNUM,BOOL);
+    BOOL useRWAccess;
+
+    void (*progressBar)(int);
+    BOOL useProgressBar;
+
+    BOOL useDirCache;
+
+    void *nativeFct;
+};
+
+
 PREFIX void adfEnvInitDefault();
 PREFIX void adfSetEnvFct( void(*e)(char*), void(*w)(char*), void(*v)(char*),
 	void(*n)(SECTNUM,int) );
@@ -36,7 +72,7 @@ PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();
 PREFIX char* adfGetVersionDate();
 
-extern struct Env adfEnv;
+extern struct AdfEnv adfEnv;
 
 #endif /* ADF_ENV_H */
 /*##########################################################################*/

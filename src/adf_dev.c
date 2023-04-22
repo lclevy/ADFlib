@@ -34,6 +34,7 @@
 #include "adf_dev_hd.h"
 #include "adf_dump.h"
 #include "adf_env.h"
+#include "adf_err.h"
 #include "adf_nativ.h"
 
 
@@ -52,9 +53,11 @@
  *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
  *          EXIST ALREADY ON THE DEVICE(!)
  */
-struct Device * adfOpenDev ( char * filename, BOOL ro )
+struct AdfDevice * adfOpenDev ( const char * const filename,
+                                const BOOL         ro )
 {
-    struct Device * dev = ( struct Device * ) malloc ( sizeof ( struct Device ) );
+    struct AdfDevice * dev = ( struct AdfDevice * )
+        malloc ( sizeof ( struct AdfDevice ) );
     if ( ! dev ) {
         (*adfEnv.eFct)("adfOpenDev : malloc error");
         return NULL;
@@ -63,7 +66,7 @@ struct Device * adfOpenDev ( char * filename, BOOL ro )
     dev->readOnly = ro;
 
     /* switch between dump files and real devices */
-    struct nativeFunctions * nFct = adfEnv.nativeFct;
+    struct AdfNativeFunctions * nFct = adfEnv.nativeFct;
     dev->isNativeDev = ( *nFct->adfIsDevNative )( filename );
 
     RETCODE rc;
@@ -110,7 +113,7 @@ struct Device * adfOpenDev ( char * filename, BOOL ro )
  * Closes/releases an opened device.
  * Called by adfUnMountDev()
  */
-void adfCloseDev ( struct Device * dev )
+void adfCloseDev ( struct AdfDevice * const dev )
 {
     if ( ! dev )
         return;
@@ -127,7 +130,7 @@ void adfCloseDev ( struct Device * dev )
     }
 
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         ( *nFct->adfReleaseDevice )( dev );
     } else
         adfReleaseDumpDevice ( dev );
@@ -142,7 +145,7 @@ void adfCloseDev ( struct Device * dev )
  * returns the type of a device
  * only based of the field 'dev->size'
  */
-int adfDevType(struct Device* dev)
+int adfDevType ( struct AdfDevice * dev )
 {
     if( (dev->size==512*11*2*80) ||		/* BV */
         (dev->size==512*11*2*81) ||		/* BV */
@@ -168,47 +171,54 @@ int adfDevType(struct Device* dev)
  *
  * can be used before adfCreateVol() or adfMount()
  */
-void adfDeviceInfo(struct Device *dev)
+void adfDeviceInfo ( struct AdfDevice * dev )
 {
-    int i;
-	
-    printf("Cylinders   = %d\n",dev->cylinders);
-    printf("Heads       = %d\n",dev->heads);
-    printf("Sectors/Cyl = %d\n\n",dev->sectors);
-    if (!dev->isNativeDev)
-        printf("Dump device\n\n");
-    else
-        printf("Real device\n\n");
-    printf("Volumes     = %d\n\n",dev->nVol);
-/*
-    switch(dev->devType){
+    const char * devTypeInfo = NULL;
+    switch ( dev->devType ) {
     case DEVTYPE_FLOPDD:
-        printf("floppy dd\n"); break;
+        devTypeInfo = "floppy dd";
+        break;
     case DEVTYPE_FLOPHD:
-        printf("floppy hd\n"); break;
+        devTypeInfo = "floppy hd";
+        break;
     case DEVTYPE_HARDDISK:
-        printf("harddisk\n"); break;
+        devTypeInfo = "harddisk";
+        break;
     case DEVTYPE_HARDFILE:
-        printf("hardfile\n"); break;
+        devTypeInfo = "hardfile";
+        break;
     default:
-        printf("unknown devType!\n"); break;
+        devTypeInfo = "unknown device type!";
     }
-*/
 
-    for(i=0; i<dev->nVol; i++) {
-        if (dev->volList[i]->volName)
-            printf("%2d :  %7d ->%7d, \"%s\"", i,
+    printf ( "\nADF device info:\n  Type:\t\t%s, %s\n", devTypeInfo,
+             dev->isNativeDev ? "real (native device!)" : "file (image)" );
+
+    printf ( "  Geometry:\n"
+             "    Cylinders\t%d\n"
+             "    Heads\t%d\n"
+             "    Sectors\t%d\n\n",
+             dev->cylinders, dev->heads, dev->sectors );
+
+    printf ( "  Volumes (%d):\n"
+             "   idx  first bl.     last bl.    name\n",
+             dev->nVol );
+
+    for ( int i = 0 ; i < dev->nVol ; i++ ) {
+        if ( dev->volList[i]->volName )
+            printf("    %2d    %7d      %7d    \"%s\"", i,
                    dev->volList[i]->firstBlock,
                    dev->volList[i]->lastBlock,
                    dev->volList[i]->volName);
         else
-            printf("%2d :  %7d ->%7d\n", i,
+            printf("    %2d    %7d      %7d\n", i,
                    dev->volList[i]->firstBlock,
                    dev->volList[i]->lastBlock);
-        if (dev->volList[i]->mounted)
-            printf(", mounted");
+        if ( dev->volList[i]->mounted )
+            printf("    mounted");
         putchar('\n');
     }
+    putchar('\n');
 }
 
 
@@ -219,12 +229,13 @@ void adfDeviceInfo(struct Device *dev)
  *
  * adfInitDevice() must fill dev->size !
  */
-struct Device* adfMountDev( char* filename, BOOL ro)
+struct AdfDevice * adfMountDev ( const char * const filename,
+                                 const BOOL         ro )
 {
     RETCODE rc;
     uint8_t buf[512];
 
-    struct Device * dev = adfOpenDev ( filename, ro );
+    struct AdfDevice * dev = adfOpenDev ( filename, ro );
     if ( ! dev ) {
         //(*adfEnv.eFct)("adfMountDev : malloc error");
         return NULL;
@@ -277,22 +288,22 @@ struct Device* adfMountDev( char* filename, BOOL ro)
  * adfUnMountDev
  *
  */
-void adfUnMountDev( struct Device* dev)
+void adfUnMountDev ( struct AdfDevice * const dev )
 {
     adfCloseDev ( dev );
 }
 
 
-RETCODE adfReadBlockDev ( struct Device * dev,
-                          int32_t         pSect,
-                          int32_t         size,
-                          uint8_t *       buf )
+RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
+                          const uint32_t           pSect,
+                          const uint32_t           size,
+                          uint8_t * const          buf )
 {
     RETCODE rc;
 
 /*printf("pSect R =%ld\n",pSect);*/
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeReadSector)( dev, pSect, size, buf );
     } else
         rc = adfReadDumpSector( dev, pSect, size, buf );
@@ -301,16 +312,16 @@ RETCODE adfReadBlockDev ( struct Device * dev,
 }
 
 
-RETCODE adfWriteBlockDev ( struct Device * dev,
-                           int32_t         pSect,
-                           int32_t         size,
-                           uint8_t *       buf )
+RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
+                           const uint32_t           pSect,
+                           const uint32_t           size,
+                           const uint8_t * const    buf )
 {
     RETCODE rc;
 
 /*printf("nativ=%d\n",dev->isNativeDev);*/
     if ( dev->isNativeDev ) {
-        struct nativeFunctions * const nFct = adfEnv.nativeFct;
+        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
         rc = (*nFct->adfNativeWriteSector)( dev, pSect, size, buf );
     } else
         rc = adfWriteDumpSector ( dev, pSect, size, buf );

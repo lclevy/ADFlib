@@ -28,7 +28,8 @@
 #ifndef _ADF_RAW_H
 #define _ADF_RAW_H 1
 
-#include "adf_str.h"
+#include "adf_blk.h"
+#include "adf_vol.h"
 
 #define SW_LONG  4
 #define SW_SHORT 2
@@ -53,15 +54,27 @@
 #define SWBL_FSHD         10 
 #define SWBL_LSEG         11
 
-RETCODE adfReadRootBlock(struct Volume*, int32_t nSect, struct bRootBlock* root);
-RETCODE adfWriteRootBlock(struct Volume* vol, int32_t nSect, struct bRootBlock* root);
-RETCODE adfReadBootBlock(struct Volume*, struct bBootBlock* boot);
-RETCODE adfWriteBootBlock(struct Volume* vol, struct bBootBlock* boot);
+PREFIX RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
+                                  const uint32_t            nSect,
+                                  struct bRootBlock * const root );
 
-uint32_t adfBootSum(uint8_t *buf);
-uint32_t adfNormalSum( uint8_t *buf, int offset, int bufLen );
+PREFIX RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
+                                   const uint32_t            nSect,
+                                   struct bRootBlock * const root );
 
-void swapEndian( uint8_t *buf, int type );
+PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
+                                  struct bBootBlock * const boot );
+
+PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
+                                   struct bBootBlock * const boot );
+
+uint32_t adfBootSum ( const uint8_t * const buf );
+uint32_t adfNormalSum ( const uint8_t * const buf,
+                        const int offset,
+                        const int bufLen );
+
+void swapEndian ( uint8_t * const buf,
+                  const int       type );
 
 #endif /* _ADF_RAW_H */
 

@@ -26,6 +26,7 @@ echo -e "\nCreating source archive:\n" \
 
 #check_version $VERSION
 
-tar cvzf $SRC_ARCHIVE \
-    `ls | grep -v "^\.git$" | grep -v debian`
+tar cvzf $SRC_ARCHIVE .github \
+    `ls | grep -v debian`
+#    `ls -a | grep -v "^\.git$" | grep -v debian`
 #    .gitlab-ci.yml

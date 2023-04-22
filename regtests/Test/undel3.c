@@ -22,16 +22,15 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct List *list, *cell;
+    (void) argc;
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfList *list, *cell;
     struct GenBlock *block;
     BOOL true = TRUE;
-    struct File *file;
+    struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
   
     adfEnvInitDefault();
 
@@ -54,7 +53,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -67,7 +66,7 @@ int main(int argc, char *argv[])
     cell = list = adfGetDelEnt(vol);
     while(cell) {
         block =(struct GenBlock*) cell->content;
-       printf("%s %d %d %ld\n",block->name,block->type,block->secType,
+       printf("%s %d %d %d\n",block->name,block->type,block->secType,
             block->sect);
         cell = cell->next;
     }
@@ -80,28 +79,28 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
 
-    file = adfOpenFile(vol, "MOON.GIF","r");
+    file = adfFileOpen ( vol, "MOON.GIF", "r" );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;
 
-    len = 600;
-    n = adfReadFile(file, len, buf);
+    unsigned len = 600;
+    unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfReadFile(file, len, buf);
+        n = adfFileRead ( file, len, buf );
     }
     if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
 
     fclose(out);
 
-    adfCloseFile(file);
+    adfFileClose ( file );
 
     adfUnMount(vol);
     adfUnMountDev(hd);

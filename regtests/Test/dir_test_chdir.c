@@ -22,10 +22,10 @@ typedef struct chdir_test_s {
 
 int run_chdir_tests ( chdir_test_t * test_data );
 
-int test_chdir ( struct Volume * vol,
-                 check_t *       check );
+int test_chdir ( struct AdfVolume * vol,
+                 check_t *          check );
 
-int count_dir_entries ( struct Volume * vol );
+int count_dir_entries ( struct AdfVolume * vol );
 
 
 int main ( int argc, char * argv[] )
@@ -90,14 +90,14 @@ int run_chdir_tests ( chdir_test_t * test_data )
              test_data->image );
 //#endif
 
-    struct Device * const dev = adfMountDev ( test_data->image, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image, TRUE );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image );
         return 1;
     }
 
-    struct Volume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image );
@@ -127,8 +127,8 @@ int run_chdir_tests ( chdir_test_t * test_data )
 }
 
 
-int test_chdir ( struct Volume * vol,
-                 check_t *       check )
+int test_chdir ( struct AdfVolume * vol,
+                 check_t *          check )
 {
 //#if TEST_VERBOSITY > 0
     printf ("Test entering: ");
@@ -172,14 +172,14 @@ int test_chdir ( struct Volume * vol,
 }
 
 
-int count_dir_entries ( struct Volume * vol )
+int count_dir_entries ( struct AdfVolume * vol )
 {
-    struct List *list, *cell;
+    struct AdfList *list, *cell;
     
     int nentries = 0;
     cell = list = adfGetDirEnt ( vol, vol->curDirPtr );
     while ( cell ) {
-        //printEntry ( cell->content );
+        //adfEntryPrint ( cell->content );
         cell = cell->next;
         nentries++;
     }

@@ -7,7 +7,7 @@ set( CMAKE_MODULE_PATH
 
 set ( adflib_VERSION_MAJOR 0 )
 set ( adflib_VERSION_MINOR 7 )
-set ( adflib_VERSION_PATCH 12 )
+set ( adflib_VERSION_PATCH 13 )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
@@ -26,6 +26,7 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
       -Wconversion
       -Wsign-conversion
       -pedantic
+      -Werror-implicit-function-declaration
     #  -pedantic-errors
     #  $<$<CONFIG:DEBUG>:-g3>
     #  $<$<CONFIG:DEBUG>:-Og>
@@ -42,6 +43,13 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT ${MINGW})
     #  $<$<CONFIG:DEBUG>:-lasan>
       $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
+
+OPTION(ADFLIB_BUILD_DLL "Build Windows DLL" OFF)
+
+if(ADFLIB_BUILD_DLL)
+#if(BUILD_SHARED_LIBS)
+    add_definitions(-DBUILD_DLL)
+endif(ADFLIB_BUILD_DLL)
 
 enable_testing()
 

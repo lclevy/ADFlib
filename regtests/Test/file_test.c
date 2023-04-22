@@ -22,13 +22,17 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct File *file;
+    if ( argc < 2 ) {
+        fprintf ( stderr,
+                  "required parameter (image/device) absent - aborting...\n");
+        return 1;
+    }
+
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfFile *file;
     unsigned char buf[600];
-    long n;
     FILE *out;
-    long len;
  
     adfEnvInitDefault();
 
@@ -50,35 +54,34 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfOpenFile(vol, "mod.and.distantcall","r");
+    file = adfFileOpen ( vol, "mod.and.distantcall", "r" );
     if (!file) return 1;
     out = fopen("mod.distant","wb");
     if (!out) return 1;
     
-	len = 600;
-    n = adfReadFile(file, len, buf);
+    unsigned len = 600;
+    unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfReadFile(file, len, buf);
+        n = adfFileRead ( file, len, buf );
     }
     if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
 
     fclose(out);
 
-    adfCloseFile(file);
+    adfFileClose ( file );
 
-    file = adfOpenFile(vol, "emptyfile", "r");
+    file = adfFileOpen ( vol, "emptyfile", "r" );
     if (!file) { 
 		adfUnMount(vol); adfUnMountDev(hd); 
         fprintf(stderr, "can't open file\n");
 		exit(1); 
 	}
  
-    n = adfReadFile(file, 2, buf);
+    n = adfFileRead ( file, 2, buf );
 
-    adfCloseFile(file);
-
+    adfFileClose ( file );
 
     adfUnMount(vol);
     adfUnMountDev(hd);
@@ -101,23 +104,23 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfOpenFile(vol, "moon.gif","r");
+    file = adfFileOpen ( vol, "moon.gif", "r" );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;
 
     len = 300;
-    n = adfReadFile(file, len, buf);
+    n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfReadFile(file, len, buf);
+        n = adfFileRead ( file, len, buf );
     }
     if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
 
     fclose(out);
 
-    adfCloseFile(file);
+    adfFileClose ( file );
 
     adfUnMount(vol);
     adfUnMountDev(hd);

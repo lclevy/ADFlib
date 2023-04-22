@@ -49,3 +49,5 @@ Description: Utilities for Amiga disk image files (ADF).
  unadf - list and extract files from .ADF files (Amiga disk images)
  adf_floppy_create - create a new floppy disk image file
  adf_floppy_format - format a floppy disk (an image or a device)
+ adf_show_metadata - display low-level info about a device/adf file
+                     or a file/directory

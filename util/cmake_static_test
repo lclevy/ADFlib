@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Execute tests for the static library
+#
+
+CUR_DIR=`pwd`
+
+#[ ! -e build/static/tests/testdata ] && { ln -vs -t build/static/tests ${CUR_DIR}/tests/testdata ; }
+
+cd build/static
+#make test
+ctest -C CTestTestfile.cmake  --progress -VV
+cd ${CUR_DIR}

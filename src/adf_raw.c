@@ -32,7 +32,7 @@
 #include "adf_str.h"
 #include "adf_raw.h"
 #include "adf_blk.h"
-#include "adf_disk.h"
+#include "adf_vol.h"
 #include "adf_util.h"
 #include "adf_err.h"
 #include "adf_env.h"
@@ -64,8 +64,8 @@ int swapTable[MAX_SWTYPE+1][15]={
  * magic :-) endian swap function (big -> little for read, little to big for write)
  */
 
-    void
-swapEndian( uint8_t *buf, int type )
+void swapEndian ( uint8_t * const buf,
+                  const int       type )
 {
     int i,j;
     int p;
@@ -111,8 +111,9 @@ swapEndian( uint8_t *buf, int type )
  *
  * ENDIAN DEPENDENT
  */
-RETCODE
-adfReadRootBlock(struct Volume* vol, int32_t nSect, struct bRootBlock* root)
+RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
+                           const uint32_t            nSect,
+                           struct bRootBlock * const root )
 {
 	uint8_t buf[LOGICAL_BLOCK_SIZE];
 
@@ -142,7 +143,9 @@ adfReadRootBlock(struct Volume* vol, int32_t nSect, struct bRootBlock* root)
  *
  * 
  */
-RETCODE adfWriteRootBlock(struct Volume* vol, int32_t nSect, struct bRootBlock* root)
+RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
+                            const uint32_t            nSect,
+                            struct bRootBlock * const root )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 	uint32_t newSum;
@@ -182,8 +185,8 @@ RETCODE adfWriteRootBlock(struct Volume* vol, int32_t nSect, struct bRootBlock* 
  *
  * ENDIAN DEPENDENT
  */
-RETCODE
-adfReadBootBlock(struct Volume* vol, struct bBootBlock* boot)
+RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
+                           struct bBootBlock * const boot )
 {
 	uint8_t buf[1024];
 	
@@ -217,8 +220,8 @@ adfReadBootBlock(struct Volume* vol, struct bBootBlock* boot)
  *
  *     write bootcode ?
  */
-RETCODE
-adfWriteBootBlock(struct Volume* vol, struct bBootBlock* boot)
+RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
+                            struct bBootBlock * const boot )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE*2];
 	uint32_t newSum;
@@ -257,17 +260,18 @@ adfWriteBootBlock(struct Volume* vol, struct bBootBlock* boot)
  * offset = checksum place (in bytes)
  * bufLen = buffer length (in bytes)
  */
-    uint32_t
-adfNormalSum( UCHAR* buf, int offset, int bufLen )
+uint32_t adfNormalSum ( const UCHAR * const buf,
+                        const int           offset,
+                        const int           bufLen )
 {
-    int32_t newsum;
+    uint32_t newsum;
     int i;
 
     newsum=0L;
     for(i=0; i < (bufLen/4); i++)
         if ( i != (offset/4) )       /* old chksum */
             newsum+=Long(buf+i*4);
-    newsum=(-newsum);	/* WARNING */
+    newsum = (uint32_t) ( - (int32_t) newsum );	/* WARNING */
 
     return(newsum);
 }
@@ -276,8 +280,7 @@ adfNormalSum( UCHAR* buf, int offset, int bufLen )
  * adfBitmapSum
  *
  */
-	uint32_t
-adfBitmapSum(uint8_t *buf)
+uint32_t adfBitmapSum ( const uint8_t * const buf )
 {
 	uint32_t newSum;
 	int i;
@@ -293,8 +296,7 @@ adfBitmapSum(uint8_t *buf)
  * adfBootSum
  *
  */
-    uint32_t
-adfBootSum(uint8_t *buf)
+uint32_t adfBootSum ( const uint8_t * const buf )
 {
     uint32_t d, newSum;
     int i;
@@ -313,14 +315,12 @@ adfBootSum(uint8_t *buf)
     return(newSum);
 }
 
-    uint32_t
-adfBootSum2(uint8_t *buf)
+uint32_t adfBootSum2 ( const uint8_t * const buf )
 {
     uint32_t prevsum, newSum;
-    int i;
 
     prevsum = newSum=0L;
-    for(i=0; i<1024/sizeof(uint32_t); i++) {
+    for ( unsigned i = 0; i < 1024 / sizeof(uint32_t) ; i++ ) {
         if (i!=1) {
             prevsum = newSum;
             newSum += Long(buf+i*4);

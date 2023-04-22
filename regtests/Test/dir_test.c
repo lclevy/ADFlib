@@ -10,13 +10,13 @@
 #include"adflib.h"
 #include "adf_dir.h"
 
-int test_chdir_hlink ( struct Volume * vol,
-                       char *          hlink,
-                       int             num_entries );
+int test_chdir_hlink ( struct AdfVolume * vol,
+                       char *             hlink,
+                       int                num_entries );
 
-int test_softlink_realname ( struct Volume * vol,
-                             char *          slink,
-                             char *          expected_dest_name );
+int test_softlink_realname ( struct AdfVolume * vol,
+                             char *             slink,
+                             char *             expected_dest_name );
 
 
 void MyVer(char *msg)
@@ -31,9 +31,15 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct Device *hd;
-    struct Volume *vol;
-    struct List *list, *cell;
+    if ( argc < 2 ) {
+        fprintf ( stderr,
+                  "required parameter (image/device) absent - aborting...\n");
+        return 1;
+    }
+
+    struct AdfDevice *hd;
+    struct AdfVolume *vol;
+    struct AdfList *list, *cell;
     SECTNUM nSect;
  
     adfEnvInitDefault();
@@ -59,7 +65,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -71,7 +77,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
@@ -83,7 +89,7 @@ int main(int argc, char *argv[])
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
-        printEntry(cell->content);
+        adfEntryPrint ( cell->content );
         adfFreeEntry(cell->content);
         cell = cell->next;
     }
@@ -110,9 +116,9 @@ int main(int argc, char *argv[])
 }
 
 
-int test_chdir_hlink ( struct Volume * vol,
-                       char *          hlink,
-                       int             num_entries )
+int test_chdir_hlink ( struct AdfVolume * vol,
+                       char *             hlink,
+                       int                num_entries )
 {
     int status = 0;
 
@@ -126,11 +132,11 @@ int test_chdir_hlink ( struct Volume * vol,
         status++;
     }
 
-    struct List * list, * cell;
+    struct AdfList * list, * cell;
     list = cell = adfGetDirEnt ( vol, vol->curDirPtr );
     int count = 0;
     while ( cell ) {
-        //printEntry ( list->content );
+        //adfEntryPrint ( list->content );
         cell = cell->next;
         count++;
     }
@@ -148,27 +154,17 @@ int test_chdir_hlink ( struct Volume * vol,
 }
 
 
-int test_softlink_realname ( struct Volume * vol,
-                             char *          slink,
-                             char *          expected_dest_name )
+int test_softlink_realname ( struct AdfVolume * vol,
+                             char *             slink,
+                             char *             expected_dest_name )
 {
     adfToRootDir ( vol );
 
     printf ("*** Test getting destination name for soft link %s\n", slink );
 
-    // get block of the directory (as parent)
-    struct bEntryBlock parent;
-    if ( adfReadEntryBlock( vol, vol->curDirPtr, &parent ) != RC_OK ) {
-        return 1;
-    }
-
     struct bLinkBlock entry;
-    SECTNUM nUpdSect;
-    SECTNUM sectNum = adfNameToEntryBlk ( vol,
-                                          parent.hashTable,
-                                          slink,
-                                          ( struct bEntryBlock * ) &entry,
-                                          &nUpdSect );
+    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
+                                          (struct bEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }
