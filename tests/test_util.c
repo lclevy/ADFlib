@@ -9,10 +9,10 @@
 unsigned verify_file_data ( struct AdfVolume * const    vol,
                             const char * const          filename,
                             const unsigned char * const buffer,
-                            const unsigned              bytes_written,  // == bufsize (!)
+                            const unsigned              fsize,
                             const unsigned              errors_max )
 {
-    struct AdfFile * output = adfFileOpen ( vol, filename, "r" );
+    struct AdfFile * const output = adfFileOpen ( vol, filename, "r" );
     if ( ! output )
         return 1;
 
@@ -24,13 +24,18 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
     unsigned char readbuf [ READ_BUFSIZE ];
 
     unsigned bytes_read = 0,
-             block_bytes_read,
+             bytes_to_read = fsize,
              offset = 0,
-             nerrors = 0;
-    do {
-        block_bytes_read = (unsigned) adfFileRead ( output, READ_BUFSIZE, readbuf );
-        bytes_read += block_bytes_read;
-        for ( unsigned i = 0 ; i < block_bytes_read ; ++i ) {
+             nerrors = 0,
+             chunk_bytes_to_read,
+             chunk_bytes_read;
+    while ( bytes_to_read > 0 ) {
+        chunk_bytes_to_read = ( READ_BUFSIZE < bytes_to_read ? READ_BUFSIZE : bytes_to_read );
+        chunk_bytes_read = (unsigned) adfFileRead ( output, chunk_bytes_to_read, readbuf );
+        bytes_read    += chunk_bytes_read;
+        bytes_to_read -= chunk_bytes_read;
+
+        for ( unsigned i = 0 ; i < chunk_bytes_read ; ++i ) {
             if ( readbuf [ offset % READ_BUFSIZE ] != buffer [ offset ] ) {
                 fprintf ( stderr, "Data differ at %u ( 0x%x ): orig. 0x%x, read 0x%x\n",
                           offset, offset,
@@ -45,13 +50,13 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
             }
             offset++;
         }
-    } while ( block_bytes_read == READ_BUFSIZE );
+    }
 
     adfFileClose ( output );
 
-    if ( bytes_read != bytes_written ) {
+    if ( bytes_read != fsize ) {
         fprintf ( stderr, "bytes read (%u) != bytes written (%u) -> ERROR!!!\n",
-                  bytes_read, bytes_written );
+                  bytes_read, fsize );
         fflush ( stderr );
         nerrors++;
     }
@@ -76,7 +81,7 @@ void pattern_random ( unsigned char * buf,
                       const unsigned  bufsize )
 {
     for ( unsigned i = 0 ; i < bufsize ; ++i ) {
-        buf[i]   = (unsigned char) ( rand() & 0xff );
+        buf[i] = (unsigned char) ( rand() & 0xff );
     }
 }
 
