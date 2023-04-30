@@ -836,7 +836,7 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
         // (without data allocated in the file header)
         unsigned offsetInExt = pos - dataSizeByExtBlock;
 
-        // ext. block number
+        // ext. block index
         unsigned extBlock = offsetInExt / dataSizeByExtBlock;
 
         // data block index in ext. block
