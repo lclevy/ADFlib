@@ -868,9 +868,9 @@ RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
             return RC_ERROR;
         }
 #ifdef DEBUG_ADF_FILE
-        show_bFileExtBlock ( file->currentExt );
+        //show_bFileExtBlock ( fext );
 #endif
-        nSect = file->currentExt->extension;
+        nSect = fext->extension;
         i++;
     }
     if ( i != extBlock ) {
