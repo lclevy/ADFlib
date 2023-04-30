@@ -48,6 +48,9 @@ add_executable ( test_adfPos2DataBlock
 add_executable ( test_adfDays2Date
                  test_adfDays2Date.c )
 
+add_executable ( test_adf_file_util
+                 test_adf_file_util.c )
+
 add_executable ( test_file_create
                  test_file_create.c )
 
@@ -94,6 +97,11 @@ target_link_libraries ( test_adfDays2Date PUBLIC
   ${CHECK_LIBRARIES}
 )
 
+target_link_libraries ( test_adf_file_util PUBLIC
+  ${CHECK_LIBRARIES}
+)
+
+
 target_link_libraries ( test_file_create PUBLIC
   adf ${CHECK_LIBRARIES}
 )
@@ -129,6 +137,7 @@ configure_file(arccsh.adf arccsh.adf COPYONLY)
 add_test ( test_test_util test_test_util )
 add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
 add_test ( test_adfDays2Date test_adfDays2Date )
+add_test ( test_adf_file_util test_adf_file_util )
 add_test ( test_file_create test_file_create )
 add_test ( test_file_append test_file_append )
 add_test ( test_file_write test_file_write )
