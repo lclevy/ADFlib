@@ -644,6 +644,9 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                         const uint32_t         n,
                         const uint8_t * const  buffer )
 {
+    if ( ! file->writeMode )
+        return 0; // RC_ERROR;
+
     if (n==0) return (n);
 /*puts("adfWriteFile");*/
     const unsigned blockSize = file->volume->datablockSize;
