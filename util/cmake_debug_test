@@ -9,5 +9,5 @@ CUR_DIR=`pwd`
 
 cd build/debug
 #make test
-ctest -C CTestTestfile.cmake  --progress -VV
+ctest -C CTestTestfile.cmake  --progress -VV $@
 cd ${CUR_DIR}
