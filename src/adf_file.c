@@ -715,6 +715,13 @@ static RETCODE adfFileSeekExt ( struct AdfFile * const file,
         file->posInExtBlk++;
     }
 
+    if ( file->curDataPtr < 2 ) {
+        // a data block can never be at 0-1 (bootblock)
+        adfEnv.eFctf ( "adfFileSeekExt: invalid data block address (%u), pos %u, file '%s'",
+                       file->curDataPtr, file->pos, file->fileHdr->fileName );
+        return RC_ERROR;
+    }
+
     RETCODE rc = adfReadDataBlock ( file->volume,
                                     file->curDataPtr,
                                     file->currentData );
