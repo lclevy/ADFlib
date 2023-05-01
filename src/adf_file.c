@@ -47,8 +47,6 @@
 
 #ifdef DEBUG_ADF_FILE
 
-#include <assert.h>
-
 static void show_File ( const struct AdfFile * const file );
 
 static void show_bFileHeaderBlock (
@@ -56,8 +54,12 @@ static void show_bFileHeaderBlock (
 
 static void show_bFileExtBlock (
     const struct bFileExtBlock * const block );
+
+#else
+#define NDEBUG
 #endif
 
+#include <assert.h>
 
 /*
 
@@ -207,9 +209,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
         // no ext. blocks (neither in orig. or truncated)
         int32_t * const dataBlocks = file->fileHdr->dataBlocks;
         for ( unsigned i = nDBlocksNew + 1 ; i <= nDBlocksOld ; ++i ) {
-#ifdef DEBUG_ADF_FILE
             assert ( blocksCount < nBlocksToRemove );
-#endif
             blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
             dataBlocksCount++;
         }
@@ -229,9 +229,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
 
             // here for sure all blocks to the end of the array will be removed
             for ( unsigned i = nDBlocksNew + 1 ; i <= MAX_DATABLK ; ++i ) {
-#ifdef DEBUG_ADF_FILE
                 assert ( blocksCount < nBlocksToRemove );
-#endif
                 blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
                 dataBlocksCount++;
             }
@@ -272,9 +270,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 //fflush(stdout);
                 int32_t * const dataBlocks = extBlock->dataBlocks;
                 for ( unsigned i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i ) {
-#ifdef DEBUG_ADF_FILE
                     assert ( blocksCount < nBlocksToRemove );
-#endif
                     blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
                     dataBlocksCount++;
                 }
@@ -314,9 +310,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 }
             }*/
             for ( unsigned i = 1 ; i <= lastDBlockToRemove ; ++i ) {
-#ifdef DEBUG_ADF_FILE
                 assert ( dataBlocks [ MAX_DATABLK - i ] > 0 );
-#endif
                 blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
                 dataBlocksCount++;
             }
@@ -338,8 +332,8 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                  blocksCount, blocksToRemove->len, dataBlocksCount );
         fflush ( stderr );
     }
-    assert ( blocksCount == blocksToRemove->len );
 #endif
+    assert ( blocksCount == blocksToRemove->len );
     return RC_OK;
 }
 
@@ -388,9 +382,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         unsigned enlargeSize = fileSizeNew - fileSizeOld;
         if ( adfFileSeek ( file, fileSizeOld ) != RC_OK )
             return RC_ERROR;
-#ifdef DEBUG_ADF_FILE
         assert ( adfEndOfFile ( file ) == TRUE );
-#endif
         unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
             return RC_ERROR;
@@ -419,9 +411,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         free ( blocksToRemove.sectors );
         return rc;
     }
-#ifdef DEBUG_ADF_FILE
     assert ( file->pos == fileSizeNew );
-#endif
 
     // 3.
     file->fileHdr->byteSize = fileSizeNew;
@@ -459,9 +449,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
             for ( int i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i )
                 dataBlocks [ MAX_DATABLK - 1 - i ] = 0;
 
-#ifdef DEBUG_ADF_FILE
             assert ( firstDBlockToRemove > 0 );  // new last ext. block cannot be an empty one
-#endif
             if ( nDataBlocksNew <= MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
                 file->fileHdr->highSeq = firstDBlockToRemove;
             } else {
@@ -499,9 +487,8 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         adfSetBlockFree ( file->volume, blocksToRemove.sectors[i] );
     }
     free ( blocksToRemove.sectors );
-#ifdef DEBUG_ADF_FILE
+
     assert ( file->pos == fileSizeNew );
-#endif
 
     // 5.
     return adfUpdateBitmap ( file->volume );
@@ -634,9 +621,8 @@ static RETCODE adfFileSeekEOF ( struct AdfFile * const file )
         ( file->fileHdr->byteSize % file->volume->datablockSize == 0 ) ?
         file->volume->datablockSize :
         file->fileHdr->byteSize % file->volume->datablockSize;
-#ifdef DEBUG_ADF_FILE
+
     assert (  file->posInDataBlk <= file->volume->datablockSize );
-#endif
     return RC_OK;
 }
 
