@@ -15,7 +15,7 @@
   https://stackoverflow.com/questions/3899870/print-call-stack-in-c-or-c/54365144#54365144
   https://stackoverflow.com/questions/6934659/how-to-make-backtrace-backtrace-symbols-print-the-function-names
  */
-void printBacktrace ( void )
+void adfPrintBacktrace ( void )
 {
     const unsigned BUFSIZE = 100;
     void *buffer [ BUFSIZE ];
