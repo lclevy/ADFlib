@@ -175,6 +175,29 @@ static RETCODE adfFileSeekStart ( struct AdfFile * const file )
     return rc;
 }
 
+static RETCODE adfFileSeekEOF ( struct AdfFile * const file )
+{
+    if ( file->fileHdr->byteSize == 0 )
+        return adfFileSeekStart ( file );
+
+    /* an ugly hack (but required for state consistency...):
+       enforce updating current data and ext. blocks
+       as expected to match the new position */
+    RETCODE rc = adfFileSeek ( file, file->fileHdr->byteSize - 1 );
+    if ( rc != RC_OK )
+        return rc;
+
+    file->pos = file->fileHdr->byteSize;
+    file->posInDataBlk =
+        ( file->fileHdr->byteSize % file->volume->datablockSize == 0 ) ?
+        file->volume->datablockSize :
+        file->fileHdr->byteSize % file->volume->datablockSize;
+#ifdef DEBUG_ADF_FILE
+    assert (  file->posInDataBlk <= file->volume->datablockSize );
+#endif
+    return RC_OK;
+}
+
 
 static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
                                 uint32_t               pos )
@@ -183,8 +206,12 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
 
     unsigned blockSize = file->volume->datablockSize;
 
-    if ( file->pos + pos > file->fileHdr->byteSize )
-        pos = file->fileHdr->byteSize - file->pos;
+    file->pos = min ( pos, file->fileHdr->byteSize );
+
+    // EOF?
+    if ( file->pos == file->fileHdr->byteSize ) {
+        return adfFileSeekEOF ( file );
+    }
 
     uint32_t offset = 0;
     while ( offset < pos ) {
@@ -210,6 +237,10 @@ static RETCODE adfFileSeekExt ( struct AdfFile * const file,
                                 uint32_t               pos )
 {
     file->pos = min ( pos, file->fileHdr->byteSize );
+
+    if ( file->pos == file->fileHdr->byteSize ) {
+        return adfFileSeekEOF ( file );
+    }
 
     SECTNUM extBlock = adfPos2DataBlock ( file->pos,
                                           file->volume->datablockSize,
