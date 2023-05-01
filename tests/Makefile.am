@@ -69,6 +69,11 @@ test_file_overwrite2_CFLAGS = $(CHECK_CFLAGS)
 test_file_overwrite2_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_file_overwrite2_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
+test_file_seek_SOURCES = test_file_seek.c test_util.c test_util.h
+test_file_seek_CFLAGS = $(CHECK_CFLAGS)
+test_file_seek_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_seek_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
 test_file_seek_after_write_SOURCES = test_file_seek_after_write.c test_util.c test_util.h
 test_file_seek_after_write_CFLAGS = $(CHECK_CFLAGS)
 test_file_seek_after_write_LDADD = $(ADFLIBS) $(CHECK_LIBS)

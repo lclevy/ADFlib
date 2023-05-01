@@ -72,6 +72,10 @@ add_executable ( test_file_overwrite2
                  test_file_overwrite2.c
                  test_util.c )
 
+add_executable ( test_file_seek
+                 test_file_seek.c
+                 test_util.c )
+
 add_executable ( test_file_seek_after_write
                  test_file_seek_after_write.c
                  test_util.c )
@@ -126,6 +130,9 @@ target_link_libraries ( test_file_overwrite2 PUBLIC
   adf ${CHECK_LIBRARIES}
 )
 
+target_link_libraries ( test_file_seek PUBLIC
+  adf ${CHECK_LIBRARIES}
+)
 target_link_libraries ( test_file_seek_after_write PUBLIC
   adf ${CHECK_LIBRARIES}
 )
@@ -144,5 +151,6 @@ add_test ( test_file_write test_file_write )
 add_test ( test_file_write_chunks test_file_write_chunks )
 add_test ( test_file_overwrite test_file_overwrite )
 add_test ( test_file_overwrite2 test_file_overwrite2 )
+add_test ( test_file_seek test_file_seek )
 add_test ( test_file_seek_after_write test_file_seek_after_write )
 add_test ( test_examples ${BASH_PROGRAM} test_examples )
