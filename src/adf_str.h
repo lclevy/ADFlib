@@ -28,6 +28,7 @@
  *
  */
 
+#include "adf_defs.h"
 
 struct AdfList {         /* generic linked tree */
     void *content;
@@ -35,6 +36,17 @@ struct AdfList {         /* generic linked tree */
     struct AdfList *next;
 };
 
+/*
+typedef struct AdfVector_s {
+    unsigned len;
+    void *   contents;
+} AdfVector;
+*/
+
+typedef struct AdfVectorSectors_s {
+    unsigned  len;
+    SECTNUM * sectors;
+} AdfVectorSectors;
 
 #endif /* _ADF_STR_H */
 /*##########################################################################*/
