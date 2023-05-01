@@ -525,6 +525,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
     {
         if ( isOFS ( file->volume->dosType ) ) {
             struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
+            assert ( file->posInDataBlk <= file->volume->datablockSize );
             data->dataSize = file->posInDataBlk;
         }
 
