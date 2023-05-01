@@ -1097,9 +1097,13 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
         }
     }
 
-#ifdef DEBUG_ADF_FILE
-    assert ( nSect > 0 );
-#endif
+    if ( nSect < 2 ) {
+        adfEnv.eFctf ( "adfReadNextFileBlock : invalid data block address %u ( 0x%x ), "
+                       "data block %u, file '%s'",
+                       nSect, nSect, file->nDataBlock, file->fileHdr->fileName );
+        //printBacktrace();
+        return RC_ERROR;
+    }
 
     rc = adfReadDataBlock ( file->volume, nSect, file->currentData );
     if ( rc != RC_OK )
