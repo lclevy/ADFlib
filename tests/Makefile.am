@@ -79,6 +79,16 @@ test_file_seek_after_write_CFLAGS = $(CHECK_CFLAGS)
 test_file_seek_after_write_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_file_seek_after_write_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
+test_file_truncate_SOURCES = test_file_truncate.c test_util.c test_util.h
+test_file_truncate_CFLAGS = $(CHECK_CFLAGS)
+test_file_truncate_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_truncate_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+test_file_truncate2_SOURCES = test_file_truncate2.c test_util.c test_util.h
+test_file_truncate2_CFLAGS = $(CHECK_CFLAGS)
+test_file_truncate2_LDADD = $(ADFLIBS) $(CHECK_LIBS)
+test_file_truncate2_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
 test_test_util_SOURCES = test_test_util.c test_util.c test_util.h
 test_test_util_CFLAGS = $(CHECK_CFLAGS)
 test_test_util_LDADD = $(ADFLIBS) $(CHECK_LIBS)
