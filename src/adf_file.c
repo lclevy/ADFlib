@@ -350,13 +350,13 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
                                                        (in file header or
                                                        the last ext. block) is not full?
                                                     */
-            unsigned firstDBlockToRemove = nDataBlocksNew % MAX_DATABLK;
-            unsigned lastDBlockToRemove  =
-                ( nExtBlocksOld == nExtBlocksNew ) ?  // enlarging -> it cannot be ">"
-                nDataBlocksOld % MAX_DATABLK :
-                MAX_DATABLK;
+            const unsigned firstDBlockToRemove = nDataBlocksNew % MAX_DATABLK;
+            const unsigned lastDBlockToRemove =
+                ( nExtBlocksNew < nExtBlocksOld || nDataBlocksOld % MAX_DATABLK == 0 ) ?
+                MAX_DATABLK - 1 :
+                nDataBlocksOld % MAX_DATABLK;
 
-            for ( int i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i )
+            for ( unsigned i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i )
                 dataBlocks [ MAX_DATABLK - 1 - i ] = 0;
 
             assert ( firstDBlockToRemove > 0 );  // new last ext. block cannot be an empty one
