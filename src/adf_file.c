@@ -361,9 +361,9 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
 
             assert ( firstDBlockToRemove > 0 );  // new last ext. block cannot be an empty one
             if ( nDataBlocksNew <= MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
-                file->fileHdr->highSeq = firstDBlockToRemove;
+                file->fileHdr->highSeq = (int32_t) firstDBlockToRemove;
             } else {
-                file->currentExt->highSeq = firstDBlockToRemove;
+                file->currentExt->highSeq = (int32_t) firstDBlockToRemove;
             }
         }
 
