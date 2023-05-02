@@ -143,12 +143,12 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
                 dataBlocksCount++;
             }
-            nextExt = file->fileHdr->extension;
+            nextExt = (unsigned) file->fileHdr->extension;
         }
         else {
             // removing starts from the new last ext. block
             const unsigned newLastExtBlockIndex = nExtBlocksNew - 1;
-            RETCODE rc = adfFileReadExtBlockN ( file, newLastExtBlockIndex, extBlock );
+            RETCODE rc = adfFileReadExtBlockN ( file, (int32_t) newLastExtBlockIndex, extBlock );
             if ( rc != RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
@@ -186,14 +186,14 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 }
             }
 
-            nextExt = extBlock->extension;
+            nextExt = (unsigned) extBlock->extension;
         }
 
-        int extBlock_i = nExtBlocksNew;
+        unsigned extBlock_i = nExtBlocksNew;
 
         // get blocks to remove from the following (if any remaining) ext. blocks
         while ( nextExt > 0 ) {
-            RETCODE rc = adfReadFileExtBlock ( file->volume, nextExt, extBlock );
+            RETCODE rc = adfReadFileExtBlock ( file->volume, (SECTNUM) nextExt, extBlock );
             if ( rc != RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
@@ -226,9 +226,9 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
             }
 
             // add currently loaded ext. to remove
-            blocksToRemove->sectors [ blocksCount++ ] = nextExt;
+            blocksToRemove->sectors [ blocksCount++ ] = (SECTNUM) nextExt;
 
-            nextExt = extBlock->extension;
+            nextExt = (unsigned) extBlock->extension;
             extBlock_i++;
         }
 
