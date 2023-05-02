@@ -94,7 +94,7 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
             //ck_assert_ptr_nonnull ( file->currentExt );
             if ( file->currentExt == NULL )
                 return 2;
-            dataBlocks = file->currentExt;
+            dataBlocks = file->currentExt->dataBlocks;
         } else {
             // for OFS - we must read the current ext.(!)
             fext =  malloc ( sizeof (struct bFileExtBlock) );
@@ -114,11 +114,11 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
     }
     free(fext);
 
-    if ( file->fileHdr->byteSize == 0 )
+    if ( file->fileHdr->byteSize == 0 ) {
         //ck_assert_uint_eq ( nonZeroCount, 0 );
         if ( nonZeroCount != 0 )
             return 5;
-    else {
+    } else {
         unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
                                      nDataBlocks % MAX_DATABLK :
                                      MAX_DATABLK );
