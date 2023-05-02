@@ -1266,7 +1266,16 @@ RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
                                const int32_t                extBlock,
                                struct bFileExtBlock * const fext )
 {
-    // add checking if extBlock value is valid (?)
+    // check if the given extBlock index is valid
+    const int nExtBlocks = (int) adfFileSize2Extblocks ( file->fileHdr->byteSize,
+                                                         file->volume->datablockSize );
+    if ( extBlock < 0 ||
+         extBlock > nExtBlocks - 1 )
+    {
+        adfEnv.eFctf ( "adfReadFileExtBlockN: invalid ext block %d, file '%s' has %d ext. blocks.",
+                       extBlock, file->fileHdr->fileName, nExtBlocks );
+        return RC_ERROR;
+    }
 
     // traverse the ext. blocks until finding (and reading)
     // the requested one
