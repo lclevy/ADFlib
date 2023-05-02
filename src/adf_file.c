@@ -1262,7 +1262,7 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
+RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
                                const int32_t                extBlock,
                                struct bFileExtBlock * const fext )
 {

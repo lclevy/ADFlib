@@ -90,7 +90,7 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
-RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
+RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
                                const int32_t                extBlock,
                                struct bFileExtBlock * const fext );
 
