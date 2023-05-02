@@ -90,9 +90,9 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
-RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
-                               const int32_t                extBlock,
-                               struct bFileExtBlock * const fext );
+PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
+                                      const int32_t                extBlock,
+                                      struct bFileExtBlock * const fext );
 
 RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                                            const uint32_t               fileSizeNew,
