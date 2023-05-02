@@ -11,7 +11,10 @@ check_PROGRAMS = \
     test_file_create \
     test_file_overwrite \
     test_file_overwrite2 \
+    test_file_seek \
     test_file_seek_after_write \
+    test_file_truncate \
+    test_file_truncate2 \
     test_file_write \
     test_file_write_chunks \
     test_test_util
