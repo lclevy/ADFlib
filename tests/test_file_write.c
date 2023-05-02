@@ -199,7 +199,11 @@ void test_file_write ( test_data_t * const tdata )
 
     ck_assert_msg ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0,
                     "Data verification failed for bufsize %u (0x%x)", bufsize, bufsize );
-    
+
+    //printf ( "File meta-data verification for bufsize %u (0x%x):\n", bufsize, bufsize );
+    ck_assert_msg ( validate_file_metadata ( vol, filename, 10 ) == 0,
+                    "File meta-data verification failed for bufsize %u (0x%x)", bufsize, bufsize );
+
     // umount volume
     adfUnMount ( vol );
 }
@@ -215,9 +219,11 @@ static const unsigned buflen[] = {
     4095, 4096, 4097,
     10000, 20000, 35000, 35130,
     35136,
-    35137,    // the 1st requiring an ext. block
+    35137,    // the 1st requiring an ext. block (OFS)
     35138,
-    36000, 37000, 37380, 40000, 50000,
+    36000, 36864,
+    36865,    // the 1st requiring an ext. block (FFS)
+    37000, 37380, 40000, 50000,
     60000, 69784, 69785, 69796, 69800, 70000,
     100000, 200000, 512000, 800000
 };
