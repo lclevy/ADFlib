@@ -30,6 +30,14 @@ static inline unsigned adfFileDatablocks2Extblocks ( unsigned ndatablocks )
     return ( ndatablocks - 1 ) / ( MAX_DATABLK );
 }
 
+static inline unsigned adfFileSize2Extblocks ( unsigned fsize,
+                                               unsigned blocksize )
+{
+    return adfFileDatablocks2Extblocks (
+        adfFileSize2Datablocks ( fsize, blocksize ) );
+}
+
+
 static inline unsigned adfFileSize2Blocks ( unsigned fsize,
                                             unsigned blocksize )
 {
