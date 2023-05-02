@@ -300,20 +300,11 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
     }
 
     // 1.
-    //unsigned nBlocksToRemove = 0;
-    //SECTNUM * const blocksToRemove =
-    //    adfFileTruncateGetBlocksToRemove ( file, fileSizeNew, &nBlocksToRemove );
-    //if ( blocksToRemove == NULL && nBlocksToRemove > 0 )
-    //    return RC_ERROR;
-
     AdfVectorSectors blocksToRemove;
     RETCODE rc = adfFileTruncateGetBlocksToRemove ( file, fileSizeNew,
                                                     &blocksToRemove );
     if ( rc != RC_OK )
         return RC_ERROR;
-
-    //if ( nBlocksToRemove == 0 )
-    //    return RC_OK;     // no blocks to remove
 
     // 2. seek to the new EOF
     rc = adfFileSeek ( file, fileSizeNew );
@@ -346,10 +337,11 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
             file->fileHdr->dataBlocks :
             file->currentExt->dataBlocks;
 
-        if ( nDataBlocksNew % MAX_DATABLK != 0 ) {  /* the new data block array
-                                                       (in file header or
-                                                       the last ext. block) is not full?
-                                                    */
+        /* if the new last data block array (in file header or
+           the last ext. block) is not full... */
+        if ( nDataBlocksNew % MAX_DATABLK != 0 ) {
+            /* .., then cleaning block lists starts there */
+
             const unsigned firstDBlockToRemove = nDataBlocksNew % MAX_DATABLK;
             const unsigned lastDBlockToRemove =
                 ( nExtBlocksNew < nExtBlocksOld || nDataBlocksOld % MAX_DATABLK == 0 ) ?
@@ -367,8 +359,8 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
             }
         }
 
-        // for OFS - update also data block header
         if ( isOFS ( file->volume->dosType ) ) {
+            // for OFS - update also data block header
             struct bOFSDataBlock * const data =
                 (struct bOFSDataBlock *) file->currentData;
 
@@ -377,7 +369,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
                 file->volume->datablockSize :
                 fileSizeNew % file->volume->datablockSize;
 
-            data->nextData = 0;  // CHECK WHAT HAPPENS IF NEW EOF IS AT BlockSize(!)
+            data->nextData = 0;
             //file->currentDataBlockChanged = TRUE;
         }
         file->currentDataBlockChanged = TRUE; // could be done only for OFS - but
