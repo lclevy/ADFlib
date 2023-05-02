@@ -94,8 +94,8 @@ PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
                                       const int32_t                extBlock,
                                       struct bFileExtBlock * const fext );
 
-RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
-                                           const uint32_t               fileSizeNew,
-                                           AdfVectorSectors * const     blocksToRemove );
+PREFIX RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
+                                                  const uint32_t               fileSizeNew,
+                                                  AdfVectorSectors * const     blocksToRemove );
 #endif /* ADF_FILE_H */
 
