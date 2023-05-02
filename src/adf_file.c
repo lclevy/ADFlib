@@ -289,11 +289,11 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
     const unsigned fileSizeOld = file->fileHdr->byteSize;
 
     if ( fileSizeNew > fileSizeOld ) {
-        unsigned enlargeSize = fileSizeNew - fileSizeOld;
+        const unsigned enlargeSize = fileSizeNew - fileSizeOld;
         if ( adfFileSeek ( file, fileSizeOld ) != RC_OK )
             return RC_ERROR;
         assert ( adfEndOfFile ( file ) == TRUE );
-        unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
+        const unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
             return RC_ERROR;
         return RC_OK;
