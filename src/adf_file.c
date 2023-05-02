@@ -337,8 +337,8 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         // the new file has at least one data block
 
         const unsigned
-            nDataBlocksNew = adfFileSize2Datablocks ( fileSizeNew, file->volume->blockSize ),
-            nDataBlocksOld = adfFileSize2Datablocks ( fileSizeOld, file->volume->blockSize ),
+            nDataBlocksNew = adfFileSize2Datablocks ( fileSizeNew, file->volume->datablockSize ),
+            nDataBlocksOld = adfFileSize2Datablocks ( fileSizeOld, file->volume->datablockSize ),
             nExtBlocksOld  = adfFileDatablocks2Extblocks ( nDataBlocksOld ),
             nExtBlocksNew  = adfFileDatablocks2Extblocks ( nDataBlocksNew );
 
