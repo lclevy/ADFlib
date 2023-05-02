@@ -7,6 +7,7 @@
 
 #include "adflib.h"
 //#include "adf_util.h"
+#include "adf_file_util.h"
 #include "test_util.h"
 
 #define TEST_VERBOSITY 0
@@ -211,6 +212,66 @@ void test_file_truncate ( test_data_t * const tdata )
                     file->nDataBlock, expected_nDataBlock, truncsize );
     */
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+
+    //printf ("file->pos %u\n", file->pos);
+    //fflush(stdout);
+
+    unsigned nDataBlocks = adfFileSize2Datablocks ( file->fileHdr->byteSize, vol->datablockSize );
+    unsigned nExtBlocks  = adfFileDatablocks2Extblocks ( nDataBlocks );
+#if ( TEST_VERBOSITY >= 1 )
+    printf ("nDataBlocks %u, nExtBlocks %u, bufsize %u, truncsize %u\n",
+            nDataBlocks, nExtBlocks, bufsize, truncsize );
+    fflush(stdout);
+#endif
+
+    // make sure we have available current ext. block (if needed)
+    /*ck_assert_int_eq ( adfFileSeek ( file, 0 ), RC_OK );
+    ck_assert_int_eq ( adfFileSeek ( file, truncsize + 1 ), RC_OK );
+    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    int32_t * const dataBlocks = ( nExtBlocks < 1 ) ? file->fileHdr->dataBlocks :
+                                                      file->currentExt->dataBlocks;
+    */
+    struct bFileExtBlock * fext = NULL;
+    int32_t * dataBlocks = NULL;
+    if ( nExtBlocks < 1 ) {
+        dataBlocks = file->fileHdr->dataBlocks;
+    } else {  // ( nExtBlocks >= 1 )
+        if  ( vol->datablockSize != 488 ) {
+            // FFS
+            ck_assert_ptr_nonnull ( file->currentExt );
+            dataBlocks = file->currentExt->dataBlocks;
+        } else {
+            // for OFS - we must read the current ext.(!)
+            fext =  malloc ( sizeof (struct bFileExtBlock) );
+            ck_assert_ptr_nonnull ( fext );
+            ck_assert_int_eq ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ),
+                               RC_OK );
+            dataBlocks = fext->dataBlocks;
+        }
+    }
+
+    // check the number of non-zero blocks in the array of the last metadata block (header or ext)
+    unsigned nonZeroCount = 0;
+    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+        if ( dataBlocks[i] != 0 ) {
+            //printf ("A non-zero block %u: %d\n", i, dataBlocks[i] );
+            nonZeroCount++;
+        }
+    }
+    free(fext);
+
+    if ( file->fileHdr->byteSize == 0 )
+        ck_assert_uint_eq ( nonZeroCount, 0 );
+    else {
+        unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
+                                     nDataBlocks % MAX_DATABLK :
+                                     MAX_DATABLK );
+        //ck_assert_uint_eq ( nonZeroCount, nonZeroExpected );
+        ck_assert_msg ( nonZeroCount == nonZeroExpected,
+                        "Incorrect number of non-zero blocks in the last metadata block:"
+                        "nonZeroCount %u != nonZeroExpected %u, bufsize %u, truncsize %u",
+                        nonZeroCount, nonZeroExpected, bufsize, truncsize );
+    }
     adfFileClose ( file );
 
     // verify data of the truncated file
