@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "test_util.h"
-
+#include "adf_file_util.h"
 
 unsigned verify_file_data ( struct AdfVolume * const    vol,
                             const char * const          filename,
@@ -63,6 +63,89 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
 
     return nerrors;
 }
+
+
+static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
+{
+    unsigned fsize = file->fileHdr->byteSize;
+
+    RETCODE rc = adfFileSeek ( file, fsize + 1 );
+    if ( rc != RC_OK || adfEndOfFile ( file ) != TRUE) {
+        return 1;
+    }
+    //unsigned nerrors = 0;
+    unsigned nDataBlocks = adfFileSize2Datablocks ( file->fileHdr->byteSize,
+                                                    file->volume->datablockSize );
+    unsigned nExtBlocks  = adfFileDatablocks2Extblocks ( nDataBlocks );
+    //printf ("nDataBlocks %u, nExtBlocks %u, bufsize %u, truncsize %u\n",
+    //        nDataBlocks, nExtBlocks, bufsize, truncsize );
+    //fflush(stdout);
+
+    // make sure we have available current ext. block (if needed)
+    //int32_t * const dataBlocks = ( nExtBlocks < 1 ) ? file->fileHdr->dataBlocks :
+    //                                                  file->currentExt->dataBlocks;
+    struct bFileExtBlock * fext = NULL;
+    int32_t * dataBlocks = NULL;
+    if ( nExtBlocks < 1 ) {
+        dataBlocks = file->fileHdr->dataBlocks;
+    } else {  // ( nExtBlocks >= 1 )
+        if  ( file->volume->datablockSize != 488 ) {
+            // FFS
+            //ck_assert_ptr_nonnull ( file->currentExt );
+            if ( file->currentExt == NULL )
+                return 2;
+            dataBlocks = file->currentExt;
+        } else {
+            // for OFS - we must read the current ext.(!)
+            fext =  malloc ( sizeof (struct bFileExtBlock) );
+            if ( fext == NULL )
+                return 3;
+            if ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ) !=  RC_OK )
+                return 4;
+            dataBlocks = fext->dataBlocks;
+        }
+    }
+
+    // check the number of non-zero blocks in the array of the last metadata block (header or ext)
+    unsigned nonZeroCount = 0;
+    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+        if ( dataBlocks[i] != 0 )
+            nonZeroCount++;
+    }
+    free(fext);
+
+    if ( file->fileHdr->byteSize == 0 )
+        //ck_assert_uint_eq ( nonZeroCount, 0 );
+        if ( nonZeroCount != 0 )
+            return 5;
+    else {
+        unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
+                                     nDataBlocks % MAX_DATABLK :
+                                     MAX_DATABLK );
+        //ck_assert_uint_eq ( nonZeroCount, nonZeroExpected );
+        if ( nonZeroCount != nonZeroExpected ) {
+            printf ("Incorrect number of non-zero blocks in the last metadata block:"
+                    "nonZeroCount %u != nonZeroExpected %u, filesize %u",
+                    nonZeroCount, nonZeroExpected, file->fileHdr->byteSize );
+            return 6;
+        }
+    }
+    return 0;
+}
+
+
+unsigned validate_file_metadata ( struct AdfVolume * const vol,
+                                  const char * const       filename,
+                                  const unsigned           errors_max )
+{
+    struct AdfFile * const file = adfFileOpen ( vol, filename, "r" );
+    if ( ! file )
+        return 1;
+    unsigned nerrors = validate_file_metadata_last_ext ( file );
+    adfFileClose ( file );
+    return nerrors;
+}
+
 
 // bufsize must be divisible by 4
 void pattern_AMIGAMIG ( unsigned char * buf,

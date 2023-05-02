@@ -11,6 +11,10 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
                             const unsigned              bytes_written,
                             const unsigned              errors_max );
 
+unsigned validate_file_metadata ( struct AdfVolume * const vol,
+                                  const char * const       filename,
+                                  const unsigned           errors_max );
+
 void pattern_AMIGAMIG ( unsigned char * buf,
                         const unsigned  BUFSIZE );
 
