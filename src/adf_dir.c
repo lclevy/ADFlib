@@ -61,8 +61,11 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 	BOOL intl;
     RETCODE rc;
 
-    if (strcmp(oldName,newName)==0)
+    if ( pSect == nPSect  &&
+         strcmp ( oldName, newName ) == 0 )
+    {
         return RC_OK;
+    }
     
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     unsigned len = (unsigned) strlen ( newName );
