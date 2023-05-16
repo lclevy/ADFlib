@@ -150,6 +150,7 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
     int ptr;
 
     ptr = *p;
+    if (ptr > LOGICAL_BLOCK_SIZE - 26) return RC_ERROR; /* minimum cache entry length */
 
 /*printf("p=%d\n",ptr);*/
 
@@ -174,10 +175,15 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
 /*    cEntry->name = (char*)malloc(sizeof(char)*(cEntry->nLen+1));
     if (!cEntry->name)
          return;
-*/    memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
+*/
+    if (cEntry->nLen < 1 || cEntry->nLen > MAXNAMELEN) return RC_ERROR;
+    if ((ptr + 24 + cEntry->nLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
+    memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
     cEntry->name[(int)(cEntry->nLen)]='\0';
 
     cEntry->cLen = dirc->records[ptr+24+cEntry->nLen];
+    if (cEntry->cLen > MAXCMMTLEN) return RC_ERROR;
+    if ((ptr+24+cEntry->nLen+1+cEntry->cLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
     if (cEntry->cLen>0) {
 /*        cEntry->comm =(char*)malloc(sizeof(char)*(cEntry->cLen+1));
         if (!cEntry->comm) {
