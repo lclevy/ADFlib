@@ -86,7 +86,10 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                 adfFreeDirList(head);
                 return NULL;
             }
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK) {
+                free(entry); adfFreeDirList(head);
+                return NULL;
+            }
 
             /* converts a cache entry into a dir entry */
             entry->type = (int)caEntry.type;
@@ -140,9 +143,9 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
  * Returns a cache entry, starting from the offset p (the index into records[])
  * This offset is updated to the end of the returned entry.
  */
-void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
-                        int * const                   p,
-                        struct AdfCacheEntry * const  cEntry )
+RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
+                           int * const                   p,
+                           struct AdfCacheEntry * const  cEntry )
 {
     int ptr;
 
@@ -190,6 +193,8 @@ void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
     /* the starting offset of each record must be even (68000 constraint) */ 
     if ((*p%2)!=0)
         *p=(*p)+1;
+
+    return RC_OK;
 }
 
 
@@ -308,7 +313,8 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
         offset = 0; n = 0;
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
             found = ( caEntry.header == (uint32_t) headerKey );
             if (found) {
                 entryLen = offset-oldOffset;
@@ -383,7 +389,8 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
         offset = 0; n = 0;
 /*printf("parent=%4ld\n",dirc.parent);*/
         while(n < dirc.recordsNb) {
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     caEntry.header, caEntry.type, caEntry.size, caEntry.protect,
     caEntry.days, caEntry.mins/60, caEntry.mins%60, 
@@ -473,7 +480,8 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
             /* offset is updated */
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
             oLen = offset-oldOffset;
             sLen = oLen-nLen;
 /*printf("olen=%d nlen=%d\n",oLen,nLen);*/
