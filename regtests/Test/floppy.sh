@@ -18,6 +18,7 @@ esac
 
 for A_TEST in \
     bootdisk.sh \
+    cache_crash.sh \
     del_test.sh \
     dir_test.sh \
     dir_test2.sh \
