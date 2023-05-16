@@ -40,16 +40,16 @@
 #define ADFLIB_DATE "January 25th, 2022"
 
 
-#define SECTNUM int32_t
-#define RETCODE int32_t
+typedef int32_t SECTNUM;
+typedef int32_t RETCODE;
 
 #define TRUE    1
 #define FALSE   0
 
-#define ULONG   uint32_t
-#define USHORT  uint16_t
-#define UCHAR   uint8_t
-#define BOOL    int
+typedef uint32_t ULONG;
+typedef uint16_t USHORT;
+typedef uint8_t  UCHAR;
+typedef int      BOOL;
 
 
 /* defines max and min */

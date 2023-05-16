@@ -27,4 +27,4 @@ case "$OSTYPE" in
 	BUILD_DLL=
 esac
 
-cmake -DBUILD_SHARED_LIBS:BOOL=ON ${BUILD_DLL} -B build/shared -S .
+cmake -DBUILD_SHARED_LIBS:BOOL=ON ${BUILD_DLL} -B build/shared -S . $@
