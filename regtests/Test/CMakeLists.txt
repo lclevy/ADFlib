@@ -62,6 +62,9 @@ TARGET_LINK_LIBRARIES ( del_test adf )
 add_executable ( bootdisk bootdisk.c )
 TARGET_LINK_LIBRARIES ( bootdisk adf )
 
+add_executable ( cache_crash cache_crash.c )
+TARGET_LINK_LIBRARIES ( cache_crash adf )
+
 add_executable ( rename rename.c )
 TARGET_LINK_LIBRARIES ( rename adf )
 
@@ -102,6 +105,7 @@ foreach ( a_file
     floppy.sh
     bigdev.sh
     bootdisk.sh
+    cache_crash.sh
     common.sh
     del_test.sh
     dir_test2.sh
