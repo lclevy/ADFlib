@@ -6,13 +6,13 @@
 #endif
 
 #include "adflib.h"
+#include "ramdisk.h"
 //#include "adf_util.h"
 
 
 typedef struct test_data_s {
     struct AdfDevice * device;
     struct AdfVolume * vol;
-    char *          adfname;
     char *          volname;
     uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
@@ -234,7 +234,6 @@ void test_file_write ( test_data_t * const tdata )
 START_TEST ( test_file_write_ofs )
 {
     test_data_t test_data = {
-        .adfname = "test_file_overwrite_ofs.adf",
         .volname = "Test_file_overwrite_ofs",
         .fstype  = 0,          // OFS
         .openMode = "w",
@@ -248,7 +247,6 @@ START_TEST ( test_file_write_ofs )
 START_TEST ( test_file_write_ffs )
 {
     test_data_t test_data = {
-        .adfname = "test_file_overwrite_ffs.adf",
         .volname = "Test_file_overwrite_ffs",
         .fstype  = 1,          // FFS
         .openMode = "w",
@@ -287,6 +285,7 @@ int main ( void )
     SRunner * sr = srunner_create ( s );
 
     adfEnvInitDefault();
+    adfAddNativeDriver(&ramdiskDevice);
     srunner_run_all ( sr, CK_VERBOSE ); //CK_NORMAL );
     adfEnvCleanUp();
 
@@ -300,7 +299,7 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfCreateDumpDevice ( tdata->adfname, 80, 2, 11 );
+    tdata->device = adfOpenDev(RAMDISK_DEVICE_NAME, FALSE);
     if ( ! tdata->device ) {       
         //return;
         exit(1);
@@ -322,6 +321,4 @@ void teardown ( test_data_t * const tdata )
 {
     //adfUnMount ( tdata->vol );
     adfUnMountDev ( tdata->device );
-    if ( unlink ( tdata->adfname ) != 0 )
-        perror ("");
 }

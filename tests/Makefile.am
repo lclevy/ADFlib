@@ -62,7 +62,7 @@ test_file_write_chunks_CFLAGS = $(CHECK_CFLAGS)
 test_file_write_chunks_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_file_write_chunks_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
-test_file_overwrite_SOURCES = test_file_overwrite.c
+test_file_overwrite_SOURCES = test_file_overwrite.c ramdisk.c ramdisk.h
 test_file_overwrite_CFLAGS = $(CHECK_CFLAGS)
 test_file_overwrite_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_file_overwrite_DEPENDENCIES = $(top_builddir)/src/libadf.la

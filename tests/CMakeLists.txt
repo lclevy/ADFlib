@@ -66,7 +66,8 @@ add_executable ( test_file_write_chunks
 	         test_util.c )
 
 add_executable ( test_file_overwrite
-                 test_file_overwrite.c )
+                 test_file_overwrite.c
+                 ramdisk.c )
 
 add_executable ( test_file_overwrite2
                  test_file_overwrite2.c
