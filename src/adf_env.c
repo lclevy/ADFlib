@@ -284,6 +284,23 @@ char* adfGetVersionDate()
 	return(ADFLIB_DATE);
 }
 
+void adfAddNativeDriver(struct AdfNativeFunctions *driver) {
+    if (driver) {
+        driver->next = adfEnv.nativeFct;
+        adfEnv.nativeFct = driver;
+    }
+}
+void adfRemoveNativeDriver(struct AdfNativeFunctions *driver) {
+    if (driver) {
+        struct AdfNativeFunctions *nFct = (struct AdfNativeFunctions *) &(adfEnv.nativeFct);
+        for (; nFct; nFct = nFct->next) {
+            if (nFct->next == driver) {
+                nFct->next = driver->next;
+                return;
+            }
+        }
+    }
+}
 
 
 

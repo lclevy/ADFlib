@@ -71,6 +71,8 @@ PREFIX void adfEnvCleanUp();
 PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();
 PREFIX char* adfGetVersionDate();
+PREFIX void adfAddNativeDriver(struct AdfNativeFunctions *driver);
+PREFIX void adfRemoveNativeDriver(struct AdfNativeFunctions *driver);
 
 extern struct AdfEnv adfEnv;
 
