@@ -28,6 +28,14 @@
 #include"adf_err.h"
 #include "adf_env.h"
 
+struct AdfNativeFunctions adfGenericNativeDevice = {
+    NULL,
+    &myInitDevice,
+    &myReleaseDevice,
+    &myReadSector,
+    &myWriteSector,
+    &myIsDevNative
+};
 
 /*
  * myInitDevice
@@ -108,18 +116,9 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  * adfInitNativeFct
  *
  */
-void adfInitNativeFct()
-{
-    struct AdfNativeFunctions * nFct =
-        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
-
-    nFct->adfInitDevice = myInitDevice ;
-    nFct->adfNativeReadSector = myReadSector ;
-    nFct->adfNativeWriteSector = myWriteSector ;
-    nFct->adfReleaseDevice = myReleaseDevice ;
-    nFct->adfIsDevNative = myIsDevNative;
+struct AdfNativeFunctions *adfInitNativeFct() {
+    return &adfGenericNativeDevice;
 }
-
 
 /*
  * myIsDevNative

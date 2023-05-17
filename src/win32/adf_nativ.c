@@ -37,6 +37,14 @@
 #include "adf_env.h"
 #include "nt4_dev.h"
 
+struct AdfNativeFunctions adfWindowsNativeDevice = {
+    NULL,
+    &Win32InitDevice,
+    &Win32ReleaseDevice,
+    &Win32ReadSector,
+    &Win32WriteSector,
+    &Win32IsDevNative
+};
 
 RETCODE Win32InitDevice ( struct AdfDevice * const dev,
                           const char * const       lpstrName,
@@ -145,16 +153,8 @@ RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 }
 
 
-void adfInitNativeFct()
-{
-	struct AdfNativeFunctions * nFct =
-            ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
-
-	nFct->adfInitDevice = Win32InitDevice;
-	nFct->adfNativeReadSector = Win32ReadSector;
-	nFct->adfNativeWriteSector = Win32WriteSector;
-	nFct->adfReleaseDevice = Win32ReleaseDevice;
-	nFct->adfIsDevNative = Win32IsDevNative;
+struct AdfNativeFunctions *adfInitNativeFct() {
+    return &adfWindowsNativeDevice;
 }
 
 

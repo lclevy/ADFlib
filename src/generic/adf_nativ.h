@@ -42,6 +42,7 @@ struct AdfNativeDevice {
 };
 
 struct AdfNativeFunctions {
+    struct AdfNativeFunctions *next;
 
     /* called by adfMount() */
     RETCODE (*adfInitDevice)( struct AdfDevice * const dev,
@@ -67,7 +68,7 @@ struct AdfNativeFunctions {
     BOOL (*adfIsDevNative)( const char * const devName );
 };
 
-void adfInitNativeFct();
+struct AdfNativeFunctions *adfInitNativeFct();
 
 RETCODE myInitDevice ( struct AdfDevice * const dev,
                        const char * const       name,

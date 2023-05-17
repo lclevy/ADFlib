@@ -60,7 +60,7 @@ struct AdfEnv {
 
     BOOL useDirCache;
 
-    void *nativeFct;
+    struct AdfNativeFunctions *nativeFct;
 };
 
 

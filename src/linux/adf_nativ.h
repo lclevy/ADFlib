@@ -42,6 +42,8 @@ struct AdfNativeDevice {
 };
 
 struct AdfNativeFunctions {
+    struct AdfNativeFunctions *next;
+
     RETCODE (*adfInitDevice)( struct AdfDevice * const dev,
                               const char * const       name,
                               const BOOL               ro );
@@ -61,7 +63,7 @@ struct AdfNativeFunctions {
     BOOL (*adfIsDevNative)( const char * const devName );
 };
 
-void adfInitNativeFct();
+struct AdfNativeFunctions *adfInitNativeFct();
 
 RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
                              const char * const       name,

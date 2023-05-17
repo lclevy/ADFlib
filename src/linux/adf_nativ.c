@@ -36,6 +36,14 @@
 #include "adf_nativ.h"
 #include "adf_env.h"
 
+struct AdfNativeFunctions adfLinuxNativeDevice = {
+    NULL,
+    &adfLinuxInitDevice,
+    &adfLinuxReleaseDevice,
+    &adfLinuxReadSector,
+    &adfLinuxWriteSector,
+    &adfLinuxIsDevNative
+};
 
 /*
  * adfLinuxInitDevice
@@ -172,18 +180,9 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
  * adfInitNativeFct
  *
  */
-void adfInitNativeFct()
-{
-    struct AdfNativeFunctions * nFct =
-        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
-
-    nFct->adfInitDevice        = adfLinuxInitDevice;
-    nFct->adfNativeReadSector  = adfLinuxReadSector;
-    nFct->adfNativeWriteSector = adfLinuxWriteSector;
-    nFct->adfReleaseDevice     = adfLinuxReleaseDevice;
-    nFct->adfIsDevNative       = adfLinuxIsDevNative;
+struct AdfNativeFunctions *adfInitNativeFct() {
+    return &adfLinuxNativeDevice;
 }
-
 
 /*
  * adfLinuxIsDevNative
