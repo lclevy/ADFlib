@@ -36,10 +36,10 @@ struct AdfDevice {
     uint32_t sectors;
 
     BOOL isNativeDev;
-    union {
-        void *nativeDev;
-        FILE *fd;
-    };
+    struct AdfNativeFunctions *nativeFct;
+    void *nativeDev; /* for use by native functions */
+
+    FILE *fd;
 };
 
 

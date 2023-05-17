@@ -66,12 +66,19 @@ struct AdfDevice * adfOpenDev ( const char * const filename,
     dev->readOnly = ro;
 
     /* switch between dump files and real devices */
-    struct AdfNativeFunctions * nFct = adfEnv.nativeFct;
-    dev->isNativeDev = ( *nFct->adfIsDevNative )( filename );
+    struct AdfNativeFunctions * nFct;
+    dev->isNativeDev = FALSE;
+    for (nFct = adfEnv.nativeFct; nFct; nFct = nFct->next) {
+        if (nFct->adfIsDevNative(filename)) {
+            dev->nativeFct = nFct;
+            dev->isNativeDev = TRUE;
+            break;
+        }
+    }
 
     RETCODE rc;
     if ( dev->isNativeDev )
-        rc = ( *nFct->adfInitDevice )( dev, filename, ro );
+        rc = dev->nativeFct->adfInitDevice( dev, filename, ro );
     else
         rc = adfInitDumpDevice ( dev, filename, ro );
     if ( rc != RC_OK ) {
@@ -130,8 +137,7 @@ void adfCloseDev ( struct AdfDevice * const dev )
     }
 
     if ( dev->isNativeDev ) {
-        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
-        ( *nFct->adfReleaseDevice )( dev );
+        dev->nativeFct->adfReleaseDevice( dev );
     } else
         adfReleaseDumpDevice ( dev );
 
@@ -303,8 +309,7 @@ RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
 
 /*printf("pSect R =%ld\n",pSect);*/
     if ( dev->isNativeDev ) {
-        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
-        rc = (*nFct->adfNativeReadSector)( dev, pSect, size, buf );
+        rc = dev->nativeFct->adfNativeReadSector( dev, pSect, size, buf );
     } else
         rc = adfReadDumpSector( dev, pSect, size, buf );
 /*printf("rc=%ld\n",rc);*/
@@ -321,8 +326,7 @@ RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
 
 /*printf("nativ=%d\n",dev->isNativeDev);*/
     if ( dev->isNativeDev ) {
-        struct AdfNativeFunctions * const nFct = adfEnv.nativeFct;
-        rc = (*nFct->adfNativeWriteSector)( dev, pSect, size, buf );
+        rc = dev->nativeFct->adfNativeWriteSector( dev, pSect, size, buf );
     } else
         rc = adfWriteDumpSector ( dev, pSect, size, buf );
 
