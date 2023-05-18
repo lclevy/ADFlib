@@ -283,6 +283,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         return RC_ERROR;
 
     if ( fileSizeNew == file->fileHdr->byteSize ) {
+        file->maxExtent = fileSizeNew;
         return adfFileSeek ( file, fileSizeNew );
     }
 
@@ -296,6 +297,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         const unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
             return RC_ERROR;
+        file->maxExtent = fileSizeNew;
         return RC_OK;
     }
 
@@ -391,6 +393,8 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
     free ( blocksToRemove.sectors );
 
     assert ( file->pos == fileSizeNew );
+
+    file->maxExtent = fileSizeNew;
 
     // 5.
     return adfUpdateBitmap ( file->volume );
@@ -701,15 +705,28 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    BOOL mode_read   = ( strcmp ( "r", mode ) == 0 );
-    BOOL mode_write  = ( strcmp ( "w", mode ) == 0 );
-    BOOL mode_append = ( strcmp ( "a", mode ) == 0 );
+    /* Mode | Write? | Create? | Truncate? | Initial Posn
+     *  r   |  No    |   No    |    No     |    Start
+     *  r+  |  Yes   |   No    |    No     |    Start
+     *  w   |  Yes   |   Yes   |    Yes    |    Start
+     *  w+  |  Yes   |   Yes   |    Yes    |    Start
+     *  a   |  Yes   |   Yes   |    No     |    End
+     *  a+  |  Yes   |   Yes   |    No     |    End
+     */
+    BOOL mode_read   = mode[0] == 'r';
+    BOOL mode_write  = mode[0] == 'w';
+    BOOL mode_append = mode[0] == 'a';
     if ( ! ( mode_read || mode_write || mode_append ) ) {
         adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%s'", mode );
         return NULL;
     }
+    BOOL mode_rw = mode[1] == '+';
+    if ( mode[1] && ! mode_rw ) {
+        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%s'", mode );
+        return NULL;
+    }
 
-    BOOL write = ( mode_write || mode_append );
+    BOOL write = ( mode_write || mode_append || mode_rw );
     if ( write && vol->dev->readOnly ) {
         (*adfEnv.wFct)("adfFileOpen : device is mounted 'read only'");
         return NULL;
@@ -722,7 +739,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     BOOL fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
-    if ( ( mode_read || mode_append ) && ( ! fileAlreadyExists ) ) {
+    if ( mode_read  && ! fileAlreadyExists ) {
         adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
         return NULL;
@@ -790,6 +807,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->posInExtBlk = 0;
     file->posInDataBlk = 0;
     file->writeMode = write;
+    file->truncateMode = mode_write;
+    file->maxExtent = mode_append ? file->fileHdr->byteSize : 0;
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
@@ -845,6 +864,10 @@ void adfFileClose ( struct AdfFile * file )
 /*puts("adfCloseFile in");*/
 
     adfFileFlush ( file );
+
+    if (file->truncateMode && file->maxExtent < file->fileHdr->byteSize) {
+        adfFileTruncate ( file, file->maxExtent );
+    }
 
     if (file->currentExt)
         free(file->currentExt);
@@ -1079,6 +1102,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,
                                         file->pos );
+        file->maxExtent = max ( file->maxExtent, file->pos );
     }
     return( bytesWritten );
 }

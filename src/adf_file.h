@@ -48,6 +48,8 @@ struct AdfFile {
     unsigned posInDataBlk;
     unsigned posInExtBlk;
     BOOL writeMode;
+    BOOL truncateMode;
+    uint32_t maxExtent; /* furthest the file has been written */
     BOOL currentDataBlockChanged;
 };
 
