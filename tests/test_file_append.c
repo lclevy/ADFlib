@@ -59,8 +59,6 @@ void test_file_append ( test_data_t * const tdata )
     // create a new file
     char filename[] = "testfile.tmp";
     struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
-    ck_assert_ptr_null ( file );  // cannot open a new file in append mode
-    file = adfFileOpen ( vol, filename, "w" );
     ck_assert_msg ( file != 0, "Cannot open file %s for %s", filename, tdata->openMode );
     adfFileClose ( file );
 

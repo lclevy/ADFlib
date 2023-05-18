@@ -119,20 +119,21 @@ void test_file_create_with_append ( test_data_t * const tdata )
     // create a new file
     char filename[] = "testfile.tmp";
     struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
-    ck_assert_ptr_null ( file );
-    adfFileClose ( file );   // should not be needed (but should not fail either)
+    ck_assert_ptr_nonnull ( file );
+    adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
     tdata->vol = adfMount ( tdata->device, 0, FALSE );
 
     // verify free blocks
-    ck_assert_int_eq ( free_blocks_before,
+    const unsigned file_blocks_used_by_empty_file = 1;
+    ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file,
                        adfCountFreeBlocks ( vol ) );
 
     // verify the number of entries
-    ck_assert_int_eq ( 0, adfDirCountEntries ( vol, vol->curDirPtr ) );
-    
+    ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
+
     // umount volume
     adfUnMount ( tdata->vol );
 }
