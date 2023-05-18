@@ -138,7 +138,7 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    if ( write ( nDev->fd, buf, (size_t) size ) != (ssize_t) size )
+    if ( read ( nDev->fd, buf, (size_t) size ) != (ssize_t) size )
         return RC_ERROR;
 
     return RC_OK;   
@@ -161,7 +161,7 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    if ( read ( nDev->fd, (void *) buf, (size_t) size ) != size )
+    if ( write ( nDev->fd, (void *) buf, (size_t) size ) != size )
         return RC_ERROR;
 
     return RC_OK;
