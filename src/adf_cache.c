@@ -86,7 +86,10 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                 adfFreeDirList(head);
                 return NULL;
             }
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK) {
+                free(entry); adfFreeDirList(head);
+                return NULL;
+            }
 
             /* converts a cache entry into a dir entry */
             entry->type = (int)caEntry.type;
@@ -140,13 +143,14 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
  * Returns a cache entry, starting from the offset p (the index into records[])
  * This offset is updated to the end of the returned entry.
  */
-void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
-                        int * const                   p,
-                        struct AdfCacheEntry * const  cEntry )
+RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
+                           int * const                   p,
+                           struct AdfCacheEntry * const  cEntry )
 {
     int ptr;
 
     ptr = *p;
+    if (ptr > LOGICAL_BLOCK_SIZE - 26) return RC_ERROR; /* minimum cache entry length */
 
 /*printf("p=%d\n",ptr);*/
 
@@ -171,10 +175,15 @@ void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
 /*    cEntry->name = (char*)malloc(sizeof(char)*(cEntry->nLen+1));
     if (!cEntry->name)
          return;
-*/    memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
+*/
+    if (cEntry->nLen < 1 || cEntry->nLen > MAXNAMELEN) return RC_ERROR;
+    if ((ptr + 24 + cEntry->nLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
+    memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
     cEntry->name[(int)(cEntry->nLen)]='\0';
 
     cEntry->cLen = dirc->records[ptr+24+cEntry->nLen];
+    if (cEntry->cLen > MAXCMMTLEN) return RC_ERROR;
+    if ((ptr+24+cEntry->nLen+1+cEntry->cLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
     if (cEntry->cLen>0) {
 /*        cEntry->comm =(char*)malloc(sizeof(char)*(cEntry->cLen+1));
         if (!cEntry->comm) {
@@ -190,6 +199,8 @@ void adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
     /* the starting offset of each record must be even (68000 constraint) */ 
     if ((*p%2)!=0)
         *p=(*p)+1;
+
+    return RC_OK;
 }
 
 
@@ -308,7 +319,8 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
         offset = 0; n = 0;
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
             found = ( caEntry.header == (uint32_t) headerKey );
             if (found) {
                 entryLen = offset-oldOffset;
@@ -383,7 +395,8 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
         offset = 0; n = 0;
 /*printf("parent=%4ld\n",dirc.parent);*/
         while(n < dirc.recordsNb) {
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     caEntry.header, caEntry.type, caEntry.size, caEntry.protect,
     caEntry.days, caEntry.mins/60, caEntry.mins%60, 
@@ -473,7 +486,8 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
             /* offset is updated */
-            adfGetCacheEntry(&dirc, &offset, &caEntry);
+            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
+                return RC_ERROR;
             oLen = offset-oldOffset;
             sLen = oLen-nLen;
 /*printf("olen=%d nlen=%d\n",oLen,nLen);*/

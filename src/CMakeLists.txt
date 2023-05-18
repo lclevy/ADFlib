@@ -14,6 +14,11 @@ include_directories (
   ${PROJECT_BINARY_DIR}/src
 )
 
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+  #message("debug mode")
+  set ( ADFLIB_DEBUG_MODULES debug_util.c debug_util.h )
+endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+
 add_library ( adf
   adf_bitm.c
   adf_cache.c
@@ -38,6 +43,7 @@ add_library ( adf
 #  win32/adf_nativ.h
 #  win32/nt4_dev.c
 #  win32/nt4_dev.h
+  ${ADFLIB_DEBUG_MODULES}
 )
 
 #install(TARGETS adf DESTINATION /usr/local/lib)

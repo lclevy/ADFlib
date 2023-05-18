@@ -44,6 +44,9 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT ${MINGW})
       $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
+add_link_options( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
+
+
 OPTION(ADFLIB_BUILD_DLL "Build Windows DLL" OFF)
 
 if(ADFLIB_BUILD_DLL)

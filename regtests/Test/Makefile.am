@@ -9,6 +9,7 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
 check_PROGRAMS = \
 	access \
 	bootdisk \
+	cache_crash \
 	comment \
 	del_test \
 	dir_test \
@@ -134,6 +135,10 @@ hardfile2_DEPENDENCIES = $(top_builddir)/src/libadf.la
 access_SOURCES = access.c
 access_LDADD = $(ADFLIBS)
 access_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+cache_crash_SOURCES = cache_crash.c
+cache_crash_LDADD = $(ADFLIBS)
+cache_crash_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 comment_SOURCES = comment.c
 comment_LDADD = $(ADFLIBS)

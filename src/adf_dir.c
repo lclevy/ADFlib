@@ -61,8 +61,11 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 	BOOL intl;
     RETCODE rc;
 
-    if (strcmp(oldName,newName)==0)
+    if ( pSect == nPSect  &&
+         strcmp ( oldName, newName ) == 0 )
+    {
         return RC_OK;
+    }
     
     intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
     unsigned len = (unsigned) strlen ( newName );
@@ -96,12 +99,6 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     /* in hashTable */
     if (prevSect==0) {
         parent.hashTable[hashValueO] = tmpSect;
-        if (parent.secType==ST_ROOT)
-            rc = adfWriteRootBlock(vol, (uint32_t) pSect, (struct bRootBlock*)&parent);
-        else
-            rc = adfWriteDirBlock(vol, pSect, (struct bDirBlock*)&parent);
-        if (rc!=RC_OK)
-            return rc;
     }
     else {
         /* in linked list */
@@ -113,6 +110,19 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
             return RC_ERROR;
     }
 
+    // update old parent's ctime and write its block
+    adfTime2AmigaTime ( adfGiveCurrentTime(),
+                        &parent.days,
+                        &parent.mins,
+                        &parent.ticks );
+
+    if ( parent.secType == ST_ROOT )
+        rc = adfWriteRootBlock ( vol, (uint32_t) pSect, (struct bRootBlock*) &parent );
+    else
+        rc = adfWriteDirBlock ( vol, pSect, (struct bDirBlock*) &parent );
+    if ( rc != RC_OK )
+        return rc;
+
 
     if (adfReadEntryBlock( vol, nPSect, &nParent )!=RC_OK)
 		return RC_ERROR;
@@ -122,10 +132,6 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     /* no list */
     if (nSect2==0) {
         nParent.hashTable[ hashValueN ] = nSect;
-        if (nParent.secType==ST_ROOT)
-            rc = adfWriteRootBlock(vol, (uint32_t) nPSect, (struct bRootBlock*)&nParent);
-        else
-            rc = adfWriteDirBlock(vol, nPSect, (struct bDirBlock*)&nParent);
     }
     else {
         /* a list exists : addition at the end */
@@ -159,11 +165,24 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
             (*adfEnv.wFct)("adfRenameEntry : unknown entry type");
             rc = RC_ERROR;
         }
-	
-	}
-    if (rc!=RC_OK)
+        if ( rc != RC_OK )
+            return rc;
+    }
+
+    // update new parent's time and write its block
+    adfTime2AmigaTime ( adfGiveCurrentTime(),
+                        &nParent.days,
+                        &nParent.mins,
+                        &nParent.ticks );
+
+    if ( nParent.secType == ST_ROOT )
+        rc = adfWriteRootBlock ( vol, (uint32_t) nPSect, (struct bRootBlock*) &nParent );
+    else
+        rc = adfWriteDirBlock ( vol, nPSect, (struct bDirBlock*) &nParent );
+    if ( rc != RC_OK )
         return rc;
 
+    // update dircache
     if (isDIRCACHE(vol->dosType)) {
 		if (pSect==nPSect) {
             adfUpdateCache(vol, &parent, (struct bEntryBlock*)&entry,TRUE);

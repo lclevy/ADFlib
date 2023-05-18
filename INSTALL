@@ -163,6 +163,22 @@ Find produced DLL and EXE and copy wherever you want...
 (btw. not sure what CMake install does on Windows...)
 
 
+Cross-compilation (an example)
+-------------------------------
+
+Building for Windows can be done cross-compiling eg. on Linux with MinGW:
+  $ CC=i686-w64-mingw32-gcc util/cmake_shared_configure
+  $ util/cmake_shared_build
+
+Note that the tests will not work for rather obvious reasons - .EXE and .DLL
+are not for Linux...
+Most likely, it is possible to run the tests eg. using some Windows emulation
+like Wine. The executables should work of course, but the testing suites will
+require eg. configuring Windows CMake or tinkering test configuration to use
+Wine for execution etc...
+It should rather be tested and used on the native target system.
+
+
 Links
 ------
 - CMake:      https://cmake.org/

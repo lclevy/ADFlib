@@ -79,12 +79,23 @@ PREFIX uint32_t adfFileWrite ( struct AdfFile * const file,
                                const uint32_t         n,
                                const uint8_t * const  buffer );
 
+PREFIX unsigned adfFileWriteFilled ( struct AdfFile * const file,
+                                     const uint8_t          fillValue,
+                                     uint32_t               size );
+
+PREFIX RETCODE adfFileTruncate ( struct AdfFile * const file,
+                                 const uint32_t         fileSizeNew );
+
 SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
-RETCODE adfFileReadExtBlockN ( struct AdfFile * const       file,
-                               const int32_t                extBlock,
-                               struct bFileExtBlock * const fext );
+PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
+                                      const int32_t                extBlock,
+                                      struct bFileExtBlock * const fext );
+
+PREFIX RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
+                                                  const uint32_t               fileSizeNew,
+                                                  AdfVectorSectors * const     blocksToRemove );
 #endif /* ADF_FILE_H */
 
