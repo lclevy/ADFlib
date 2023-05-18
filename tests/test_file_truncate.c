@@ -294,15 +294,20 @@ void test_file_truncate ( test_data_t * const tdata )
         file = adfFileOpen ( vol, filename, "r" );
         ck_assert_ptr_nonnull ( file );
         adfFileSeek ( file, bufsize );
-        for ( unsigned i = 0 ; i < truncsize - bufsize ; ++i ) {
-            uint8_t data;
-            ck_assert_int_eq ( adfFileRead ( file, 1, &data ), 1 );
-            ck_assert_msg ( data == 0,
-                            "Non-zero data in enlarged/zeroed part, offset 0x%x (%u),"
-                            " bufsize %u (0x%x), truncsize %u (0x%x)\n",
-                            bufsize + i, bufsize + i,
-                            bufsize, bufsize, truncsize, truncsize );
+        size_t extrasize = truncsize - bufsize;
+        uint8_t * ebuf = malloc ( extrasize );
+        ck_assert_ptr_nonnull ( ebuf );
+        ck_assert_int_eq ( adfFileRead (file, extrasize, ebuf ), extrasize );
+        for ( unsigned i = 0 ; i < extrasize ; ++i ) {
+            if ( ebuf[i] != 0 ) {
+                ck_assert_msg ( 0,
+                                "Non-zero data in enlarged/zeroed part, offset 0x%x (%u),"
+                                " bufsize %u (0x%x), truncsize %u (0x%x)\n",
+                                bufsize + i, bufsize + i,
+                                bufsize, bufsize, truncsize, truncsize );
+            }
         }
+        free ( ebuf );
         adfFileClose ( file ); 
     }
     
