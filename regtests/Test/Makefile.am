@@ -44,9 +44,6 @@ TESTS = floppy.sh bigdev.sh
 #EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if ADFLIB_OS_CYGWIN
-    ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
-endif
 
 fl_test_SOURCES = fl_test.c
 fl_test_LDADD = $(ADFLIBS)

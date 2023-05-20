@@ -23,9 +23,6 @@ TESTS = $(check_PROGRAMS) \
     test_examples
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if ADFLIB_OS_CYGWIN
-    ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
-endif
 
 test_adfDays2Date_SOURCES = test_adfDays2Date.c
 test_adfDays2Date_CFLAGS = $(CHECK_CFLAGS)

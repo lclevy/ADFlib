@@ -1,5 +1,5 @@
 
-SUBDIRS = $(NATIVE_DIR)
+AUTOMAKE_OPTIONS = subdir-objects
 
 lib_LTLIBRARIES = libadf.la
 
@@ -46,17 +46,17 @@ include_HEADERS = adf_defs.h \
 libadf_la_LDFLAGS = \
     -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
-# Link adfnative to libadf
-if ADFLIB_OS_CYGWIN
-    # for some reason CygWin require full path(?)
-    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
+if NATIVE_GENERIC
+libadf_la_SOURCES += generic/adf_nativ.c
+include_HEADERS += generic/adf_nativ.h
 endif
-if ADFLIB_OS_DARWIN
-    # for some reason Darwin require full path(?)
-    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
+if NATIVE_LINUX
+libadf_la_SOURCES += linux/adf_nativ.c
+include_HEADERS += linux/adf_nativ.h
 endif
-if ADFLIB_OS_LINUX
-    libadf_la_LDFLAGS += -L$(NATIVE_DIR) -ladfnative
+if NATIVE_WIN32
+libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c
+include_HEADERS += win32/adf_nativ.h win32/nt4_dev.h win32/defendian.h
 endif
 
 AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
