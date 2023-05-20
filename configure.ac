@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ([2.69])
 
 # Version info
 m4_define([adflib_version_major],[0])
@@ -9,12 +9,13 @@ m4_define([adflib_version_minor],[7])
 m4_define([adflib_version_micro],[13])
 m4_define([adflib_version],[adflib_version_major.adflib_version_minor.adflib_version_micro])
 
-AC_INIT(adflib,[adflib_version],lclevy_AT_club-internet.fr)
+AC_INIT([adflib],[adflib_version],[lclevy_AT_club-internet.fr])
 
 AC_CONFIG_SRCDIR([src/adf_env.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE
+AM_SILENT_RULES([yes])
 
 AC_ARG_ENABLE([examples],
               [  --enable-examples    Build exmples],
@@ -115,31 +116,18 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_PROG_AR
 
-#AC_PROG_LIBTOOL - obsolete
 LT_INIT()
 
 
 # Checks for libraries.
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
 
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h stdint.h stdlib.h string.h unistd.h])
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_INT32_T
 AC_TYPE_SIZE_T
-AC_STRUCT_TM
-AC_HEADER_STDBOOL
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
-
-# Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_STAT
-AC_CHECK_FUNCS([memset strchr strdup strerror strrchr])
-
 
 AC_SUBST(NATIVE_DIR)
 
