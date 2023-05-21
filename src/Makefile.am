@@ -1,6 +1,10 @@
 
 AUTOMAKE_OPTIONS = subdir-objects
 
+AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_GNU_SOURCE -D_EXPORTING \
+	-DADFLIB_VERSION='"$(ADFLIB_VERSION)"' -DADFLIB_DATE='"$(ADFLIB_DATE)"'
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -Werror-implicit-function-declaration
+
 lib_LTLIBRARIES = libadf.la
 
 libadf_la_SOURCES = adf_dev.c \
@@ -19,7 +23,8 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_salv.c \
                     adf_vol.c
 
-include_HEADERS = adf_defs.h \
+adfincdir = $(includedir)/adf
+adfinc_HEADERS  = adf_defs.h \
                   adf_dev.h \
                   adf_dev_flop.h \
                   adf_dev_hd.h \
@@ -48,23 +53,16 @@ libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 
 if NATIVE_GENERIC
 libadf_la_SOURCES += generic/adf_nativ.c
-include_HEADERS += generic/adf_nativ.h
+adfinc_HEADERS += generic/adf_nativ.h
+AM_CFLAGS += -I$(srcdir)/generic
 endif
 if NATIVE_LINUX
 libadf_la_SOURCES += linux/adf_nativ.c
-include_HEADERS += linux/adf_nativ.h
+adfinc_HEADERS += linux/adf_nativ.h
+AM_CFLAGS += -I$(srcdir)/linux
 endif
 if NATIVE_WIN32
 libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c
-include_HEADERS += win32/adf_nativ.h win32/nt4_dev.h win32/defendian.h
+adfinc_HEADERS += win32/adf_nativ.h win32/nt4_dev.h win32/defendian.h
+AM_CFLAGS += -I$(srcdir)/win32
 endif
-
-AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
-    -D_GNU_SOURCE -D_EXPORTING
-
-AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
-    -Werror-implicit-function-declaration \
-    -DADFLIB_VERSION='"$(ADFLIB_VERSION)"' \
-    -DADFLIB_DATE='"$(ADFLIB_DATE)"' \
-    -I$(srcdir) \
-    -I$(srcdir)/$(NATIVE_DIR)
