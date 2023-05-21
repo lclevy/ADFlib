@@ -5,9 +5,9 @@ project ( adflib C )
 set( CMAKE_MODULE_PATH
     ${PROJECT_SOURCE_DIR}/cmake )
 
-set ( adflib_VERSION_MAJOR 0 )
-set ( adflib_VERSION_MINOR 7 )
-set ( adflib_VERSION_PATCH 13 )
+# version details - use utils/bump-version to update it
+set ( ADFLIB_VERSION 0.7.13 )
+set ( ADFLIB_DATE 2022-01-25 )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
@@ -17,6 +17,8 @@ set ( adflib_VERSION_PATCH 13 )
 add_compile_options(
   -Wall
   $<$<CONFIG:RELEASE>:-O3>
+  -DADFLIB_VERSION="${ADFLIB_VERSION}"
+  -DADFLIB_DATE="${ADFLIB_DATE}"
 )
 
 if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")

@@ -44,8 +44,7 @@ include_HEADERS = adf_defs.h \
                   hd_blk.h \
                   prefix.h
 
-libadf_la_LDFLAGS = \
-    -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 
 if NATIVE_GENERIC
 libadf_la_SOURCES += generic/adf_nativ.c
@@ -65,5 +64,7 @@ AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
 
 AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
     -Werror-implicit-function-declaration \
+    -DADFLIB_VERSION='"$(ADFLIB_VERSION)"' \
+    -DADFLIB_DATE='"$(ADFLIB_DATE)"' \
     -I$(srcdir) \
     -I$(srcdir)/$(NATIVE_DIR)

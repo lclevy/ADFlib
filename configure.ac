@@ -3,13 +3,12 @@
 
 AC_PREREQ([2.69])
 
-# Version info
-m4_define([adflib_version_major],[0])
-m4_define([adflib_version_minor],[7])
-m4_define([adflib_version_micro],[13])
-m4_define([adflib_version],[adflib_version_major.adflib_version_minor.adflib_version_micro])
+# version details - use utils/bump-version to update it
+m4_define([ADFLIB_VERSION], [0.7.13])
+m4_define([ADFLIB_LT_VERSION], [0:12:0])
+m4_define([ADFLIB_DATE], [2022-01-25])
 
-AC_INIT([adflib],[adflib_version],[lclevy_AT_club-internet.fr])
+AC_INIT([adflib],[ADFLIB_VERSION],[lclevy_AT_club-internet.fr])
 
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADERS([config.h])
@@ -91,7 +90,6 @@ AC_ARG_ENABLE([native_win32],
                 *) AC_MSG_ERROR([bad value ${enableval} for --enable-native-win32]) ;;
                esac],
               [])
-echo "NATIVE_DIR: ${NATIVE_DIR}"
 
 AM_CONDITIONAL([NATIVE_GENERIC], [test x${NATIVE_DIR} = xgeneric])
 AM_CONDITIONAL([NATIVE_LINUX],   [test x${NATIVE_DIR} = xlinux])
@@ -114,24 +112,10 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 
-AC_SUBST(NATIVE_DIR)
-
 # Version
-AC_SUBST(ADFLIB_MAJOR_VERSION, [adflib_version_major])
-AC_SUBST(ADFLIB_MINOR_VERSION, [adflib_version_minor])
-AC_SUBST(ADFLIB_MICRO_VERSION, [adflib_version_micro])
-
-# Libtool version info
-# ( https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html )
-#AC_SUBST(LT_RELEASE, [adflib_version_major.adflib_version_minor])
-#LT_CURRENT=adflib_version_major
-LT_CURRENT=`expr 100 '*' adflib_version_major + adflib_version_minor`
-LT_REVISION=adflib_version_micro
-#LT_AGE=adflib_version_minor
-LT_AGE=0
-AC_SUBST(LT_CURRENT)
-AC_SUBST(LT_REVISION)
-AC_SUBST(LT_AGE)
+AC_SUBST([ADFLIB_VERSION], [ADFLIB_VERSION])
+AC_SUBST([ADFLIB_LT_VERSION], [ADFLIB_LT_VERSION])
+AC_SUBST([ADFLIB_DATE], [ADFLIB_DATE])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile

@@ -1,5 +1,3 @@
-#include "config.h"
-
 #ifndef LITT_ENDIAN
  #if defined(__hppa__) || \
      defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
