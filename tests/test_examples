@@ -7,6 +7,9 @@ PATH=`pwd`/../examples:$PATH
 #echo "PATH: ${PATH}"
 #EXAMPLES_PATH=../examples
 
+TEST_ADF=arccsh.adf
+[ -n "$srcdir" ] && TEST_ADF="$srcdir/arccsh.adf"
+
 set -e
 
 run_cmd()
@@ -25,11 +28,11 @@ run_cmd()
     ${EXEC} $@
 }
 
-CMDS[0]="unadf -r arccsh.adf"
-CMDS[1]="adf_show_metadata arccsh.adf"
-CMDS[2]="adf_show_metadata arccsh.adf CSH"
-CMDS[3]="adf_show_metadata arccsh.adf c/"
-CMDS[4]="adf_show_metadata arccsh.adf l"
+CMDS[0]="unadf -r $TEST_ADF"
+CMDS[1]="adf_show_metadata $TEST_ADF"
+CMDS[2]="adf_show_metadata $TEST_ADF CSH"
+CMDS[3]="adf_show_metadata $TEST_ADF c/"
+CMDS[4]="adf_show_metadata $TEST_ADF l"
 CMDS[5]="adf_floppy_create testflopdd1.adf dd"
 CMDS[6]="adf_floppy_format testflopdd1.adf TestFlopDD1 1"
 CMDS[7]="adf_show_metadata testflopdd1.adf"

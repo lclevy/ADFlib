@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # common settings
-. ./common.sh
+. "`dirname $0`/common.sh"
 
 set -e
 
 #echo "----- dir_test"
-cp -v $FFSDUMP testffs_adf
+cat $FFSDUMP >testffs_adf
 ./dir_test $FFSDUMP
 rm -v testffs_adf
