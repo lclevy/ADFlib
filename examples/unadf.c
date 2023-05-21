@@ -424,7 +424,7 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
     }
     else {
         printf("x - %s\n", out);
-        fd = open(out, O_CREAT | O_WRONLY, perms);
+        fd = open(out, O_CREAT | O_WRONLY | O_TRUNC, perms);
         if (fd < 0) {
             perror(out);
             goto error_handler;
