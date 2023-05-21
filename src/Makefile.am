@@ -34,6 +34,7 @@ include_HEADERS = adf_defs.h \
                   adf_env.h \
                   adf_file.h \
                   adf_file_block.h \
+                  adf_file_util.h \
                   adf_link.h \
                   adf_raw.h \
                   adf_salv.h \

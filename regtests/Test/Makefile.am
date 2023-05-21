@@ -39,9 +39,35 @@ check_PROGRAMS = \
 	undel2 \
 	undel3
 
-#TESTS = $(check_PROGRAMS)
+dist_check_SCRIPTS = \
+	bigdev.sh \
+	bootdisk.sh \
+	cache_crash.sh \
+	common.sh \
+	del_test.sh \
+	dir_test.sh \
+	dir_test2.sh \
+	dir_test_chdir.sh \
+	fl_test.sh \
+	fl_test2.sh \
+	floppy.sh \
+	floppy_overfilling_test.sh \
+	file_test.sh \
+	file_test2.sh \
+	file_test3.sh \
+	file_seek_test.sh \
+	file_seek_test2.sh \
+	file_read_hard_link_test.sh \
+	hardfile.sh \
+	hd_test.sh \
+	hd_test2.sh \
+	hd_test3.sh \
+	rename.sh \
+	undel.sh \
+	undel2.sh \
+	undel3.sh 
+
 TESTS = floppy.sh bigdev.sh
-#EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
 

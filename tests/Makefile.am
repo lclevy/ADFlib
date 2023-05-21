@@ -19,8 +19,10 @@ check_PROGRAMS = \
     test_file_write_chunks \
     test_test_util
 
-TESTS = $(check_PROGRAMS) \
-    test_examples
+dist_check_SCRIPTS = test_examples
+dist_check_DATA = arccsh.adf
+
+TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
 
