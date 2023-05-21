@@ -8,8 +8,9 @@ endif
 if REGTESTS
 SUBDIRS += regtests/Test
 endif
-
+if TESTS
 SUBDIRS += tests
+endif
 
 EXTRA_DIST = regtests/Boot regtests/Dumps regtests/Files
 

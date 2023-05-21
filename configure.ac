@@ -98,19 +98,14 @@ AM_CONDITIONAL([NATIVE_LINUX],   [test x${NATIVE_DIR} = xlinux])
 AM_CONDITIONAL([NATIVE_WIN32],   [test x${NATIVE_DIR} = xwin32])
 
 # Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_MAKE_SET
 AM_PROG_AR
-
-LT_INIT()
-
+LT_INIT
 
 # Checks for libraries.
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6], [tests=yes], [tests=no])
+AM_CONDITIONAL([TESTS], [test x${tests} = xyes])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_INT32_T
