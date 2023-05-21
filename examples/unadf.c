@@ -58,7 +58,8 @@ typedef uint32_t mode_t;
 
 /* command-line arguments */
 BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
-     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE;
+     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE,
+     win32_mangle = FALSE;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
 struct AdfList *file_list = NULL;
@@ -185,6 +186,7 @@ void parse_args(int argc, char *argv[]) {
             case 'c': use_dircache  = TRUE; break;
             case 's': show_sectors  = TRUE; break;
             case 'm': show_comments = TRUE; break;
+            case 'w': win32_mangle  = TRUE; break;
             case 'p':
                 pipe_mode = TRUE;
                 fprintf(stderr, list_mode
@@ -226,13 +228,14 @@ void parse_args(int argc, char *argv[]) {
 
 void help() {
     fprintf(stderr,
-        "unadf [-lrcsmp] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
+        "unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
         "    -l : lists root directory contents\n"
         "    -r : lists directory tree contents\n"
         "    -c : use dircache data (must be used with -l)\n"
         "    -s : display entries logical block pointer (must be used with -l)\n"
         "    -m : display file comments, if exists (must be used with -l)\n"
-        "    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)\n\n"
+        "    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)\n"
+        "    -w : mangle filenames to be compatible with Windows filesystems\n\n"
         "    -v n : mount volume #n instead of default #0 volume\n\n"
         "    -d dir : extract to 'dir' directory\n");
 }
@@ -477,6 +480,11 @@ char *output_name(char *path, char *name) {
     }
     strcpy(o, name);
 
+    /* alter filenames that are a problem for Windows */
+    if (win32_mangle) {
+        fix_win32_filename(o);
+    }
+
     /* search for "../" and change to "xx" to stop directory traversal */
     for (o = &out[dirlen]; *o; o++) {
         if (o[0] == '.' && o[1] == '.' && (o[2] == '/' || o[2] == '\\')) {
@@ -484,15 +492,6 @@ char *output_name(char *path, char *name) {
             o += 2;
         }
     }
-
-    replace_not_allowed_chars ( out );
-#ifdef WIN32
-    /* TODO: remove characters : * " ? < > | from names (not allowed in Win32)
-     * and remove any trailing dot or space (breaks Windows File Explorer)
-     * Edit: most done above with replace_not_allowed_chars()
-     *       so only trailing dots or spaces are left to do
-     */
-#endif
 
     if (!pipe_mode) {
         /* create directories leading up to name, if needed */
@@ -580,17 +579,57 @@ mode_t permissions(struct AdfEntry *e) {
         ((e->access >> 5) & 0070); /* rwx for group */
 }
 
-/* replace all special characters (forbidden on most systems) with an underscore ('_') */
-int replace_not_allowed_chars ( char * const path )
-{
-    const char not_allowed_chars[] = ":*\"?<>|\0";
-    int replace_count = 0;
-    for ( const char *c = not_allowed_chars ; *c ; ++c ) {
-        char *pathc = path;
-        while ( ( pathc = strchr ( pathc, *c ) ) ) {
-            *pathc = '_';
-            replace_count++;
+/* alter filenames that would cause problems on Windows:
+ * https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+ * 1. replace characters : * " ? < > | / \ and chars 1-31 with underscore
+ * 2. replace any trailng dot or space with underscore (breaks Windows File Explorer)
+ * 3. if filename is CON PRN AUX NUL COM[1-9] LPT[1-9], regardless of case or
+ *    extension, insert an underscore (vestiges of CP/M retained by Windows)
+ *
+ * In this last case, the name will be _extended_ by 1 character!
+ */
+void fix_win32_filename(char *name) {
+    /* work forwards through name, replacing forbidden characters */
+    char *o;
+    for (o = name; *o; o++) {
+        if (*o < 32   || *o == ':' || *o == '*' || *o == '"' || *o == '?' ||
+            *o == '<' || *o == '>' || *o == '|' || *o == '/' || *o == '\\')
+        {
+            *o = '_';
         }
     }
-    return replace_count;
+    /* work backwards through name, replacing forbidden trailing chars */
+    for (o--; o >= name && (*o == '.' || *o == ' '); o--) {
+       *o = '_';
+    }
+
+    /* temporarily remove file extension */
+    char *ext = strchr(name, '.');
+    if (ext) {
+        *ext = 0;
+    }
+
+    /* is the name (excluding extension) a reserved name in Windows? */
+    const char *reserved_names[] = {
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+    };
+    for (int i = 0; i < sizeof(reserved_names)/sizeof(char **); i++) {
+       if (strcasecmp(reserved_names[i], name) == 0) {
+           if (ext) {
+               /* restore extension and insert underscore, PRN.txt -> PRN_.txt */
+               *ext = '.';
+               memmove(&ext[1], ext, strlen(ext) + 1);
+               *ext = '_';
+           }
+           else {
+               /* no extension: append underscore, e.g. CON -> CON_ */
+               o = &name[strlen(name)];
+               *o++ = '_';
+               *o++ = 0;
+           }
+           break;
+       }
+    }
 }
