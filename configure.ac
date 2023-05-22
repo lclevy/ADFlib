@@ -13,7 +13,7 @@ AC_INIT([adflib],[ADFLIB_VERSION],[lclevy_AT_club-internet.fr])
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AM_SILENT_RULES([yes])
 
 AC_ARG_ENABLE([examples],
