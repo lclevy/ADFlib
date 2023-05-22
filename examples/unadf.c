@@ -458,8 +458,9 @@ char *join_path(char *path, char *file) {
 
 /* creates a suitable output filename from the amiga filename */
 char *output_name(char *path, char *name) {
+    /* maybe (extract_dir + "/") + path + "/" + name + maybe "_" + "\0" */
     size_t dirlen = ( extract_dir ? strlen(extract_dir) + 1 : 0 );
-    char *out = malloc(dirlen + strlen(path) + strlen(name) + 2), *s, *o;
+    char *out = malloc(dirlen + strlen(path) + strlen(name) + 3), *s, *o;
     if (!out) {
         perror(adf_file);
         exit(1);
