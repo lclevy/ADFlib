@@ -2,8 +2,7 @@ dist_doc_DATA = \
 	$(top_srcdir)/README.md \
 	$(top_srcdir)/AUTHORS \
 	$(top_srcdir)/COPYING \
-	$(top_srcdir)/ChangeLog \
-	$(top_srcdir)/NEWS
+	$(top_srcdir)/ChangeLog
 
 nobase_dist_doc_DATA = \
 	FAQ/image/adf_dir.gif \
