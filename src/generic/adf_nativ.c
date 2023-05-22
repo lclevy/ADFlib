@@ -38,24 +38,8 @@ RETCODE myInitDevice ( struct AdfDevice * const dev,
                        const char * const       name,
                        const BOOL               ro )
 {
-    (void) name;
-    struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
-        malloc ( sizeof ( struct AdfNativeDevice ) );
-    if (!nDev) {
-        (*adfEnv.eFct)("myInitDevice : malloc");
-        return RC_ERROR;
-    }
-    dev->nativeDev = nDev;
-    if (!ro)
-        /* check if device is writable, if not, force readOnly to TRUE */
-        dev->readOnly = FALSE;
-    else
-        /* mount device as read only */
-        dev->readOnly = TRUE;
-
-    dev->size = 0;
-
-    return RC_OK;
+    (void) dev, (void) name, (void) ro;
+    return RC_ERROR;
 }
 
 
@@ -69,7 +53,7 @@ RETCODE myReadSector ( struct AdfDevice * const dev,
                        uint8_t * const          buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_OK;
+    return RC_ERROR;
 }
 
 
@@ -83,7 +67,7 @@ RETCODE myWriteSector ( struct AdfDevice * const dev,
                         const uint8_t * const    buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_OK;
+    return RC_ERROR;
 }
 
 
@@ -94,15 +78,19 @@ RETCODE myWriteSector ( struct AdfDevice * const dev,
  */
 RETCODE myReleaseDevice ( struct AdfDevice * const dev )
 {
-    struct AdfNativeDevice * nDev;
-
-    nDev = (struct AdfNativeDevice *) dev->nativeDev;
-
-	free(nDev);
-
-    return RC_OK;
+    (void) dev;
+    return RC_ERROR;
 }
 
+
+/*
+ * myIsDevNative
+ *
+ */
+BOOL myIsDevNative ( const char * const devName )
+{
+    return FALSE;
+}
 
 /*
  * adfInitNativeFct
@@ -120,13 +108,4 @@ void adfInitNativeFct()
     nFct->adfIsDevNative = myIsDevNative;
 }
 
-
-/*
- * myIsDevNative
- *
- */
-BOOL myIsDevNative ( const char * const devName )
-{
-    return (strncmp(devName,"/dev/",5)==0);
-}
 /*##########################################################################*/

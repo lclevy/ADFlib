@@ -41,6 +41,7 @@ adfinc_HEADERS  = adf_defs.h \
                   adf_file_block.h \
                   adf_file_util.h \
                   adf_link.h \
+                  adf_nativ.h \
                   adf_raw.h \
                   adf_salv.h \
                   adf_util.h \
@@ -53,16 +54,11 @@ libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 
 if NATIVE_GENERIC
 libadf_la_SOURCES += generic/adf_nativ.c
-adfinc_HEADERS += generic/adf_nativ.h
-AM_CFLAGS += -I$(srcdir)/generic
 endif
 if NATIVE_LINUX
 libadf_la_SOURCES += linux/adf_nativ.c
-adfinc_HEADERS += linux/adf_nativ.h
-AM_CFLAGS += -I$(srcdir)/linux
 endif
 if NATIVE_WIN32
 libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c
-adfinc_HEADERS += win32/adf_nativ.h win32/nt4_dev.h win32/defendian.h
 AM_CFLAGS += -I$(srcdir)/win32
 endif
