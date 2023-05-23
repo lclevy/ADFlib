@@ -204,7 +204,10 @@ START_TEST ( test_file_append_ffs )
 Suite * adflib_suite ( void )
 {
     Suite * s = suite_create ( "adflib" );
+
     
+    /* *** tests disabled - append more removed (at least for now) ***
+
     TCase * tc = tcase_create ( "check framework" );
     tcase_add_test ( tc, test_check_framework );
     suite_add_tcase ( s, tc );
@@ -217,6 +220,7 @@ Suite * adflib_suite ( void )
     tc = tcase_create ( "adflib test_file_append_ffs" );
     tcase_add_test ( tc, test_file_append_ffs );
     suite_add_tcase ( s, tc );
+    */
 
     return s;
 }
