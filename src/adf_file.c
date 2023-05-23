@@ -703,13 +703,12 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
 
     BOOL mode_read   = ( strcmp ( "r", mode ) == 0 );
     BOOL mode_write  = ( strcmp ( "w", mode ) == 0 );
-    BOOL mode_append = ( strcmp ( "a", mode ) == 0 );
-    if ( ! ( mode_read || mode_write || mode_append ) ) {
+    if ( ! ( mode_read || mode_write ) ) {
         adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%s'", mode );
         return NULL;
     }
 
-    BOOL write = ( mode_write || mode_append );
+    BOOL write = ( mode_write );
     if ( write && vol->dev->readOnly ) {
         (*adfEnv.wFct)("adfFileOpen : device is mounted 'read only'");
         return NULL;
@@ -722,7 +721,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     BOOL fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
-    if ( ( mode_read || mode_append ) && ( ! fileAlreadyExists ) ) {
+    if ( ( mode_read ) && ( ! fileAlreadyExists ) ) {
         adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
         return NULL;
@@ -803,10 +802,10 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
             goto adfOpenFile_error;
         }
     }
-    else {     // mode_write || mode_append
+    else {     // mode_write
         if ( fileAlreadyExists ) {
             memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
-            unsigned seekpos = ( mode_append ? file->fileHdr->byteSize : 0 );
+            unsigned seekpos = 0; //( mode_append ? file->fileHdr->byteSize : 0 );
             if ( adfFileSeek ( file, seekpos ) != RC_OK ) {
                 adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
                                seekpos, file->fileHdr->fileName );

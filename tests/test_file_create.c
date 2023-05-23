@@ -76,7 +76,7 @@ void test_file_create ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+/*    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -84,7 +84,7 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert ( adfEndOfFile ( file ) != 0 );
     adfFileClose ( file );
-
+*/
     // the same when open for writing
     file = adfFileOpen ( vol, filename, "w" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
@@ -99,7 +99,7 @@ void test_file_create ( test_data_t * const tdata )
     adfUnMount ( tdata->vol );
 }
 
-
+/*
 void test_file_create_with_append ( test_data_t * const tdata )
 {
     struct AdfDevice * const device = tdata->device;
@@ -136,7 +136,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
     // umount volume
     adfUnMount ( tdata->vol );
 }
-
+*/
 
 
 START_TEST ( test_file_create_empty_ofs_write )
@@ -167,7 +167,7 @@ START_TEST ( test_file_create_empty_ffs_write )
     teardown ( &test_data );
 }
 
-
+/*
 START_TEST ( test_file_create_empty_ofs_append )
 {
     test_data_t test_data = {
@@ -195,7 +195,7 @@ START_TEST ( test_file_create_empty_ffs_append)
     test_file_create_with_append ( &test_data );
     teardown ( &test_data );
 }
-
+*/
 
 Suite * adflib_suite ( void )
 {
@@ -213,7 +213,7 @@ Suite * adflib_suite ( void )
     tc = tcase_create ( "adflib test_file_create_empty_ffs_write" );
     tcase_add_test ( tc, test_file_create_empty_ffs_write );
     suite_add_tcase ( s, tc );
-
+/*
     tc = tcase_create ( "adflib test_file_create_empty_ofs_append" );
     tcase_add_test ( tc, test_file_create_empty_ofs_append );
     suite_add_tcase ( s, tc );
@@ -221,7 +221,7 @@ Suite * adflib_suite ( void )
     tc = tcase_create ( "adflib test_file_create_empty_ffs_append" );
     tcase_add_test ( tc, test_file_create_empty_ffs_append );
     suite_add_tcase ( s, tc );
-
+*/
     return s;
 }
 

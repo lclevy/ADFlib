@@ -92,7 +92,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+/*    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -100,7 +100,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
     adfFileClose ( file );
-
+*/
     // the same when open for writing
     file = adfFileOpen ( vol, filename, "w" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
