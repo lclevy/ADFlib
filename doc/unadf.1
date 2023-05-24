@@ -1,16 +1,29 @@
-.TH UNADF 1 "January 7, 2007"
+.TH UNADF 1 "May 24, 2023"
 .SH NAME
 unadf \- extract files from an Amiga Disk File dump
 .SH SYNOPSIS
 .B unadf
-.RI [ options ] " the.adf [files] [-d extractdir]"
+.RB [ -l ]
+.RB [ -r ]
+.RB [ -c ]
+.RB [ -s ]
+.RB [ -m ]
+.RB [ -p ]
+.RB [ -w ]
+.RB [ -v \fIvol\fP ]
+.RB [ -d \fIdir\fP ]
+.I filename.adf
+.RB [ \fIfiles...\fP ]
+
 .br
 .SH DESCRIPTION
-This manual page documents briefly the
-.B unadf
-command.
-.PP
 \fBunadf\fP is a program that extracts files from an Amiga Disk File dump.
+.PP
+\fBunadf\fP supports dumping the native filesystems of both Amiga floppy disks
+and Amiga hard disks.
+.PP
+By default, \fBunadf\fP extracts all files it finds. To extract only specific
+files, list them with their full path after the dump filename.
 .SH OPTIONS
 A summary of options is included below.
 .TP
@@ -26,11 +39,17 @@ Use dircache data (must be used with \-l).
 .B \-s
 Display entries logical block pointer (must be used with \-l).
 .TP
-.B \-v n
-Mount volume #n instead of default #0 volume.
-.TP
 .B \-p
-Send extracted files to pipe (unadf \-p dump.adf Pics/pic1.gif | xv \-).
+Pipe extracted files to stdout (unadf \-p dump.adf Pics/pic1.gif | xv \-).
+.TP
+.B \-w
+Mangle extracted filenames so they meet Windows file naming requirements.
+Forbidden characters and trailing dots or spaces will be replaced with an
+underscore, and an underscore will be inserted if a filename would otherwise
+be invalid (e.g. "CON.txt" becomes "CON_.txt", "prn" becomes "prn_")
+.TP
+.B \-v \fIvol\fP
+Mount volume #vol instead of default #0 volume.
 .TP
 .B \-d dir
 Extract to 'dir' directory.
