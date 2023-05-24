@@ -1,0 +1,47 @@
+.TH UNADF 1 "January 7, 2007"
+.SH NAME
+unadf \- extract files from an Amiga Disk File dump
+.SH SYNOPSIS
+.B unadf
+.RI [ options ] " the.adf [files] [-d extractdir]"
+.br
+.SH DESCRIPTION
+This manual page documents briefly the
+.B unadf
+command.
+.PP
+\fBunadf\fP is a program that extracts files from an Amiga Disk File dump.
+.SH OPTIONS
+A summary of options is included below.
+.TP
+.B \-l
+Lists root directory contents.
+.TP
+.B \-r
+Lists directory tree contents.
+.TP
+.B \-c
+Use dircache data (must be used with \-l).
+.TP
+.B \-s
+Display entries logical block pointer (must be used with \-l).
+.TP
+.B \-v n
+Mount volume #n instead of default #0 volume.
+.TP
+.B \-p
+Send extracted files to pipe (unadf \-p dump.adf Pics/pic1.gif | xv \-).
+.TP
+.B \-d dir
+Extract to 'dir' directory.
+.TP
+.B \-h
+Show summary of options.
+.SH SEE ALSO
+.BR xdms (1).
+.br
+.SH AUTHOR
+unadf was written by Laurent Clevy.
+.PP
+This manual page was written by G\[:u]rkan Seng\[:u]n <gurkan@linuks.mine.nu>,
+for the Debian project (but may be used by others).
