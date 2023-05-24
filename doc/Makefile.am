@@ -21,4 +21,4 @@ nobase_dist_doc_DATA = \
 	API.txt \
 	version0.7.9d_gary.txt
 
-man_MANS = unadf.1
+dist_man_MANS = unadf.1
