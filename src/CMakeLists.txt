@@ -34,7 +34,6 @@ add_library ( adf
   adf_util.c
   adf_vol.c
   generic/adf_nativ.c
-  generic/adf_nativ.h
 #  linux/adf_nativ.c
 #  linux/adf_nativ.h
 #  win32/adf_nativ.c
