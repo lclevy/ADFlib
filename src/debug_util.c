@@ -1,11 +1,16 @@
 
+/* CygWin does not have execinfo.h... */
+#ifndef __CYGWIN__
 #include <execinfo.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "debug_util.h"
 
 
+#ifndef __CYGWIN__
 /*
   Require link option: -rdynamic
 
@@ -32,4 +37,10 @@ void adfPrintBacktrace ( void )
         printf ( "%s\n", strings[i] );
 
     free ( strings );
+
 }
+#else
+/* no backtrace under CygWin */
+void adfPrintBacktrace ( void )
+{}
+#endif
