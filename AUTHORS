@@ -1,15 +1,35 @@
 
-The main developper is 
+The main developper is
  Laurent Clévy
 
-Contributors are:
- Bjarne Viksoe 
-   (C++ wrapper, lot of bug fixes)
- Gary Harris 
-   (bug fixes and W32 support)
- Dan Sutherland 
-   (bug fixes and W32 support)
- Tomasz Wolak
-   (improvements, bug fixes, additional unit and reg. tests)
 
-See CHANGES.txt for detailed contributions.
+Current maintainer (Feb 2023-):
+ Tomasz Wolak
+
+
+Contributors are:
+
+ Bjarne Viksoe
+   - C++ wrapper, lot of bug fixes
+
+ Gary Harris
+   - bug fixes and W32 support
+
+ Dan Sutherland
+   - bug fixes and W32 support
+
+ Stuart Caie
+   - utilities: unadf
+   - autotools conf.
+   - improvements and bug fixes
+
+ Tomasz Wolak (github.com/t-w)
+   - file write support
+   - linux native device
+   - utilities: adf_floppy_create/format, adf_show_metadata
+   - improvements and bug fixes
+   - unit tests (ie. for file read/write support)
+   - CMake conf. with support for Linux, Windows (Visual Studio and CygWin) and MacOs
+
+
+(See git log for detailed contributions).
