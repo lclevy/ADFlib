@@ -11,13 +11,13 @@ It supports :
 - multiple partitions harddisk dumps
 - UAE hardfiles
 - WinNT and Linux devices with the 'native driver'
-- mount/unmount/create a device (real one or a dump file),
-- mount/unmount/create a volume (partition),
-- create/open/close/delete/rename/undel a file,
-- read/write bytes from/to a file,
-- create/delete/rename/move/undel a directory,
+- mount / unmount / create a device (real one or a dump file)
+- mount / unmount / create a volume (partition)
+- create / open / close / delete / rename / undel a file
+- read / write bytes from / to a file
+- create / delete / rename / move / undel a directory
 - get directory contents, change current directory, get parent directory
-- use dir cache to get directory contents.
+- use dir cache to get directory contents
 - hard- and softlinks for accessing files and directories
 
 It is written in portable C, and support the WinNT platform to access real drives.
