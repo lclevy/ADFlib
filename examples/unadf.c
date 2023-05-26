@@ -79,7 +79,7 @@ char *join_path(char *path, char *name);
 void set_file_date(char *out, struct AdfEntry *e);
 void mkdir_if_needed(char *path, mode_t perms);
 mode_t permissions(struct AdfEntry *e);
-int replace_not_allowed_chars ( char * const path );
+void fix_win32_filename(char *name);
 
 int main(int argc, char *argv[]) {
     struct AdfDevice *dev = NULL;
@@ -616,7 +616,7 @@ void fix_win32_filename(char *name) {
         "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
         "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
     };
-    for (int i = 0; i < sizeof(reserved_names)/sizeof(char **); i++) {
+    for (unsigned int i = 0; i < sizeof(reserved_names)/sizeof(char **); i++) {
        if (strcasecmp(reserved_names[i], name) == 0) {
            if (ext) {
                /* restore extension and insert underscore, PRN.txt -> PRN_.txt */
