@@ -42,6 +42,7 @@ typedef uint32_t mode_t;
 
 #if defined _MSC_VER
 #include <direct.h>     // for _mkdir()
+#define strcasecmp _stricmp
 #endif
 
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
