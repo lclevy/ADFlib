@@ -10,8 +10,7 @@ It supports :
 - floppy dumps
 - multiple partitions harddisk dumps
 - UAE hardfiles
-- WinNT devices with the 'native driver' written by Dan Sutherland
-- Linux devices with the 'native driver' written by Tomasz Wolak
+- WinNT and Linux devices with the 'native driver'
 - mount/unmount/create a device (real one or a dump file),
 - mount/unmount/create a volume (partition),
 - create/open/close/delete/rename/undel a file,
