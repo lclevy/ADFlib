@@ -19,21 +19,21 @@ It supports :
 - create/delete/rename/move/undel a directory,
 - get directory contents, change current directory, get parent directory
 - use dir cache to get directory contents.
-
+- hard- and softlinks for accessing files and directories
 
 It is written in portable C, and support the WinNT platform to access real drives.
 
 
 ## Command-line utilities
 
-Examples directory contains some (example but already useful) command-line utilities.
+The `examples/` directory contains few useful command-line utilities.
 
-For usage info is shown when they are executed without any parameters.
+Usage info is shown when they are executed without any parameters (see also man pages).
 
 
 ### unADF
 
-unADF is a unzip like for .ADF files :
+unADF is a unzip like utility for .ADF files:
 
 ```
 unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
@@ -51,12 +51,15 @@ unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
 
 ### adf_floppy_create
 
-Creates an image of a floppy disk (empty, not formatted).
-
+Creates an image of a floppy disk (empty, not formatted). It can create
+standard DD (double density) 880K floppy image, HD (high density) 1760K, or
+special formats extended number of tracks (like DD with 81-83 tracks).
 
 ### adf_floppy_format
 
-Formats/creates selected Amiga filesystem on a floppy disk image.
+Formats the specified floppy disk image file (an ADF, ie. one created with
+`adf_floppy_create`), creating on it the Amiga filesystem of the specified
+type (in particular: OFS/"Old File System" or FFS/"Fast File System").
 
 
 ### adf_show_metadata
@@ -70,7 +73,7 @@ of Amiga filesystems (for anyone curious...).
 ## Credits:
 
 - main design and code : Laurent Clevy
-- current maint. and recent fixes (2022): Tomasz Wolak
+- current maintainer, recent core developments (Dec 2022-): Tomasz Wolak
 - Bug fixes and C++ wrapper : Bjarke Viksoe (adfwrapper.h)
 - WinNT native driver : Dan Sutherland and Gary Harris
 
@@ -91,23 +94,24 @@ See INSTALL file.
 
 ## Files
 
-- AUTHORS : Contributors
-- readme.md : The file you are reading
-- TODO : Future improvements and bugfixes
-- CHANGES : Detailed changes
-- src/ :	main library files
-- src/win32/ : WinNT native driver
-- src/linux/ : Linux native driver (experimental!)
-- src/generic/ : native files templates
-- boot/ :	Bootblocks that might by used to put on floppy disks
-- doc/ :	The library developpers documentation 
-- doc/FAQ/ : The Amiga Filesystem explained
-- examples/ :	unadf.c
+- `AUTHORS` : Contributors
+- `README.md` : The file you are reading
+- `ChangeLog` : updates in subsequent versions
+- `src/` :	main library files
+- `src/win32/` : WinNT native driver
+- `src/linux/` : Linux native driver (experimental!)
+- `src/generic/` : native files templates ("dummy" device)
+- `boot/` :	Bootblocks that might by used to put on floppy disks
+- `doc/` :	The library developer's documentation
+- `doc/FAQ/` : The Amiga Filesystem explained
+- `examples/` :	utilities: unadf, adf_floppy_create/format, adf_show_metadata
 
 
 ## Features needing testing
 
 ### Native driver
+
+(this is an outdated info - to update)
 
 The NATIV_DIR variable is used to choose the (only one) target platform
 of the native driver. The default is :
@@ -131,26 +135,22 @@ prototypes in the 'adflib.h' library include file.
 Most of the code has certain age. While there where some improvements done,
 there is still a long way to go. What you should be aware of:
 - it is mostly tested with ADF disk (ie. floppy) images, not native devices
-- native device support means accessing physical devices(!), please know what you are doing
-  (eg. do not open your C:\ on windows or /dev/sda on Linux and call a function for creating
-  Amiga filesystem on it... unless you really want to reinstall your system and restore your
-  data from a backup...)
-- also, since native devices are not much tested - consider them as testing/experimental
-  and treat as such (ie. use in a safe environment like a VM) and if you do not need them,
-  do not use or even compile them with your lib (use only "generic")
-- read support is rather well tested
-- write support is found to be very buggy(!)
-  - works only if you create a new file, write it and close it
-  - any reopening and appending or overwriting the data in a file with fail (and may currupt
-    your disk/image, so be aware)
-
+- native device support means accessing physical devices(!), please know what
+  you are doing (eg. do not open your `C:\` on windows or `/dev/sda` on Linux
+  and call a function for creating an Amiga filesystem on it... unless you
+  really want to reinstall your system and restore your data from a backup...)
+- also, since native devices are not much tested - consider them as
+  testing/experimental and treat as such (ie. use in a safe environment like
+  a VM) and if you do not need them, do not use or even compile them with your
+  lib (use only "generic")
+- the (fixed) file read support and the (new) file write support are rather
+  well tested, but still, writing is a new feature so do not experiment on
+  a unique copy of an ADF image with your precious data, please do it on a copy
+  and report if any issues are encountered
 
 ## Possible bugs
 
-- write support
 - in dircache updates
-- lost memory releases
-
 
 Please report any bugs or mistakes in the documentation !
 
