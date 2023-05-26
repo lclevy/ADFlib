@@ -10,13 +10,18 @@ Current maintainer (Feb 2023-):
 Contributors are:
 
  Bjarne Viksoe
-   - C++ wrapper, lot of bug fixes
+   - C++ wrapper (adfwrapper.h)
+   - lot of bug fixes
 
  Gary Harris
-   - bug fixes and W32 support
+   - W32 support
+   - WinNT native driver
+   - bug fixes
 
  Dan Sutherland
-   - bug fixes and W32 support
+   - W32 support
+   - WinNT native driver
+   - bug fixes
 
  Stuart Caie
    - utilities: unadf
@@ -24,7 +29,8 @@ Contributors are:
    - improvements and bug fixes
 
  Tomasz Wolak (github.com/t-w)
-   - file write support
+   - file write support (and improvements in read support)
+   - hard- and softlinks support
    - linux native device
    - utilities: adf_floppy_create/format, adf_show_metadata
    - improvements and bug fixes
