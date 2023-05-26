@@ -1,0 +1,34 @@
+.TH ADF_FLOPPY_FORMAT 1 "May 2023"
+.SH NAME
+adf_floppy_format \- create an Amiga filesystem on an empty image of a floppy disk.
+.SH SYNOPSIS
+.B adf_floppy_format
+[\fBoptions\fR] <\fIimage_adf\fR> <\fIlabel\fR> <\fIfstype\fR>
+.SH DESCRIPTION
+\fBadf_floppy_format\fR is a simple utility allowing to create an Amiga
+filesystem on an empty file image of an Amiga floppy disk (an .ADF file).
+.PP
+The type of the filesystem image can be chosen by specifying
+the \fBfstype\fR parameter, which  can be 0-7 (flags = 3 least significant bits):
+
+         bit  set         clr
+         0    FFS         OFS
+         1    INTL ONLY   NO_INTL ONLY
+         2    DIRC&INTL   NO_DIRC&INTL
+.PP
+(For details about the filesystem types, check the documentation, link in the NOTES below).
+.
+.SH EXAMPLES
+\fBadf_floppy_format myamigadisk1.adf mydisk1 3\fR
+    - creates an image:
+      - in the file:          myamigadisk1.adf
+      - with the label:       mydisk1
+      - with the filesystem:  FFS+INTL_ONLY
+.SH SEE ALSO
+.BR adf_floppy_create (1), adf_show_metadata (1), unadf (1)
+.SH NOTES
+Detailed info about Commodore Amiga filesystems: http://lclevy.free.fr/adflib/adf_info.html
+.SH AUTHOR
+\fBadf_floppy_format\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
+as part of the ADFlib (https://github.com/lclevy/ADFlib).
+.PP

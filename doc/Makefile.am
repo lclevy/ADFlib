@@ -21,4 +21,8 @@ nobase_dist_doc_DATA = \
 	API.txt \
 	version0.7.9d_gary.txt
 
-dist_man_MANS = unadf.1
+dist_man_MANS = \
+	adf_floppy_create.1 \
+	adf_floppy_format.1 \
+	adf_show_metadata.1 \
+	unadf.1
