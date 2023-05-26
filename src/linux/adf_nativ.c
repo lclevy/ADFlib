@@ -93,7 +93,7 @@ static RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
         lseek ( nDev->fd, 0, SEEK_SET );
     }
 
-    dev->size = (int) size;
+    dev->size = (uint32_t) size;
     
     // https://docs.kernel.org/userspace-api/ioctl/hdio.html
     struct hd_geometry geom;
