@@ -4,11 +4,11 @@
 AC_PREREQ([2.69])
 
 # version details - use utils/bump-version to update it
-m4_define([ADFLIB_VERSION], [0.7.13])
-m4_define([ADFLIB_LT_VERSION], [0:12:0])
-m4_define([ADFLIB_DATE], [2022-01-25])
+m4_define([adflib_version], [0.7.13])
+m4_define([adflib_lt_version], [0:12:0])
+m4_define([adflib_date], [2022-01-25])
 
-AC_INIT([adflib],[ADFLIB_VERSION],[lclevy_AT_club-internet.fr])
+AC_INIT([adflib],[adflib_version],[lclevy_AT_club-internet.fr])
 
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADERS([config.h])
@@ -113,9 +113,9 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 
 # Version
-AC_SUBST([ADFLIB_VERSION], [ADFLIB_VERSION])
-AC_SUBST([ADFLIB_LT_VERSION], [ADFLIB_LT_VERSION])
-AC_SUBST([ADFLIB_DATE], [ADFLIB_DATE])
+AC_SUBST([ADFLIB_VERSION], [adflib_version])
+AC_SUBST([ADFLIB_LT_VERSION], [adflib_lt_version])
+AC_SUBST([ADFLIB_DATE], [adflib_date])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
