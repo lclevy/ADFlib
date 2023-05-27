@@ -138,6 +138,7 @@ unsigned validate_file_metadata ( struct AdfVolume * const vol,
                                   const char * const       filename,
                                   const unsigned           errors_max )
 {
+    (void) errors_max;
     struct AdfFile * const file = adfFileOpen ( vol, filename, "r" );
     if ( ! file )
         return 1;
