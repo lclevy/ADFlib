@@ -498,7 +498,7 @@ char *output_name(char *path, char *name) {
     if (!pipe_mode) {
         /* create directories leading up to name, if needed */
         for (o = out; *o; o++) {
-            if (*o == DIRSEP) {
+            if (o > out && *o == DIRSEP) {
                 *o = 0;
                 mkdir_if_needed(out, 0777);
                 *o = DIRSEP;
@@ -631,7 +631,12 @@ void fix_win32_filename(char *name) {
                *o++ = '_';
                *o++ = 0;
            }
-           break;
+           return;
        }
+    }
+
+    /* not a reserved name, restore file extension */
+    if (ext) {
+        *ext = '.';
     }
 }
