@@ -28,6 +28,14 @@ add_executable ( adf_show_metadata
 
 TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
 
+file (
+  COPY ${PROJECT_SOURCE_DIR}/examples/tests
+  DESTINATION ${PROJECT_BINARY_DIR}/examples/
+)
+add_test ( tests/adf-floppy-test.sh ${BASH_PROGRAM} tests/adf-floppy-test.sh )
+add_test ( tests/adf-show-metadata-test.sh ${BASH_PROGRAM} tests/adf-show-metadata-test.sh )
+add_test ( tests/unadf-test.sh ${BASH_PROGRAM} tests/unadf-test.sh )
+
 install ( TARGETS
   unadf
   adf_floppy_create
