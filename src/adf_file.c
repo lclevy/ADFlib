@@ -488,7 +488,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
  *
  */
 
-static RETCODE adfFileSeekStart ( struct AdfFile * const file )
+static RETCODE adfFileSeekStart_ ( struct AdfFile * const file )
 {
     file->pos = 0;
     file->posInExtBlk = 0;
@@ -507,10 +507,10 @@ static RETCODE adfFileSeekStart ( struct AdfFile * const file )
     return rc;
 }
 
-static RETCODE adfFileSeekEOF ( struct AdfFile * const file )
+static RETCODE adfFileSeekEOF_ ( struct AdfFile * const file )
 {
     if ( file->fileHdr->byteSize == 0 )
-        return adfFileSeekStart ( file );
+        return adfFileSeekStart_ ( file );
 
     /* an ugly hack (but required for state consistency...):
        enforce updating current data and ext. blocks
@@ -530,10 +530,10 @@ static RETCODE adfFileSeekEOF ( struct AdfFile * const file )
 }
 
 
-static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
+static RETCODE adfFileSeekOFS_ ( struct AdfFile * const file,
                                 uint32_t               pos )
 {
-    adfFileSeekStart ( file );
+    adfFileSeekStart_ ( file );
 
     unsigned blockSize = file->volume->datablockSize;
 
@@ -541,7 +541,7 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
 
     // EOF?
     if ( file->pos == file->fileHdr->byteSize ) {
-        return adfFileSeekEOF ( file );
+        return adfFileSeekEOF_ ( file );
     }
 
     uint32_t offset = 0;
@@ -564,13 +564,13 @@ static RETCODE adfFileSeekOFS ( struct AdfFile * const file,
 }
 
 
-static RETCODE adfFileSeekExt ( struct AdfFile * const file,
+static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
                                 uint32_t               pos )
 {
     file->pos = min ( pos, file->fileHdr->byteSize );
 
     if ( file->pos == file->fileHdr->byteSize ) {
-        return adfFileSeekEOF ( file );
+        return adfFileSeekEOF_ ( file );
     }
 
     SECTNUM extBlock = adfPos2DataBlock ( file->pos,
@@ -656,23 +656,23 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
     }
 
     if ( pos == 0 )
-        return adfFileSeekStart ( file );
+        return adfFileSeekStart_ ( file );
 
 #ifdef TEST_OFS_SEEK
     // optional code for testing only
     // (ie. to test OFS seek, which is less optimal and not used by default)
     if ( isOFS ( file->volume->dosType ) )
-        return adfFileSeekOFS ( file, pos );
+        return adfFileSeekOFS_ ( file, pos );
     else
-        return adfFileSeekExt ( file, pos );
+        return adfFileSeekExt_ ( file, pos );
 #endif
 
-    RETCODE status = adfFileSeekExt ( file, pos );
+    RETCODE status = adfFileSeekExt_ ( file, pos );
     if ( status != RC_OK && isOFS ( file->volume->dosType ) ) {
         adfEnv.wFctf ( "adfFileSeek: seeking using ext blocks failed, fallback"
                        " to the OFS alt. way (traversing data blocks), "
                        "file '%s'", file->fileHdr->fileName );
-        status = adfFileSeekOFS ( file, pos );
+        status = adfFileSeekOFS_ ( file, pos );
     }
     return status;
 }

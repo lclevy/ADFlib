@@ -84,6 +84,16 @@ PREFIX uint32_t adfFileRead ( struct AdfFile * const file,
 PREFIX RETCODE adfFileSeek ( struct AdfFile * const file,
                              const uint32_t         pos );		/* BV */
 
+static inline RETCODE adfFileSeekStart ( struct AdfFile * const file ) {
+    return adfFileSeek ( file, 0 );
+}
+
+
+static inline RETCODE adfFileSeekEOF ( struct AdfFile * const file ) {
+    return adfFileSeek ( file, adfFileGetSize ( file ) );
+}
+
+
 RETCODE adfFileReadNextBlock ( struct AdfFile * const file );
 
 PREFIX uint32_t adfFileWrite ( struct AdfFile * const file,
