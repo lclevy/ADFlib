@@ -42,6 +42,7 @@ START_TEST ( test_adfFilePos2datablockIndex )
         ck_assert_uint_eq ( test_data[i].datablock_index, dblock_i );
     }
 }
+END_TEST
 
 
 START_TEST ( test_adfFileSize2Datablocks )
@@ -83,6 +84,7 @@ START_TEST ( test_adfFileSize2Datablocks )
                         test_data[i].blocksize );
     }
 }
+END_TEST
 
 
 START_TEST ( test_adfFileDatablocks2Extblocks )
@@ -116,7 +118,7 @@ START_TEST ( test_adfFileDatablocks2Extblocks )
                         test_data[i].ndatablocks );
     }
 }
-
+END_TEST
 
 
 START_TEST ( test_adfFileSize2Blocks )
@@ -169,6 +171,7 @@ START_TEST ( test_adfFileSize2Blocks )
                         test_data[i].blocksize );
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )

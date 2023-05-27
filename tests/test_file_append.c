@@ -185,6 +185,8 @@ START_TEST ( test_file_append_ofs )
     test_file_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
+
 
 START_TEST ( test_file_append_ffs )
 {
@@ -199,6 +201,7 @@ START_TEST ( test_file_append_ffs )
     test_file_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )

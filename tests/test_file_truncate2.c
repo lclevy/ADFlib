@@ -260,6 +260,8 @@ START_TEST ( test_file_truncate2_ofs )
         }
     }
 }
+END_TEST
+
 
 START_TEST ( test_file_truncate2_ffs )
 {
@@ -282,6 +284,7 @@ START_TEST ( test_file_truncate2_ffs )
         }
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )
