@@ -52,6 +52,19 @@ struct AdfFile {
 };
 
 
+static inline uint32_t adfFileGetPos ( const struct AdfFile * const file ) {
+    return file->pos;
+}
+
+static inline uint32_t adfFileGetSize ( const struct AdfFile * const file ) {
+    return file->fileHdr->byteSize;
+}
+
+static inline BOOL adfEndOfFile ( const struct AdfFile * const file ) {
+    return ( file->pos == file->fileHdr->byteSize );
+}
+
+
 PREFIX int32_t adfPos2DataBlock ( const unsigned   pos,
                                   const unsigned   blockSize,
                                   unsigned * const posInExtBlk,
@@ -67,8 +80,6 @@ PREFIX void adfFileClose ( struct AdfFile * const file );
 PREFIX uint32_t adfFileRead ( struct AdfFile * const file,
                               const uint32_t         n,
                               uint8_t * const        buffer );
-
-PREFIX BOOL adfEndOfFile ( const struct AdfFile * const file );
 
 PREFIX RETCODE adfFileSeek ( struct AdfFile * const file,
                              const uint32_t         pos );		/* BV */

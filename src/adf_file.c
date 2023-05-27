@@ -914,16 +914,6 @@ uint32_t adfFileRead ( struct AdfFile * const file,
 
 
 /*
- * adfEndOfFile
- *
- */
-BOOL adfEndOfFile ( const struct AdfFile * const file )
-{
-    return ( file->pos == file->fileHdr->byteSize );
-}
-
-
-/*
  * adfReadNextFileBlock
  *
  */
