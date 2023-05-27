@@ -145,7 +145,8 @@ int test_hlink_read ( reading_test_t * test_data )
         }
     }
 
-    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name,
+                                                    ADF_FILE_MODE_READ );
     if ( ! file_adf ) {
         fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );

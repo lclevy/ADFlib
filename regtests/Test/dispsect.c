@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    fic = adfFileOpen ( vol, "file_1a", "w" );
+    fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_READWRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );

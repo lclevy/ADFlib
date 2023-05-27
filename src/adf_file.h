@@ -52,6 +52,12 @@ struct AdfFile {
 };
 
 
+typedef enum {
+    ADF_FILE_MODE_READ,
+    ADF_FILE_MODE_READWRITE
+} AdfFileMode;
+
+
 static inline uint32_t adfFileGetPos ( const struct AdfFile * const file ) {
     return file->pos;
 }
@@ -73,7 +79,7 @@ PREFIX int32_t adfPos2DataBlock ( const unsigned   pos,
 
 PREFIX struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
                                       const char * const       name,
-                                      const char * const       mode );
+                                      const AdfFileMode        mode );
 
 PREFIX void adfFileClose ( struct AdfFile * const file );
 

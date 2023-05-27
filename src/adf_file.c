@@ -684,7 +684,7 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
  */ 
 struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
                                const char * const       name,
-                               const char * const       mode )
+                               const AdfFileMode        mode )
 {
     if ( ! vol ) {
         adfEnv.eFct ( "adfFileOpen : vol is NULL" );
@@ -696,20 +696,14 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    if ( ( ! mode )  ) {
-        adfEnv.eFct ( "adfFileOpen : mode is NULL" );
+    BOOL modeRead       = ( mode == ADF_FILE_MODE_READ );
+    BOOL modeReadWrite  = ( mode == ADF_FILE_MODE_READWRITE );
+    if ( ! ( modeRead || modeReadWrite ) ) {
+        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%d'", mode );
         return NULL;
     }
 
-    BOOL mode_read   = ( strcmp ( "r", mode ) == 0 );
-    BOOL mode_write  = ( strcmp ( "w", mode ) == 0 );
-    if ( ! ( mode_read || mode_write ) ) {
-        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%s'", mode );
-        return NULL;
-    }
-
-    BOOL write = ( mode_write );
-    if ( write && vol->dev->readOnly ) {
+    if ( modeReadWrite && vol->dev->readOnly ) {
         (*adfEnv.wFct)("adfFileOpen : device is mounted 'read only'");
         return NULL;
     }
@@ -721,18 +715,18 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     BOOL fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
-    if ( ( mode_read ) && ( ! fileAlreadyExists ) ) {
+    if ( ( modeRead ) && ( ! fileAlreadyExists ) ) {
         adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
         return NULL;
     }
 
-    if ( mode_read && hasR(entry.access)) {
+    if ( modeRead && hasR(entry.access)) {
         adfEnv.wFctf ( "adfFileOpen : read access denied to '%s'", name );
         return NULL;
     }
 
-    if ( fileAlreadyExists && write && hasW ( entry.access ) ) {
+    if ( fileAlreadyExists && modeReadWrite && hasW ( entry.access ) ) {
         adfEnv.wFctf ( "adfFileOpen : write access denied to '%s'", name );
         return NULL;
     }
@@ -788,13 +782,13 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->pos = 0;
     file->posInExtBlk = 0;
     file->posInDataBlk = 0;
-    file->writeMode = write;
+    file->writeMode = modeReadWrite;
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
     file->currentDataBlockChanged = FALSE;
 
-    if ( mode_read ) {
+    if ( modeRead ) {
         memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
         if ( adfFileSeek ( file, 0 ) != RC_OK ) {
             adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
@@ -802,7 +796,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
             goto adfOpenFile_error;
         }
     }
-    else {     // mode_write
+    else {     // modeReadWrite
         if ( fileAlreadyExists ) {
             memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
             unsigned seekpos = 0; //( mode_append ? file->fileHdr->byteSize : 0 );

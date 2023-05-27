@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, "mod.and.distantcall", "r" );
+    file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("mod.distant","wb");
     if (!out) return 1;
