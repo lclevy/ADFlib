@@ -631,7 +631,12 @@ void fix_win32_filename(char *name) {
                *o++ = '_';
                *o++ = 0;
            }
-           break;
+           return;
        }
+    }
+
+    /* not a reserved name, restore file extension */
+    if (ext) {
+        *ext = '.';
     }
 }
