@@ -8,7 +8,10 @@ on:
 
 jobs:
   ubuntu_native_default:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, ubuntu-20.04 ]
     steps:
     - uses: actions/checkout@v3
     - name: install prereq.
@@ -31,7 +34,10 @@ jobs:
       run: cd tests ; ./test_examples
 
   ubuntu_native_generic:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, ubuntu-20.04 ]
     steps:
     - uses: actions/checkout@v3
     - name: install prereq.
