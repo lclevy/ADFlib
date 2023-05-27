@@ -103,6 +103,8 @@ START_TEST ( test_adfPos2DataBlock )
     }
 
 }
+END_TEST
+
 
 Suite * adflib_suite ( void )
 {

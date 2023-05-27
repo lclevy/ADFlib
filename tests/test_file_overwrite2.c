@@ -318,6 +318,7 @@ START_TEST ( test_file_overwrite_ofs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 START_TEST ( test_file_overwrite_ffs )
 {
@@ -335,6 +336,7 @@ START_TEST ( test_file_overwrite_ffs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 Suite * adflib_suite ( void )
 {
