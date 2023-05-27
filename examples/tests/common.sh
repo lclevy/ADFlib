@@ -20,13 +20,19 @@ compare_with() {
 }
 
 get_test_cmd() {
-    if [ -x ./$1 ]; then
-        echo ./$1
-    elif [ -x ./$1.exe ]; then
-        echo ./$1.exe
+    [ -n "$cmd_path" ] || cmd_path=.
+    if [ ! -d "$cmd_path" ]; then
+        echo no-such-command
+        echo >&2 cmd_path $cmd_path is not a directory
+        exit 1
+    fi
+    if [ -x "$cmd_path/$1" ]; then
+        echo "$cmd_path/$1"
+    elif [ -x "$cmd_path/$1.exe" ]; then
+        echo "$cmd_path/$1.exe"
     else
         echo no-such-command
-        echo >&2 "No $1 executable found in `pwd`"
+        echo >&2 No $1 executable found in `cd "$cmd_path" && pwd`
         exit 1
     fi
 }
