@@ -247,6 +247,8 @@ START_TEST ( test_file_write_ofs )
         teardown ( &test_data );
     }
 }
+END_TEST
+
 
 START_TEST ( test_file_write_ffs )
 {
@@ -264,6 +266,7 @@ START_TEST ( test_file_write_ffs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )

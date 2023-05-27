@@ -152,6 +152,8 @@ START_TEST ( test_file_create_empty_ofs_write )
     test_file_create ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
+
 
 START_TEST ( test_file_create_empty_ffs_write )
 {
@@ -166,6 +168,7 @@ START_TEST ( test_file_create_empty_ffs_write )
     test_file_create ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
 /*
 START_TEST ( test_file_create_empty_ofs_append )
@@ -181,6 +184,7 @@ START_TEST ( test_file_create_empty_ofs_append )
     test_file_create_with_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
 START_TEST ( test_file_create_empty_ffs_append)
 {
@@ -195,6 +199,7 @@ START_TEST ( test_file_create_empty_ffs_append)
     test_file_create_with_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 */
 
 Suite * adflib_suite ( void )

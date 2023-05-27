@@ -162,6 +162,7 @@ static const unsigned buflen[] = {
 };
 static const unsigned buflensize = sizeof ( buflen ) / sizeof (unsigned);
 
+
 START_TEST ( test_file_seek_eof_ofs )
 {
     test_data_t test_data = {
@@ -178,6 +179,8 @@ START_TEST ( test_file_seek_eof_ofs )
         teardown ( &test_data );
     }
 }
+END_TEST
+
 
 START_TEST ( test_file_seek_eof_ffs )
 {
@@ -195,6 +198,7 @@ START_TEST ( test_file_seek_eof_ffs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )

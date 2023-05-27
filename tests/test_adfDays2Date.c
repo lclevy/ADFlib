@@ -54,6 +54,7 @@ START_TEST ( test_adfDays2Date  )
     }
 
 }
+END_TEST
 
 Suite * adflib_suite ( void )
 {
