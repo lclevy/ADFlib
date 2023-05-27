@@ -222,6 +222,7 @@ static const unsigned chunklen[] = {
 };
 static const unsigned chunklensize = sizeof ( chunklen ) / sizeof (unsigned);
 
+
 START_TEST ( test_file_seek_after_write_ofs )
 {
     test_data_t test_data = {
@@ -243,6 +244,8 @@ START_TEST ( test_file_seek_after_write_ofs )
         }
     }
 }
+END_TEST
+
 
 START_TEST ( test_file_seek_after_write_ffs )
 {
@@ -265,6 +268,7 @@ START_TEST ( test_file_seek_after_write_ffs )
         }
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )
