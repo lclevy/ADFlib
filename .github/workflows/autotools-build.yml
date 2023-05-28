@@ -97,7 +97,7 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: autoconf2.71 automake1.16 diffutils findutils gcc grep gzip libtool make mingw-w64-check sed tar
+        install: autoconf2.71 automake1.16 diffutils gcc libtool make mingw-w64-x86_64-check
     - name: autogen
       run: ./autogen.sh
     - name: configure
