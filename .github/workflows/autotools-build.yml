@@ -91,7 +91,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: msys2 {0}
+        shell: msys2 '{0}'
     steps:
     - uses: actions/checkout@v3
     - uses: msys2/setup-msys2@v2
