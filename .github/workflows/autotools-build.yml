@@ -66,18 +66,18 @@ jobs:
       with:
         packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
     - name: autogen
-      run: ./autogen.sh
+      run: bash.exe autogen.sh
     - name: configure
-      run: ./configure --prefix=/tmp/adflib
+      run: bash.exe configure --prefix=/tmp/adflib
     - name: make
-      run: make
+      run: make.exe
     - name: make check
-      run: make check
+      run: make.exe check
     - name: make distcheck
-      run: make distcheck
+      run: make.exe distcheck
     - name: make install
-      run: make install
+      run: make.exe install
     - name: check installation
-      run: find /tmp/adflib -iname '*adf*'
+      run: find.exe /tmp/adflib -iname '*adf*'
     - name: test installed command-line utils
-      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+      run: bash.exe examples/tests/test-all-examples.sh /tmp/adflib/bin
