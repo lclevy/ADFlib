@@ -59,6 +59,6 @@ if NATIVE_LINUX
 libadf_la_SOURCES += linux/adf_nativ.c
 endif
 if NATIVE_WIN32
-libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c
+libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c win32/nt4_dev.h
 AM_CFLAGS += -I$(srcdir)/win32
 endif
