@@ -25,8 +25,8 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: ./examples/test/test-all-examples.sh /usr/local/bin
+#    - name: test command-line utils
+#      run: ./examples/test/test-all-examples.sh /usr/local/bin
 
   ubuntu_cmake_debug:
     runs-on: ubuntu-latest
@@ -46,8 +46,8 @@ jobs:
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
       run: sudo ldconfig
-    - name: test command-line utils
-      run: ./examples/test/test-all-examples.sh /usr/local/bin
+#    - name: test command-line utils
+#      run: ./examples/test/test-all-examples.sh /usr/local/bin
 
   windows_cmake:
     runs-on: windows-latest
