@@ -102,7 +102,7 @@ AM_PROG_AR
 LT_INIT
 
 # Checks for libraries.
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.6], [tests=yes], [tests=no])
+PKG_CHECK_MODULES([CHECK], [check >= 0.11.0], [tests=yes], [tests=no])
 AM_CONDITIONAL([TESTS], [test x${tests} = xyes])
 
 # Checks for typedefs, structures, and compiler characteristics.

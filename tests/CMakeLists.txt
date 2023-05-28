@@ -1,10 +1,10 @@
 
-find_package(CHECK QUIET)
+find_package(CHECK 0.11.0 QUIET)
 if (NOT CHECK_FOUND)
     find_package(PkgConfig QUIET)
     if (PkgConfig_FOUND)
         set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-        pkg_check_modules ( CHECK check )
+        pkg_check_modules ( CHECK check >= 0.11.0 )
     endif (PkgConfig_FOUND)
 endif (NOT CHECK_FOUND)
 
