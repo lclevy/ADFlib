@@ -57,7 +57,7 @@ jobs:
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
 
-  cygwin:
+  cygwin_native_default:
     runs-on: windows-latest
     defaults:
       run:
@@ -85,3 +85,26 @@ jobs:
       run: find /tmp/adflib -iname '*adf*'
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+
+  macos_native_default:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: brew install autoconf automake check gcc libtool make
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /usr/local/ -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /usr/local/bin
