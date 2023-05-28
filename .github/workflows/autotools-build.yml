@@ -97,7 +97,7 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
-        install: autotools diffutils gcc mingw-w64-x86_64-check
+        install: autotools diffutils mingw-w64-x86_64-check mingw-w64-x86_64-toolchain
     - name: autogen
       run: ./autogen.sh
     - name: configure
