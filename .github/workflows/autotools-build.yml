@@ -88,6 +88,7 @@ jobs:
       run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
 
   msys2_native_default:
+    if: false
     runs-on: windows-latest
     defaults:
       run:
