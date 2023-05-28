@@ -98,7 +98,6 @@ jobs:
       with:
         update: true
         install: autoconf2.71 automake1.16 diffutils findutils gcc grep gzip libtool make mingw-w64-check sed tar
-  - uses: actions/checkout@v3
     - name: autogen
       run: ./autogen.sh
     - name: configure
