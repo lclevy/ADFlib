@@ -91,7 +91,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install prereq.
-      run: brew install automake check make
+      run: brew install automake check
     - name: autogen
       run: ./autogen.sh
     - name: configure
