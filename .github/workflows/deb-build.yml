@@ -2,9 +2,9 @@ name: ADFlib deb build/packaging
 
 on:
   push:
-    branches: [ "master", "citest" ]
+    branches: [ "master", "devel", "citest" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "devel" ]
 
 jobs:
   ubuntu_deb:
