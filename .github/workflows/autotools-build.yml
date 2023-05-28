@@ -59,25 +59,27 @@ jobs:
 
   cygwin:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: C:\tools\cygwin\bin\bash.exe --login -o igncr '{0}'
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Cygwin
-      uses: egor-tensin/setup-cygwin@v4
+    - uses: egor-tensin/setup-cygwin@v4
       with:
         packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
     - name: autogen
-      run: bash.exe autogen.sh
+      run: ./autogen.sh
     - name: configure
-      run: bash.exe configure --prefix=/tmp/adflib
+      run: ./configure --prefix=/tmp/adflib
     - name: make
-      run: make.exe
+      run: make
     - name: make check
-      run: make.exe check
+      run: make check
     - name: make distcheck
-      run: make.exe distcheck
+      run: make distcheck
     - name: make install
-      run: make.exe install
+      run: make install
     - name: check installation
-      run: find.exe /tmp/adflib -iname '*adf*'
+      run: find /tmp/adflib -iname '*adf*'
     - name: test installed command-line utils
-      run: bash.exe examples/tests/test-all-examples.sh /tmp/adflib/bin
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
