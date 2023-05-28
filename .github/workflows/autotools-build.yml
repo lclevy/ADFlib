@@ -76,7 +76,7 @@ jobs:
     - name: make
       run: make
     - name: make check
-      run: ( make check; grep . examples/*.log examples/*/*.log )
+      run: make check
     - name: make distcheck
       run: make distcheck
     - name: make install
