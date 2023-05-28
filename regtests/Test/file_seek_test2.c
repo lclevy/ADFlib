@@ -101,7 +101,8 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf,
+                                                    ADF_FILE_MODE_READ );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );

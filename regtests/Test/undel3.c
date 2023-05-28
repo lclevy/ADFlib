@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, "MOON.GIF", "r" );
+    file = adfFileOpen ( vol, "MOON.GIF", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;
