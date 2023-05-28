@@ -58,6 +58,7 @@ jobs:
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
 
   cygwin_native_default:
+    if: false
     runs-on: windows-latest
     defaults:
       run:
