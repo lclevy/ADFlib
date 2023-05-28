@@ -1,9 +1,17 @@
 bin_PROGRAMS = unadf adf_floppy_create adf_floppy_format adf_show_metadata
 
+dist_check_SCRIPTS = \
+	tests/adf-floppy-test.sh \
+	tests/adf-show-metadata-test.sh \
+	tests/unadf-test.sh
+dist_check_DATA = \
+	tests/arccsh.adf \
+	tests/common.sh \
+	tests/win32-names.adf
+
+TESTS = $(dist_check_SCRIPTS)
+
 ADFLIBS = $(top_builddir)/src/libadf.la
-if ADFLIB_OS_CYGWIN
-    ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
-endif
 
 unadf_SOURCES = unadf.c
 unadf_LDADD = $(ADFLIBS)

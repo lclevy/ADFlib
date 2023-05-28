@@ -1,10 +1,10 @@
 
-find_package(CHECK QUIET)
+find_package(CHECK 0.11.0 QUIET)
 if (NOT CHECK_FOUND)
     find_package(PkgConfig QUIET)
     if (PkgConfig_FOUND)
         set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-        pkg_check_modules ( CHECK check )
+        pkg_check_modules ( CHECK check >= 0.11.0 )
     endif (PkgConfig_FOUND)
 endif (NOT CHECK_FOUND)
 
@@ -153,9 +153,6 @@ target_link_libraries ( test_file_truncate2 PUBLIC
   adf ${CHECK_LIBRARIES}
 )
 
-configure_file(test_examples test_examples COPYONLY)
-configure_file(arccsh.adf arccsh.adf COPYONLY)
-
 add_test ( test_test_util test_test_util )
 add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
 add_test ( test_adfDays2Date test_adfDays2Date )
@@ -170,4 +167,3 @@ add_test ( test_file_seek test_file_seek )
 add_test ( test_file_seek_after_write test_file_seek_after_write )
 add_test ( test_file_truncate test_file_truncate )
 add_test ( test_file_truncate2 test_file_truncate2 )
-add_test ( test_examples ${BASH_PROGRAM} test_examples )

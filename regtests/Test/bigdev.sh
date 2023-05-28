@@ -25,7 +25,11 @@ do
     echo "---------------------------------------------------"
     echo "    Executing: ${A_TEST}"
     echo "---------------------------------------------------"
-    ${STDBUF} -oL -eL ./${A_TEST}
+    if [ -n "${srcdir}" -a -x "${srcdir}/${A_TEST}" ]; then
+        ${STDBUF} -oL -eL ${srcdir}/${A_TEST}
+    else
+        ${STDBUF} -oL -eL ./${A_TEST}
+    fi
     RESULT=${?}
     #echo "Result: ${RESULT}"
     if [ ${RESULT} -ne 0 ]

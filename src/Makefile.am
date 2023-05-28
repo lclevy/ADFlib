@@ -1,5 +1,9 @@
 
-SUBDIRS = $(NATIVE_DIR)
+AUTOMAKE_OPTIONS = subdir-objects
+
+AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE -D_GNU_SOURCE -D_EXPORTING \
+	-DADFLIB_VERSION='"$(ADFLIB_VERSION)"' -DADFLIB_DATE='"$(ADFLIB_DATE)"'
+AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -Werror-implicit-function-declaration
 
 lib_LTLIBRARIES = libadf.la
 
@@ -19,7 +23,8 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_salv.c \
                     adf_vol.c
 
-include_HEADERS = adf_defs.h \
+adfincdir = $(includedir)/adf
+adfinc_HEADERS  = adf_defs.h \
                   adf_dev.h \
                   adf_dev_flop.h \
                   adf_dev_hd.h \
@@ -34,7 +39,9 @@ include_HEADERS = adf_defs.h \
                   adf_env.h \
                   adf_file.h \
                   adf_file_block.h \
+                  adf_file_util.h \
                   adf_link.h \
+                  adf_nativ.h \
                   adf_raw.h \
                   adf_salv.h \
                   adf_util.h \
@@ -43,26 +50,15 @@ include_HEADERS = adf_defs.h \
                   hd_blk.h \
                   prefix.h
 
-libadf_la_LDFLAGS = \
-    -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 
-# Link adfnative to libadf
-if ADFLIB_OS_CYGWIN
-    # for some reason CygWin require full path(?)
-    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
+if NATIVE_GENERIC
+libadf_la_SOURCES += generic/adf_nativ.c
 endif
-if ADFLIB_OS_DARWIN
-    # for some reason Darwin require full path(?)
-    libadf_la_LDFLAGS += -L$(abs_builddir)/$(NATIVE_DIR) -ladfnative
+if NATIVE_LINUX
+libadf_la_SOURCES += linux/adf_nativ.c
 endif
-if ADFLIB_OS_LINUX
-    libadf_la_LDFLAGS += -L$(NATIVE_DIR) -ladfnative
+if NATIVE_WIN32
+libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c
+AM_CFLAGS += -I$(srcdir)/win32
 endif
-
-AM_CPPFLAGS = -D_XOPEN_SOURCE -D_SVID_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE \
-    -D_GNU_SOURCE -D_EXPORTING
-
-AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
-    -Werror-implicit-function-declaration \
-    -I$(srcdir) \
-    -I$(srcdir)/$(NATIVE_DIR)

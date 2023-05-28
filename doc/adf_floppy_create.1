@@ -1,0 +1,24 @@
+.TH ADF_FLOPPY_CREATE 1 "May 2023"
+.SH NAME
+adf_floppy_create \- create an empty file image of an ADF floppy disk.
+.SH SYNOPSIS
+.B adf_floppy_create
+[\fBoptions\fR] <\fIimage_adf\fR> <\fIfdtype\fR>
+.SH DESCRIPTION
+\fBadf_floppy_create\fR is a simple utility allowing to create an ADF file,
+a file image of an Amiga floppy disk.
+.PP
+The type of the floppy image (double density (dd), high density (hd), and also
+non-standard with 81-, 82- or 83-tracks) can be chosen by specifying
+the \fBfdtype\fR parameter, which can be:
+
+    'dd'                    -> 880K
+    'hd'                    -> 1760K
+    'dd81', 'dd82', 'dd83'  -> non-standard 81-83 tracks
+.
+.SH SEE ALSO
+.BR adf_floppy_format (1)
+.SH AUTHOR
+\fBadf_floppy_create\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
+as part of the ADFlib (https://github.com/lclevy/ADFlib).
+.PP

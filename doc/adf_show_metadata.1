@@ -1,0 +1,58 @@
+.TH ADF_SHOW_METADATA 1 "May 2023"
+.SH NAME
+adf_show_metadata \- show metadata of devices, volumes, directories and files
+stored as Amiga disk file images (ADF).
+
+.SH SYNOPSIS
+.B adf_show_metadata <\fIimage_adf\fR> [\fIpath\fR]
+.SH DESCRIPTION
+\fBadf_show_metadata\fR is a simple utility allowing to display metadata
+of Amiga disk file images. This includes low-level information about:
+.TP
+devices
+.BR
+type, geometry, volume list
+.TP
+volumes
+.BR
+type, Amiga filesystem type (OFS/FFS), free blocks, block information (boot block,
+root block)
+.TP
+directories
+.BR
+directory block, hashtable
+.TP
+files
+.BR
+file header block, extension blocks, data blocks
+.PP
+It can be useful for checking / debugging low-level information
+of an ADF file.
+
+Also, anyone interested in a low-level structure of filesystems (and/or
+retro-computing) can explore a bit solutions made for Commodore Amiga computers
+a few decades ago. Enjoy!
+.
+.SH EXAMPLES
+\fBadf_show_metadata mydisk.adf\fR
+.RS
+shows metadata of the device (ADF image mydisk.adf) and its volumes
+.RE
+
+\fBadf_show_metadata mydisk.adf s\fR
+.RS
+shows metadata of the directory s (on volume 0 of mydisk.adf)
+
+.RE
+\fBadf_show_metadata mydisk.adf s/startup-sequence\fR
+.RS
+shows metadata of the file s/startup-sequence (on volume 0 of mydisk.adf)
+.RE
+.SH SEE ALSO
+.BR adf_floppy_create (1), adf_floppy_format (1), unadf (1), adflib (3)
+.SH NOTES
+Detailed info about Commodore Amiga filesystems: http://lclevy.free.fr/adflib/adf_info.html
+.SH AUTHOR
+\fBadf_show_metadata\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
+as a part of the ADFlib (https://github.com/lclevy/ADFlib).
+.PP

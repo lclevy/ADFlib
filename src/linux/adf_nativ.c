@@ -36,15 +36,18 @@
 #include "adf_nativ.h"
 #include "adf_env.h"
 
+struct AdfNativeDevice {
+    int fd;
+};
 
 /*
  * adfLinuxInitDevice
  *
  * must fill 'dev->size'
  */
-RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
-                             const char * const       name,
-                             const BOOL               ro )
+static RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
+                                    const char * const       name,
+                                    const BOOL               ro )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
         malloc ( sizeof ( struct AdfNativeDevice ) );
@@ -90,7 +93,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
         lseek ( nDev->fd, 0, SEEK_SET );
     }
 
-    dev->size = (int) size;
+    dev->size = (uint32_t) size;
     
     // https://docs.kernel.org/userspace-api/ioctl/hdio.html
     struct hd_geometry geom;
@@ -113,7 +116,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
  *
  * free native device
  */
-RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
+static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
@@ -126,10 +129,10 @@ RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
  * adfLinuxReadSector
  *
  */
-RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                             const uint32_t           n,
-                             const unsigned           size,
-                             uint8_t * const          buf )
+static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                                    const uint32_t           n,
+                                    const unsigned           size,
+                                    uint8_t * const          buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -149,10 +152,10 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
  * adfLinuxWriteSector
  *
  */
-RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                              const uint32_t           n,
-                              const unsigned           size,
-                              const uint8_t * const    buf )
+static RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                                     const uint32_t           n,
+                                     const unsigned           size,
+                                     const uint8_t * const    buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -169,6 +172,23 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
 
 
 /*
+ * adfLinuxIsDevNative
+ *
+ */
+static BOOL adfLinuxIsDevNative ( const char * const devName )
+{
+    //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
+
+    struct stat sb;
+    if ( lstat ( devName, &sb ) == -1 ) {
+        perror ( "adfLinuxIsDevNative: lstat" );
+        exit ( EXIT_FAILURE );
+    }
+
+    return ( ( sb.st_mode & S_IFMT ) == S_IFBLK );
+}
+
+/*
  * adfInitNativeFct
  *
  */
@@ -182,22 +202,4 @@ void adfInitNativeFct()
     nFct->adfNativeWriteSector = adfLinuxWriteSector;
     nFct->adfReleaseDevice     = adfLinuxReleaseDevice;
     nFct->adfIsDevNative       = adfLinuxIsDevNative;
-}
-
-
-/*
- * adfLinuxIsDevNative
- *
- */
-BOOL adfLinuxIsDevNative ( const char * const devName )
-{
-    //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
-
-    struct stat sb;
-    if ( lstat ( devName, &sb ) == -1 ) {
-        perror ( "adfLinuxIsDevNative: lstat" );
-        exit ( EXIT_FAILURE );
-    }
-
-    return ( ( sb.st_mode & S_IFMT ) == S_IFBLK );
 }

@@ -21,6 +21,8 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: make distcheck
+      run: make distcheck
     - name: make install
       run: sudo make install
     - name: check installation
@@ -28,7 +30,7 @@ jobs:
     - name: update ldconfig
       run: sudo ldconfig
     - name: test installed command-line utils
-      run: cd tests ; ./test_examples
+      run: ./examples/tests/test-all-examples.sh /usr/local/bin
 
   ubuntu_native_generic:
     runs-on: ubuntu-latest
@@ -44,6 +46,8 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: make distcheck
+      run: make distcheck
     - name: make install
       run: sudo make install
     - name: check installation
@@ -51,4 +55,4 @@ jobs:
     - name: update ldconfig
       run: sudo ldconfig
     - name: test installed command-line utils
-      run: cd tests ; ./test_examples
+      run: ./examples/tests/test-all-examples.sh /usr/local/bin

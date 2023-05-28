@@ -1,1 +1,6 @@
-unadf
+*.log
+*.trs
+/adf_floppy_create
+/adf_floppy_format
+/adf_show_metadata
+/unadf

@@ -1,6 +1,4 @@
 
-configure_file (config.h.cmake.in config.h)
-
 # set DLL symbols export (if building a DLL)
 if (ADFLIB_BUILD_DLL)
     add_compile_definitions(_EXPORTING)
@@ -36,7 +34,6 @@ add_library ( adf
   adf_util.c
   adf_vol.c
   generic/adf_nativ.c
-  generic/adf_nativ.h
 #  linux/adf_nativ.c
 #  linux/adf_nativ.h
 #  win32/adf_nativ.c

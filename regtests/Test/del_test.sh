@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # common settings
-. ./common.sh
+. "`dirname $0`/common.sh"
 
 set -e
 
 
 #echo "----- del_test"
-cp -v $FFSDUMP testffs_adf
+cat $FFSDUMP >testffs_adf
 ./del_test testffs_adf
-rm -v testffs_adf
+rm -fv testffs_adf
