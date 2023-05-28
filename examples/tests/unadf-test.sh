@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 basedir=`dirname "$0"`
 . $basedir/common.sh
 
