@@ -61,7 +61,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: C:\tools\cygwin\bin\bash.exe --login -o igncr '{0}'
+        shell: C:\tools\cygwin\bin\bash.exe -o igncr '{0}'
     steps:
     - uses: actions/checkout@v3
     - uses: egor-tensin/setup-cygwin@v4
