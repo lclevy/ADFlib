@@ -1,19 +1,16 @@
 
 #include "debug_util.h"
 
-#include <features.h>
-
-/* execinfo.h available only in glibc */
-#ifdef __GLIBC__
-#include <execinfo.h>
+#if ( defined HAVE_BACKTRACE && defined HAVE_BACKTRACE_SYMBOLS )
+#include <execinfo.h>    /* required for backtrace() */
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef __GLIBC__
+#if ( defined HAVE_BACKTRACE && defined HAVE_BACKTRACE_SYMBOLS )
 /*
-  backtrace() only available in glibc
+  backtrace(), backtrace_symbols are available only in glibc
 
   Require link option: -rdynamic
 
