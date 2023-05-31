@@ -1,4 +1,6 @@
 
+#include <features.h>
+
 /* execinfo.h available only in glibc */
 #ifdef __GLIBC__
 #include <execinfo.h>
