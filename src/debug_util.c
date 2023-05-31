@@ -1,6 +1,6 @@
 
-/* CygWin does not have execinfo.h... */
-#ifndef __CYGWIN__
+/* execinfo.h available only in glibc */
+#ifdef __GLIBC__
 #include <execinfo.h>
 #endif
 
@@ -10,8 +10,10 @@
 #include "debug_util.h"
 
 
-#ifndef __CYGWIN__
+#ifdef __GLIBC__
 /*
+  backtrace() only available in glibc
+
   Require link option: -rdynamic
 
   More info:
@@ -40,7 +42,13 @@ void adfPrintBacktrace ( void )
 
 }
 #else
-/* no backtrace under CygWin */
+/* no backtrace without glibc
+
+   ( for Windows, if ever needed, this might be helpful:
+     https://stackoverflow.com/questions/26398064/counterpart-to-glibcs-backtrace-and-backtrace-symbols-on-windows )
+ */
 void adfPrintBacktrace ( void )
-{}
+{
+    fprintf ( stderr, "Sorry, no backtrace without glibc...\n" );
+}
 #endif
