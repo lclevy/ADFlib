@@ -1,4 +1,6 @@
 
+#include "debug_util.h"
+
 #include <features.h>
 
 /* execinfo.h available only in glibc */
@@ -8,9 +10,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "debug_util.h"
-
 
 #ifdef __GLIBC__
 /*
@@ -29,18 +28,20 @@ void adfPrintBacktrace ( void )
     const unsigned BUFSIZE = 100;
     void *buffer [ BUFSIZE ];
 
-    int size = backtrace ( buffer, BUFSIZE );
-    const char * const * const strings = backtrace_symbols ( buffer, size );
+    int size = backtrace ( buffer, (int) BUFSIZE );
+    const char * const * const strings =
+        ( const char * const* const ) backtrace_symbols ( buffer, size );
+
     if ( strings == NULL ) {
         perror ( "error getting symbols" );
         return;
     }
 
     printf ( "Obtained %d stack frames.\n", size );
-    for ( unsigned i = 0 ; i < size ; i++ )
+    for ( int i = 0 ; i < size ; i++ )
         printf ( "%s\n", strings[i] );
 
-    free ( strings );
+    free ( (void *) strings );
 
 }
 #else
