@@ -1,8 +1,13 @@
 #!/bin/sh
 # Usage: util/bump-version <no-api-changes|compatible-api-changes|breaking-api-changes>
 
-# assuming we're $basedir/util/bump-version, find $basedir
-dir=`dirname "$0"`; basedir=`cd "$dir"/.. && pwd`
+# require(!) executing from the main project directory
+# (minimal checking preventing executing in a wrong place...)
+[ "$0"x != "util/bump-version"x ] && {
+    echo "The script must be executed in the main project directory!"
+    exit 1
+}
+basedir="."
 
 # extract current package and library version from configure.ac
 old_pkg_version=`grep ^m4_define..adflib_version "$basedir/configure.ac" | sed -e 's/.*\[//' -e 's/\].*//'`
