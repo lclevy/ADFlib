@@ -189,3 +189,9 @@ and so far use the following:
 
 Other things of the scheme may be used/adapted as needed (hotfixes for released code
 and such, very likely release branch(es) will also appear).
+
+
+## Projects using ADFlib
+
+[`fuseadf`](https://gitlab.com/t-m/fuseadf) - FUSE-based Linux filesystem allowing to mount and access ADF images
+in read/write mode.
