@@ -91,9 +91,11 @@ AC_ARG_ENABLE([native_win32],
                esac],
               [])
 
+echo "Native device: ${NATIVE_DIR}"
 AM_CONDITIONAL([NATIVE_GENERIC], [test x${NATIVE_DIR} = xgeneric])
 AM_CONDITIONAL([NATIVE_LINUX],   [test x${NATIVE_DIR} = xlinux])
 AM_CONDITIONAL([NATIVE_WIN32],   [test x${NATIVE_DIR} = xwin32])
+
 
 # Checks for programs.
 AC_PROG_CC

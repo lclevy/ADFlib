@@ -56,6 +56,13 @@ if(ADFLIB_BUILD_DLL)
     add_definitions(-DBUILD_DLL)
 endif(ADFLIB_BUILD_DLL)
 
+include( CheckFunctionExists )
+check_function_exists( backtrace HAVE_BACKTRACE )
+check_function_exists( backtrace_symbols HAVE_BACKTRACE_SYMBOLS )
+#include(CheckCXXSymbolExists)
+#check_cxx_symbol_exists(backtrace features HAVE_BACKTRACE)
+#check_cxx_symbol_exists(backtrace_symbols features HAVE_BACKTRACE_SYMBOLS)
+
 enable_testing()
 
 ADD_SUBDIRECTORY( src )
