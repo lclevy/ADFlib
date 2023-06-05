@@ -59,7 +59,7 @@ echo "Bumping library version $old_lt_version -> $new_lt_version"
 # update version numbers in configure.ac
 sed -i~ -e "s/^m4_define..adflib_version.*/m4_define([adflib_version],[$new_pkg_version])/" \
         -e "s/^m4_define..adflib_lt_version.*/m4_define([adflib_lt_version],[$new_lt_version])/" \
-        -e "s/^m4_define..adflib_date.*/m4_define([ADFLIB_DATE],[$cur_date])/" \
+        -e "s/^m4_define..adflib_date.*/m4_define([adflib_date],[$cur_date])/" \
     "$basedir/configure.ac"
 sed -i~ -e "s/^set ( ADFLIB_VERSION .*/set ( ADFLIB_VERSION $new_pkg_version )/" \
         -e "s/^set ( ADFLIB_DATE .*/set ( ADFLIB_DATE $cur_date )/" \
