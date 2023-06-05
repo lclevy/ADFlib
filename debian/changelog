@@ -2,10 +2,4 @@ libadf (0.8.0-1) unstable; urgency=medium
 
   * Initial packaging of version 0.8.0 for Debian.
 
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Tue, 31 May 2023 21:47:05 +0100
-
-libadf (0.7.12-1) unstable; urgency=medium
-
-  * Initial release for Debian.
-
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Thu, 10 Nov 2022 22:02:05 +0100
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Tue, 05 Jun 2023 21:47:05 +0100
