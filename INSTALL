@@ -9,7 +9,7 @@ Testing require also the Check testing framework for C (link below).
 Building deb packages require typical tools for that (ie. helper script uses
 debuild from devscripts).
 
-0.7.13 was tested mostly on:
+0.8.0 was tested mostly on:
 - Debian GNU/Linux 11 (current stable)
 
 and briefly on:
