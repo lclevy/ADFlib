@@ -22,22 +22,23 @@ The dynamic memory allocation/releasing is done by the library (i hope :).
 <P>
 
 <PRE>
-struct File {
-    struct Volume *volume;            // pointer to the volume
+struct AdfFile {
+    struct AdfVolume *        volume;           // pointer to the volume
 
-    struct bFileHeaderBlock* fileHdr; // the header block
-    void *currentData;                // current data block
-    struct bFileExtBlock* currentExt; // current data extension block
+    struct bFileHeaderBlock * fileHdr;          // the header block
+    void *                    currentData;      // current data block
+    struct bFileExtBlock *    currentExt;       // current data extension block
 
-    long nDataBlock;                  // number of current data blocks
-    SECTNUM curDataPtr;               // pointer to the current data block
-    unsigned long pos;                // file pos
+    unsigned                  nDataBlock;       // number of current data block
+    SECTNUM                   curDataPtr;       // pointer to the current data block
+    unsigned long             pos;              // file pos
 
-    int posInDataBlk;                 // index in a datablock
-    int posInExtBlk;                  // index in a file header or file extension block
-    BOOL eof;                         // TRUE is the last byte has been read, use adfendOfFile() 
-    BOOL writeMode;                   // if the adfOpenFile() mode is "w"
-    };
+    int                       posInDataBlk;     // index in a datablock
+    int                       posInExtBlk;      // index in a file header or file extension block
+    BOOL                      eof;              // TRUE is the last byte has been read, use adfEndOfFile() 
+    BOOL                      writeMode;        // if the adfOpenFile() mode is in the write mode
+    BOOL                      currentDataBlockChanged;   // in write mode, set if the datablock currently in memory has changed
+};
 
 </PRE>
 
@@ -45,25 +46,34 @@ struct File {
 <HR>
 
 
-<P ALIGN=CENTER><FONT SIZE=+2> adfOpenFile() </FONT></P>
+<P ALIGN=CENTER><FONT SIZE=+2> adfFileOpen() </FONT></P>
 
 <H2>Syntax</H2>
 
-<B>struct File*</B> adfOpenFile(<B>struct Volume*</B> vol, <B>char*</B> name, <B>char*</B> mode);
+<B>struct AdfFile*</B> adfFileOpen(<B>struct adfVolume*</B> vol, <B>char*</B> name, <B>AdfFileMode</B> mode);
 
 <H2>Description</H2>
 
 Opens the file with the name <I>name</I> which is located in the current
 working directory of the <I>vol</I> volume.<BR>
-The allowed <I>mode</I> are <I>"r"</I> and <I>"w"</I>. If the mode is <I>"w"</I>, the file
-mustn't already exists, otherwise an error occurs.
+The allowed <I>mode</I>s are:
+<I>ADF_FILE_MODE_READ</I> and
+<I>ADF_FILE_MODE_READWRITE</I>.
+If the mode is <I>ADF_FILE_MODE_READWRITE</I> then:
+<UL>
+  <LI> if the file does not exist, it will be created</LI>
+  <LI>if is already exists, it will be overwritten (from the beginning)
+    but not truncated (<I>adfFileTruncate()</I> must be used for that</LI>
+</UL>
 <P>
 Some basic access permissions are just checked for now.
 
 <H2>Return values</H2>
 
-The File structure, ready to be read or wrote.<BR>
-NULL if an error occurs : file not found with "r", or file already exists with "w".
+A pointer to the newly created AdfFile structure, which can be used for further file
+operations (read/write/truncate).<BR>
+NULL if an error occurs, ie. file not found or no permissions with <i>read</i>,
+no permissions to write or a directory with the same name already exists.
 
 <H2>Internals</H2>
 <P>
@@ -72,7 +82,7 @@ NULL if an error occurs : file not found with "r", or file already exists with "
 
 <H2>Syntax</H2>
 
-<B>void</B> adfFlushFile(<B>struct File*</B> file);
+<B>void</B> adfFlushFile(<B>struct AdfFile*</B> file);
 
 <H2>Description</H2>
 
@@ -81,15 +91,15 @@ Flushes the datablocks on disk.
 
 <HR>
 
-<P ALIGN=CENTER><FONT SIZE=+2> adfCloseFile() </FONT></P>
+<P ALIGN=CENTER><FONT SIZE=+2> adfFileClose() </FONT></P>
 
 <H2>Syntax</H2>
 
-<B>void</B> adfCloseFile(<B>struct File*</B> file)
+<B>void</B> adfFileClose(<B>struct AdfFile*</B> file)
 
 <H2>Description</H2>
 
-Calls adfFlushFile() and frees the file structure.
+Calls adfFileFlush() and frees the file structure.
 <P>
 
 <HR>
@@ -114,11 +124,11 @@ data blocks and file extension blocks are returned.
 
 <HR>
 
-<P ALIGN=CENTER><FONT SIZE=+2> adfReadFile() </FONT></P>
+<P ALIGN=CENTER><FONT SIZE=+2> adfFileRead() </FONT></P>
 
 <H2>Syntax</H2>
 
-<B>long</B> adfReadFile(<B>struct File*</B> file, <B>long</B> n, <B>unsigned char*</B> buffer)
+<B>long</B> adfFileRead(<B>struct AdfFile*</B> file, <B>long</B> n, <B>unsigned char*</B> buffer)
 
 <H2>Description</H2>
 
@@ -131,47 +141,42 @@ Use adfEndOfFile() to check if the end of the file is reached or not.
 
 <PRE>
 
-#include"adflib.h"
+#include "adflib.h"
 
-
-struct File* file;
-FILE* out;
-long n;
-unsigned char buf[600];
+const unsigned BUFSIZE = 600;
+unsigned char buf[BUFSIZE];
 
 /* a device and a volume 'vol' has been successfully mounted */
 
-
 /* opens the Amiga file */
-file = adfOpenFile(vol, "mod.and.distantcall","r");
-if (!file) { /* frees resources and exits */  };
+struct AdfFile * const file = adfFileFile(vol, "mod.and.distantcall", ADF_FILE_MORE_READ);
+if ( file == NULL ) { /* free resources and exit */  };
 
 /* opens the output classic file */
-out = fopen("mod.distant","wb");
-if (!out) { adfCloseFile(file); /* ... */ };
+FILE * const out = fopen("mod.distant","wb");
+if ( out == NULL ) { adfCloseFile(file); /* ... */ };
     
 /* copy the Amiga file into the standard file, 600 bytes per 600 bytes */
-len = 600;
-n = adfReadFile(file, len, buf);
-while(!adfEndOfFile(file)) {
+long n = adfFileRead(file, BUFSIZE, buf);
+while ( ! adfEndOfFile(file) ) {
     fwrite(buf, sizeof(unsigned char), n, out);
-    n = adfReadFile(file, len, buf);
+    n = adfFileRead(file, BUFSIZE, buf);
 }
-/* even if the EOF is reached, some bytes may need to be written */
-if (n>0)
+/* after the EOF is reached, some bytes may need to be written */
+if ( n > 0 )
     fwrite(buf, sizeof(unsigned char), n, out);
 
 /* closes the standard file */
 fclose(out);
 
 /* closes the Amiga file */
-adfCloseFile(file);
+adfFileClose(file);
 
 </PRE>
 
 <H2>Returned values</H2>
 
-The number of bytes really read.
+The number of bytes read.
 <P>
 
 <HR>
@@ -180,7 +185,7 @@ The number of bytes really read.
 
 <H2>Syntax</H2>
 
-<B>BOOL</B> adfEndOfFile(<B>struct File*</B> file)
+<B>BOOL</B> adfEndOfFile(<B>struct AdfFile*</B> file)
 
 <H2>Description</H2>
 
@@ -189,11 +194,11 @@ TRUE if the end of the file <I>file</I> is reached.
 
 <HR>
 
-<P ALIGN=CENTER><FONT SIZE=+2> adfWriteFile() </FONT></P>
+<P ALIGN=CENTER><FONT SIZE=+2> adfFileWrite() </FONT></P>
 
 <H2>Syntax</H2>
 
-<B>long</B> adfWriteFile(<B>struct File*</B> file, <B>long</B> n, <B>unsigned char*</B> buffer)
+<B>long</B> adfWriteWrite(<B>struct AdfFile*</B> file, <B>long</B> n, <B>unsigned char*</B> buffer)
 
 <H2>Description</H2>
 
@@ -207,36 +212,35 @@ Writes <I>n</I> bytes from the given <I>buffer</I> into the file <I>file</I>.
 
 #include"adflib.h"
 
-struct File* file;
-FILE* in;
+const unsigned BUFSIZE = 600;
+unsigned char buf[BUFSIZE];
 
 /* a device and a volume 'vol' has been successfully mounted */
 
 
-file = adfOpenFile(vol, "moon_gif", "w");
-if (!file) { /* error handling */ };
+struct AdfFile * file = adfFileOpen(vol, "moon_gif", ADF_FILE_MODE_READWRITE);
+if ( file == NULL ) { /* error handling */ };
 
-in = fopen( argv[2],"rb");
-if (!out) { adfCloseFile(file); /* error handling */ };
-    
-len = 600;
-n = fread(buf,sizeof(unsigned char),len,out);
-while(!feof(out)) {
-    adfWriteFile(file, n, buf);
-    n = fread(buf,sizeof(unsigned char),len,out);
+FILE * in = fopen(argv[2], "rb");
+if ( out == NULL ) { adfFileClose(file); /* error handling */ };
+
+n = fread(buf, sizeof(unsigned char), BUFSIZE, out);
+while ( ! feof(out) ) {
+    adfFileWrite(file, n, buf);
+    n = fread(buf, sizeof(unsigned char), BUFSIZE, out);
 }
-if (n>0)
-    adfWriteFile(file, n, buf);
+if ( n > 0 )
+    adfFileWrite(file, n, buf);
 
 fclose(out);
 
-adfCloseFile(file);
+adfFileClose(file);
 
 </PRE>
 
 <H2>Returned values</H2>
 
-The number of bytes really wrote.
+The number of bytes written.
 <P>
 
 <HR>

@@ -6,8 +6,8 @@ set( CMAKE_MODULE_PATH
     ${PROJECT_SOURCE_DIR}/cmake )
 
 # version details - use utils/bump-version to update it
-set ( ADFLIB_VERSION 0.7.13 )
-set ( ADFLIB_DATE 2022-01-25 )
+set ( ADFLIB_VERSION 0.8.0 )
+set ( ADFLIB_DATE 2023-05-31 )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
