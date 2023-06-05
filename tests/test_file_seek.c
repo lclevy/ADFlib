@@ -169,7 +169,7 @@ START_TEST ( test_file_seek_eof_ofs )
         .adfname = "test_file_seek_eof_ofs.adf",
         .volname = "Test_file_seek_eof_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {
@@ -188,7 +188,7 @@ START_TEST ( test_file_seek_eof_ffs )
         .adfname = "test_file_seek_eof_ffs.adf",
         .volname = "Test_file_seek_eof_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {

@@ -13,12 +13,15 @@
 
 <P>
 <B>
-Warning ! None of the fields of the structure below must be modified directly. In this case,
-i can not tell how will behave the library. Unless specified, read access
-is of course allowed.
+  Warning! None of the fields of the structure below can be modified directly
+  from the user code. If they are modified directly, the behaviour of the library
+  is undefined.
+<BR/>
+  Unless specified otherwise, read access is of course allowed.
 </B>
 <P>
-The dynamic memory allocation/releasing is done by the library (i hope :). 
+  The dynamic memory allocation/releasing is done by the library (assuming that
+  <CODE>adfFileOpen()</CODE> is followed by <CODE>adfFileClose()</CODE>).
 <P>
 
 <PRE>
@@ -36,7 +39,8 @@ struct AdfFile {
     int                       posInDataBlk;     // index in a datablock
     int                       posInExtBlk;      // index in a file header or file extension block
     BOOL                      eof;              // TRUE is the last byte has been read, use adfEndOfFile() 
-    BOOL                      writeMode;        // if the adfOpenFile() mode is in the write mode
+    BOOL                      modeRead,         // TRUE if the file is opened in read mode
+                              modeWrite;        // TRUE if the file is opened in write mode
     BOOL                      currentDataBlockChanged;   // in write mode, set if the datablock currently in memory has changed
 };
 
@@ -57,23 +61,29 @@ struct AdfFile {
 Opens the file with the name <I>name</I> which is located in the current
 working directory of the <I>vol</I> volume.<BR>
 The allowed <I>mode</I>s are:
-<I>ADF_FILE_MODE_READ</I> and
-<I>ADF_FILE_MODE_READWRITE</I>.
-If the mode is <I>ADF_FILE_MODE_READWRITE</I> then:
 <UL>
-  <LI> if the file does not exist, it will be created</LI>
-  <LI>if is already exists, it will be overwritten (from the beginning)
-    but not truncated (<I>adfFileTruncate()</I> must be used for that</LI>
+  <LI><CODE>ADF_FILE_MODE_READ</CODE></LI>
+  <LI><CODE>ADF_FILE_MODE_WRITE</CODE></LI>
+  <LI><CODE>ADF_FILE_MODE_READ | ADF_FILE_MODE_WRITE</CODE></LI>
+</UL>
+If the mode is <CODE>ADF_FILE_MODE_WRITE</CODE> then:
+<UL>
+  <LI>if the file does not exist, it will be created</LI>
+  <LI>if it already exists, it will be overwritten (from the beginning)
+      but not truncated (<CODE>adfFileTruncate()</CODE> must be used for that)</LI>
 </UL>
 <P>
 Some basic access permissions are just checked for now.
 
 <H2>Return values</H2>
 
-A pointer to the newly created AdfFile structure, which can be used for further file
+A pointer to the newly created <CODE>AdfFile</CODE> structure, which can be used for further file
 operations (read/write/truncate).<BR>
-NULL if an error occurs, ie. file not found or no permissions with <i>read</i>,
-no permissions to write or a directory with the same name already exists.
+<BR/><CODE>NULL</CODE> if an error occurs, ie.
+<UL>
+  <LI>for read: file not found or no permissions to read</LI>
+  <LI>for write: no permissions to write or a directory with the same name already exists</LI>
+</UL>
 
 <H2>Internals</H2>
 <P>
