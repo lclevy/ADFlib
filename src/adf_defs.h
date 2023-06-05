@@ -36,8 +36,8 @@
 //#ifdef PACKAGE_VERSION
 //#define ADFLIB_VERSION PACKAGE_VERSION
 //#endif
-#define ADFLIB_VERSION "0.7.13"
-#define ADFLIB_DATE "January 25th, 2022"
+#define ADFLIB_VERSION "0.8.0"
+#define ADFLIB_DATE "2023-06-05"
 
 typedef int32_t SECTNUM;
 typedef int32_t RETCODE;
