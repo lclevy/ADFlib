@@ -21,10 +21,10 @@ add_library ( adf
   adf_bitm.c
   adf_cache.c
   adf_dev.c
+  adf_dev_dump.c
   adf_dev_flop.c
   adf_dev_hd.c
   adf_dir.c
-  adf_dump.c
   adf_env.c
   adf_file.c
   adf_file_block.c

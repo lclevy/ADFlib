@@ -25,6 +25,8 @@
  *
  */
 
+#include "adf_dev_dump.h"
+
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
@@ -36,7 +38,6 @@
 #include "adf_vol.h"
 #include"adf_nativ.h"
 #include"adf_err.h"
-#include"adf_dump.h"
 #include "adf_env.h"
 
 

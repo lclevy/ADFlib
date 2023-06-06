@@ -8,11 +8,11 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra -Werror-implicit-function-declarati
 lib_LTLIBRARIES = libadf.la
 
 libadf_la_SOURCES = adf_dev.c \
+                    adf_dev_dump.c \
                     adf_dev_flop.c \
                     adf_dev_hd.c \
                     adf_raw.c \
                     adf_bitm.c \
-                    adf_dump.c \
                     adf_util.c \
                     adf_env.c \
                     adf_dir.c \
@@ -26,6 +26,7 @@ libadf_la_SOURCES = adf_dev.c \
 adfincdir = $(includedir)/adf
 adfinc_HEADERS  = adf_defs.h \
                   adf_dev.h \
+                  adf_dev_dump.h \
                   adf_dev_flop.h \
                   adf_dev_hd.h \
                   adf_blk.h \
@@ -35,7 +36,6 @@ adfinc_HEADERS  = adf_defs.h \
                   adf_bitm.h \
                   adf_cache.h \
                   adf_dir.h \
-                  adf_dump.h \
                   adf_env.h \
                   adf_file.h \
                   adf_file_block.h \

@@ -1,5 +1,5 @@
-#ifndef ADF_DUMP_H
-#define ADF_DUMP_H 1
+#ifndef ADF_DEV_DUMP_H
+#define ADF_DEV_DUMP_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
