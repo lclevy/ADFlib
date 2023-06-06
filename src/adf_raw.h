@@ -32,12 +32,6 @@
 #include "adf_err.h"
 #include "adf_vol.h"
 
-#define SW_LONG  4
-#define SW_SHORT 2
-#define SW_CHAR  1
-
-#define MAX_SWTYPE 11
-
 #define SWBL_BOOT         0
 #define SWBL_ROOT         1
 #define SWBL_DATA         2

@@ -38,6 +38,11 @@
 #include "adf_env.h"
 #include "defendian.h"
 
+#define SW_LONG  4
+#define SW_SHORT 2
+#define SW_CHAR  1
+
+#define MAX_SWTYPE 11
 
 int swapTable[MAX_SWTYPE+1][15]={
     { 4, SW_CHAR, 2, SW_LONG, 1012, SW_CHAR, 0, 1024 },     /* first bytes of boot */
