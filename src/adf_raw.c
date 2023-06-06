@@ -123,22 +123,23 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
                            const uint32_t            nSect,
                            struct bRootBlock * const root )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+        
+    if (adfReadBlock(vol, nSect, buf)!=RC_OK)
+        return RC_ERROR;
 
-	memcpy(root, buf, LOGICAL_BLOCK_SIZE);
+    memcpy(root, buf, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
     swapEndian((uint8_t*)root, SWBL_ROOT);    
 #endif
 
-	if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
-		(*adfEnv.wFct)("adfReadRootBlock : id not found");
+    if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
+        (*adfEnv.wFct)("adfReadRootBlock : id not found");
         return RC_ERROR;
     }
-	if (root->checkSum!=adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE)) {
-		(*adfEnv.wFct)("adfReadRootBlock : invalid checksum");
+    if (root->checkSum!=adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE)) {
+        (*adfEnv.wFct)("adfReadRootBlock : invalid checksum");
         return RC_ERROR;
     }
 		
