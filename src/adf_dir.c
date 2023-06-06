@@ -218,8 +218,9 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     BOOL intl;
     char buf[200];
 
-    if (adfReadEntryBlock( vol, pSect, &parent )!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadEntryBlock ( vol, pSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, &nSect2);
     if (nSect==-1) {
       sprintf(buf, "adfRemoveEntry : entry '%s' not found", name);
@@ -241,20 +242,25 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
 /*printf("hashTable=%d nexthash=%d\n",parent.hashTable[hashVal],
  entry.nextSameHash);*/
         parent.hashTable[hashVal] = entry.nextSameHash;
-        if (adfWriteEntryBlock(vol, pSect, &parent)!=RC_OK)
-			return RC_ERROR;
+        rc = adfWriteEntryBlock ( vol, pSect, &parent );
+        if ( rc != RC_OK )
+            return rc;
     }
     /* in linked list */
     else {
-        if (adfReadEntryBlock(vol, nSect2, &previous)!=RC_OK)
-			return RC_ERROR;
+        rc = adfReadEntryBlock ( vol, nSect2, &previous );
+        if ( rc != RC_OK )
+            return rc;
         previous.nextSameHash = entry.nextSameHash;
-        if (adfWriteEntryBlock(vol, nSect2, &previous)!=RC_OK)
-			return RC_ERROR;
+        rc = adfWriteEntryBlock ( vol, nSect2, &previous );
+        if ( rc != RC_OK )
+            return rc;
     }
 
     if (entry.secType==ST_FILE) {
-        adfFreeFileBlocks(vol, (struct bFileHeaderBlock*)&entry);
+        rc = adfFreeFileBlocks ( vol, (struct bFileHeaderBlock*) &entry );
+        if ( rc != RC_OK )
+            return rc;
     	adfSetBlockFree(vol, nSect); //marks the FileHeaderBlock as free in BitmapBlock
     	if (adfEnv.useNotify)
              (*adfEnv.notifyFct)(pSect,ST_FILE);
@@ -264,6 +270,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
         /* free dir cache block : the directory must be empty, so there's only one cache block */
         if (isDIRCACHE(vol->dosType))
             adfSetBlockFree(vol, entry.extension);
+
         if (adfEnv.useNotify)
             (*adfEnv.notifyFct)(pSect,ST_DIR);
     }
@@ -273,12 +280,15 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    if (isDIRCACHE(vol->dosType))
-        adfDelFromCache(vol, &parent, entry.headerKey);
+    if (isDIRCACHE(vol->dosType)) {
+        rc = adfDelFromCache ( vol, &parent, entry.headerKey );
+        if ( rc != RC_OK )
+            return rc;
+    }
 
-    adfUpdateBitmap(vol);
+    rc = adfUpdateBitmap ( vol );
 
-    return RC_OK;
+    return rc;
 }
 
 
