@@ -350,8 +350,10 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
     struct bEntryBlock parent, entry;
     SECTNUM nSect;
 
-    if (adfReadEntryBlock( vol, parSect, &parent )!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadEntryBlock ( vol, parSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
+
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
     if (nSect==-1) {
         (*adfEnv.wFct)("adfSetEntryAccess : entry not found");
@@ -359,17 +361,25 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
     }
 
     entry.access = newAcc;
-    if (entry.secType==ST_DIR)
-        adfWriteDirBlock(vol, nSect, (struct bDirBlock*)&entry);
-    else if (entry.secType==ST_FILE)
+    if ( entry.secType == ST_DIR ) {
+        rc = adfWriteDirBlock ( vol, nSect, (struct bDirBlock*) &entry );
+        if ( rc != RC_OK )
+            return rc;
+    }
+    else if ( entry.secType == ST_FILE) {
         adfWriteFileHdrBlock(vol, nSect, (struct bFileHeaderBlock*)&entry);
-    else
+        if ( rc != RC_OK )
+            return rc;
+    }
+    else {
         (*adfEnv.wFct)("adfSetEntryAccess : entry secType incorrect");
+        // abort here?
+    }
 
     if (isDIRCACHE(vol->dosType))
-        adfUpdateCache(vol, &parent, (struct bEntryBlock*)&entry, FALSE);
+        rc = adfUpdateCache ( vol, &parent, (struct bEntryBlock*) &entry, FALSE );
 
-    return RC_OK;
+    return rc;
 }
 
 
