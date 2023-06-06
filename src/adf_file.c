@@ -279,7 +279,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
 RETCODE adfFileTruncate ( struct AdfFile * const file,
                           const uint32_t         fileSizeNew )
 {
-    if ( ! file->writeMode )
+    if ( ! file->modeWrite )
         return RC_ERROR;
 
     if ( fileSizeNew == file->fileHdr->byteSize ) {
@@ -403,7 +403,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
  */
 RETCODE adfFileFlush ( struct AdfFile * const file )
 {
-    if ( ! file->writeMode )
+    if ( ! file->modeWrite )
         return RC_OK;
 
     RETCODE rc = RC_OK;
@@ -650,7 +650,7 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
         return RC_OK;
     }
 
-    if ( file->writeMode && file->currentDataBlockChanged ) {
+    if ( file->modeWrite && file->currentDataBlockChanged ) {
         adfFileFlush ( file );
         file->currentDataBlockChanged = FALSE;
     }
@@ -696,14 +696,14 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    BOOL modeRead       = ( mode == ADF_FILE_MODE_READ );
-    BOOL modeReadWrite  = ( mode == ADF_FILE_MODE_READWRITE );
-    if ( ! ( modeRead || modeReadWrite ) ) {
-        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '%d'", mode );
+    const BOOL modeRead  = ( mode & ADF_FILE_MODE_READ );
+    const BOOL modeWrite = ( mode & ADF_FILE_MODE_WRITE );
+    if ( ! ( modeRead || modeWrite ) ) {
+        adfEnv.eFctf ( "adfFileOpen : Incorrect mode '0x%0x' (%d)", mode, mode );
         return NULL;
     }
 
-    if ( modeReadWrite && vol->dev->readOnly ) {
+    if ( modeWrite && vol->dev->readOnly ) {
         (*adfEnv.wFct)("adfFileOpen : device is mounted 'read only'");
         return NULL;
     }
@@ -715,18 +715,18 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     BOOL fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
-    if ( ( modeRead ) && ( ! fileAlreadyExists ) ) {
+    if ( modeRead && ( ! modeWrite ) && ( ! fileAlreadyExists ) ) {
         adfEnv.wFctf ( "adfFileOpen : file \"%s\" not found.", name );
 /*fprintf(stdout,"filename %s %d, parent =%d\n",name,strlen(name),vol->curDirPtr);*/
         return NULL;
     }
 
-    if ( modeRead && hasR(entry.access)) {
+    if ( modeRead && hasR ( entry.access ) ) {
         adfEnv.wFctf ( "adfFileOpen : read access denied to '%s'", name );
         return NULL;
     }
 
-    if ( fileAlreadyExists && modeReadWrite && hasW ( entry.access ) ) {
+    if ( fileAlreadyExists && modeWrite && hasW ( entry.access ) ) {
         adfEnv.wFctf ( "adfFileOpen : write access denied to '%s'", name );
         return NULL;
     }
@@ -782,13 +782,15 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->pos = 0;
     file->posInExtBlk = 0;
     file->posInDataBlk = 0;
-    file->writeMode = modeReadWrite;
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
     file->currentDataBlockChanged = FALSE;
+    file->modeRead  = modeRead;
+    file->modeWrite = modeWrite;
 
-    if ( modeRead ) {
+    if ( ! modeWrite ) {
+        /* read-only mode */
         memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
         if ( adfFileSeek ( file, 0 ) != RC_OK ) {
             adfEnv.eFctf ( "adfFileOpen : error seeking pos. %d, file: %s",
@@ -796,7 +798,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
             goto adfOpenFile_error;
         }
     }
-    else {     // modeReadWrite
+    else {
+        /* write or read-write mode */
         if ( fileAlreadyExists ) {
             memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
             unsigned seekpos = 0; //( mode_append ? file->fileHdr->byteSize : 0 );
@@ -860,7 +863,8 @@ uint32_t adfFileRead ( struct AdfFile * const file,
                        uint32_t               n,
                        uint8_t * const        buffer )
 {
-    if ( n == 0 ||
+    if ( ( ! file->modeRead ) ||
+         n == 0 ||
          file->fileHdr->byteSize == 0 ||
          adfEndOfFile ( file ) )
     {
@@ -1000,7 +1004,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                         const uint32_t         n,
                         const uint8_t * const  buffer )
 {
-    if ( ! file->writeMode )
+    if ( ! file->modeWrite )
         return 0; // RC_ERROR;
 
     if (n==0) return (n);

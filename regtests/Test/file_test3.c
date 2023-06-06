@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
 
     /* write one file */
-    file = adfFileOpen ( vol, "moon_gif", ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, "moon_gif", ADF_FILE_MODE_WRITE );
     if (!file) return 1;
     out = fopen( argv[2],"rb");
     if (!out) return 1;

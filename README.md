@@ -24,7 +24,7 @@ Untested and/or exprerimental support exists for:
 
 It is written in portable C.
 The version `0.8.0` was tested mainly Linux (and Windows), but it should be
-possible to build on (or, cross-compile, for) other systems.
+possible to build on (or cross-compile for) other systems.
 
 
 ## Command-line utilities
@@ -99,7 +99,7 @@ versions of the ADFlib:
 lines 450-455
 
 **Please update to the latest released version where these,
-as well as many other things, arefixed.**
+as well as many other things, are fixed.**
 
 
 ## Compilation
@@ -193,5 +193,5 @@ and such, very likely release branch(es) will also appear).
 
 ## Projects using ADFlib
 
-[`fuseadf`](https://gitlab.com/t-m/fuseadf) - FUSE-based Linux filesystem allowing to mount and access ADF images
-in read/write mode.
+[`fuseadf`](https://gitlab.com/t-m/fuseadf) - FUSE-based Linux filesystem allowing
+to mount and access ADF images in read/write mode.
