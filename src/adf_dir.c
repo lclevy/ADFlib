@@ -25,24 +25,21 @@
  *
  */
 
-#include <stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
 
-#include"adf_dir.h"
-#include"adf_str.h"
-#include"adf_util.h"
-#include"defendian.h"
-#include"adf_blk.h"
-#include"adf_raw.h"
-#include "adf_vol.h"
-#include"adf_bitm.h"
-#include "adf_file_block.h"
-#include"adf_err.h"
-#include"adf_cache.h"
+#include "adf_dir.h"
+
+#include "adf_bitm.h"
+#include "adf_cache.h"
 #include "adf_env.h"
+#include "adf_file_block.h"
+#include "adf_raw.h"
+#include "adf_util.h"
+#include "defendian.h"
 
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
