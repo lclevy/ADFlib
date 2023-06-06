@@ -1028,7 +1028,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                 // ...  create a new block
                 RETCODE rc = adfFileCreateNextBlock ( file );
                 file->currentDataBlockChanged = FALSE;
-                if ( rc == -1 ) {
+                if ( rc != RC_OK ) {
                     /* bug found by Rikard */
                     adfEnv.wFct ( "adfWritefile : no more free sectors available" );
                     //file->curDataPtr = 0; // invalidate data ptr
@@ -1108,7 +1108,7 @@ unsigned adfFileWriteFilled ( struct AdfFile * const file,
  * adfCreateNextFileBlock
  *
  */
-SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
+RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect, extSect;
 
@@ -1118,7 +1118,8 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
     /* the first data blocks pointers are inside the file header block */
     if (file->nDataBlock<MAX_DATABLK) {
         nSect = adfGet1FreeBlock(file->volume);
-        if (nSect==-1) return -1;
+        if ( nSect == -1 )
+            return RC_VOLFULL;
 /*printf("adfCreateNextFileBlock fhdr %ld\n",nSect);*/
         if (file->nDataBlock==0)
             file->fileHdr->firstData = nSect;
@@ -1130,7 +1131,8 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
         if ((file->nDataBlock%MAX_DATABLK)==0) {
             extSect = adfGet1FreeBlock(file->volume);
 /*printf("extSect=%ld\n",extSect);*/
-            if (extSect==-1) return -1;
+            if ( extSect == -1 )
+                return RC_VOLFULL;
 
             /* the future block is the first file extension block */
             if (file->nDataBlock==MAX_DATABLK) {
@@ -1162,8 +1164,8 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
 /*printf("extSect=%ld\n",extSect);*/
         }
         nSect = adfGet1FreeBlock(file->volume);
-        if (nSect==-1) 
-            return -1;
+        if ( nSect == -1 )
+            return RC_VOLFULL;
         
 /*printf("adfCreateNextFileBlock ext %ld\n",nSect);*/
 
@@ -1200,7 +1202,7 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
     file->curDataPtr = nSect;
     file->nDataBlock++;
 
-    return(nSect);
+    return RC_OK;
 }
 
 
