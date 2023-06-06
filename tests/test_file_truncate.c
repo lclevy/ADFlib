@@ -297,7 +297,7 @@ void test_file_truncate ( test_data_t * const tdata )
         size_t extrasize = truncsize - bufsize;
         uint8_t * ebuf = malloc ( extrasize );
         ck_assert_ptr_nonnull ( ebuf );
-        ck_assert_int_eq ( adfFileRead (file, extrasize, ebuf ), extrasize );
+        ck_assert_uint_eq ( adfFileRead (file, (uint32_t) extrasize, ebuf ), extrasize );
         for ( unsigned i = 0 ; i < extrasize ; ++i ) {
             if ( ebuf[i] != 0 ) {
                 ck_assert_msg ( 0,
