@@ -215,7 +215,7 @@ void adfEnvCleanUp()
  */
 void adfChgEnvProp(int prop, void *newval)
 {
-	BOOL *newBool;
+    BOOL *newBool;
 /*    int *newInt;*/
 
     switch(prop) {
@@ -233,18 +233,18 @@ void adfChgEnvProp(int prop, void *newval)
         break;
     case PR_USE_NOTFCT:
         newBool = (BOOL*)newval;
-		adfEnv.useNotify = *newBool;        
+        adfEnv.useNotify = *newBool;
         break;
     case PR_PROGBAR:
         adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
     case PR_USE_PROGBAR:
         newBool = (BOOL*)newval;
-		adfEnv.useProgressBar = *newBool;        
+        adfEnv.useProgressBar = *newBool;
         break;
     case PR_USE_RWACCESS:
         newBool = (BOOL*)newval;
-		adfEnv.useRWAccess = *newBool;        
+        adfEnv.useRWAccess = *newBool;
         break;
     case PR_RWACCESS:
         adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
