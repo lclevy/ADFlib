@@ -290,8 +290,9 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
 
     if ( fileSizeNew > fileSizeOld ) {
         const unsigned enlargeSize = fileSizeNew - fileSizeOld;
-        if ( adfFileSeek ( file, fileSizeOld ) != RC_OK )
-            return RC_ERROR;
+        RETCODE rc = adfFileSeek ( file, fileSizeOld );
+        if ( rc != RC_OK )
+            return rc;
         assert ( adfEndOfFile ( file ) == TRUE );
         const unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
@@ -304,7 +305,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
     RETCODE rc = adfFileTruncateGetBlocksToRemove ( file, fileSizeNew,
                                                     &blocksToRemove );
     if ( rc != RC_OK )
-        return RC_ERROR;
+        return rc;
 
     // 2. seek to the new EOF
     rc = adfFileSeek ( file, fileSizeNew );
