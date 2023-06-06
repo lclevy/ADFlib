@@ -1055,8 +1055,10 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
     SECTNUM nSect;
     struct bEntryBlock parent;
 /*puts("adfCreateFile in");*/
-    if (adfReadEntryBlock(vol, nParent, &parent)!=RC_OK)
-		return RC_ERROR;
+
+    RETCODE rc = adfReadEntryBlock ( vol, nParent, &parent );
+    if ( rc != RC_OK )
+        return rc;
 
     /* -1 : do not use a specific, already allocated sector */
     nSect = adfCreateEntry(vol, &parent, name, -1);
@@ -1075,18 +1077,22 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
     adfTime2AmigaTime(adfGiveCurrentTime(),
         &(fhdr->days),&(fhdr->mins),&(fhdr->ticks));
 
-    if (adfWriteFileHdrBlock(vol,nSect,fhdr)!=RC_OK)
-		return RC_ERROR;
+    rc = adfWriteFileHdrBlock ( vol, nSect, fhdr );
+    if ( rc != RC_OK )
+        return rc;
 
-    if (isDIRCACHE(vol->dosType))
-        adfAddInCache(vol, &parent, (struct bEntryBlock *)fhdr);
+    if ( isDIRCACHE ( vol->dosType ) ) {
+        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) fhdr );
+        if ( rc != RC_OK )
+            return rc;
+    }
 
-    adfUpdateBitmap(vol);
+    rc = adfUpdateBitmap ( vol );
 
     if (adfEnv.useNotify)
         (*adfEnv.notifyFct)(nParent,ST_FILE);
 
-    return RC_OK;
+    return rc;
 }
 
 
