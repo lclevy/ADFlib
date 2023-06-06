@@ -233,18 +233,17 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
                             struct bBootBlock * const boot )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE*2];
-	uint32_t newSum;
 
     boot->dosType[0] = 'D';
     boot->dosType[1] = 'O';
     boot->dosType[2] = 'S';
-	memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
+    memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
     swapEndian(buf, SWBL_BOOT);
 #endif
 
     if (boot->rootBlock==880 || boot->data[0]!=0) {
-        newSum = adfBootSum(buf);
+        uint32_t newSum = adfBootSum ( buf );
 /*fprintf(stderr,"sum %x %x\n",newSum,adfBootSum2(buf));*/
         swLong(buf+4,newSum);
 /*        *(uint32_t*)(buf+4) = swapLong((uint8_t*)&newSum);*/
@@ -252,11 +251,16 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
 
 /*	dumpBlock(buf);
 	dumpBlock(buf+512);
-*/	
-    if (adfWriteBlock(vol, 0, buf)!=RC_OK)
-		return RC_ERROR;
-	if (adfWriteBlock(vol, 1,  buf+512)!=RC_OK)
-		return RC_ERROR;
+*/
+
+    RETCODE rc = adfWriteBlock ( vol, 0, buf );
+    if ( rc != RC_OK )
+        return rc;
+
+    rc = adfWriteBlock ( vol, 1, buf + 512 );
+    if (rc != RC_OK )
+        return rc;
+
 /*puts("adfWriteBootBlock");*/
     return RC_OK;
 }
