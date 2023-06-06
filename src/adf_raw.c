@@ -38,6 +38,9 @@
 #include "adf_env.h"
 #include "defendian.h"
 
+#define NDEBUG
+#include <assert.h>
+
 #define SW_LONG  4
 #define SW_SHORT 2
 #define SW_CHAR  1
@@ -75,8 +78,13 @@ void swapEndian ( uint8_t * const buf,
     int i = 0,
         p = 0;
 
-    if ( type > MAX_SWTYPE || type < 0 )
-        adfEnv.eFct("SwapEndian: type do not exist");
+    assert ( type >= 0 );
+    assert ( type <= MAX_SWTYPE );
+    if ( type > MAX_SWTYPE || type < 0 ) {
+        /* this should never happen */
+        adfEnv.eFct ( "SwapEndian: type %d do not exist", type );
+        return;
+    }
 
     while ( swapTable[type][i] != 0 ) {
         for ( int j = 0 ; j < swapTable[type][i] ; j++ )  {
