@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "adf_defs.h"
+#include "adf_err.h"
 #include "adf_vol.h"
 #include "prefix.h"
 

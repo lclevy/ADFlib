@@ -40,7 +40,6 @@
 #define ADFLIB_DATE "2023-06-05"
 
 typedef int32_t SECTNUM;
-typedef int32_t RETCODE;
 
 #define TRUE    1
 #define FALSE   0

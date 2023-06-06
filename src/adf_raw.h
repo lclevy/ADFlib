@@ -29,6 +29,7 @@
 #define _ADF_RAW_H 1
 
 #include "adf_blk.h"
+#include "adf_err.h"
 #include "adf_vol.h"
 
 #define SW_LONG  4

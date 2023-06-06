@@ -27,6 +27,7 @@
  */
 
 #include "adf_dev.h"
+#include "adf_err.h"
 
 PREFIX struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
                                                 const uint32_t     cyl,
