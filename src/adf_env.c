@@ -36,134 +36,23 @@
 #include <stdlib.h>
 
 
-union u{
-    int32_t l;
-    char c[4];
-    };
-
 struct AdfEnv adfEnv;
 
 
-void rwHeadAccess(SECTNUM physical, SECTNUM logical, BOOL write)
-{
-    /* display the physical sector, the logical block, and if the access is read or write */
+static void Warningf ( const char * const format, ... );
+static void Errorf ( const char * const format, ... );
+static void Verbosef ( const char * const format, ... );
 
-    fprintf(stderr, "phy %d / log %d : %c\n", physical, logical, write ? 'W' : 'R');
-}
+static void Changed ( SECTNUM nSect,
+                      int     changedType );
 
-void progressBar(int perCentDone)
-{
-    fprintf(stderr,"%d %% done\n",perCentDone);
-}
+static void rwHeadAccess ( SECTNUM physical,
+                           SECTNUM logical,
+                           BOOL    write );
 
-//static void Warning(char* msg) {
-//    fprintf(stderr,"Warning <%s>\n",msg);
-//}
+static void progressBar ( int perCentDone );
 
-//static void Error(char* msg) {
-//    fprintf(stderr,"Error <%s>\n",msg);
-/*    exit(1);*/
-//}
-
-//static void Verbose(char* msg) {
-//    fprintf(stderr,"Verbose <%s>\n",msg);
-//}
-
-
-static void Warningf ( const char * const format, ... )
-{
-    va_list ap;
-    va_start ( ap, format );
-
-    fprintf ( stderr, "Warning <" );
-    vfprintf ( stderr, format, ap );
-    fprintf ( stderr, ">\n" );
-}
-
-
-static void Errorf ( const char * const format, ... )
-{
-    va_list ap;
-    va_start ( ap, format );
-
-    fprintf ( stderr, "Error <" );
-    vfprintf ( stderr, format, ap );
-    fprintf ( stderr, ">\n" );
-/*    exit(1);*/
-}
-
-
-static void Verbosef ( const char * const format, ... )
-{
-    va_list ap;
-    va_start ( ap, format );
-
-    fprintf ( stderr, "Verbose <" );
-    vfprintf ( stderr, format, ap );
-    fprintf ( stderr, ">\n" );
-}
-
-
-static void Changed(SECTNUM nSect, int changedType)
-{
-    (void) nSect, (void) changedType;
-/*    switch(changedType) {
-    case ST_FILE:
-        fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
-        break;
-    case ST_DIR:
-        fprintf(stderr,"Notification : sector %ld (DIR)\n",nSect);
-        break;
-    case ST_ROOT:
-        fprintf(stderr,"Notification : sector %ld (ROOT)\n",nSect);
-        break;
-    default:
-        fprintf(stderr,"Notification : sector %ld (???)\n",nSect);
-    }
-*/}
-
-static void checkInternals(void)
-{
-/*    char str[80];*/
-    union u val;
-
-    /* internal checking */
-
-    if (sizeof(short)!=2) 
-        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
-    if (sizeof(int32_t)!=4) 
-        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
-    if (sizeof(struct bEntryBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bEntryBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bRootBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bRootBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bDirBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bDirBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBootBlock)!=1024)
-        { fprintf(stderr,"Internal error : sizeof(struct bBootBlock)!=1024\n"); exit(1); }
-    if (sizeof(struct bFileHeaderBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bFileHeaderBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bFileExtBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bFileExtBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bOFSDataBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bOFSDataBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBitmapBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bBitmapBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBitmapExtBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bBitmapExtBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bLinkBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bLinkBlock)!=512\n"); exit(1); }
-
-    val.l=1L;
-/* if LITT_ENDIAN not defined : must be BIG endian */
-#ifndef LITT_ENDIAN
-    if (val.c[3]!=1) /* little endian : LITT_ENDIAN must be defined ! */
-        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must exist\n"); exit(1); }
-#else
-    if (val.c[3]==1) /* big endian : LITT_ENDIAN must not be defined ! */
-        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must not exist\n"); exit(1); }
-#endif
-}
+static void checkInternals(void);
 
 
 /*
@@ -249,7 +138,7 @@ void adfChgEnvProp(int prop, void *newval)
         break;
     case PR_USEDIRC:
         newBool = (BOOL*)newval;
-		adfEnv.useDirCache = *newBool;
+        adfEnv.useDirCache = *newBool;
         break;
     }
 }
@@ -294,6 +183,132 @@ char* adfGetVersionDate()
 }
 
 
-
-
 /*##################################################################################*/
+
+static void rwHeadAccess ( SECTNUM physical,
+                           SECTNUM logical,
+                           BOOL    write )
+{
+    /* display the physical sector, the logical block, and if the access is read or write */
+    fprintf(stderr, "phy %d / log %d : %c\n", physical, logical, write ? 'W' : 'R');
+}
+
+static void progressBar ( int perCentDone )
+{
+    fprintf(stderr,"%d %% done\n",perCentDone);
+}
+
+//static void Warning(char* msg) {
+//    fprintf(stderr,"Warning <%s>\n",msg);
+//}
+
+//static void Error(char* msg) {
+//    fprintf(stderr,"Error <%s>\n",msg);
+/*    exit(1);*/
+//}
+
+//static void Verbose(char* msg) {
+//    fprintf(stderr,"Verbose <%s>\n",msg);
+//}
+
+
+static void Warningf ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Warning <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+}
+
+
+static void Errorf ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Error <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+/*    exit(1);*/
+}
+
+
+static void Verbosef ( const char * const format, ... )
+{
+    va_list ap;
+    va_start ( ap, format );
+
+    fprintf ( stderr, "Verbose <" );
+    vfprintf ( stderr, format, ap );
+    fprintf ( stderr, ">\n" );
+}
+
+
+static void Changed(SECTNUM nSect, int changedType)
+{
+    (void) nSect, (void) changedType;
+/*    switch(changedType) {
+    case ST_FILE:
+        fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
+        break;
+    case ST_DIR:
+        fprintf(stderr,"Notification : sector %ld (DIR)\n",nSect);
+        break;
+    case ST_ROOT:
+        fprintf(stderr,"Notification : sector %ld (ROOT)\n",nSect);
+        break;
+    default:
+        fprintf(stderr,"Notification : sector %ld (???)\n",nSect);
+    }
+*/}
+
+
+union u {
+    int32_t l;
+    char    c[4];
+};
+
+static void checkInternals(void)
+{
+/*    char str[80];*/
+    union u val;
+
+    /* internal checking */
+
+    if (sizeof(short)!=2)
+        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
+    if (sizeof(int32_t)!=4)
+        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
+    if (sizeof(struct bEntryBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bEntryBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bRootBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bRootBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bDirBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bDirBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bBootBlock)!=1024)
+        { fprintf(stderr,"Internal error : sizeof(struct bBootBlock)!=1024\n"); exit(1); }
+    if (sizeof(struct bFileHeaderBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bFileHeaderBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bFileExtBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bFileExtBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bOFSDataBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bOFSDataBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bBitmapBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bBitmapBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bBitmapExtBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bBitmapExtBlock)!=512\n"); exit(1); }
+    if (sizeof(struct bLinkBlock)!=512)
+        { fprintf(stderr,"Internal error : sizeof(struct bLinkBlock)!=512\n"); exit(1); }
+
+    val.l=1L;
+/* if LITT_ENDIAN not defined : must be BIG endian */
+#ifndef LITT_ENDIAN
+    if (val.c[3]!=1) /* little endian : LITT_ENDIAN must be defined ! */
+        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must exist\n"); exit(1); }
+#else
+    if (val.c[3]==1) /* big endian : LITT_ENDIAN must not be defined ! */
+        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must not exist\n"); exit(1); }
+#endif
+}
