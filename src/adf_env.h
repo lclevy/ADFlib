@@ -46,7 +46,8 @@ typedef void (*AdfLogFct)(const char * const format, ...);
 //typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
 typedef void (*AdfNotifyFct)(SECTNUM, int);
-
+typedef void (*AdfRwhAccessFct)(SECTNUM,SECTNUM,BOOL);
+typedef void (*AdfProgressBarFct)(int);
 
 struct AdfEnv {
     AdfLogFct vFct;       /* verbose callback function */
@@ -56,10 +57,10 @@ struct AdfEnv {
     AdfNotifyFct notifyFct;
     BOOL useNotify;
 
-    void (*rwhAccess)(SECTNUM,SECTNUM,BOOL);
+    AdfRwhAccessFct rwhAccess;
     BOOL useRWAccess;
 
-    void (*progressBar)(int);
+    AdfProgressBarFct progressBar;
     BOOL useProgressBar;
 
     BOOL useDirCache;
