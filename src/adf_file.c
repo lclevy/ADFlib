@@ -152,7 +152,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
             if ( rc != RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
-                return RC_ERROR;
+                return rc;
             }
 
             if ( nDBlocksNew / MAX_DATABLK > 0  &&   // min. one ext
@@ -197,7 +197,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
             if ( rc != RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
-                return RC_ERROR;
+                return rc;
             }
 
             unsigned lastDBlockToRemove =
