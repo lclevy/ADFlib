@@ -618,8 +618,9 @@ SECTNUM adfParentDir ( struct AdfVolume * const vol )
     struct bEntryBlock entry;
 
     if (vol->curDirPtr!=vol->rootBlock) {
-        if (adfReadEntryBlock( vol, vol->curDirPtr, &entry )!=RC_OK)
-			return RC_ERROR;
+        RETCODE rc = adfReadEntryBlock ( vol, vol->curDirPtr, &entry );
+        if ( rc != RC_OK )
+            return rc;
         vol->curDirPtr = entry.parent;
     }
     return RC_OK;
