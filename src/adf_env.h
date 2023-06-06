@@ -30,15 +30,15 @@
 
 /* ----- ENVIRONMENT ----- */
 
-#define PR_VFCT			1
-#define PR_WFCT			2
-#define PR_EFCT			3
-#define PR_NOTFCT		4
-#define PR_USEDIRC		5
-#define PR_USE_NOTFCT 	6
-#define PR_PROGBAR 		7
-#define PR_USE_PROGBAR 	8
-#define PR_RWACCESS 	9
+#define PR_VFCT	        1
+#define PR_WFCT	        2
+#define PR_EFCT	        3
+#define PR_NOTFCT       4
+#define PR_USEDIRC      5
+#define PR_USE_NOTFCT   6
+#define PR_PROGBAR      7
+#define PR_USE_PROGBAR  8
+#define PR_RWACCESS     9
 #define PR_USE_RWACCESS 10
 
 struct AdfEnv {
