@@ -997,8 +997,9 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
     struct bDirBlock dir;
     struct bEntryBlock parent;
 
-    if (adfReadEntryBlock(vol, nParent, &parent)!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadEntryBlock ( vol, nParent, &parent );
+    if ( rc != RC_OK )
+        return rc;
 
     /* -1 : do not use a specific, already allocated sector */
     nSect = adfCreateEntry(vol, &parent, name, -1);
@@ -1020,20 +1021,25 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
     if (isDIRCACHE(vol->dosType)) {
         /* for adfCreateEmptyCache, will be added by adfWriteDirBlock */
         dir.secType = ST_DIR;
-        adfAddInCache(vol, &parent, (struct bEntryBlock *)&dir);
-        adfCreateEmptyCache(vol, (struct bEntryBlock *)&dir, -1);
+        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) &dir );
+        if ( rc != RC_OK )
+            return rc;
+        rc = adfCreateEmptyCache ( vol, (struct bEntryBlock *)&dir, -1 );
+        if ( rc != RC_OK )
+            return rc;        
     }
 
     /* writes the dirblock, with the possible dircache assiocated */
-    if (adfWriteDirBlock(vol, nSect, &dir)!=RC_OK)
-		return RC_ERROR;
+    rc = adfWriteDirBlock ( vol, nSect, &dir );
+    if ( rc != RC_OK )
+        return rc;
 
-    adfUpdateBitmap(vol);
+    rc = adfUpdateBitmap ( vol );
 
     if (adfEnv.useNotify)
         (*adfEnv.notifyFct)(nParent,ST_DIR);
 
-    return RC_OK;
+    return rc;
 }
 
 
