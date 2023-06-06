@@ -156,9 +156,8 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
                             const uint32_t            nSect,
                             struct bRootBlock * const root )
 {
+/*printf("adfWriteRootBlock %ld\n",nSect);*/
     uint8_t buf[LOGICAL_BLOCK_SIZE];
-	uint32_t newSum;
-
 
     root->type = T_HEADER;
     root->headerKey = 0L;
@@ -177,15 +176,11 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     swapEndian(buf, SWBL_ROOT);
 #endif
 
-	newSum = adfNormalSum(buf,20,LOGICAL_BLOCK_SIZE);
+    uint32_t newSum = adfNormalSum ( buf, 20, LOGICAL_BLOCK_SIZE );
     swLong(buf+20, newSum);
 /*	*(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
-
 /* 	dumpBlock(buf);*/
-	if (adfWriteBlock(vol, nSect, buf)!=RC_OK)
-        return RC_ERROR;
-/*printf("adfWriteRootBlock %ld\n",nSect);*/
-    return RC_OK;
+    return adfWriteBlock ( vol, nSect, buf );
 }
 
 
