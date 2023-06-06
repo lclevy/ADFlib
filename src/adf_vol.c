@@ -25,23 +25,19 @@
  *
  */
 
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "adf_vol.h"
 
-#include "adf_str.h"
-#include "adf_raw.h"
-#include "adf_dev.h"
-#include "adf_dev_dump.h"
-#include "adf_dev_hd.h"
 #include "adf_bitm.h"
-#include "adf_util.h"
-#include "adf_nativ.h"
-#include "adf_err.h"
 #include "adf_cache.h"
 #include "adf_env.h"
+#include "adf_nativ.h"
+#include "adf_raw.h"
+#include "adf_util.h"
+
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 uint32_t bitMask[32] = { 
