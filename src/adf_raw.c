@@ -125,9 +125,9 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-        
-    if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-        return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(root, buf, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
@@ -136,11 +136,11 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
 
     if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
         (*adfEnv.wFct)("adfReadRootBlock : id not found");
-        return RC_ERROR;
+        return RC_BLOCKTYPE;
     }
     if (root->checkSum!=adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE)) {
         (*adfEnv.wFct)("adfReadRootBlock : invalid checksum");
-        return RC_ERROR;
+        return RC_BLOCKSUM;
     }
 		
     return RC_OK;
