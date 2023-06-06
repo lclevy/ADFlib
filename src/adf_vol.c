@@ -67,15 +67,17 @@ RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    if (adfReadBootBlock(vol, &boot)!=RC_OK)
-        return RC_ERROR;
+    RETCODE rc = adfReadBootBlock ( vol, &boot );
+    if ( rc != RC_OK )
+        return rc;
 
     boot.rootBlock = 880;
     for(i=0; i<1024-12; i++)         /* bootcode */
         boot.data[i] = code[i+12];
 
-    if (adfWriteBootBlock(vol, &boot)!=RC_OK)
-        return RC_ERROR;
+    rc = adfWriteBootBlock ( vol, &boot );
+    if ( rc != RC_OK )
+        return rc;
 
     vol->bootCode = TRUE;
 
