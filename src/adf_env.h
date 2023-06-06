@@ -41,13 +41,14 @@
 #define PR_RWACCESS     9
 #define PR_USE_RWACCESS 10
 
+//typedef void (*AdfLogFct)(const char * const txt);
+typedef void (*AdfLogFct)(const char * const format, ...);
+//typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
+
 struct AdfEnv {
-    void (*vFct)(char*);       /* verbose callback function */
-    void (*wFct)(char*);       /* warning callback function */
-    void (*eFct)(char*);       /* error callback function */
-    void (*vFctf)(const char * const format, ...); /* verbose cb formatted */
-    void (*wFctf)(const char * const format, ...); /* warning cb formatted */
-    void (*eFctf)(const char * const format, ...); /* error cb formatted */
+    AdfLogFct vFct;       /* verbose callback function */
+    AdfLogFct wFct;       /* warning callback function */
+    AdfLogFct eFct;       /* error callback function */
 
     void (*notifyFct)(SECTNUM, int);
     BOOL useNotify;
@@ -65,8 +66,10 @@ struct AdfEnv {
 
 
 PREFIX void adfEnvInitDefault();
-PREFIX void adfSetEnvFct( void(*e)(char*), void(*w)(char*), void(*v)(char*),
-	void(*n)(SECTNUM,int) );
+PREFIX void adfSetEnvFct ( const AdfLogFct eFct,
+                           const AdfLogFct wFct,
+                           const AdfLogFct vFct,
+                           void(*notifyFct)(SECTNUM, int) );
 PREFIX void adfEnvCleanUp();
 PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();

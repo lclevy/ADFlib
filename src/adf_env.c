@@ -57,18 +57,18 @@ void progressBar(int perCentDone)
     fprintf(stderr,"%d %% done\n",perCentDone);
 }
 
-static void Warning(char* msg) {
-    fprintf(stderr,"Warning <%s>\n",msg);
-}
+//static void Warning(char* msg) {
+//    fprintf(stderr,"Warning <%s>\n",msg);
+//}
 
-static void Error(char* msg) {
-    fprintf(stderr,"Error <%s>\n",msg);
+//static void Error(char* msg) {
+//    fprintf(stderr,"Error <%s>\n",msg);
 /*    exit(1);*/
-}
+//}
 
-static void Verbose(char* msg) {
-    fprintf(stderr,"Verbose <%s>\n",msg);
-}
+//static void Verbose(char* msg) {
+//    fprintf(stderr,"Verbose <%s>\n",msg);
+//}
 
 
 static void Warningf ( const char * const format, ... )
@@ -105,7 +105,7 @@ static void Verbosef ( const char * const format, ... )
 }
 
 
-void Changed(SECTNUM nSect, int changedType)
+static void Changed(SECTNUM nSect, int changedType)
 {
     (void) nSect, (void) changedType;
 /*    switch(changedType) {
@@ -169,12 +169,10 @@ void adfEnvInitDefault()
         { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must not exist\n"); exit(1); }
 #endif
 
-    adfEnv.wFct = Warning;
-    adfEnv.eFct = Error;
-    adfEnv.vFct = Verbose;
-    adfEnv.wFctf = Warningf;
-    adfEnv.eFctf = Errorf;
-    adfEnv.vFctf = Verbosef;
+    adfEnv.wFct = Warningf;
+    adfEnv.eFct = Errorf;
+    adfEnv.vFct = Verbosef;
+
     adfEnv.notifyFct = Changed;
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
@@ -255,8 +253,10 @@ void adfChgEnvProp(int prop, void *newval)
  *  adfSetEnv
  *
  */
-void adfSetEnvFct( void(*eFct)(char*), void(*wFct)(char*), void(*vFct)(char*),
-    void(*notFct)(SECTNUM,int)  )
+void adfSetEnvFct ( const AdfLogFct eFct,
+                    const AdfLogFct wFct,
+                    const AdfLogFct vFct,
+                    void(*notFct)(SECTNUM,int) )
 {
     if (*eFct!=0)
 		adfEnv.eFct = *eFct;

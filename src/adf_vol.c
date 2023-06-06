@@ -405,8 +405,8 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
 
     RETCODE rc = adfReadBlockDev ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfReadBlock: error reading block %d, volume '%s'",
-                       nSect, vol->volName );
+        adfEnv.eFct ( "adfReadBlock: error reading block %d, volume '%s'",
+                      nSect, vol->volName );
     }
     return rc;
 }
@@ -442,8 +442,8 @@ RETCODE adfWriteBlock ( struct AdfVolume * const vol,
 
     RETCODE rc = adfWriteBlockDev ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfWriteBlock: error writing block %d, volume '%s'",
-                       nSect, vol->volName );
+        adfEnv.eFct ( "adfWriteBlock: error writing block %d, volume '%s'",
+                      nSect, vol->volName );
     }
     return rc;
 }

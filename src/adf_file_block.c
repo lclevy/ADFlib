@@ -189,7 +189,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 {
     if ( nSect < 1 ) {
         // ie. block 0 is volume's bootblock - cannot be a data block
-        adfEnv.eFctf ( "adfReadDataBlock : error, '%d' cannot be a data block", nSect );
+        adfEnv.eFct ( "adfReadDataBlock : error, '%d' cannot be a data block", nSect );
         return RC_ERROR;
     }
 
@@ -198,7 +198,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 
     RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfReadDataBlock: error reading block %d, volume '%s'",
+        adfEnv.eFct ( "adfReadDataBlock: error reading block %d, volume '%s'",
                        nSect, vol->volName );
         //return RC_ERROR;
     }
@@ -213,19 +213,19 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 /*printf("adfReadDataBlock %ld\n",nSect);*/
 
         if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct bOFSDataBlock) ) )
-            adfEnv.wFctf ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
+            adfEnv.wFct ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
                            nSect, vol->volName );
         if ( dBlock->type != T_DATA )
-            adfEnv.wFctf ( "adfReadDataBlock : id T_DATA not found, block %d, volume '%s'",
+            adfEnv.wFct ( "adfReadDataBlock : id T_DATA not found, block %d, volume '%s'",
                            nSect, vol->volName );
         if ( dBlock->dataSize > 488 )
-            adfEnv.wFctf ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
+            adfEnv.wFct ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
                            dBlock->dataSize, dBlock->dataSize, nSect, vol->volName );
         if ( ! isSectNumValid ( vol, dBlock->headerKey ) )
-            adfEnv.wFctf ( "adfReadDataBlock : headerKey (0x%x / %u) out of range, block %d, volume '%s'",
+            adfEnv.wFct ( "adfReadDataBlock : headerKey (0x%x / %u) out of range, block %d, volume '%s'",
                            dBlock->headerKey, dBlock->headerKey, nSect, vol->volName );
         if ( ! isSectNumValid ( vol, dBlock->nextData ) )
-            adfEnv.wFctf ( "adfReadDataBlock : nextData out of range, block %d, volume '%s'",
+            adfEnv.wFct ( "adfReadDataBlock : nextData out of range, block %d, volume '%s'",
                            nSect, vol->volName );
     }
 
@@ -243,7 +243,8 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
 {
     if ( nSect < 1 ) {
         // ie. block 0 is volume's bootblock - cannot be a data block
-        adfEnv.eFctf ( "adfWriteDataBlock : error, '%d' cannot be a data block", nSect );
+        adfEnv.eFct ( "adfWriteDataBlock : error, '%d' cannot be a data block",
+                      nSect );
         return RC_ERROR;
     }
 
@@ -265,8 +266,8 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
         rc = adfWriteBlock ( vol, (uint32_t) nSect, data );
     }
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfWriteDataBlock: error writing block %d, volume '%s'",
-                       nSect, vol->volName );
+        adfEnv.eFct ( "adfWriteDataBlock: error writing block %d, volume '%s'",
+                      nSect, vol->volName );
         //return RC_ERROR;
     }
 /*printf("adfWriteDataBlock %ld\n",nSect);*/
@@ -286,8 +287,8 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
     uint8_t buf[sizeof(struct bFileExtBlock)];
     RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
-                       nSect, vol->volName );
+        adfEnv.eFct ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
+                      nSect, vol->volName );
         //return RC_ERROR;
     }
 /*printf("read fext=%d\n",nSect);*/
@@ -340,8 +341,8 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
 
     RETCODE rc = adfWriteBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFctf ( "adfWriteFileExtBlock: error wriding block %d, volume '%s'",
-                       nSect, vol->volName );
+        adfEnv.eFct ( "adfWriteFileExtBlock: error wriding block %d, volume '%s'",
+                      nSect, vol->volName );
     }
 
     return rc;

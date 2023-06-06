@@ -665,8 +665,8 @@ SECTNUM adfGetEntryByName ( struct AdfVolume * const   vol,
     // get parent
     struct bEntryBlock parent;
     if ( adfReadEntryBlock ( vol, dirPtr, &parent ) != RC_OK ) {
-        adfEnv.eFctf ( "adfGetEntryByName: error reading parent entry "
-                       "(block %d)\n", dirPtr );
+        adfEnv.eFct ( "adfGetEntryByName: error reading parent entry "
+                      "(block %d)\n", dirPtr );
         return -1;
     }
 
