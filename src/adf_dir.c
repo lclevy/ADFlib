@@ -56,7 +56,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     SECTNUM nSect2, nSect, prevSect, tmpSect;
     char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
 	BOOL intl;
-    RETCODE rc;
+
 
     if ( pSect == nPSect  &&
          strcmp ( oldName, newName ) == 0 )
@@ -70,8 +70,9 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, (unsigned) strlen(oldName), intl );
     /* newName == oldName ? */
 
-    if (adfReadEntryBlock( vol, pSect, &parent )!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadEntryBlock ( vol, pSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
 
     unsigned hashValueO = adfGetHashValue ( (uint8_t *) oldName, intl );
 
@@ -88,8 +89,9 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     tmpSect = entry.nextSameHash;
 
     entry.nextSameHash = 0;
-    if (adfWriteEntryBlock(vol, nSect, &entry)!=RC_OK)
-		return RC_ERROR;
+    rc = adfWriteEntryBlock ( vol, nSect, &entry );
+    if ( rc != RC_OK )
+        return rc;
 
     /* del from the oldname list */
 
@@ -99,12 +101,14 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     }
     else {
         /* in linked list */
-	    if (adfReadEntryBlock(vol, prevSect, &previous)!=RC_OK)
-            return RC_ERROR;
+        rc = adfReadEntryBlock ( vol, prevSect, &previous );
+        if ( rc != RC_OK )
+            return rc;
         /* entry.nextSameHash (tmpSect) could be == 0 */
         previous.nextSameHash = tmpSect;
-        if (adfWriteEntryBlock(vol, prevSect, &previous)!=RC_OK)
-            return RC_ERROR;
+        rc = adfWriteEntryBlock ( vol, prevSect, &previous );
+        if ( rc != RC_OK )
+            return rc;
     }
 
     // update old parent's ctime and write its block
@@ -120,9 +124,9 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if ( rc != RC_OK )
         return rc;
 
-
-    if (adfReadEntryBlock( vol, nPSect, &nParent )!=RC_OK)
-		return RC_ERROR;
+    rc = adfReadEntryBlock ( vol, nPSect, &nParent );
+    if ( rc != RC_OK )
+        return rc;
 
     unsigned hashValueN = adfGetHashValue ( (uint8_t * ) newName, intl );
     nSect2 = nParent.hashTable[ hashValueN ];
@@ -136,15 +140,16 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                    * name2 == newName
                    */
         do {
-            if (adfReadEntryBlock(vol, nSect2, &previous)!=RC_OK)
-                return -1;
+            rc = adfReadEntryBlock ( vol, nSect2, &previous );
+            if ( rc != RC_OK )
+                return rc;
             if (previous.nameLen==len) {
                 adfStrToUpper ( (uint8_t *) name3,
                                 (uint8_t *) previous.name,
                                 previous.nameLen, intl );
                 if (strncmp(name3,name2,len)==0) {
                     (*adfEnv.wFct)("adfRenameEntry : entry already exists");
-                    return -1;
+                    return RC_ERROR;
                 }
             }
             nSect2 = previous.nextSameHash;
@@ -181,12 +186,15 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 
     // update dircache
     if (isDIRCACHE(vol->dosType)) {
-		if (pSect==nPSect) {
-            adfUpdateCache(vol, &parent, (struct bEntryBlock*)&entry,TRUE);
+        if (pSect==nPSect) {
+            rc = adfUpdateCache ( vol, &parent,
+                                  (struct bEntryBlock*) &entry, TRUE );
         }
         else {
-            adfDelFromCache(vol,&parent,entry.headerKey);
-            adfAddInCache(vol,&nParent,&entry);
+            rc = adfDelFromCache ( vol, &parent, entry.headerKey );
+            if ( rc != RC_OK )
+                return rc;
+            rc = adfAddInCache ( vol, &nParent, &entry );
         }
     }
 /*
@@ -194,7 +202,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         adfUpdateCache(vol, &nParent, (struct bEntryBlock*)&entry,TRUE);
     }
 */
-    return RC_OK;
+    return rc;
 }
 
 /*
