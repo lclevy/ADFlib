@@ -289,7 +289,7 @@ static void checkInternals(void)
                      "Compilation error : sizeof(short)!=2\n" );
 
     assertInternal ( sizeof(int32_t) == 4,
-                     "Compilation error : sizeof(short)!=2\n" );
+                     "Compilation error : sizeof(int32_t) != 4\n" );
 
     assertInternal ( sizeof(struct bEntryBlock) == 512,
                      "Internal error : sizeof(struct bEntryBlock) != 512\n");
