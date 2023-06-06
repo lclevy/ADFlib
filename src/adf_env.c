@@ -270,6 +270,14 @@ union u {
     char    c[4];
 };
 
+static void assertInternal ( BOOL cnd, const char * const msg )
+{
+    if ( ! cnd ) {
+        fprintf ( stderr, msg );
+        exit(1);
+    }
+}
+
 static void checkInternals(void)
 {
 /*    char str[80];*/
@@ -277,38 +285,49 @@ static void checkInternals(void)
 
     /* internal checking */
 
-    if (sizeof(short)!=2)
-        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
-    if (sizeof(int32_t)!=4)
-        { fprintf(stderr,"Compilation error : sizeof(short)!=2\n"); exit(1); }
-    if (sizeof(struct bEntryBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bEntryBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bRootBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bRootBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bDirBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bDirBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBootBlock)!=1024)
-        { fprintf(stderr,"Internal error : sizeof(struct bBootBlock)!=1024\n"); exit(1); }
-    if (sizeof(struct bFileHeaderBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bFileHeaderBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bFileExtBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bFileExtBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bOFSDataBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bOFSDataBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBitmapBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bBitmapBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bBitmapExtBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bBitmapExtBlock)!=512\n"); exit(1); }
-    if (sizeof(struct bLinkBlock)!=512)
-        { fprintf(stderr,"Internal error : sizeof(struct bLinkBlock)!=512\n"); exit(1); }
+    assertInternal ( sizeof(short) == 2,
+                     "Compilation error : sizeof(short)!=2\n" );
 
-    val.l=1L;
+    assertInternal ( sizeof(int32_t) == 4,
+                     "Compilation error : sizeof(short)!=2\n" );
+
+    assertInternal ( sizeof(struct bEntryBlock) == 512,
+                     "Internal error : sizeof(struct bEntryBlock) != 512\n");
+
+    assertInternal ( sizeof(struct bRootBlock) == 512,
+                     "Internal error : sizeof(struct bRootBlock) != 512\n");
+
+    assertInternal ( sizeof(struct bDirBlock) == 512,
+                     "Internal error : sizeof(struct bDirBlock) != 512\n");
+
+    assertInternal ( sizeof(struct bBootBlock) == 1024,
+                     "Internal error : sizeof(struct bBootBlock) != 1024\n" );
+
+    assertInternal ( sizeof(struct bFileHeaderBlock) == 512,
+                     "Internal error : sizeof(struct bFileHeaderBlock) != 512\n" );
+
+    assertInternal ( sizeof(struct bFileExtBlock) == 512,
+                     "Internal error : sizeof(struct bFileExtBlock) != 512\n" );
+
+    assertInternal ( sizeof(struct bOFSDataBlock) == 512,
+                     "Internal error : sizeof(struct bOFSDataBlock) != 512\n" );
+
+    assertInternal ( sizeof(struct bBitmapBlock) == 512,
+                     "Internal error : sizeof(struct bBitmapBlock) != 512\n" );
+
+    assertInternal ( sizeof(struct bBitmapExtBlock) == 512,
+                     "Internal error : sizeof(struct bBitmapExtBlock) != 512\n" );
+
+    assertInternal ( sizeof(struct bLinkBlock) == 512,
+                     "Internal error : sizeof(struct bLinkBlock) != 512\n" );
+
+    val.l = 1L;
 /* if LITT_ENDIAN not defined : must be BIG endian */
 #ifndef LITT_ENDIAN
-    if (val.c[3]!=1) /* little endian : LITT_ENDIAN must be defined ! */
-        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must exist\n"); exit(1); }
+    assertInternal ( val.c[3] == 1, /* little endian : LITT_ENDIAN must be defined ! */
+                     "Compilation error : #define LITT_ENDIAN must exist\n" );
 #else
-    if (val.c[3]==1) /* big endian : LITT_ENDIAN must not be defined ! */
-        { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must not exist\n"); exit(1); }
+    assertInternal ( val.c[3] != 1, /* big endian : LITT_ENDIAN must not be defined ! */
+                     "Compilation error : #define LITT_ENDIAN must not exist\n" );
 #endif
 }
