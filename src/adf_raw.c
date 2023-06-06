@@ -72,25 +72,22 @@ int swapTable[MAX_SWTYPE+1][15]={
 void swapEndian ( uint8_t * const buf,
                   const int       type )
 {
-    int i,j;
-    int p;
+    int i = 0,
+        p = 0;
 
-    i=0;
-    p=0;
-
-    if (type>MAX_SWTYPE || type<0)
+    if ( type > MAX_SWTYPE || type < 0 )
         adfEnv.eFct("SwapEndian: type do not exist");
 
-    while( swapTable[type][i]!=0 ) {
-        for(j=0; j<swapTable[type][i]; j++) {
-            switch( swapTable[type][i+1] ) {
+    while ( swapTable[type][i] != 0 ) {
+        for ( int j = 0 ; j < swapTable[type][i] ; j++ )  {
+            switch ( swapTable[type][i + 1] ) {
             case SW_LONG:
-                *(uint32_t*)(buf+p)=Long(buf+p);
-                p+=4;
+                *(uint32_t*)(buf + p) = Long(buf + p);
+                p += 4;
                 break;
             case SW_SHORT:
-                *(uint32_t*)(buf+p)=Short(buf+p);
-                p+=2;
+                *(uint32_t*)(buf + p) = Short(buf + p);
+                p += 2;
                 break;
             case SW_CHAR:
                 p++;
@@ -99,12 +96,10 @@ void swapEndian ( uint8_t * const buf,
                 ;
             }
         }
-    i+=2;
+        i += 2;
     }
-    if (p!=swapTable[type][i+1]) 
+    if ( p != swapTable[type][i + 1] )
         (*adfEnv.wFct)("Warning: Endian Swapping length");		/* BV */
-    
-
 }
 
 
