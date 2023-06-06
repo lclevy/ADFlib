@@ -410,15 +410,15 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
     RETCODE rc = RC_OK;
 
     if (file->currentExt) {
-        if ( adfWriteFileExtBlock ( file->volume,
+        rc = adfWriteFileExtBlock ( file->volume,
                                     file->currentExt->headerKey,
-                                    file->currentExt ) != RC_OK )
-        {
+                                    file->currentExt );
+        if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error writing ext block 0x%x (%d), file '%s'",
                           file->currentExt->headerKey,
                           file->currentExt->headerKey,
                           file->fileHdr->fileName );
-            rc = RC_ERROR;
+            return rc;
         }
     }
 
@@ -432,14 +432,14 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
             data->dataSize = file->posInDataBlk;
         }
 
-        if ( adfWriteDataBlock ( file->volume,
+        rc = adfWriteDataBlock ( file->volume,
                                  file->curDataPtr,
-                                 file->currentData ) != RC_OK )
-        {
+                                 file->currentData );
+        if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushFile : error writing data block 0x%x (%u), file '%s'",
                           file->curDataPtr, file->curDataPtr,
                           file->fileHdr->fileName );
-            rc = RC_ERROR;
+            return rc;
         }
     }
 
@@ -449,35 +449,37 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
                         &(file->fileHdr->mins),
                         &(file->fileHdr->ticks) );
 
-    if ( adfWriteFileHdrBlock ( file->volume,
+    rc = adfWriteFileHdrBlock ( file->volume,
                                 file->fileHdr->headerKey,
-                                file->fileHdr ) != RC_OK )
-    {
+                                file->fileHdr );
+    if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfFlushfile : error writing file header block %d",
                       file->fileHdr->headerKey );
-        rc = RC_ERROR;
+        return rc;
     }
 
     if ( isDIRCACHE ( file->volume->dosType ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
         struct bEntryBlock parent;
-        if ( adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent ) != RC_OK ) {
+        rc = adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );
+        if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error reading entry block %d",
                           file->fileHdr->parent );
-            rc = RC_ERROR;
+            return rc;
         }
 
-        if ( adfUpdateCache ( file->volume, &parent,
-                              (struct bEntryBlock*) file->fileHdr, FALSE ) != RC_OK )
-        {
+        rc = adfUpdateCache ( file->volume, &parent,
+                              (struct bEntryBlock*) file->fileHdr, FALSE );
+        if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error updating cache" );
-            rc = RC_ERROR;
+            return rc;
         }
     }
 
-    if ( adfUpdateBitmap ( file->volume ) != RC_OK ) {
+    rc = adfUpdateBitmap ( file->volume );
+    if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfFlushfile : error updating volume bitmap" );
-        rc = RC_ERROR;
+        return rc;
     }
 
     return rc;
