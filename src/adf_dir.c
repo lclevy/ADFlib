@@ -1106,8 +1106,9 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
 {
     uint8_t buf[512];
 
-    if ( adfReadBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(ent, buf, 512);
 #ifdef LITT_ENDIAN
@@ -1124,7 +1125,7 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
 /*printf("readentry=%d\n",nSect);*/
     if (ent->checkSum!=adfNormalSum((uint8_t*)buf,20,512)) {
         (*adfEnv.wFct)("adfReadEntryBlock : invalid checksum");
-        return RC_ERROR;
+        return RC_BLOCKSUM;
     }
     if (ent->type!=T_HEADER) {
         (*adfEnv.wFct)("adfReadEntryBlock : T_HEADER id not found");
@@ -1152,7 +1153,6 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
 {
     uint8_t buf[512];
     uint32_t newSum;
-   
 
     memcpy(buf, ent, sizeof(struct bEntryBlock));
 
@@ -1162,10 +1162,7 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
     newSum = adfNormalSum(buf,20,sizeof(struct bEntryBlock));
     swLong(buf+20, newSum);
 
-    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 
