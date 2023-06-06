@@ -46,31 +46,32 @@ extern uint32_t bitMask[32];
  */
 RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
 {
-	int i;
     struct bRootBlock root;
 
 /*printf("adfUpdateBitmap\n");*/
-        
-    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
-        return RC_ERROR;
+
+    RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+    if ( rc != RC_OK )
+        return rc;
 
     root.bmFlag = BM_INVALID;
-    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
-        return RC_ERROR;
 
-    for(i=0; i<vol->bitmapSize; i++)
-    if (vol->bitmapBlocksChg[i]) {
-        if (adfWriteBitmapBlock(vol, vol->bitmapBlocks[i], vol->bitmapTable[i])!=RC_OK)
-			return RC_ERROR;
-  	    vol->bitmapBlocksChg[i] = FALSE;
+    rc = adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+    if ( rc != RC_OK )
+        return rc;
+
+    for ( int i = 0 ; i<vol->bitmapSize ; i++ )
+        if ( vol->bitmapBlocksChg[i] ) {
+            rc = adfWriteBitmapBlock ( vol, vol->bitmapBlocks[i],
+                                       vol->bitmapTable[i] );
+            if ( rc != RC_OK )
+                return rc;
+            vol->bitmapBlocksChg[i] = FALSE;
     }
 
     root.bmFlag = BM_VALID;
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.days),&(root.mins),&(root.ticks));
-    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
-        return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
 }
 
 
