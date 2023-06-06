@@ -123,11 +123,7 @@ static void Changed(SECTNUM nSect, int changedType)
     }
 */}
 
-/*
- * adfInitEnv
- *
- */
-void adfEnvInitDefault()
+static void checkInternals(void)
 {
 /*    char str[80];*/
     union u val;
@@ -168,6 +164,16 @@ void adfEnvInitDefault()
     if (val.c[3]==1) /* big endian : LITT_ENDIAN must not be defined ! */
         { fprintf(stderr,"Compilation error : #define LITT_ENDIAN must not exist\n"); exit(1); }
 #endif
+}
+
+
+/*
+ * adfInitEnv
+ *
+ */
+void adfEnvInitDefault()
+{
+    checkInternals();
 
     adfEnv.wFct = Warningf;
     adfEnv.eFct = Errorf;
