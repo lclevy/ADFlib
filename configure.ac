@@ -8,7 +8,7 @@ m4_define([adflib_version],[0.8.0])
 m4_define([adflib_lt_version],[1:0:0])
 m4_define([adflib_date],[2023-06-05])
 
-AC_INIT([adflib],[adflib_version],[lclevy_AT_club-internet.fr])
+AC_INIT([adflib],[adflib_version])
 
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADERS([config.h])
