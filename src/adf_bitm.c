@@ -142,42 +142,49 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     j=0; i=0;
     /* bitmap pointers in rootblock : 0 <= i <BM_SIZE */
     SECTNUM nSect;
+    RETCODE rc = RC_OK;
     while ( i < BM_SIZE && root->bmPages[i] != 0 ) {
             vol->bitmapBlocks[j] = nSect = root->bmPages[i];
-        if ( !isSectNumValid(vol,nSect) ) {
-            adfEnv.wFct("adfReadBitmap : sector out of range");
+        if ( ! isSectNumValid ( vol, nSect ) ) {
+            adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+            // abort here?
         }
 
-        if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
+        rc = adfReadBitmapBlock ( vol, nSect, vol->bitmapTable[j] );
+        if ( rc != RC_OK ) {
             adfFreeBitmap(vol);
-            return RC_ERROR;
+            return rc;
         }
         j++; i++;
     }
     nSect = root->bmExt;
     while ( nSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
-        if (adfReadBitmapExtBlock(vol, nSect, &bmExt)!=RC_OK) {
+        rc = adfReadBitmapExtBlock ( vol, nSect, &bmExt );
+        if ( rc != RC_OK ) {
             adfFreeBitmap(vol);
-            return RC_ERROR;
+            return rc;
         }
         i=0;
         while ( i < 127 && j < mapSize ) {
             nSect = bmExt.bmPages[i];
-            if ( !isSectNumValid(vol,nSect) )
-                (*adfEnv.wFct)("adfReadBitmap : sector out of range");
+            if ( ! isSectNumValid ( vol, nSect ) ) {
+                adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+                // abort here?
+            }
             vol->bitmapBlocks[j] = nSect;
 
-            if (adfReadBitmapBlock(vol, nSect, vol->bitmapTable[j])!=RC_OK) {
+            rc = adfReadBitmapBlock ( vol, nSect, vol->bitmapTable[j] );
+            if ( rc != RC_OK ) {
                 adfFreeBitmap(vol);
-                return RC_ERROR;
+                return rc;
             }
             i++; j++;
         }
         nSect = bmExt.nextBlock;
     }
 
-    return RC_OK;
+    return rc;
 }
 
 
