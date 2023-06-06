@@ -89,7 +89,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
 
     blocksToRemove->sectors = malloc ( nBlocksToRemove * sizeof(SECTNUM) );
     if ( blocksToRemove->sectors == NULL )
-        return RC_ERROR;
+        return RC_MALLOC;
     blocksToRemove->len = nBlocksToRemove;
 
 #ifdef DEBUG_ADF_FILE
@@ -129,7 +129,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
         struct bFileExtBlock * const extBlock = malloc ( sizeof ( struct bFileExtBlock ) );
         if ( extBlock == NULL ) {
             free ( blocksToRemove->sectors );
-            return RC_ERROR;
+            return RC_MALLOC;
         }
 
         unsigned nextExt = 0;
@@ -588,7 +588,7 @@ static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
             if ( ! file->currentExt ) {
                 (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
                 file->curDataPtr = 0;  // invalidate data ptr
-                return RC_ERROR;
+                return RC_MALLOC;
             }
         }
 
@@ -940,7 +940,7 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
                         malloc ( sizeof(struct bFileExtBlock) );
                     if ( file->currentExt == NULL ) {
                         adfEnv.eFct ("adfReadNextFileBlock : malloc");
-                        return RC_ERROR;
+                        return RC_MALLOC;
                     }
                 }
 
@@ -1135,7 +1135,7 @@ SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file )
                 if (!file->currentExt) {
                     adfSetBlockFree(file->volume, extSect);
                     (*adfEnv.eFct)("adfCreateNextFileBlock : malloc");
-                    return -1;
+                    return RC_MALLOC;
                 }
                 file->fileHdr->extension = extSect;
             }
