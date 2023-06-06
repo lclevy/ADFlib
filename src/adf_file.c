@@ -531,7 +531,7 @@ static RETCODE adfFileSeekEOF_ ( struct AdfFile * const file )
 
 
 static RETCODE adfFileSeekOFS_ ( struct AdfFile * const file,
-                                uint32_t               pos )
+                                 uint32_t               pos )
 {
     adfFileSeekStart_ ( file );
 
@@ -565,7 +565,7 @@ static RETCODE adfFileSeekOFS_ ( struct AdfFile * const file,
 
 
 static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
-                                uint32_t               pos )
+                                 uint32_t               pos )
 {
     file->pos = min ( pos, file->fileHdr->byteSize );
 
