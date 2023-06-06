@@ -57,21 +57,21 @@ void progressBar(int perCentDone)
     fprintf(stderr,"%d %% done\n",perCentDone);
 }
 
-void Warning(char* msg) {
+static void Warning(char* msg) {
     fprintf(stderr,"Warning <%s>\n",msg);
 }
 
-void Error(char* msg) {
+static void Error(char* msg) {
     fprintf(stderr,"Error <%s>\n",msg);
 /*    exit(1);*/
 }
 
-void Verbose(char* msg) {
+static void Verbose(char* msg) {
     fprintf(stderr,"Verbose <%s>\n",msg);
 }
 
 
-void Warningf ( const char * const format, ... )
+static void Warningf ( const char * const format, ... )
 {
     va_list ap;
     va_start ( ap, format );
@@ -82,7 +82,7 @@ void Warningf ( const char * const format, ... )
 }
 
 
-void Errorf ( const char * const format, ... )
+static void Errorf ( const char * const format, ... )
 {
     va_list ap;
     va_start ( ap, format );
@@ -94,7 +94,7 @@ void Errorf ( const char * const format, ... )
 }
 
 
-void Verbosef ( const char * const format, ... )
+static void Verbosef ( const char * const format, ... )
 {
     va_list ap;
     va_start ( ap, format );
