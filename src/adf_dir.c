@@ -304,8 +304,9 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
     struct bEntryBlock parent, entry;
     SECTNUM nSect;
 
-    if (adfReadEntryBlock( vol, parSect, &parent )!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadEntryBlock ( vol, parSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
     if (nSect==-1) {
         (*adfEnv.wFct)("adfSetEntryComment : entry not found");
@@ -315,17 +316,25 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
     entry.commLen = (uint8_t) min ( (unsigned) MAXCMMTLEN, strlen ( newCmt ) );
     memcpy(entry.comment, newCmt, entry.commLen);
 
-    if (entry.secType==ST_DIR)
-        adfWriteDirBlock(vol, nSect, (struct bDirBlock*)&entry);
-    else if (entry.secType==ST_FILE)
-        adfWriteFileHdrBlock(vol, nSect, (struct bFileHeaderBlock*)&entry);
-    else
+    if ( entry.secType == ST_DIR ) {
+        rc = adfWriteDirBlock ( vol, nSect, (struct bDirBlock*) &entry );
+        if ( rc != RC_OK )
+            return rc;
+    }
+    else if ( entry.secType == ST_FILE ) {
+        rc = adfWriteFileHdrBlock ( vol, nSect, (struct bFileHeaderBlock*) &entry );
+        if ( rc != RC_OK )
+            return rc;
+    }
+    else {
         (*adfEnv.wFct)("adfSetEntryComment : entry secType incorrect");
+        // abort here?
+    }
 
     if (isDIRCACHE(vol->dosType))
-        adfUpdateCache(vol, &parent, (struct bEntryBlock*)&entry, TRUE);
+        rc = adfUpdateCache ( vol, &parent, (struct bEntryBlock*) &entry, TRUE );
 
-    return RC_OK;
+    return rc;
 }
 
 
