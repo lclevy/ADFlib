@@ -1258,7 +1258,7 @@ RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
     {
         adfEnv.eFct ( "adfReadFileExtBlockN: invalid ext block %d, file '%s' has %d ext. blocks.",
                       extBlock, file->fileHdr->fileName, nExtBlocks );
-        return RC_ERROR;
+        return RC_BLOCKOUTOFRANGE;
     }
 
     // traverse the ext. blocks until finding (and reading)
@@ -1269,7 +1269,7 @@ RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
         if ( adfReadFileExtBlock ( file->volume, nSect, fext ) != RC_OK ) {
             adfEnv.eFct ( "adfReadFileExtBlockN: error reading ext block %d, file '%s'",
                           nSect, file->fileHdr->fileName );
-            return RC_ERROR;
+            return RC_BLOCKREAD;
         }
 #ifdef DEBUG_ADF_FILE
         //show_bFileExtBlock ( fext );
@@ -1280,7 +1280,7 @@ RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
     if ( i != extBlock ) {
         adfEnv.eFct ( "adfReadFileExtBlockN: error reading ext block %d, file '%s'",
                       extBlock, file->fileHdr->fileName );
-        return RC_ERROR;
+        return RC_BLOCKREAD;
     }
     return RC_OK;
 }
