@@ -192,27 +192,32 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
 RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
                            struct bBootBlock * const boot )
 {
-	uint8_t buf[1024];
+    uint8_t buf[1024];
 	
 /*puts("22");*/
-	if (adfReadBlock(vol, 0, buf)!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, 0, buf );
+    if ( rc != RC_OK )
+        return rc;
 /*puts("11");*/
-    if (adfReadBlock(vol, 1, buf+LOGICAL_BLOCK_SIZE)!=RC_OK)
-		return RC_ERROR;
+    rc = adfReadBlock ( vol, 1, buf + LOGICAL_BLOCK_SIZE );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(boot, buf, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
     swapEndian((uint8_t*)boot,SWBL_BOOT);
 #endif
-	if ( strncmp("DOS",boot->dosType,3)!=0 ) {
-		(*adfEnv.wFct)("adfReadBootBlock : DOS id not found");
-		return RC_ERROR;
+    if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
+        adfEnv.wFct("adfReadBootBlock : DOS id not found");
+        return RC_ERROR;
     }
 
-	if ( boot->data[0]!=0 && adfBootSum(buf)!=boot->checkSum ) {
+    if ( boot->data[0] != 0 &&
+         adfBootSum(buf) != boot->checkSum )
+    {
 /*printf("compsum=%lx sum=%lx\n",	adfBootSum(buf),boot->checkSum );*/		/* BV */
-		(*adfEnv.wFct)("adfReadBootBlock : incorrect checksum"); 
+        adfEnv.wFct("adfReadBootBlock : incorrect checksum");
+        return RC_BLOCKSUM;
     }
 
     return RC_OK;
