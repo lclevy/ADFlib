@@ -406,7 +406,8 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )
     {
-        (*adfEnv.wFct)("adfReadBlock : nSect out of range");
+        adfEnv.wFct("adfReadBlock : nSect %u out of range", nSect );
+        return RC_BLOCKOUTOFRANGE;
     }
 
     RETCODE rc = adfReadBlockDev ( vol->dev, pSect, 512, buf );
@@ -442,8 +443,11 @@ RETCODE adfWriteBlock ( struct AdfVolume * const vol,
     if (adfEnv.useRWAccess)
         adfEnv.rwhAccess ( (SECTNUM) pSect, (SECTNUM) nSect, TRUE );
  
-    if (pSect< (unsigned) vol->firstBlock || pSect> (unsigned) vol->lastBlock) {
-        (*adfEnv.wFct)("adfWriteBlock : nSect out of range");
+    if ( pSect < (unsigned) vol->firstBlock ||
+         pSect > (unsigned) vol->lastBlock )
+    {
+        adfEnv.wFct ( "adfWriteBlock : nSect %u out of range", nSect );
+        return RC_BLOCKOUTOFRANGE;
     }
 
     RETCODE rc = adfWriteBlockDev ( vol->dev, pSect, 512, buf );
