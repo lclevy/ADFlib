@@ -37,6 +37,7 @@
 
 #include "defendian.h"
 
+
 union u{
     int32_t l;
     char c[4];
@@ -219,23 +220,23 @@ void adfChgEnvProp(int prop, void *newval)
 
     switch(prop) {
     case PR_VFCT:
-        *(void **) (&adfEnv.vFct) = newval;
+        adfEnv.vFct = (AdfLogFct) newval;
         break;
     case PR_WFCT:
-        *(void **) (&adfEnv.wFct) = newval;
+        adfEnv.wFct = (AdfLogFct) newval;
         break;
     case PR_EFCT:
-        *(void **) (&adfEnv.eFct) = newval;
+        adfEnv.eFct = (AdfLogFct) newval;
         break;
     case PR_NOTFCT:
-        *(void **) (&adfEnv.notifyFct) = newval;
+        adfEnv.notifyFct = (AdfNotifyFct) newval;
         break;
     case PR_USE_NOTFCT:
         newBool = (BOOL*)newval;
 		adfEnv.useNotify = *newBool;        
         break;
     case PR_PROGBAR:
-        *(void **) (&adfEnv.progressBar) = newval;
+        adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
     case PR_USE_PROGBAR:
         newBool = (BOOL*)newval;
@@ -246,7 +247,7 @@ void adfChgEnvProp(int prop, void *newval)
 		adfEnv.useRWAccess = *newBool;        
         break;
     case PR_RWACCESS:
-        *(void **) (&adfEnv.rwhAccess) = newval;
+        adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
         break;
     case PR_USEDIRC:
         newBool = (BOOL*)newval;
