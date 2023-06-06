@@ -256,16 +256,16 @@ void adfChgEnvProp(int prop, void *newval)
 void adfSetEnvFct ( const AdfLogFct eFct,
                     const AdfLogFct wFct,
                     const AdfLogFct vFct,
-                    void(*notFct)(SECTNUM,int) )
+                    void(*notifyFct)(SECTNUM,int) )
 {
-    if (*eFct!=0)
-		adfEnv.eFct = *eFct;
-    if (*wFct!=0)
-		adfEnv.wFct = *wFct;
-    if (*vFct!=0)
-		adfEnv.vFct = *vFct;
-    if (*notFct!=0)
-        adfEnv.notifyFct = *notFct;
+    if ( eFct != NULL )
+        adfEnv.eFct = eFct;
+    if ( wFct != NULL )
+        adfEnv.wFct = wFct;
+    if ( vFct != NULL )
+        adfEnv.vFct = vFct;
+    if ( notifyFct != NULL )
+        adfEnv.notifyFct = notifyFct;
 }
 
 
