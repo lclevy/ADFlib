@@ -45,12 +45,15 @@
 typedef void (*AdfLogFct)(const char * const format, ...);
 //typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
+typedef void (*AdfNotifyFct)(SECTNUM, int);
+
+
 struct AdfEnv {
     AdfLogFct vFct;       /* verbose callback function */
     AdfLogFct wFct;       /* warning callback function */
     AdfLogFct eFct;       /* error callback function */
 
-    void (*notifyFct)(SECTNUM, int);
+    AdfNotifyFct notifyFct;
     BOOL useNotify;
 
     void (*rwhAccess)(SECTNUM,SECTNUM,BOOL);
@@ -66,10 +69,12 @@ struct AdfEnv {
 
 
 PREFIX void adfEnvInitDefault();
-PREFIX void adfSetEnvFct ( const AdfLogFct eFct,
-                           const AdfLogFct wFct,
-                           const AdfLogFct vFct,
-                           void(*notifyFct)(SECTNUM, int) );
+
+PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
+                           const AdfLogFct    wFct,
+                           const AdfLogFct    vFct,
+                           const AdfNotifyFct notifyFct );
+
 PREFIX void adfEnvCleanUp();
 PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();

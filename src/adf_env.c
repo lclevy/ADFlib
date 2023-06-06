@@ -259,10 +259,10 @@ void adfChgEnvProp(int prop, void *newval)
  *  adfSetEnv
  *
  */
-void adfSetEnvFct ( const AdfLogFct eFct,
-                    const AdfLogFct wFct,
-                    const AdfLogFct vFct,
-                    void(*notifyFct)(SECTNUM,int) )
+void adfSetEnvFct ( const AdfLogFct    eFct,
+                    const AdfLogFct    wFct,
+                    const AdfLogFct    vFct,
+                    const AdfNotifyFct notifyFct )
 {
     if ( eFct != NULL )
         adfEnv.eFct = eFct;
