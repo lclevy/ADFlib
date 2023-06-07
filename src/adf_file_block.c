@@ -25,17 +25,18 @@
  *
  */
 
-#include <stdlib.h>
-#include <string.h>
 
 #include "adf_file_block.h"
 
 #include "adf_bitm.h"
 #include "adf_env.h"
-#include "adf_err.h"
 #include "adf_raw.h"
 #include "adf_util.h"
 #include "defendian.h"
+
+#include <stdlib.h>
+#include <string.h>
+
 
 /*
  * adfGetFileBlocks
