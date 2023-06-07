@@ -405,11 +405,10 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
                            struct bRDSKblock * const blk )
 {
     UCHAR buf[256];
-    RETCODE rc = RC_OK;
 
-    RETCODE rc2 = adfReadBlockDev ( dev, 0, 256, buf );
-    if (rc2!=RC_OK)
-       return(RC_ERROR);
+    RETCODE rc = adfReadBlockDev ( dev, 0, 256, buf );
+    if ( rc != RC_OK )
+       return rc;
 
     memcpy(blk, buf, 256);
 #ifdef LITT_ENDIAN
