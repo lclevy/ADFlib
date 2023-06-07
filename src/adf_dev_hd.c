@@ -141,8 +141,9 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     struct AdfVolume * vol;
     unsigned len;
 
-    if (adfReadRDSKblock( dev, &rdsk )!=RC_OK)
-        return RC_ERROR;
+    RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
+    if ( rc != RC_OK )
+        return rc;
 
     dev->cylinders = rdsk.cylinders;
     dev->heads = rdsk.heads;
@@ -154,17 +155,18 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     dev->nVol=0;
     vList = NULL;
     while( next!=-1 ) {
-        if (adfReadPARTblock( dev, next, &part )!=RC_OK) {
+        rc = adfReadPARTblock ( dev, next, &part );
+        if ( rc != RC_OK ) {
             adfFreeTmpVolList(listRoot);
             (*adfEnv.eFct)("adfMountHd : malloc");
-            return RC_ERROR;
+            return rc;
         }
 
         vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
-        if (!vol) {
+        if ( vol == NULL ) {
             adfFreeTmpVolList(listRoot);
             (*adfEnv.eFct)("adfMountHd : malloc");
-            return RC_ERROR;
+            return RC_MALLOC;
         }
         vol->volName=NULL;
         dev->nVol++;
@@ -176,10 +178,10 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 
         len = (unsigned) min ( 31, part.nameLen );
         vol->volName = (char*)malloc(len+1);
-        if (!vol->volName) { 
+        if ( vol->volName == NULL ) { 
             adfFreeTmpVolList(listRoot);
             (*adfEnv.eFct)("adfMount : malloc");
-            return RC_ERROR;
+            return RC_MALLOC;
         }
         memcpy(vol->volName,part.name,len);
         vol->volName[len] = '\0';
@@ -195,7 +197,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         if (vList==NULL) {
             adfFreeTmpVolList(listRoot);
             (*adfEnv.eFct)("adfMount : newCell() malloc");
-            return RC_ERROR;
+            return RC_MALLOC;
         }
 
         next = part.next;
@@ -204,10 +206,10 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     /* stores the list in an array */
     dev->volList = (struct AdfVolume **) malloc (
         sizeof(struct AdfVolume *) * (unsigned) dev->nVol );
-    if (!dev->volList) { 
+    if ( dev->volList == NULL ) {
         adfFreeTmpVolList(listRoot);
-        (*adfEnv.eFct)("adfMount : unknown device type");
-        return RC_ERROR;
+        (*adfEnv.eFct)("adfMount : malloc");
+        return RC_MALLOC;
     }
     vList = listRoot;
     for(i=0; i<dev->nVol; i++) {
@@ -218,20 +220,23 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
-        if (adfReadFSHDblock( dev, next, &fshd )!=RC_OK) {
+        rc = adfReadFSHDblock ( dev, next, &fshd ); 
+        if ( rc != RC_OK ) {
             for ( i = 0 ; i < dev->nVol ; i++ )
                 free ( dev->volList[i] );
             free(dev->volList);
             (*adfEnv.eFct)("adfMount : adfReadFSHDblock");
-            return RC_ERROR;
+            return rc;
         }
         next = fshd.next;
     }
 
     next = fshd.segListBlock;
     while( next!=-1 ) {
-        if (adfReadLSEGblock( dev, next, &lseg )!=RC_OK) {
+        rc = adfReadLSEGblock ( dev, next, &lseg ); 
+        if ( rc != RC_OK ) {
             (*adfEnv.wFct)("adfMount : adfReadLSEGblock");
+            // abort here ?
         }
         next = lseg.next;
     }
