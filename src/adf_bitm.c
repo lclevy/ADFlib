@@ -334,12 +334,13 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 
     if ( ! adfGetFreeBlocks ( vol, (int) vol->bitmapSize, sectList ) ) {
         free(sectList);
-		return RC_ERROR;
+        return RC_VOLFULL;
     }
-	
-    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
+
+    RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+    if ( rc != RC_OK ) {
         free(sectList);
-		return RC_ERROR;
+        return rc;
     }
 
     unsigned n = min( vol->bitmapSize, (uint32_t) BM_SIZE );
@@ -364,7 +365,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 
         if ( ! adfGetFreeBlocks ( vol, (int) nExtBlock, bitExtBlock ) ) {
            free(sectList); free(bitExtBlock);
-           return RC_MALLOC;
+           return RC_VOLFULL;
         }
 
         unsigned k = 0;
@@ -380,10 +381,13 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
                 bitme.nextBlock = bitExtBlock[ k+1 ];
             else
                 bitme.nextBlock = 0;
-            if (adfWriteBitmapExtBlock(vol, bitExtBlock[ k ], &bitme)!=RC_OK) {
+
+            rc = adfWriteBitmapExtBlock ( vol, bitExtBlock[ k ], &bitme );
+            if ( rc != RC_OK ) {
                 free(sectList); free(bitExtBlock);
-				return RC_ERROR;
+                return rc;
             }
+
             k++;
         }
         free( bitExtBlock );
@@ -391,10 +395,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
     }
     free( sectList);
 
-    if ( adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK )
-        return RC_ERROR;
-    
-    return RC_OK;
+    return adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
 }
 
 /*
