@@ -439,16 +439,16 @@ RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
                               const struct bBitmapBlock * const bitm )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
-	uint32_t newSum;
-	
-	memcpy(buf,bitm,LOGICAL_BLOCK_SIZE);
+
+    memcpy ( buf, bitm, LOGICAL_BLOCK_SIZE );
+
 #ifdef LITT_ENDIAN
     /* little to big */
-    swapEndian(buf, SWBL_BITMAP);
+    swapEndian ( buf, SWBL_BITMAP );
 #endif
 
-	newSum = adfNormalSum(buf, 0, LOGICAL_BLOCK_SIZE);
-    swLong(buf,newSum);
+    uint32_t newSum = adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE );
+    swLong ( buf, newSum );
 
 /*	dumpBlock((uint8_t*)buf);*/
 
