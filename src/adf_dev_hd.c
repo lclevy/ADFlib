@@ -487,11 +487,11 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
                            struct bPARTblock * const blk )
 {
     UCHAR buf[ sizeof(struct bPARTblock) ];
-    RETCODE rc2, rc = RC_OK;
 
-    rc2 = adfReadBlockDev ( dev, (uint32_t) nSect, sizeof(struct bPARTblock), buf );
-    if (rc2!=RC_OK)
-       return RC_ERROR;
+    RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
+                                   sizeof(struct bPARTblock), buf );
+    if ( rc != RC_OK )
+       return rc;
 
     memcpy(blk, buf, sizeof(struct bPARTblock));
 #ifdef LITT_ENDIAN
