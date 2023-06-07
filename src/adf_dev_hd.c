@@ -114,6 +114,10 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 
     if (vol->rootBlock==1) {
         (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
+        free ( dev->volList );
+        dev->volList = NULL;
+        free ( vol );
+        dev->nVol = 0;
         return RC_ERROR;
     }
     vol->lastBlock = vol->rootBlock*2 - 1 ;
