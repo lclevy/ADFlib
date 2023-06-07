@@ -512,13 +512,13 @@ void adfFreeBitmap ( struct AdfVolume * const vol )
     vol->bitmapSize = 0;
 
     free(vol->bitmapTable);
-	vol->bitmapTable = 0;
+    vol->bitmapTable = NULL;
 
     free(vol->bitmapBlocks);
-	vol->bitmapBlocks = 0;
+    vol->bitmapBlocks = NULL;
 
     free(vol->bitmapBlocksChg);
-	vol->bitmapBlocksChg = 0;
+    vol->bitmapBlocksChg = NULL;
 }
 
 
