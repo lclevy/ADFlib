@@ -369,7 +369,7 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
         sizeof(struct AdfVolume *) * n );
     if (!dev->volList) {
         (*adfEnv.eFct)("adfCreateFlop : malloc");
-        return RC_ERROR;
+        return RC_MALLOC;
     }
     for(i=0; i<n; i++) {
         dev->volList[i] = adfCreateVol( dev, 
@@ -393,10 +393,7 @@ vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
-
-    if ( adfCreateHdHeader ( dev, (int) n, partList ) != RC_OK )
-        return RC_ERROR;
-    return RC_OK;
+    return adfCreateHdHeader ( dev, (int) n, partList );
 }
 
 
