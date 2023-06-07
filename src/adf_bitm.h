@@ -30,7 +30,7 @@
 #include "adf_blk.h"
 #include "adf_err.h"
 #include "adf_vol.h"
-#include"prefix.h"
+#include "prefix.h"
 
 RETCODE adfReadBitmapBlock ( struct AdfVolume * const    vol,
                              const SECTNUM               nSect,
