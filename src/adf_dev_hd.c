@@ -78,15 +78,15 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     dev->devType = DEVTYPE_HARDFILE;
     dev->nVol = 0;
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
-    if (!dev->volList) { 
+    if ( dev->volList == NULL ) {
         (*adfEnv.eFct)("adfMountHdFile : malloc");
-        return RC_ERROR;
+        return RC_MALLOC;
     }
 
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
-    if (!vol) {
+    if ( vol == NULL ) {
         (*adfEnv.eFct)("adfMountHdFile : malloc");
-        return RC_ERROR;
+        return RC_MALLOC;
     }
     dev->volList[0] = vol;
     dev->nVol++;      /* fixed by Dan, ... and by Gary */
