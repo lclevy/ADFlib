@@ -291,9 +291,10 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     rdsk.badBlockList = -1;
     rdsk.partitionList = 1;
     rdsk.fileSysHdrList = 1 + dev->nVol;
-	
-    if (adfWriteRDSKblock(dev, &rdsk)!=RC_OK)
-        return RC_ERROR;
+
+    RETCODE rc = adfWriteRDSKblock ( dev, &rdsk );
+    if ( rc != RC_OK )
+        return rc;
 
     /* PART */
 
@@ -318,9 +319,10 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
         memcpy ( part.dosType, "DOS", 3 );
 
         part.dosType[3] = partList[i]->volType & 0x01;
-			
-        if (adfWritePARTblock(dev, j, &part))
-            return RC_ERROR;
+
+        rc = adfWritePARTblock ( dev, j, &part );
+        if ( rc != RC_OK )
+            return rc;
         j++;
     }
 
@@ -330,16 +332,15 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     fshd.dosType[3] = (char) partList[0]->volType;
     fshd.next = -1;
     fshd.segListBlock = j+1;
-    if (adfWriteFSHDblock(dev, j, &fshd)!=RC_OK)
-        return RC_ERROR;
+    rc = adfWriteFSHDblock ( dev, j, &fshd );
+    if ( rc != RC_OK )
+        return rc;
     j++;
 	
     /* LSEG */
     lseg.next = -1;
-    if (adfWriteLSEGblock(dev, j, &lseg)!=RC_OK)
-        return RC_ERROR;
 
-    return RC_OK;
+    return adfWriteLSEGblock ( dev, j, &lseg );
 }
 
 
