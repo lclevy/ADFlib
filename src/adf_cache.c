@@ -612,10 +612,7 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
     dirc.recordsNb = 0;
     dirc.nextDirC = 0;
 
-    if (adfWriteDirCBlock(vol, nCache, &dirc)!=RC_OK)
-		return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteDirCBlock ( vol, nCache, &dirc );
 }
 
 
@@ -629,8 +626,9 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
 {
     uint8_t buf[512];
 
-    if ( adfReadBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(dirc,buf,512);
 #ifdef LITT_ENDIAN
@@ -670,11 +668,8 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
 /*puts("adfWriteDirCBlock");*/
-
-    return RC_OK;
+    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 /*################################################################################*/
