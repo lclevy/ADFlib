@@ -28,11 +28,11 @@
  *
  */
 
-#include"prefix.h"
 
 #include "adf_dev.h"
 #include "adf_err.h"
 #include "hd_blk.h"
+#include "prefix.h"
 
 RETCODE adfMountHd ( struct AdfDevice * const dev );
 RETCODE adfMountHdFile ( struct AdfDevice * const dev );

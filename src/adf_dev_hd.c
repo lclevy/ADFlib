@@ -26,22 +26,19 @@
  */
 
 
-#include<stdlib.h>
-#include<string.h>
+#include "adf_dev_hd.h"
 
-#include"adf_str.h"
-#include"hd_blk.h"
-#include"adf_raw.h"
-#include"adf_dev.h"
-#include"adf_dev_dump.h"
-#include"adf_dev_hd.h"
-#include"adf_util.h"
-#include "adf_vol.h"
-#include"adf_nativ.h"
+#include "adf_dev_dump.h"
 #include "adf_env.h"
-#include "adf_err.h"
+#include "adf_raw.h"
+#include "adf_util.h"
+#include "adf_vol.h"
 
-#include"defendian.h"
+#include "defendian.h"
+#include "hd_blk.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
