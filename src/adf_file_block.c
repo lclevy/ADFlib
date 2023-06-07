@@ -97,9 +97,10 @@ RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
 {
     int i;
     struct AdfFileBlocks fileBlocks;
-    RETCODE rc = RC_OK;
 
-    adfGetFileBlocks(vol,entry,&fileBlocks);
+    RETCODE rc = adfGetFileBlocks ( vol, entry, &fileBlocks );
+    if ( rc != RC_OK )
+        return rc;
 
     for(i=0; i<fileBlocks.nbData; i++) {
         adfSetBlockFree(vol, fileBlocks.data[i]);
