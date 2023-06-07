@@ -184,6 +184,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         vol->volName = (char*)malloc(len+1);
         if ( vol->volName == NULL ) { 
             adfFreeTmpVolList(listRoot);
+            free ( vol );
             (*adfEnv.eFct)("adfMount : malloc");
             return RC_MALLOC;
         }
