@@ -397,6 +397,7 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
     struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
+    RETCODE rc = RC_OK;
 
     entryLen = adfEntry2CacheEntry(entry, &newEntry);
 /*printf("adfAddInCache--%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
@@ -407,13 +408,17 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 */
     nSect = parent->extension;
     do {
-        if (adfReadDirCBlock(vol, nSect, &dirc)!=RC_OK)
-            return RC_ERROR;
+        rc = adfReadDirCBlock ( vol, nSect, &dirc );
+        if ( rc != RC_OK )
+            return rc;
+
         offset = 0; n = 0;
 /*printf("parent=%4ld\n",dirc.parent);*/
         while(n < dirc.recordsNb) {
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
-                return RC_ERROR;
+            rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
+            if ( rc != RC_OK )
+                return rc;
+
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     caEntry.header, caEntry.type, caEntry.size, caEntry.protect,
     caEntry.days, caEntry.mins/60, caEntry.mins%60, 
@@ -459,17 +464,19 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 
         adfPutCacheEntry(&dirc, &offset, &newEntry);
         newDirc.recordsNb++;
-        if (adfWriteDirCBlock(vol, nCache, &newDirc)!=RC_OK)
-			return RC_ERROR;
+
+        rc = adfWriteDirCBlock ( vol, nCache, &newDirc );
+        if ( rc != RC_OK )
+            return rc;
+
         dirc.nextDirC = nCache;
     }
 /*printf("dirc.headerKey=%ld\n",dirc.headerKey);*/
-    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-		return RC_ERROR;
+
 /*if (strcmp(entry->name,"file_5u")==0)
 dumpBlock(&dirc);
 */
-    return RC_OK;
+    return adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
 }
 
 
