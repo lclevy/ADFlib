@@ -315,12 +315,18 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
 	nSect = parent->extension;
     found = FALSE;
     do {
-        adfReadDirCBlock(vol, nSect, &dirc);
+        rc = adfReadDirCBlock ( vol, nSect, &dirc );
+        if ( rc != RC_OK )
+            return rc;
+
         offset = 0; n = 0;
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
-                return RC_ERROR;
+
+            rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
+            if ( rc != RC_OK)
+                return rc;
+
             found = ( caEntry.header == (uint32_t) headerKey );
             if (found) {
                 entryLen = offset-oldOffset;
@@ -339,19 +345,30 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
                             dirc.records[i] = 0;
                     }
                     dirc.recordsNb--;
-                    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-						return -1;
+
+                    rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
                 else {
                     /* dirc.recordsNb ==1 or == 0 , prevSect!=-1 : 
                     * the only record in this dirc block and a previous dirc block exists 
                     */
                     adfSetBlockFree(vol, dirc.headerKey);
-                    adfReadDirCBlock(vol, prevSect, &dirc);
-                    dirc.nextDirC = 0L;
-                    adfWriteDirCBlock(vol, prevSect, &dirc);
 
-                    adfUpdateBitmap(vol);
+                    rc = adfReadDirCBlock ( vol, prevSect, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
+
+                    dirc.nextDirC = 0L;
+
+                    rc = adfWriteDirCBlock ( vol, prevSect, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
+
+                    rc = adfUpdateBitmap ( vol );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
             }
             n++;
