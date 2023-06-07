@@ -568,8 +568,8 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
     UCHAR buf[sizeof(struct bFSHDblock)];
 
     RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
-    if (rc!=RC_OK)
-        return RC_ERROR;
+    if ( rc != RC_OK )
+        return rc;
 		
     memcpy(blk, buf, sizeof(struct bFSHDblock));
 #ifdef LITT_ENDIAN
@@ -588,7 +588,7 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
     if ( blk->checksum != adfNormalSum(buf,8,256) )
         (*adfEnv.wFct)( "ReadFSHDblock : incorrect checksum");
 
-    return RC_OK;
+    return rc;
 }
 
 
@@ -638,8 +638,8 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
 
     RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
                                    sizeof(struct bLSEGblock), buf );
-    if (rc!=RC_OK)
-        return RC_ERROR;
+    if ( rc != RC_OK )
+        return rc;
 		
     memcpy(blk, buf, sizeof(struct bLSEGblock));
 #ifdef LITT_ENDIAN
