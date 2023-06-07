@@ -69,7 +69,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
     if ( rc != RC_OK )
         return rc;
 
-    for ( int i = 0 ; i<vol->bitmapSize ; i++ )
+    for ( unsigned i = 0 ; i < vol->bitmapSize ; i++ )
         if ( vol->bitmapBlocksChg[i] ) {
             rc = adfWriteBitmapBlock ( vol, vol->bitmapBlocks[i],
                                        vol->bitmapTable[i] );
@@ -300,7 +300,7 @@ RETCODE adfCreateBitmap ( struct AdfVolume * const vol )
 {
     SECTNUM nBlock = vol->lastBlock - vol->firstBlock + 1 - 2;
 
-    vol->bitmapSize = nBlock2bitmapSize ( nBlock );
+    vol->bitmapSize = nBlock2bitmapSize ( (uint32_t) nBlock );
     RETCODE rc = adfBitmapAllocate ( vol );
     if ( rc != RC_OK )
         return rc;
@@ -323,9 +323,6 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 {
     struct bBitmapExtBlock bitme;
     SECTNUM *bitExtBlock;
-    int n, i, k;
-    int nExtBlock;
-    int nBlock;
     SECTNUM *sectList;
     struct bRootBlock root;
 
@@ -335,7 +332,7 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
         return RC_MALLOC;
     }
 
-    if (!adfGetFreeBlocks(vol, vol->bitmapSize, sectList)) {
+    if ( ! adfGetFreeBlocks ( vol, (int) vol->bitmapSize, sectList ) ) {
         free(sectList);
 		return RC_ERROR;
     }
@@ -344,17 +341,17 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
         free(sectList);
 		return RC_ERROR;
     }
-    nBlock = 0;
-    n = min( vol->bitmapSize, BM_SIZE );
-    for(i=0; i<n; i++) {
+
+    unsigned n = min( vol->bitmapSize, (uint32_t) BM_SIZE );
+    for ( unsigned i = 0 ; i < n ; i++ ) {
         root.bmPages[i] = vol->bitmapBlocks[i] = sectList[i];
     }
-    nBlock = n;
+    unsigned nBlock = n;
 
     /* for devices with more than 25*127 blocks == hards disks */
     if (vol->bitmapSize>BM_SIZE) {
 
-        nExtBlock = (vol->bitmapSize-BM_SIZE)/127;
+        unsigned nExtBlock = (vol->bitmapSize - BM_SIZE ) / 127;
         if ((vol->bitmapSize-BM_SIZE)%127)
             nExtBlock++;
 
@@ -365,21 +362,21 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
             return RC_MALLOC;
         }
 
-        if (!adfGetFreeBlocks(vol, nExtBlock, bitExtBlock)) {  
+        if ( ! adfGetFreeBlocks ( vol, (int) nExtBlock, bitExtBlock ) ) {
            free(sectList); free(bitExtBlock);
            return RC_MALLOC;
         }
 
-        k = 0;
+        unsigned k = 0;
         root.bmExt = bitExtBlock[ k ];
         while( nBlock<vol->bitmapSize ) {
-            i=0;
+            int i = 0;
             while( i<127 && nBlock<vol->bitmapSize ) {
                 bitme.bmPages[i] = vol->bitmapBlocks[nBlock] = sectList[i];
                 i++;
                 nBlock++;
             }
-            if ( k+1<nExtBlock )
+            if ( k + 1 < nExtBlock )
                 bitme.nextBlock = bitExtBlock[ k+1 ];
             else
                 bitme.nextBlock = 0;
@@ -510,9 +507,7 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
  */
 void adfFreeBitmap ( struct AdfVolume * const vol )
 {
-    int i;
-
-    for(i=0; i<vol->bitmapSize; i++)
+    for( unsigned i = 0 ; i < vol->bitmapSize ; i++ )
         free(vol->bitmapTable[i]);
     vol->bitmapSize = 0;
 

@@ -51,7 +51,7 @@ struct AdfVolume {
 
     BOOL mounted;
 
-    int32_t bitmapSize;             /* in blocks */
+    uint32_t bitmapSize;         /* in blocks */
     SECTNUM *bitmapBlocks;       /* bitmap blocks pointers */
     struct bBitmapBlock **bitmapTable;
     BOOL *bitmapBlocksChg;
