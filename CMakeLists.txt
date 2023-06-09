@@ -29,6 +29,7 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
       -Wsign-conversion
       -pedantic
       -Werror-implicit-function-declaration
+      -Werror=format-security
     #  -pedantic-errors
     #  $<$<CONFIG:DEBUG>:-g3>
     #  $<$<CONFIG:DEBUG>:-Og>
