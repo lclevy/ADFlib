@@ -29,7 +29,7 @@
 #ifndef _HD_BLK_H
 #define _HD_BLK_H 1
 
-#include "adf_defs.h"
+#include "adf_types.h"
 
 /* ------- RDSK ---------*/
 

@@ -35,7 +35,7 @@ extern "C" {
 /* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
 #include "prefix.h"
 
-#include "adf_defs.h"
+#include "adf_types.h"
 
 /* util */
 #include "adf_util.h"
