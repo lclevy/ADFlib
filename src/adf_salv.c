@@ -432,9 +432,10 @@ RETCODE adfCheckEntry ( struct AdfVolume * const vol,
                         const int                level )
 {
     struct bEntryBlock entry;
-    RETCODE rc;
 
-    adfReadEntryBlock(vol,nSect,&entry);
+    RETCODE rc = adfReadEntryBlock ( vol, nSect, &entry );
+    if ( rc != RC_OK )
+        return rc;    
 
     switch(entry.secType) {
     case ST_FILE:
