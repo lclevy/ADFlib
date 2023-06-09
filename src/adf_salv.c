@@ -352,13 +352,19 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
     struct AdfFileBlocks fileBlocks;
     int n;
  
-    adfGetFileBlocks(vol,file,&fileBlocks);
+    RETCODE rc = adfGetFileBlocks ( vol, file, &fileBlocks );
+    if ( rc != RC_OK )
+        return rc;
+
 /*printf("data %ld ext %ld\n",fileBlocks.nbData,fileBlocks.nbExtens);*/
     if (isOFS(vol->dosType)) {
         /* checks OFS datablocks */
         for(n=0; n<fileBlocks.nbData; n++) {
 /*printf("%ld\n",fileBlocks.data[n]);*/
-            adfReadDataBlock(vol,fileBlocks.data[n],&dataBlock);
+            rc = adfReadDataBlock ( vol, fileBlocks.data[n], &dataBlock );
+            if ( rc != RC_OK )
+                goto adfCheckFile_free;
+
             if (dataBlock.headerKey!=fileBlocks.header)
                 (*adfEnv.wFct)("adfCheckFile : headerKey incorrect");
             if ( dataBlock.seqNum != (unsigned) n + 1 )
@@ -375,8 +381,12 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
             }
         }
     }
+
     for(n=0; n<fileBlocks.nbExtens; n++) {
-        adfReadFileExtBlock(vol,fileBlocks.extens[n],&extBlock);
+        rc = adfReadFileExtBlock ( vol, fileBlocks.extens[n], &extBlock );
+        if ( rc != RC_OK )
+            goto adfCheckFile_free;
+
         if (extBlock.parent!=file->headerKey)
             (*adfEnv.wFct)("adfCheckFile : extBlock parent incorrect");
         if (n<fileBlocks.nbExtens-1) {
@@ -388,10 +398,11 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
                 (*adfEnv.wFct)("adfCheckFile : nextData incorrect");
     }
 
+adfCheckFile_free:
     free(fileBlocks.data);
     free(fileBlocks.extens);
 
-    return RC_OK;
+    return rc;
 }
 
 
