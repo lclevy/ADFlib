@@ -36,6 +36,7 @@ extern "C" {
 #include "prefix.h"
 
 #include "adf_types.h"
+#include "adf_version.h"
 
 /* util */
 #include "adf_util.h"
@@ -72,7 +73,7 @@ extern "C" {
 /* low level API */
 
 #include "adf_bitm.h"
-
+#include "adf_raw.h"
 
 #ifdef __cplusplus
 }
