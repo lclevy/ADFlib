@@ -95,7 +95,10 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
 /*printf("%p\n",block);*/
             }
 
-            adfReadGenBlock(vol, i, block);
+            if ( adfReadGenBlock ( vol, i, block ) != RC_OK ) {
+                adfFreeDelList ( head );
+                return NULL;
+            }
 
             delEnt = (block->type==T_HEADER 
                 && (block->secType==ST_DIR || block->secType==ST_FILE) );
