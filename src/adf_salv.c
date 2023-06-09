@@ -125,8 +125,9 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
     unsigned len;
     char name[MAXNAMELEN+1];
 
-    if ( adfReadBlock ( vol, (unsigned) nSect, buf ) != RC_OK )
-        return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, (unsigned) nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
     block->type =(int) swapLong(buf);
     block->secType =(int) swapLong(buf+vol->blockSize-4);
