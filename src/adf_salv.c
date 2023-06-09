@@ -270,7 +270,9 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
         return RC_ERROR;
     }
 
-    adfGetFileBlocks(vol, entry, &fileBlocks);
+    rc = adfGetFileBlocks ( vol, entry, &fileBlocks );
+    if ( rc != RC_OK )
+        return rc;
 
     for(i=0; i<fileBlocks.nbData; i++)
         if ( !adfIsBlockFree(vol,fileBlocks.data[i]) )
@@ -293,14 +295,16 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     strncpy(name, entry->fileName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
     /* insert the entry in the parent hashTable, with the headerKey sector pointer */
-    adfCreateEntry(vol, &parent, name, entry->headerKey);
+    if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 )
+        return RC_ERROR;
 
-    if (isDIRCACHE(vol->dosType))
-        adfAddInCache(vol, &parent, (struct bEntryBlock *)entry);
+    if (isDIRCACHE(vol->dosType)) {
+        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
+        if ( rc != RC_OK )
+            return rc;
+    }
 
-    adfUpdateBitmap(vol);
-
-    return RC_OK;
+    return adfUpdateBitmap ( vol );
 }
 
 
