@@ -25,8 +25,7 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_vol.c
 
 adfincdir = $(includedir)/adf
-adfinc_HEADERS  = adf_defs.h \
-                  adf_dev.h \
+adfinc_HEADERS  = adf_dev.h \
                   adf_dev_dump.h \
                   adf_dev_flop.h \
                   adf_dev_hd.h \
@@ -47,6 +46,7 @@ adfinc_HEADERS  = adf_defs.h \
                   adf_salv.h \
                   adf_types.h \
                   adf_util.h \
+                  adf_version.h \
                   adf_vol.h \
                   defendian.h \
                   hd_blk.h \

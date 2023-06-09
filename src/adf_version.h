@@ -1,7 +1,7 @@
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_defs.h
+ *  adf_version.h
  *
  *  $Id$
  *
@@ -25,8 +25,8 @@
  */
 
 
-#ifndef _ADF_DEFS_H
-#define _ADF_DEFS_H 1
+#ifndef _ADF_VERSION_H
+#define _ADF_VERSION_H 1
 
 //#include "config.h"
 /* autotools defines this */
@@ -36,5 +36,5 @@
 #define ADFLIB_VERSION "0.8.0"
 #define ADFLIB_DATE "2023-06-05"
 
-#endif /* _ADF_DEFS_H */
+#endif /* _ADF_VERSION_H */
 /*##########################################################################*/
