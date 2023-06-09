@@ -28,6 +28,7 @@
 #include "adf_env.h"
 
 #include "adf_blk.h"
+#include "adf_defs.h"
 #include "adf_nativ.h"
 #include "defendian.h"
 

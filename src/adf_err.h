@@ -26,7 +26,7 @@
  *
  */
 
-#include "adf_defs.h"
+#include "adf_types.h"
 
 typedef enum {
     RC_OK              = 0,

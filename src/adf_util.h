@@ -29,10 +29,70 @@
 #include "adf_types.h"
 #include "prefix.h"
 
+#include <stdlib.h>   // for min(), max() on Windows/MSVC
 
 struct DateTime {
     int year, mon, day, hour, min, sec;
 };
+
+
+/* defines max and min */
+#ifndef max
+#if defined(__clang__) || defined(__GNUC__)
+#define max(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b;       \
+})
+#else
+#define max(a,b)        ((a)>(b) ? (a) : (b))
+#endif
+#endif
+
+#ifndef min
+#if defined(__clang__) || defined(__GNUC__)
+#define min(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b;       \
+})
+#else
+#define min(a,b)        ((a)<(b) ? (a) : (b))
+#endif
+#endif
+
+
+/* (*byte) to (*short) and (*byte) to (*long) conversion */
+
+//#define Short(p) ((p)[0]<<8 | (p)[1])
+//#define Long(p) (Short(p)<<16 | Short(p+2))
+
+static inline uint16_t Short ( const uint8_t * const p ) {
+    return (uint16_t) ( ( p[0] << 8u ) | p[1] );
+}
+
+static inline uint32_t Long ( const uint8_t * const p ) {
+    return (uint32_t) ( Short( p ) << 16 |
+                        Short( p + 2 ) );
+}
+
+
+/* swap short and swap long macros for little endian machines */
+
+//#define swapShort(p) ((p)[0]<<8 | (p)[1])
+//#define swapLong(p) (swapShort(p)<<16 | swapShort(p+2))
+
+static inline uint16_t swapShort ( const uint8_t * const p ) {
+    return (uint16_t) ( ( p[0] << 8 ) | p[1] );
+}
+
+static inline uint32_t swapLong ( const uint8_t * const p ) {
+    return (uint32_t) ( ( swapShort(p) << 16 ) |
+                        swapShort( p + 2 ) );
+}
+
 
 void swLong ( uint8_t * const buf,
               const uint32_t  val );

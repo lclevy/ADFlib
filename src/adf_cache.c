@@ -28,7 +28,6 @@
 #include "adf_cache.h"
 
 #include "adf_bitm.h"
-#include "adf_defs.h"
 #include "adf_dir.h"
 #include "adf_env.h"
 #include "adf_raw.h"
