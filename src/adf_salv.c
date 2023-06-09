@@ -229,16 +229,18 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     name[(int)entry->nameLen] = '\0';
     /* insert the entry in the parent hashTable, with the headerKey sector pointer */
     adfSetBlockUsed(vol,entry->headerKey);
-    adfCreateEntry(vol, &parent, name, entry->headerKey);
+    if ( adfCreateEntry ( vol, &parent, name, entry->headerKey ) == -1 )
+        return RC_ERROR;
 
     if (isDIRCACHE(vol->dosType)) {
-        adfAddInCache(vol, &parent, (struct bEntryBlock *)entry);
+        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
+        if ( rc != RC_OK )
+            return rc;
+
         adfSetBlockUsed(vol,entry->extension);
     }
 
-    adfUpdateBitmap(vol);
-
-    return RC_OK;
+    return adfUpdateBitmap ( vol );
 }
 
 
