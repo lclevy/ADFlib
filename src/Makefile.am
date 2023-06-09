@@ -21,6 +21,7 @@ libadf_la_SOURCES = adf_dev.c \
                     adf_cache.c \
                     adf_link.c \
                     adf_salv.c \
+                    adf_str.c \
                     adf_vol.c
 
 adfincdir = $(includedir)/adf

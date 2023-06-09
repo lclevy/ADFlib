@@ -31,6 +31,7 @@ add_library ( adf
   adf_link.c
   adf_raw.c
   adf_salv.c
+  adf_str.c
   adf_util.c
   adf_vol.c
   generic/adf_nativ.c

@@ -24,7 +24,6 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 #include "adf_util.h"
@@ -57,46 +56,6 @@ void swShort ( uint8_t * const buf,
     buf[0] = (uint8_t) ( (val & 0xff00u) >> 8UL );
     buf[1] = ( val & 0x00ffu );
 }
-
-/*
- * newCell
- *
- * adds a cell at the end the list
- */
-struct AdfList * newCell ( struct AdfList * const list,
-                           void * const           content )
-{
-    struct AdfList * const cell = ( struct AdfList * )
-        malloc ( sizeof ( struct AdfList ) );
-    if (!cell) {
-        (*adfEnv.eFct)("newCell : malloc");
-        return NULL;
-    }
-    cell->content = content;
-    cell->next = cell->subdir = 0;
-    if (list!=NULL)
-        list->next = cell;
-
-    return cell;
-}
-
-
-/*
- * freeList
- *
- */
-void freeList ( struct AdfList * const list )
-{
-    if (list==NULL) 
-        return;
-    
-    if (list->next)
-        freeList(list->next);
-    free(list);
-}
-
-
-
 
 /*
  * Days2Date
