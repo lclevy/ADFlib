@@ -197,7 +197,8 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     char name[MAXNAMELEN+1];
 
     /* check if the given parent sector pointer seems OK */
-    if ( (rc=adfCheckParent(vol,pSect)) != RC_OK)
+    rc = adfCheckParent ( vol, pSect );
+    if ( rc != RC_OK)
         return rc;
 
     if (pSect!=entry->parent) {
@@ -210,8 +211,9 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     if (isDIRCACHE(vol->dosType) && !adfIsBlockFree(vol,entry->extension))
         return RC_ERROR;
 
-    if (adfReadEntryBlock(vol, pSect, &parent)!=RC_OK)
-		return RC_ERROR;
+    rc = adfReadEntryBlock ( vol, pSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
 
     strncpy(name, entry->dirName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
@@ -247,7 +249,8 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     struct AdfFileBlocks fileBlocks;
 
     /* check if the given parent sector pointer seems OK */
-    if ( (rc=adfCheckParent(vol,pSect)) != RC_OK)
+    rc = adfCheckParent ( vol, pSect );
+    if ( rc != RC_OK )
         return rc;
 
     if (pSect!=entry->parent) {
@@ -271,8 +274,9 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     free(fileBlocks.data);
     free(fileBlocks.extens);
 
-    if (adfReadEntryBlock(vol, pSect, &parent)!=RC_OK)
-		return RC_ERROR;
+    rc = adfReadEntryBlock ( vol, pSect, &parent );
+    if ( rc != RC_OK )
+        return rc;
 
     strncpy(name, entry->fileName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
