@@ -88,7 +88,10 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
         if (adfIsBlockFree(vol, i)) {
             if (delEnt) {
                 block = (struct GenBlock*)malloc(sizeof(struct GenBlock));
-                if (!block) return NULL;
+                if ( block == NULL ) {
+                    adfFreeDelList ( head );
+                    return NULL;
+                }
 /*printf("%p\n",block);*/
             }
 
