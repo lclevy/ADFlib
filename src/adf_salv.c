@@ -178,7 +178,10 @@ RETCODE adfCheckParent ( struct AdfVolume * vol,
     }
 
     /* verify if parent is a DIR or ROOT */
-    adfReadGenBlock(vol, pSect, &block);
+    RETCODE rc = adfReadGenBlock ( vol, pSect, &block );
+    if ( rc != RC_OK )
+        return rc;
+
     if ( block.type!=T_HEADER 
         || (block.secType!=ST_DIR && block.secType!=ST_ROOT) ) {
         (*adfEnv.wFct)("adfCheckParent : parent secType is incorrect");
