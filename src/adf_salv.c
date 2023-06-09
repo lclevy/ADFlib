@@ -318,20 +318,22 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
 {
     struct bEntryBlock entry;
 
-    adfReadEntryBlock(vol,nSect,&entry);
+    RETCODE rc = adfReadEntryBlock ( vol, nSect, &entry );
+    if ( rc != RC_OK )
+        return rc;
 
     switch(entry.secType) {
     case ST_FILE:
-        adfUndelFile(vol, parent, nSect, (struct bFileHeaderBlock*)&entry);
+        rc = adfUndelFile ( vol, parent, nSect, (struct bFileHeaderBlock*) &entry );
         break;
     case ST_DIR:
-        adfUndelDir(vol, parent, nSect, (struct bDirBlock*)&entry);
+        rc = adfUndelDir ( vol, parent, nSect, (struct bDirBlock*) &entry );
         break;
     default:
         ;
     }
 
-    return RC_OK;
+    return rc;
 }
 
 
