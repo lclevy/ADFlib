@@ -26,7 +26,7 @@
  *
  */
 
-#include "adf_defs.h"
+#include "adf_types.h"
 #include "prefix.h"
 
 /* ----- ENVIRONMENT ----- */

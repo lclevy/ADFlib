@@ -29,7 +29,7 @@
 #ifndef ADF_BLK_H
 #define ADF_BLK_H 1
 
-#include "adf_defs.h"
+#include "adf_types.h"
 
 
 #define LOGICAL_BLOCK_SIZE    512

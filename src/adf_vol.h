@@ -28,7 +28,7 @@
 
 #include "prefix.h"
 
-#include "adf_defs.h"
+#include "adf_types.h"
 #include "adf_err.h"
 #include "adf_str.h"
 

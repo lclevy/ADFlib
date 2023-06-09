@@ -45,6 +45,7 @@ adfinc_HEADERS  = adf_defs.h \
                   adf_nativ.h \
                   adf_raw.h \
                   adf_salv.h \
+                  adf_types.h \
                   adf_util.h \
                   adf_vol.h \
                   defendian.h \

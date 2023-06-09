@@ -39,17 +39,6 @@
 #define ADFLIB_VERSION "0.8.0"
 #define ADFLIB_DATE "2023-06-05"
 
-typedef int32_t SECTNUM;
-
-#define TRUE    1
-#define FALSE   0
-
-typedef uint32_t ULONG;
-typedef uint16_t USHORT;
-typedef uint8_t  UCHAR;
-typedef int      BOOL;
-
-
 /* defines max and min */
 #ifndef max
 #if defined(__clang__) || defined(__GNUC__)
