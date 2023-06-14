@@ -34,7 +34,8 @@ ADF volume info:
 
 Bootblock:
   dosType:	DOS. (0x0)
-  checksum:	0xe33d0e73 (3812429427)
+  checkSum:	0xe33d0e73
+  - calculated:	0xe33d0e73 -> OK
   rootBlock:	0x370 (880)
 
 Root block sector:	880
@@ -46,6 +47,7 @@ Rootblock:
   0x00c  hashTableSize:	0x48		72
   0x010  firstData:	0x0		0
   0x014  checkSum:	0x942f7f25
+     ->  calculated:	0x942f7f25 -> OK
   0x018  hashTable [ 72 ]:	(see below)
   0x138  bmFlag:	0xffffffff
   0x13c  bmPages[ 25 ]:		(see below)
@@ -96,6 +98,7 @@ bFileHeaderBlock:
   0x00c  dataSize:	0x0		0
   0x010  firstData:	0x3f7		1015
   0x014  checkSum:	0xfcb95d71
+     ->  calculated:	0xfcb95d71 -> OK
   0x018  dataBlocks [ 72 ]: (see below)
   0x138  r1:		0
   0x13c  r2:		0
@@ -201,7 +204,8 @@ File extension block:
   0x008  highSeq:	0x48		72
   0x00c  dataSize:	0x0		0
   0x010  firstData:	0x0		0
-  0x014  checkSum:	0xfffeb6f2	4294883058
+  0x014  checkSum:	0xfffeb6f2
+     ->  calculated:	0xfffeb6f2 -> OK
   0x018  dataBlocks [ 72 ]:	(see below)
   0x138  r[45]:			(not used)
   0x1ec  info:		0x0		0
@@ -290,7 +294,8 @@ File extension block:
   0x008  highSeq:	0x48		72
   0x00c  dataSize:	0x0		0
   0x010  firstData:	0x0		0
-  0x014  checkSum:	0xfffea1d8	4294877656
+  0x014  checkSum:	0xfffea1d8
+     ->  calculated:	0xfffea1d8 -> OK
   0x018  dataBlocks [ 72 ]:	(see below)
   0x138  r[45]:			(not used)
   0x1ec  info:		0x0		0
@@ -379,7 +384,8 @@ File extension block:
   0x008  highSeq:	0x33		51
   0x00c  dataSize:	0x0		0
   0x010  firstData:	0x0		0
-  0x014  checkSum:	0xfffefc28	4294900776
+  0x014  checkSum:	0xfffefc28
+     ->  calculated:	0xfffefc28 -> OK
   0x018  dataBlocks [ 72 ]:	(see below)
   0x138  r[45]:			(not used)
   0x1ec  info:		0x0		0
@@ -457,6 +463,7 @@ Directory block:
   0x00c  hashTableSize	0x0		0
   0x010  r1		0x0
   0x014  checkSum	0xfe9ca61c
+     ->  calculated:	0xfe9ca61c -> OK
   0x018  hashTable[72]:	(see below)
   0x138  r2[2]:		(see below)
   0x140  access		0x0
@@ -510,6 +517,7 @@ Directory block:
   0x00c  hashTableSize	0x0		0
   0x010  r1		0x0
   0x014  checkSum	0xfe93c799
+     ->  calculated:	0xfe93c799 -> OK
   0x018  hashTable[72]:	(see below)
   0x138  r2[2]:		(see below)
   0x140  access		0x0
