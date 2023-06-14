@@ -8,6 +8,15 @@ CUR_DIR=`pwd`
 #[ ! -e build/shared/tests/testdata ] && { ln -vs -t build/shared/tests ${CUR_DIR}/tests/testdata ; }
 
 cd build/shared
+
+if [ $OS = "Windows_NT" ]
+then
+    # Windows search for DLLs also on PATH, see also:
+    #  https://stackoverflow.com/questions/518228/is-it-possible-to-add-a-directory-to-dll-search-path-from-a-batch-file-or-cmd-sc
+    #  https://cmake.cmake.narkive.com/pOi863i2/add-test-and-locating-dependent-dll-s-on-windows
+    export PATH=$PATH:`pwd`/src
+fi
+
 #make test
 ctest -C CTestTestfile.cmake  --progress -VV $@
 cd ${CUR_DIR}
