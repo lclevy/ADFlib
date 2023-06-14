@@ -274,7 +274,7 @@ union u {
 static void assertInternal ( BOOL cnd, const char * const msg )
 {
     if ( ! cnd ) {
-        fputs ( stderr, msg );
+        fputs ( msg, stderr );
         exit(1);
     }
 }
