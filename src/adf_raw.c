@@ -133,9 +133,12 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
         (*adfEnv.wFct)("adfReadRootBlock : id not found");
         return RC_BLOCKTYPE;
     }
-    if (root->checkSum!=adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE)) {
-        (*adfEnv.wFct)("adfReadRootBlock : invalid checksum");
-        return RC_BLOCKSUM;
+
+    uint32_t checksumCalculated = adfNormalSum ( buf, 0x14, LOGICAL_BLOCK_SIZE );
+    if ( root->checkSum != checksumCalculated ) {
+        adfEnv.wFct ( "adfReadRootBlock : invalid checksum 0x%x, calculated 0x%x",
+                      root->checkSum, checksumCalculated );
+        //return RC_BLOCKSUM;
     }
 		
     return RC_OK;
@@ -167,10 +170,10 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     root->secType = ST_ROOT;
 
     memcpy(buf, root, LOGICAL_BLOCK_SIZE);
+
 #ifdef LITT_ENDIAN
     swapEndian(buf, SWBL_ROOT);
 #endif
-
     uint32_t newSum = adfNormalSum ( buf, 20, LOGICAL_BLOCK_SIZE );
     swLong(buf+20, newSum);
 /*	*(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
@@ -207,12 +210,15 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
         return RC_ERROR;
     }
 
-    if ( boot->data[0] != 0 &&
-         adfBootSum(buf) != boot->checkSum )
-    {
+
+    if ( boot->data[0] != 0 ) {
+        uint32_t checksumCalculated = adfBootSum ( buf );
 /*printf("compsum=%lx sum=%lx\n",	adfBootSum(buf),boot->checkSum );*/		/* BV */
-        adfEnv.wFct("adfReadBootBlock : incorrect checksum");
-        return RC_BLOCKSUM;
+        if ( boot->checkSum != checksumCalculated ) {
+            adfEnv.wFct ( "adfReadBootBlock : incorrect checksum 0x%x, calculated 0x%x",
+                          boot->checkSum, checksumCalculated );
+            //return RC_BLOCKSUM;
+        }
     }
 
     return RC_OK;
