@@ -61,7 +61,7 @@ void show_bootblock ( const struct bBootBlock * const bblock,
     memcpy ( bblock_copy, bblock, sizeof (struct bBootBlock) );
     swapEndian ( bblock_copy, SWBL_BOOT );
     uint32_t checksum_calculated = adfBootSum ( bblock_copy );
-    printf ( "  checksum:\t0x%x\n"
+    printf ( "  checkSum:\t0x%x\n"
              "  - calculated:\t0x%x%s\n"
              "  rootBlock:\t0x%x (%u)\n",
              bblock->checkSum,
