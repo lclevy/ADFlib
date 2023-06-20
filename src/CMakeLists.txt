@@ -33,10 +33,11 @@ include_directories (
   ${PROJECT_BINARY_DIR}/src
 )
 
-if (CMAKE_BUILD_TYPE MATCHES DEBUG)
-  #message("debug mode")
-  set ( ADFLIB_DEBUG_MODULES debug_util.c debug_util.h )
-endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+if ( CMAKE_BUILD_TYPE MATCHES DEBUG )
+    message ( STATUS "Debug mode - building with debug_utils")
+    set ( ADFLIB_DEBUG_MODULES debug_util.c debug_util.h )
+endif ( CMAKE_BUILD_TYPE MATCHES DEBUG )
+
 
 add_library ( adf
   adflib.h
@@ -77,8 +78,6 @@ add_library ( adf
   adf_version.h
   adf_vol.c
   adf_vol.h
-#  debug_util.c
-#  debug_util.h
   defendian.h
   hd_blk.h
   prefix.h
