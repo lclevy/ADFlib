@@ -44,13 +44,19 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     )
 endif()
 
+option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" ON )
 # no address sanitizer for Visual Studio or MinGW
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
-    message ( STATUS "Enabling address sanitizer" )
+if ( ADFLIB_ENABLE_ADDRESS_SANITIZER AND
+     NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
+    message ( STATUS "Enable address sanitizer" )
     add_compile_options ( $<$<CONFIG:DEBUG>:-fsanitize=address> )
     add_link_options (
+        $<$<CONFIG:DEBUG>:-fsanitize=address>
     #    $<$<CONFIG:DEBUG>:-lasan>
-        $<$<CONFIG:DEBUG>:-fsanitize=address> )
+        $<$<CONFIG:DEBUG>:-static-libasan>
+    )
+else()
+    message ( STATUS "Disable address sanitizer" )
 endif()
 
 option ( ADFLIB_BUILD_DLL "Build Windows DLL" OFF )
