@@ -53,12 +53,12 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
         $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
-OPTION(ADFLIB_BUILD_DLL "Build Windows DLL" OFF)
-
-if(ADFLIB_BUILD_DLL)
+option ( ADFLIB_BUILD_DLL "Build Windows DLL" OFF )
+if ( ADFLIB_BUILD_DLL )
 #if(BUILD_SHARED_LIBS)
-    add_definitions(-DBUILD_DLL)
-endif(ADFLIB_BUILD_DLL)
+    message ( STATUS "Building a Windows DLL" )
+    add_definitions ( -DBUILD_DLL )
+endif ( ADFLIB_BUILD_DLL )
 
 include ( CheckFunctionExists )
 check_function_exists ( backtrace HAVE_BACKTRACE )
