@@ -53,9 +53,6 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
         $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
-add_link_options( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
-
-
 OPTION(ADFLIB_BUILD_DLL "Build Windows DLL" OFF)
 
 if(ADFLIB_BUILD_DLL)
@@ -63,12 +60,18 @@ if(ADFLIB_BUILD_DLL)
     add_definitions(-DBUILD_DLL)
 endif(ADFLIB_BUILD_DLL)
 
-include( CheckFunctionExists )
-check_function_exists( backtrace HAVE_BACKTRACE )
-check_function_exists( backtrace_symbols HAVE_BACKTRACE_SYMBOLS )
+include ( CheckFunctionExists )
+check_function_exists ( backtrace HAVE_BACKTRACE )
+check_function_exists ( backtrace_symbols HAVE_BACKTRACE_SYMBOLS )
 #include(CheckCXXSymbolExists)
 #check_cxx_symbol_exists(backtrace features HAVE_BACKTRACE)
 #check_cxx_symbol_exists(backtrace_symbols features HAVE_BACKTRACE_SYMBOLS)
+#message ( STATUS "HAVE_BACKTRACE: ${HAVE_BACKTRACE}" )
+#message ( STATUS "HAVE_BACKTRACE_SYMBOLS: ${HAVE_BACKTRACE_SYMBOLS}" )
+if ( ${HAVE_BACKTRACE} )
+    message ( STATUS "backtrace_symbols() available")
+    add_link_options ( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
+endif()
 
 enable_testing()
 
