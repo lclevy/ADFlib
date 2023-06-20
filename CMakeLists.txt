@@ -1,13 +1,20 @@
 
 cmake_minimum_required ( VERSION 3.11 )
-project ( adflib C )
-
-set( CMAKE_MODULE_PATH
-    ${PROJECT_SOURCE_DIR}/cmake )
 
 # version details - use utils/bump-version to update it
 set ( ADFLIB_VERSION 0.8.0 )
 set ( ADFLIB_DATE 2023-05-31 )
+
+project ( adflib
+    VERSION      ${ADFLIB_VERSION}
+    DESCRIPTION  "A free, portable and open implementation of the Amiga filesystem"
+    HOMEPAGE_URL "https://gitlab.com/lclevy/ADFlib"
+    LANGUAGES    C
+)
+
+message ( STATUS "Building version: ${PROJECT_VERSION}, ${ADFLIB_DATE}" )
+
+set ( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
