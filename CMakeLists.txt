@@ -20,17 +20,16 @@ set ( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
 #set ( CMAKE_BUILD_TYPE Release )
 
-
-add_compile_options(
-  -Wall
-  $<$<CONFIG:RELEASE>:-O3>
-#  -DADFLIB_VERSION="${ADFLIB_VERSION}"
-#  -DADFLIB_DATE="${ADFLIB_DATE}"
+add_compile_options (
+    -Wall
+    $<$<CONFIG:RELEASE>:-O3>
+#    -DADFLIB_VERSION="${ADFLIB_VERSION}"
+#    -DADFLIB_DATE="${ADFLIB_DATE}"
 )
 
-if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
-    message("Enable extra compiler options (mainly gcc and clang)")
-    add_compile_options(
+if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+    message ( STATUS "Setting additional compiler options/checks (mainly for gcc and clang)" )
+    add_compile_options (
       -Wextra
       -Wconversion
       -Wsign-conversion
@@ -41,6 +40,7 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     #  $<$<CONFIG:DEBUG>:-g3>
     #  $<$<CONFIG:DEBUG>:-Og>
       $<$<CONFIG:DEBUG>:-ggdb>
+    #  $<$<CONFIG:DEBUG>:-pg>
     )
 endif()
 
