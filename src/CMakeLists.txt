@@ -4,11 +4,30 @@ if (ADFLIB_BUILD_DLL)
     add_compile_definitions(_EXPORTING)
 endif (ADFLIB_BUILD_DLL)
 
+if ( ADFLIB_ENABLE_NATIVE_DEV )
+    if ( WIN32 )
+        set ( ADFLIB_NATIVE_DEV_DIR win32 )
+        set ( ADFLIB_NATIVE_DEV_SRC
+              win32/adf_nativ.c
+              win32/nt4_dev.c
+              win32/nt4_dev.h )
+    else()
+        set ( ADFLIB_NATIVE_DEV_DIR linux )
+        set ( ADFLIB_NATIVE_DEV_SRC linux/adf_nativ.c )
+    endif()
+else()
+    set ( ADFLIB_NATIVE_DEV_DIR generic )
+    set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+endif()
+message ( STATUS "Native device directory: ${ADFLIB_NATIVE_DEV_DIR}" )
+message ( STATUS "Native device sources:   ${ADFLIB_NATIVE_DEV_SRC}" )
+
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_SOURCE_DIR}/src/generic
+#  ${PROJECT_SOURCE_DIR}/src/generic
 #  ${PROJECT_SOURCE_DIR}/src/linux
 #  ${PROJECT_SOURCE_DIR}/src/win32
+  ${ADFLIB_NATIVE_DEV_DIR}
   ${PROJECT_BINARY_DIR}/src
 )
 
@@ -61,14 +80,8 @@ add_library ( adf
   defendian.h
   hd_blk.h
   prefix.h
-
   adf_nativ.h
-  generic/adf_nativ.c
-#  linux/adf_nativ.c
-#  win32/adf_nativ.c
-#  win32/nt4_dev.c
-#  win32/nt4_dev.h
-
+  ${ADFLIB_NATIVE_DEV_SRC}
   ${ADFLIB_DEBUG_MODULES}
 )
 

@@ -73,6 +73,8 @@ if ( ${HAVE_BACKTRACE} )
     add_link_options ( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
 endif()
 
+option ( ADFLIB_ENABLE_NATIVE_DEV "Enable real native devices" OFF )
+
 enable_testing()
 
 ADD_SUBDIRECTORY( src )
