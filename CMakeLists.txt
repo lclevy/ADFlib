@@ -45,13 +45,12 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
 endif()
 
 # no address sanitizer for Visual Studio or MinGW
-if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT ${MINGW})
-    message("Enable address sanitizer")
-
-    add_compile_options( $<$<CONFIG:DEBUG>:-fsanitize=address> )
-    add_link_options(
-    #  $<$<CONFIG:DEBUG>:-lasan>
-      $<$<CONFIG:DEBUG>:-fsanitize=address> )
+if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
+    message ( STATUS "Enabling address sanitizer" )
+    add_compile_options ( $<$<CONFIG:DEBUG>:-fsanitize=address> )
+    add_link_options (
+    #    $<$<CONFIG:DEBUG>:-lasan>
+        $<$<CONFIG:DEBUG>:-fsanitize=address> )
 endif()
 
 add_link_options( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
