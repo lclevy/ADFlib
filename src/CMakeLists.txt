@@ -86,5 +86,31 @@ add_library ( adf
   ${ADFLIB_DEBUG_MODULES}
 )
 
+set_target_properties ( adf PROPERTIES
+    #PUBLIC_HEADER "adflib.h"
+    PUBLIC_HEADER "*.h"
+    #PRIVATE_HEADER ...
+    VERSION ${CMAKE_PROJECT_VERSION}
+#    SOVERSION ${PROJECT_VERSION_MAJOR}
+    SOVERSION 1
+)
+
+target_include_directories ( adf
+    PUBLIC
+        "${CMAKE_CURRENT_SOURCE_DIR}"
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}"
+)
+
+#target_link_libraries ( adf ${SOME_LIBRARIES} )
+
 #install(TARGETS adf DESTINATION /usr/local/lib)
-install(TARGETS adf)
+install ( TARGETS adf
+  LIBRARY
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  PUBLIC_HEADER
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
+  PRIVATE_HEADER
+#    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
+    DESTINATION FALSE
+)
