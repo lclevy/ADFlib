@@ -1,8 +1,10 @@
 
 # set DLL symbols export (if building a DLL)
-if (ADFLIB_BUILD_DLL)
-    add_compile_definitions(_EXPORTING)
-endif (ADFLIB_BUILD_DLL)
+if ( ADFLIB_BUILD_DLL )
+    message ( STATUS "Exporting DLL symbols." )
+    add_compile_definitions ( _EXPORTING )
+endif ( ADFLIB_BUILD_DLL )
+
 
 if ( ADFLIB_ENABLE_NATIVE_DEV )
     if ( WIN32 )
