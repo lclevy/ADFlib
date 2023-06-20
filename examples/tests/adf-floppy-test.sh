@@ -41,8 +41,8 @@ Done!
 EOF
 
 $adf_show_metadata $tmpdir/testflopdd1.adf | grep -v \
-  -e Created: -e 'Last access:' -e checkSum: -e days: -e mins: -e ticks: \
-  -e coDays: -e coMins -e coTicks >$actual
+  -e Created: -e 'Last access:' -e checkSum: -e calculated -e days: \
+  -e mins: -e ticks: -e coDays: -e coMins -e coTicks >$actual
 compare_with <<EOF
 
 Opening image/device:	'$tmpdir/testflopdd1.adf'
@@ -70,7 +70,6 @@ ADF volume info:
 
 Bootblock:
   dosType:	DOS. (0x1)
-  checksum:	0x0 (0)
   rootBlock:	0x0 (0)
 
 Root block sector:	880

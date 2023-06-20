@@ -29,6 +29,7 @@
 
 
 #include "adf_blk.h"
+#include "adf_err.h"
 #include "adf_vol.h"
 
 

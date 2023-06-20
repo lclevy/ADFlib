@@ -28,8 +28,9 @@
 
 #include "prefix.h"
 
+#include "adf_types.h"
+#include "adf_err.h"
 #include "adf_str.h"
-#include "adf_defs.h"
 
 /* ----- VOLUME ----- */
 
@@ -50,7 +51,7 @@ struct AdfVolume {
 
     BOOL mounted;
 
-    int32_t bitmapSize;             /* in blocks */
+    uint32_t bitmapSize;         /* in blocks */
     SECTNUM *bitmapBlocks;       /* bitmap blocks pointers */
     struct bBitmapBlock **bitmapTable;
     BOOL *bitmapBlocksChg;

@@ -575,7 +575,8 @@ void mkdir_if_needed(char *path, mode_t perms) {
 
 /* convert amiga permissions to unix permissions */
 mode_t permissions(struct AdfEntry *e) {
-    return (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
+    return (mode_t)
+        (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
         (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */
         ((e->access >> 5) & 0070); /* rwx for group */

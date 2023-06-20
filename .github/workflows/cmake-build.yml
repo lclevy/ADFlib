@@ -109,9 +109,10 @@ jobs:
     - uses: actions/checkout@v3
     - name: install prereq.
       run: |
-        brew install cmake ninja
+        brew install cmake ninja coreutils
         ninja --version
         cmake --version
+        gstdbuf --version
     - name: cmake_shared_configure
       run: util/cmake_shared_configure
     - name: cmake_shared_build

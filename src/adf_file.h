@@ -117,7 +117,7 @@ PREFIX unsigned adfFileWriteFilled ( struct AdfFile * const file,
 PREFIX RETCODE adfFileTruncate ( struct AdfFile * const file,
                                  const uint32_t         fileSizeNew );
 
-SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
+RETCODE adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
