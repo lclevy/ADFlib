@@ -28,13 +28,20 @@ jobs:
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/bin
-    #https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
     - name: copy artifacts
       run:
         mkdir -v artifacts ;
         cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
+    # https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
+    - name: set env
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+    - name: Test
+      run: |
+        echo $ADFLIB_TAG
+        echo ${{ env.ADFLIB_TAG }}
     - uses: actions/upload-artifact@v3
       with:
-        name: ubuntu-deb
+        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         path: |
           artifacts/
