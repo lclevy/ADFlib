@@ -31,9 +31,6 @@
 
 typedef int32_t SECTNUM;
 
-typedef uint32_t ULONG;
-typedef uint16_t USHORT;
-typedef uint8_t  UCHAR;
 typedef int      BOOL;
 
 #define TRUE    1
