@@ -274,9 +274,9 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
  * offset = checksum place (in bytes)
  * bufLen = buffer length (in bytes)
  */
-uint32_t adfNormalSum ( const UCHAR * const buf,
-                        const int           offset,
-                        const int           bufLen )
+uint32_t adfNormalSum ( const uint8_t * const buf,
+                        const int             offset,
+                        const int             bufLen )
 {
     uint32_t newsum;
     int i;

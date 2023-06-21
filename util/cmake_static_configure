@@ -7,4 +7,6 @@
 
 #cmake -DBUILD_SHARED_LIBS:BOOL=OFF -B build/static -S .
 # -> static is the default so the same result as above:
-cmake -B build/static -S . $@
+cmake -B build/static -S . \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    $@
