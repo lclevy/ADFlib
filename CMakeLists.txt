@@ -51,7 +51,7 @@ option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" OFF )
 
 if ( ADFLIB_ENABLE_ADDRESS_SANITIZER )
 
-    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
+    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" AND NOT MINGW AND NOT CYGWIN )
         message ( STATUS "Enabling GNU address sanitizer" )
         add_compile_options ( -fsanitize=address )
         add_link_options (
@@ -61,6 +61,10 @@ if ( ADFLIB_ENABLE_ADDRESS_SANITIZER )
 	)
     endif()
 
+    if ( MINGW OR CYGWIN )
+        message ( STATUS "No address sanitizer for CygWin or MinGW (not available)")
+    endif()
+
     if ( "${CMAKE_C_COMPILER_ID}" MATCHES ".*Clang" )
         message ( STATUS "Enabling Clang address sanitizer" )
         # https://releases.llvm.org/10.0.0/tools/clang/docs/AddressSanitizer.html
@@ -68,8 +72,8 @@ if ( ADFLIB_ENABLE_ADDRESS_SANITIZER )
         add_link_options ( -fsanitize=address )
     endif()
 
-    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" OR MINGW )
-        message ( STATUS "No address sanitizer for MSVC (?) or MinGW (not available)")
+    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+        message ( STATUS "No address sanitizer for MSVC")
     endif()
 else()
     message ( STATUS "Address sanitizer disabled - not configuring" )
