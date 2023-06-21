@@ -1,8 +1,20 @@
 #!/bin/sh
-# Usage: util/bump-version <no-api-changes|compatible-api-changes|breaking-api-changes>
+#
+# Increases the project and library (libtool/soname) version
+# according to the specified rule.
+#
+# Usage: util/bump_project_version <no-api-changes |
+#                                   compatible-api-changes |
+#                                   breaking-api-changes>
+#
 
-# assuming we're $basedir/util/bump-version, find $basedir
-dir=`dirname "$0"`; basedir=`cd "$dir"/.. && pwd`
+# require(!) executing from the main project directory
+# (minimal checking preventing executing in a wrong place...)
+[ "$0"x != "util/bump_project_version"x ] && {
+    echo "The script must be executed in the main project directory!"
+    exit 1
+}
+basedir="."
 
 # extract current package and library version from configure.ac
 old_pkg_version=`grep ^m4_define..adflib_version "$basedir/configure.ac" | sed -e 's/.*\[//' -e 's/\].*//'`
@@ -46,7 +58,6 @@ esac
 
 new_pkg_version="$pkg_major.$pkg_minor.$pkg_patch"
 new_lt_version="$lt_current:$lt_revision:$lt_age"
-cur_date=`date +%F`
 
 echo "Bumping package version $old_pkg_version -> $new_pkg_version"
 echo "Bumping library version $old_lt_version -> $new_lt_version"
@@ -54,8 +65,12 @@ echo "Bumping library version $old_lt_version -> $new_lt_version"
 # update version numbers in configure.ac
 sed -i~ -e "s/^m4_define..adflib_version.*/m4_define([adflib_version],[$new_pkg_version])/" \
         -e "s/^m4_define..adflib_lt_version.*/m4_define([adflib_lt_version],[$new_lt_version])/" \
-        -e "s/^m4_define..adflib_date.*/m4_define([ADFLIB_DATE],[$cur_date])/" \
     "$basedir/configure.ac"
+
+# update version numbers in CMakeLists.txt
 sed -i~ -e "s/^set ( ADFLIB_VERSION .*/set ( ADFLIB_VERSION $new_pkg_version )/" \
-        -e "s/^set ( ADFLIB_DATE .*/set ( ADFLIB_DATE $cur_date )/" \
     "$basedir/CMakeLists.txt"
+
+# update version numbers in ADFlib's header files
+sed -i~ -e "s/^#define ADFLIB_VERSION .*/#define ADFLIB_VERSION \"$new_pkg_version\"/" \
+    "$basedir/src/adf_defs.h"

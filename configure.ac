@@ -4,11 +4,11 @@
 AC_PREREQ([2.69])
 
 # version details - use utils/bump-version to update it
-m4_define([adflib_version], [0.7.13])
-m4_define([adflib_lt_version], [0:12:0])
-m4_define([adflib_date], [2022-01-25])
+m4_define([adflib_version],[0.8.0])
+m4_define([adflib_lt_version],[1:0:0])
+m4_define([adflib_date],[2023-06-05])
 
-AC_INIT([adflib],[adflib_version],[lclevy_AT_club-internet.fr])
+AC_INIT([adflib],[adflib_version])
 
 AC_CONFIG_SRCDIR([src/adf_env.c])
 AC_CONFIG_HEADERS([config.h])
@@ -91,9 +91,11 @@ AC_ARG_ENABLE([native_win32],
                esac],
               [])
 
+echo "Native device: ${NATIVE_DIR}"
 AM_CONDITIONAL([NATIVE_GENERIC], [test x${NATIVE_DIR} = xgeneric])
 AM_CONDITIONAL([NATIVE_LINUX],   [test x${NATIVE_DIR} = xlinux])
 AM_CONDITIONAL([NATIVE_WIN32],   [test x${NATIVE_DIR} = xwin32])
+
 
 # Checks for programs.
 AC_PROG_CC

@@ -2,6 +2,7 @@
 #include <adf_raw.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "adf_show_metadata_volume.h"
 
@@ -56,9 +57,16 @@ void show_bootblock ( const struct bBootBlock * const bblock,
         putchar ( printable ( bblock->dosType[i] ) );
     printf ( "%c (0x%x)\n", printable ( bblock->dosType[3] ), bblock->dosType[3] );
 
-    printf ( "  checksum:\t0x%x (%u)\n"
+    uint8_t bblock_copy[sizeof(struct bBootBlock)];
+    memcpy ( bblock_copy, bblock, sizeof (struct bBootBlock) );
+    swapEndian ( bblock_copy, SWBL_BOOT );
+    uint32_t checksum_calculated = adfBootSum ( bblock_copy );
+    printf ( "  checkSum:\t0x%x\n"
+             "  - calculated:\t0x%x%s\n"
              "  rootBlock:\t0x%x (%u)\n",
-             bblock->checkSum, bblock->checkSum,
+             bblock->checkSum,
+             checksum_calculated,
+             bblock->checkSum == checksum_calculated ? " -> OK" : "  -> different(!)",
              bblock->rootBlock, bblock->rootBlock );
 
     if ( show_data )
@@ -80,6 +88,11 @@ void show_bootblock_data ( const struct bBootBlock * const bblock )
 
 void show_rootblock ( const struct bRootBlock * const rblock )
 {
+    uint8_t rblock_orig_endian[512];
+    memcpy ( rblock_orig_endian, rblock, 512 );
+    swapEndian ( rblock_orig_endian, SWBL_ROOT );
+    uint32_t checksum_calculated = adfNormalSum ( rblock_orig_endian, 0x14,
+                                                  sizeof (struct bRootBlock ) );
     printf ( "\nRootblock:\n"
              //"  offset field\t\tvalue\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
@@ -88,6 +101,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              "  0x00c  hashTableSize:\t0x%x\t\t%u\n"
              "  0x010  firstData:\t0x%x\t\t%u\n"
              "  0x014  checkSum:\t0x%x\n"
+             "     ->  calculated:\t0x%x%s\n"
              "  0x018  hashTable [ %u ]:\t(see below)\n"
              "  0x138  bmFlag:\t0x%x\n"
              "  0x13c  bmPages[ %u ]:\t\t(see below)\n"
@@ -114,6 +128,8 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              rblock->hashTableSize, rblock->hashTableSize,
              rblock->firstData, rblock->firstData,
              rblock->checkSum,
+             checksum_calculated,
+             rblock->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              HT_SIZE, //rblock->hashTable[HT_SIZE],
              rblock->bmFlag,
              BM_SIZE, //rblock->bmPages[BM_SIZE],

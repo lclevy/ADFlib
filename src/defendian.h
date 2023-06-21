@@ -1,3 +1,6 @@
+#ifndef _ADF_DEFENDIAN_H
+#define _ADF_DEFENDIAN_H
+
 #ifndef LITT_ENDIAN
  #if defined(__hppa__) || \
      defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
@@ -9,3 +12,4 @@
  #endif
 #endif
 
+#endif

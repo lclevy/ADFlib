@@ -60,10 +60,10 @@ void test_file_append ( test_data_t * const tdata )
     char filename[] = "testfile.tmp";
     struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
     //ck_assert_ptr_null ( file );  // cannot open a new file in append mode
-    //file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    //file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_msg ( file != 0, "Cannot open file %s for %s", filename,
-                    tdata->openMode == ADF_FILE_MODE_READ      ? "reading" :
-                    tdata->openMode == ADF_FILE_MODE_READWRITE ? "writing" :
+                    tdata->openMode == ADF_FILE_MODE_READ  ? "reading" :
+                    tdata->openMode == ADF_FILE_MODE_WRITE ? "writing" :
                     "an unknown mode" );
     adfFileClose ( file );
 
@@ -90,7 +90,7 @@ void test_file_append ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -105,7 +105,7 @@ void test_file_append ( test_data_t * const tdata )
     ///
 
     // open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -180,7 +180,7 @@ START_TEST ( test_file_append_ofs )
         .adfname = "test_file_append_ofs.adf",
         .volname = "Test_file_append_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
@@ -196,7 +196,7 @@ START_TEST ( test_file_append_ffs )
         .adfname = "test_file_append_ffs.adf",
         .volname = "Test_file_append_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );

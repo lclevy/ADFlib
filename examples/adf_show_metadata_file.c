@@ -1,7 +1,8 @@
 
-#include <stdio.h>
-
 #include "adf_show_metadata_file.h"
+
+#include <stdio.h>
+#include <string.h>
 
 
 static void show_data_blocks_array ( const int32_t datablocks [ MAX_DATABLK ] );
@@ -27,6 +28,12 @@ void show_file_metadata ( struct AdfVolume * const vol,
 
 void show_file_header_block ( const struct bFileHeaderBlock * const block )
 {
+
+    uint8_t file_header_block_orig_endian[512];
+    memcpy ( file_header_block_orig_endian, block, 512 );
+    swapEndian ( file_header_block_orig_endian, SWBL_FILE );
+    uint32_t checksum_calculated = adfNormalSum ( file_header_block_orig_endian, 0x14,
+                                                  sizeof (struct bFileHeaderBlock ) );
     printf ( "\nbFileHeaderBlock:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
@@ -34,6 +41,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
              "  0x00c  dataSize:\t0x%x\t\t%u\n"
              "  0x010  firstData:\t0x%x\t\t%u\n"
              "  0x014  checkSum:\t0x%x\n"
+             "     ->  calculated:\t0x%x%s\n"
              "  0x018  dataBlocks [ %u ]: (see below)\n"
              "  0x138  r1:\t\t%d\n"
              "  0x13c  r2:\t\t%d\n"
@@ -61,6 +69,8 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
              block->dataSize, block->dataSize,
              block->firstData, block->firstData,
              block->checkSum,
+             checksum_calculated,
+             block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              MAX_DATABLK, //dataBlocks[MAX_DATABLK],
              block->r1,
              block->r2,
@@ -140,13 +150,19 @@ void show_file_ext_blocks ( struct AdfVolume * const              vol,
 
 void show_ext_block ( const struct bFileExtBlock * const block )
 {
+    uint8_t file_ext_block_orig_endian[512];
+    memcpy ( file_ext_block_orig_endian, block, 512 );
+    swapEndian ( file_ext_block_orig_endian, SWBL_FILE );
+    uint32_t checksum_calculated = adfNormalSum ( file_ext_block_orig_endian, 0x14,
+                                                  sizeof (struct bFileExtBlock ) );
     printf ( "\nFile extension block:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
              "  0x008  highSeq:\t0x%x\t\t%u\n"
              "  0x00c  dataSize:\t0x%x\t\t%u\n"
              "  0x010  firstData:\t0x%x\t\t%u\n"
-             "  0x014  checkSum:\t0x%x\t%u\n"
+             "  0x014  checkSum:\t0x%x\n"
+             "     ->  calculated:\t0x%x%s\n"
              "  0x018  dataBlocks [ %u ]:\t(see below)\n"
              "  0x138  r[45]:\t\t\t(not used)\n"
              "  0x1ec  info:\t\t0x%x\t\t%u\n"
@@ -159,7 +175,9 @@ void show_ext_block ( const struct bFileExtBlock * const block )
              block->highSeq, block->highSeq,
              block->dataSize, block->dataSize,
              block->firstData, block->firstData,
-             block->checkSum, block->checkSum,
+             block->checkSum,
+             checksum_calculated,
+             block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              MAX_DATABLK, //block->dataBlocks[MAX_DATABLK],
              //r[45]
              block->info, block->info,

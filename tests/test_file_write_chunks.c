@@ -100,7 +100,7 @@ void test_file_write ( test_data_t * const tdata )
     adfFileClose ( file );
 */
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -115,7 +115,7 @@ void test_file_write ( test_data_t * const tdata )
     ///
     
     // open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -282,7 +282,7 @@ START_TEST ( test_file_write_ofs )
         .adfname = "test_file_write_chunks_ofs.adf",
         .volname = "Test_file_write_chunks_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {
@@ -306,7 +306,7 @@ START_TEST ( test_file_write_ffs )
         .adfname = "test_file_write_chunks_ffs.adf",
         .volname = "Test_file_write_chunks_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {

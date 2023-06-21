@@ -47,14 +47,18 @@ struct AdfFile {
 
     unsigned posInDataBlk;
     unsigned posInExtBlk;
-    BOOL writeMode;
-    BOOL currentDataBlockChanged;
+
+    BOOL     modeRead,
+             modeWrite;
+
+    BOOL     currentDataBlockChanged;
 };
 
 
 typedef enum {
-    ADF_FILE_MODE_READ,
-    ADF_FILE_MODE_READWRITE
+    ADF_FILE_MODE_READ      = 0x01,   /* 01 */
+    ADF_FILE_MODE_WRITE     = 0x02,   /* 10 */
+    //ADF_FILE_MODE_READWRITE = 0x03    /* 11 */
 } AdfFileMode;
 
 
@@ -113,7 +117,7 @@ PREFIX unsigned adfFileWriteFilled ( struct AdfFile * const file,
 PREFIX RETCODE adfFileTruncate ( struct AdfFile * const file,
                                  const uint32_t         fileSizeNew );
 
-SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
+RETCODE adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 

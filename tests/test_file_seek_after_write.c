@@ -229,7 +229,7 @@ START_TEST ( test_file_seek_after_write_ofs )
         .adfname = "test_file_seek_after_write_ofs.adf",
         .volname = "Test_file_seek_after_write_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {
@@ -253,7 +253,7 @@ START_TEST ( test_file_seek_after_write_ffs )
         .adfname = "test_file_seek_after_write_ffs.adf",
         .volname = "Test_file_seek_after_write_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {

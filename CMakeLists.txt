@@ -6,8 +6,8 @@ set( CMAKE_MODULE_PATH
     ${PROJECT_SOURCE_DIR}/cmake )
 
 # version details - use utils/bump-version to update it
-set ( ADFLIB_VERSION 0.7.13 )
-set ( ADFLIB_DATE 2022-01-25 )
+set ( ADFLIB_VERSION 0.8.0 )
+set ( ADFLIB_DATE 2023-05-31 )
 
 # setting NDEBUG
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
@@ -17,8 +17,8 @@ set ( ADFLIB_DATE 2022-01-25 )
 add_compile_options(
   -Wall
   $<$<CONFIG:RELEASE>:-O3>
-  -DADFLIB_VERSION="${ADFLIB_VERSION}"
-  -DADFLIB_DATE="${ADFLIB_DATE}"
+#  -DADFLIB_VERSION="${ADFLIB_VERSION}"
+#  -DADFLIB_DATE="${ADFLIB_DATE}"
 )
 
 if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
@@ -29,6 +29,7 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
       -Wsign-conversion
       -pedantic
       -Werror-implicit-function-declaration
+      -Werror=format-security
     #  -pedantic-errors
     #  $<$<CONFIG:DEBUG>:-g3>
     #  $<$<CONFIG:DEBUG>:-Og>
@@ -55,6 +56,13 @@ if(ADFLIB_BUILD_DLL)
 #if(BUILD_SHARED_LIBS)
     add_definitions(-DBUILD_DLL)
 endif(ADFLIB_BUILD_DLL)
+
+include( CheckFunctionExists )
+check_function_exists( backtrace HAVE_BACKTRACE )
+check_function_exists( backtrace_symbols HAVE_BACKTRACE_SYMBOLS )
+#include(CheckCXXSymbolExists)
+#check_cxx_symbol_exists(backtrace features HAVE_BACKTRACE)
+#check_cxx_symbol_exists(backtrace_symbols features HAVE_BACKTRACE_SYMBOLS)
 
 enable_testing()
 

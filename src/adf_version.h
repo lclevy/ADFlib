@@ -1,13 +1,11 @@
-#ifndef ADF_LINK_H
-#define ADF_LINK_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_link.h
+ *  adf_version.h
  *
  *  $Id$
- *  
+ *
+ *
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify
@@ -26,17 +24,17 @@
  *
  */
 
-#include "adf_types.h"
-#include "adf_vol.h"
 
-#include "prefix.h"
+#ifndef _ADF_VERSION_H
+#define _ADF_VERSION_H 1
 
+//#include "config.h"
+/* autotools defines this */
+//#ifdef PACKAGE_VERSION
+//#define ADFLIB_VERSION PACKAGE_VERSION
+//#endif
+#define ADFLIB_VERSION "0.8.0"
+#define ADFLIB_DATE "2023-06-05"
 
-PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                       SECTNUM            nSect,
-                                       SECTNUM            lPar,
-                                       char **            name,
-                                       int32_t *          size );
-
-#endif /* ADF_LINK_H */
+#endif /* _ADF_VERSION_H */
 /*##########################################################################*/

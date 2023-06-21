@@ -25,19 +25,22 @@
  *
  */
 
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "adf_str.h"
 #include "adf_raw.h"
-#include "adf_blk.h"
-#include "adf_vol.h"
-#include "adf_util.h"
-#include "adf_err.h"
+
 #include "adf_env.h"
+#include "adf_util.h"
 #include "defendian.h"
 
+#include <string.h>
+
+#define NDEBUG
+#include <assert.h>
+
+#define SW_LONG  4
+#define SW_SHORT 2
+#define SW_CHAR  1
+
+#define MAX_SWTYPE 11
 
 int swapTable[MAX_SWTYPE+1][15]={
     { 4, SW_CHAR, 2, SW_LONG, 1012, SW_CHAR, 0, 1024 },     /* first bytes of boot */
@@ -67,25 +70,27 @@ int swapTable[MAX_SWTYPE+1][15]={
 void swapEndian ( uint8_t * const buf,
                   const int       type )
 {
-    int i,j;
-    int p;
+    int i = 0,
+        p = 0;
 
-    i=0;
-    p=0;
+    assert ( type >= 0 );
+    assert ( type <= MAX_SWTYPE );
+    if ( type > MAX_SWTYPE || type < 0 ) {
+        /* this should never happen */
+        adfEnv.eFct ( "SwapEndian: type %d do not exist", type );
+        return;
+    }
 
-    if (type>MAX_SWTYPE || type<0)
-        adfEnv.eFct("SwapEndian: type do not exist");
-
-    while( swapTable[type][i]!=0 ) {
-        for(j=0; j<swapTable[type][i]; j++) {
-            switch( swapTable[type][i+1] ) {
+    while ( swapTable[type][i] != 0 ) {
+        for ( int j = 0 ; j < swapTable[type][i] ; j++ )  {
+            switch ( swapTable[type][i + 1] ) {
             case SW_LONG:
-                *(uint32_t*)(buf+p)=Long(buf+p);
-                p+=4;
+                *(uint32_t*)(buf + p) = Long(buf + p);
+                p += 4;
                 break;
             case SW_SHORT:
-                *(uint32_t*)(buf+p)=Short(buf+p);
-                p+=2;
+                *(uint32_t*)(buf + p) = Short(buf + p);
+                p += 2;
                 break;
             case SW_CHAR:
                 p++;
@@ -94,12 +99,10 @@ void swapEndian ( uint8_t * const buf,
                 ;
             }
         }
-    i+=2;
+        i += 2;
     }
-    if (p!=swapTable[type][i+1]) 
+    if ( p != swapTable[type][i + 1] )
         (*adfEnv.wFct)("Warning: Endian Swapping length");		/* BV */
-    
-
 }
 
 
@@ -115,23 +118,27 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
                            const uint32_t            nSect,
                            struct bRootBlock * const root )
 {
-	uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-	if (adfReadBlock(vol, nSect, buf)!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
-	memcpy(root, buf, LOGICAL_BLOCK_SIZE);
+    memcpy(root, buf, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
     swapEndian((uint8_t*)root, SWBL_ROOT);    
 #endif
 
-	if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
-		(*adfEnv.wFct)("adfReadRootBlock : id not found");
-        return RC_ERROR;
+    if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
+        (*adfEnv.wFct)("adfReadRootBlock : id not found");
+        return RC_BLOCKTYPE;
     }
-	if (root->checkSum!=adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE)) {
-		(*adfEnv.wFct)("adfReadRootBlock : invalid checksum");
-        return RC_ERROR;
+
+    uint32_t checksumCalculated = adfNormalSum ( buf, 0x14, LOGICAL_BLOCK_SIZE );
+    if ( root->checkSum != checksumCalculated ) {
+        adfEnv.wFct ( "adfReadRootBlock : invalid checksum 0x%x, calculated 0x%x",
+                      root->checkSum, checksumCalculated );
+        //return RC_BLOCKSUM;
     }
 		
     return RC_OK;
@@ -147,9 +154,8 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
                             const uint32_t            nSect,
                             struct bRootBlock * const root )
 {
+/*printf("adfWriteRootBlock %ld\n",nSect);*/
     uint8_t buf[LOGICAL_BLOCK_SIZE];
-	uint32_t newSum;
-
 
     root->type = T_HEADER;
     root->headerKey = 0L;
@@ -164,19 +170,15 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     root->secType = ST_ROOT;
 
     memcpy(buf, root, LOGICAL_BLOCK_SIZE);
+
 #ifdef LITT_ENDIAN
     swapEndian(buf, SWBL_ROOT);
 #endif
-
-	newSum = adfNormalSum(buf,20,LOGICAL_BLOCK_SIZE);
+    uint32_t newSum = adfNormalSum ( buf, 20, LOGICAL_BLOCK_SIZE );
     swLong(buf+20, newSum);
 /*	*(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
-
 /* 	dumpBlock(buf);*/
-	if (adfWriteBlock(vol, nSect, buf)!=RC_OK)
-        return RC_ERROR;
-/*printf("adfWriteRootBlock %ld\n",nSect);*/
-    return RC_OK;
+    return adfWriteBlock ( vol, nSect, buf );
 }
 
 
@@ -188,27 +190,35 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
 RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
                            struct bBootBlock * const boot )
 {
-	uint8_t buf[1024];
+    uint8_t buf[1024];
 	
 /*puts("22");*/
-	if (adfReadBlock(vol, 0, buf)!=RC_OK)
-		return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, 0, buf );
+    if ( rc != RC_OK )
+        return rc;
 /*puts("11");*/
-    if (adfReadBlock(vol, 1, buf+LOGICAL_BLOCK_SIZE)!=RC_OK)
-		return RC_ERROR;
+    rc = adfReadBlock ( vol, 1, buf + LOGICAL_BLOCK_SIZE );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(boot, buf, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
     swapEndian((uint8_t*)boot,SWBL_BOOT);
 #endif
-	if ( strncmp("DOS",boot->dosType,3)!=0 ) {
-		(*adfEnv.wFct)("adfReadBootBlock : DOS id not found");
-		return RC_ERROR;
+    if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
+        adfEnv.wFct("adfReadBootBlock : DOS id not found");
+        return RC_ERROR;
     }
 
-	if ( boot->data[0]!=0 && adfBootSum(buf)!=boot->checkSum ) {
+
+    if ( boot->data[0] != 0 ) {
+        uint32_t checksumCalculated = adfBootSum ( buf );
 /*printf("compsum=%lx sum=%lx\n",	adfBootSum(buf),boot->checkSum );*/		/* BV */
-		(*adfEnv.wFct)("adfReadBootBlock : incorrect checksum"); 
+        if ( boot->checkSum != checksumCalculated ) {
+            adfEnv.wFct ( "adfReadBootBlock : incorrect checksum 0x%x, calculated 0x%x",
+                          boot->checkSum, checksumCalculated );
+            //return RC_BLOCKSUM;
+        }
     }
 
     return RC_OK;
@@ -224,18 +234,17 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
                             struct bBootBlock * const boot )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE*2];
-	uint32_t newSum;
 
     boot->dosType[0] = 'D';
     boot->dosType[1] = 'O';
     boot->dosType[2] = 'S';
-	memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
+    memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
     swapEndian(buf, SWBL_BOOT);
 #endif
 
     if (boot->rootBlock==880 || boot->data[0]!=0) {
-        newSum = adfBootSum(buf);
+        uint32_t newSum = adfBootSum ( buf );
 /*fprintf(stderr,"sum %x %x\n",newSum,adfBootSum2(buf));*/
         swLong(buf+4,newSum);
 /*        *(uint32_t*)(buf+4) = swapLong((uint8_t*)&newSum);*/
@@ -243,11 +252,16 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
 
 /*	dumpBlock(buf);
 	dumpBlock(buf+512);
-*/	
-    if (adfWriteBlock(vol, 0, buf)!=RC_OK)
-		return RC_ERROR;
-	if (adfWriteBlock(vol, 1,  buf+512)!=RC_OK)
-		return RC_ERROR;
+*/
+
+    RETCODE rc = adfWriteBlock ( vol, 0, buf );
+    if ( rc != RC_OK )
+        return rc;
+
+    rc = adfWriteBlock ( vol, 1, buf + 512 );
+    if (rc != RC_OK )
+        return rc;
+
 /*puts("adfWriteBootBlock");*/
     return RC_OK;
 }

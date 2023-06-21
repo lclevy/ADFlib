@@ -86,7 +86,7 @@ void test_file_create ( test_data_t * const tdata )
     adfFileClose ( file );
 */
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -145,7 +145,7 @@ START_TEST ( test_file_create_empty_ofs_write )
         .adfname = "test_file_create_ofs_write.adf",
         .volname = "Test_file_create_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
@@ -161,7 +161,7 @@ START_TEST ( test_file_create_empty_ffs_write )
         .adfname = "test_file_create_ffs_write.adf",
         .volname = "Test_file_create_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );

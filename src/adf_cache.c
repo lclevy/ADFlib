@@ -25,20 +25,17 @@
  *
  */ 
 
-#include<stdlib.h>
-#include<string.h>
+#include "adf_cache.h"
 
-#include"adf_defs.h"
-#include"adf_str.h"
-#include"adf_err.h"
-#include"defendian.h"
-#include"adf_cache.h"
-#include"adf_raw.h"
-#include "adf_vol.h"
-#include"adf_bitm.h"
-#include"adf_util.h"
-#include"adf_dir.h"
+#include "adf_bitm.h"
+#include "adf_dir.h"
 #include "adf_env.h"
+#include "adf_raw.h"
+#include "adf_util.h"
+#include "defendian.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -315,12 +312,18 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
 	nSect = parent->extension;
     found = FALSE;
     do {
-        adfReadDirCBlock(vol, nSect, &dirc);
+        rc = adfReadDirCBlock ( vol, nSect, &dirc );
+        if ( rc != RC_OK )
+            return rc;
+
         offset = 0; n = 0;
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
-                return RC_ERROR;
+
+            rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
+            if ( rc != RC_OK)
+                return rc;
+
             found = ( caEntry.header == (uint32_t) headerKey );
             if (found) {
                 entryLen = offset-oldOffset;
@@ -339,19 +342,30 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
                             dirc.records[i] = 0;
                     }
                     dirc.recordsNb--;
-                    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-						return -1;
+
+                    rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
                 else {
                     /* dirc.recordsNb ==1 or == 0 , prevSect!=-1 : 
                     * the only record in this dirc block and a previous dirc block exists 
                     */
                     adfSetBlockFree(vol, dirc.headerKey);
-                    adfReadDirCBlock(vol, prevSect, &dirc);
-                    dirc.nextDirC = 0L;
-                    adfWriteDirCBlock(vol, prevSect, &dirc);
 
-                    adfUpdateBitmap(vol);
+                    rc = adfReadDirCBlock ( vol, prevSect, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
+
+                    dirc.nextDirC = 0L;
+
+                    rc = adfWriteDirCBlock ( vol, prevSect, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
+
+                    rc = adfUpdateBitmap ( vol );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
             }
             n++;
@@ -380,6 +394,7 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
     struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
+    RETCODE rc = RC_OK;
 
     entryLen = adfEntry2CacheEntry(entry, &newEntry);
 /*printf("adfAddInCache--%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
@@ -390,13 +405,17 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 */
     nSect = parent->extension;
     do {
-        if (adfReadDirCBlock(vol, nSect, &dirc)!=RC_OK)
-            return RC_ERROR;
+        rc = adfReadDirCBlock ( vol, nSect, &dirc );
+        if ( rc != RC_OK )
+            return rc;
+
         offset = 0; n = 0;
 /*printf("parent=%4ld\n",dirc.parent);*/
         while(n < dirc.recordsNb) {
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
-                return RC_ERROR;
+            rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
+            if ( rc != RC_OK )
+                return rc;
+
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     caEntry.header, caEntry.type, caEntry.size, caEntry.protect,
     caEntry.days, caEntry.mins/60, caEntry.mins%60, 
@@ -442,17 +461,19 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 
         adfPutCacheEntry(&dirc, &offset, &newEntry);
         newDirc.recordsNb++;
-        if (adfWriteDirCBlock(vol, nCache, &newDirc)!=RC_OK)
-			return RC_ERROR;
+
+        rc = adfWriteDirCBlock ( vol, nCache, &newDirc );
+        if ( rc != RC_OK )
+            return rc;
+
         dirc.nextDirC = nCache;
     }
 /*printf("dirc.headerKey=%ld\n",dirc.headerKey);*/
-    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-		return RC_ERROR;
+
 /*if (strcmp(entry->name,"file_5u")==0)
 dumpBlock(&dirc);
 */
-    return RC_OK;
+    return adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
 }
 
 
@@ -472,6 +493,7 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
     BOOL found;
     int i, oLen, nLen;
     int sLen; /* shift length */
+    RETCODE rc = RC_OK;
 
     nLen = adfEntry2CacheEntry(entry, &newEntry);
 
@@ -479,15 +501,18 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
     found = FALSE;
     do {
 /*printf("dirc=%ld\n",nSect);*/
-        if (adfReadDirCBlock(vol, nSect, &dirc)!=RC_OK)
-			return RC_ERROR;
+        rc = adfReadDirCBlock ( vol, nSect, &dirc );
+        if ( rc != RC_OK )
+            return rc;
+
         offset = 0; n = 0;
         /* search entry to update with its header_key */
         while(n < dirc.recordsNb && !found) {
             oldOffset = offset;
             /* offset is updated */
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK)
-                return RC_ERROR;
+            rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
+            if ( rc != RC_OK )
+                return rc;
             oLen = offset-oldOffset;
             sLen = oLen-nLen;
 /*printf("olen=%d nlen=%d\n",oLen,nLen);*/
@@ -497,8 +522,9 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
                     /* same length : remplace the old values */
                     adfPutCacheEntry(&dirc, &oldOffset, &newEntry);
 /*if (entryLenChg) puts("oLen==nLen");*/
-                    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-                        return RC_ERROR;
+                    rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
                 else if (oLen>nLen) {
 /*puts("oLen>nLen");*/
@@ -512,14 +538,20 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
                     for(i=488-sLen; i<488; i++)
                         dirc.records[i] = (char)0;
 
-                    if (adfWriteDirCBlock(vol, dirc.headerKey, &dirc)!=RC_OK)
-                        return RC_ERROR;
+                    rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
+                    if ( rc != RC_OK )
+                        return rc;
                 }
                 else {
                     /* the new record is larger */
 /*puts("oLen<nLen");*/
-                    adfDelFromCache(vol,parent,entry->headerKey);
-                    adfAddInCache(vol,parent,entry);
+                    rc = adfDelFromCache ( vol, parent, entry->headerKey );
+                    if ( rc != RC_OK )
+                        return rc;
+
+                    rc = adfAddInCache ( vol, parent, entry );
+                    if ( rc != RC_OK )
+                        return rc;
 /*puts("oLen<nLen end");*/
 
                 }
@@ -530,8 +562,7 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
     }while(nSect!=0 && !found);
 
     if (found) {
-        if (adfUpdateBitmap(vol)!=RC_OK)
-			return RC_ERROR;
+        return adfUpdateBitmap ( vol );
     }
     else
         (*adfEnv.wFct)("adfUpdateCache : entry not found");
@@ -578,10 +609,7 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
     dirc.recordsNb = 0;
     dirc.nextDirC = 0;
 
-    if (adfWriteDirCBlock(vol, nCache, &dirc)!=RC_OK)
-		return RC_ERROR;
-
-    return RC_OK;
+    return adfWriteDirCBlock ( vol, nCache, &dirc );
 }
 
 
@@ -595,8 +623,9 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
 {
     uint8_t buf[512];
 
-    if ( adfReadBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
+    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    if ( rc != RC_OK )
+        return rc;
 
     memcpy(dirc,buf,512);
 #ifdef LITT_ENDIAN
@@ -636,11 +665,8 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
-    if ( adfWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
 /*puts("adfWriteDirCBlock");*/
-
-    return RC_OK;
+    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 /*################################################################################*/

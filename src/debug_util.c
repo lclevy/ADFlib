@@ -1,17 +1,17 @@
 
-/* CygWin does not have execinfo.h... */
-#ifndef __CYGWIN__
-#include <execinfo.h>
+#include "debug_util.h"
+
+#if ( defined HAVE_BACKTRACE && defined HAVE_BACKTRACE_SYMBOLS )
+#include <execinfo.h>    /* required for backtrace() */
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "debug_util.h"
-
-
-#ifndef __CYGWIN__
+#if ( defined HAVE_BACKTRACE && defined HAVE_BACKTRACE_SYMBOLS )
 /*
+  backtrace(), backtrace_symbols are available only in glibc
+
   Require link option: -rdynamic
 
   More info:
@@ -25,22 +25,30 @@ void adfPrintBacktrace ( void )
     const unsigned BUFSIZE = 100;
     void *buffer [ BUFSIZE ];
 
-    int size = backtrace ( buffer, BUFSIZE );
-    const char * const * const strings = backtrace_symbols ( buffer, size );
+    int size = backtrace ( buffer, (int) BUFSIZE );
+    const char * const * const strings =
+        ( const char * const* const ) backtrace_symbols ( buffer, size );
+
     if ( strings == NULL ) {
         perror ( "error getting symbols" );
         return;
     }
 
     printf ( "Obtained %d stack frames.\n", size );
-    for ( unsigned i = 0 ; i < size ; i++ )
+    for ( int i = 0 ; i < size ; i++ )
         printf ( "%s\n", strings[i] );
 
-    free ( strings );
+    free ( (void *) strings );
 
 }
 #else
-/* no backtrace under CygWin */
+/* no backtrace without glibc
+
+   ( for Windows, if ever needed, this might be helpful:
+     https://stackoverflow.com/questions/26398064/counterpart-to-glibcs-backtrace-and-backtrace-symbols-on-windows )
+ */
 void adfPrintBacktrace ( void )
-{}
+{
+    fprintf ( stderr, "Sorry, no backtrace without glibc...\n" );
+}
 #endif

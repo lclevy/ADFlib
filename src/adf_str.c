@@ -1,14 +1,9 @@
-#ifndef _ADF_STR_H
-#define _ADF_STR_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_str.h
+ *  adf_str.c
  *
  *  $Id$
- *
- *  structures/constants definitions
  *
  *  This file is part of ADFLib.
  *
@@ -28,32 +23,45 @@
  *
  */
 
-#include "adf_types.h"
-#include "prefix.h"
+#include "adf_str.h"
 
-struct AdfList {         /* generic linked tree */
-    void *content;
-    struct AdfList *subdir;
-    struct AdfList *next;
-};
+#include "adf_env.h"
+
+#include <stdlib.h>
 
 /*
-typedef struct AdfVector_s {
-    unsigned len;
-    void *   contents;
-} AdfVector;
-*/
+ * newCell
+ *
+ * adds a cell at the end the list
+ */
+struct AdfList * newCell ( struct AdfList * const list,
+                           void * const           content )
+{
+    struct AdfList * const cell = ( struct AdfList * )
+        malloc ( sizeof ( struct AdfList ) );
+    if (!cell) {
+        (*adfEnv.eFct)("newCell : malloc");
+        return NULL;
+    }
+    cell->content = content;
+    cell->next = cell->subdir = 0;
+    if (list!=NULL)
+        list->next = cell;
 
-typedef struct AdfVectorSectors_s {
-    unsigned  len;
-    SECTNUM * sectors;
-} AdfVectorSectors;
+    return cell;
+}
 
 
-PREFIX struct AdfList * newCell ( struct AdfList * const list,
-                                  void * const           content );
-
-PREFIX void freeList ( struct AdfList * const list );
-
-#endif /* _ADF_STR_H */
-/*##########################################################################*/
+/*
+ * freeList
+ *
+ */
+void freeList ( struct AdfList * const list )
+{
+    if (list==NULL) 
+        return;
+    
+    if (list->next)
+        freeList(list->next);
+    free(list);
+}

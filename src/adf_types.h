@@ -1,13 +1,11 @@
-#ifndef ADF_LINK_H
-#define ADF_LINK_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  adf_link.h
+ *  adf_types.h
  *
  *  $Id$
- *  
+ *
+ *
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify
@@ -26,17 +24,19 @@
  *
  */
 
-#include "adf_types.h"
-#include "adf_vol.h"
+#ifndef _ADF_TYPES_H
+#define _ADF_TYPES_H 1
 
-#include "prefix.h"
+#include <stdint.h>
 
+typedef int32_t SECTNUM;
 
-PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                       SECTNUM            nSect,
-                                       SECTNUM            lPar,
-                                       char **            name,
-                                       int32_t *          size );
+typedef uint32_t ULONG;
+typedef uint16_t USHORT;
+typedef uint8_t  UCHAR;
+typedef int      BOOL;
 
-#endif /* ADF_LINK_H */
-/*##########################################################################*/
+#define TRUE    1
+#define FALSE   0
+
+#endif
