@@ -98,12 +98,12 @@ jobs:
               artifacts/bin
         mkdir artifacts/include
         cp -vR src/*.h artifacts/include
-        cp -v README.md \
-              COPYING \
-              AUTHORS \
-              ChangeLog \
-              doc \
-              artifacts/
+        cp -vR README.md \
+               COPYING \
+               AUTHORS \
+               ChangeLog \
+               doc \
+               artifacts/
     - name: set env
       run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     - name: Test
