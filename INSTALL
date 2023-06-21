@@ -9,7 +9,8 @@ Testing require also the Check testing framework for C (link below).
 Building deb packages require typical tools for that (ie. helper script uses
 debuild from devscripts).
 
-0.8.0 was tested mostly on:
+ADFlib-0.8.0 was built and tested in the CI system (GitHub Actions) on Ubuntu
+Linux, Windows and MacOs. The library was also built and tested on:
 - Debian GNU/Linux 11 (current stable)
 
 and briefly on:
@@ -33,9 +34,23 @@ To clean the build subdirectory use:
 
 (all have to be configured again for building).
 
-Native devices (generic/linux/win32) can be selected only by manually editing
-src/CMakelists.txt. At this stage, if you are not testing (caution, physical
-storage/disk devices in use!) use the default: generic (a safe dummy device).
+Native device type (generic(dummy) vs. real physical linux/win32 devices) can
+be selected by setting ADFLIB_ENABLE_NATIVE_DEV option (to ON or OFF).
+For instance:
+   $ util/cmake_shared_configure -DADFLIB_ENABLE_NATIVE_DEV:BOOL=ON
+would configure build with shared library and support for the real, physical
+devices.
+Currently, by default only cmake_debug_configure enables real, native devices.
+
+At this stage, if you are not testing (caution, real, physical storage/disk
+devices in use!) - use the default: generic (a safe dummy device).
+
+Other options allow to build with or without tests:
+
+ADFLIB_ENABLE_TESTS, ADFLIB_ENABLE_UNIT_TESTS
+
+and build with or without the address sanitizer (normally used only for
+debugging/sanitizing memory problems): ADFLIB_ENABLE_ADDRESS_SANITIZER
 
 
 Building with Autotools
@@ -85,10 +100,11 @@ The source package alone can be created with:
 
 Testing
 --------
-There are 2 sets of tests:
+There are 3 sets of tests:
 - regtests/ - contain regression and some functional tests (with test data,
   like adf images)
 - tests/ - mainly unit tests; require Check testing framework (link below)
+- examples/tests/ - contains some basic tests of the command-line tools
 
 Note that:
 - on Windows (Visual Studio, CygWin) tests with shared library will fail,
@@ -124,9 +140,12 @@ Note that:
 Installation
 -------------
 ... was not much used / tested. Except for deb packages (which build and
-install fine on current Debian stable).
+install fine on current Debian stable and on Ubuntu in GitHub Actions).
 
-Someday some CI may do more...
+Basic checks are done by the CI system for CMake and autotools on Linux
+(Ubuntu), so those should work fine.
+
+No installation tests on other systems so far...
 
 
 Installation with CMake
@@ -167,7 +186,15 @@ Cross-compilation (an example)
 -------------------------------
 
 Building for Windows can be done cross-compiling eg. on Linux with MinGW:
+
   $ CC=i686-w64-mingw32-gcc util/cmake_shared_configure
+
+or just use:
+
+  $ util/cmake_shared_configure_cross_mingw
+
+and then normally:
+
   $ util/cmake_shared_build
 
 Note that the tests will not work for rather obvious reasons - .EXE and .DLL
