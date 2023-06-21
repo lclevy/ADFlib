@@ -23,8 +23,17 @@ Untested and/or exprerimental support exists for:
 - undel files and directories
 
 It is written in portable C.
-The version `0.8.0` was tested mainly Linux (and Windows), but it should be
-possible to build on (or cross-compile for) other systems.
+
+The current version was built and tested in the CI system (GitHub Actions)
+on Ubuntu Linux, Windows and MacOs. The library was also built and tested on:
+- Debian GNU/Linux 11 (current stable)
+
+and briefly on:
+- CygWin (x86_64, Windows 10)
+- Visual Studio 19 (Windows 10)
+- MacOSX 10.x (Intel)
+
+It should be possible to build on (or cross-compile for) other systems.
 
 
 ## Command-line utilities
@@ -102,7 +111,7 @@ lines 450-455
 as well as many other things, are fixed.**
 
 
-## Compilation
+## Compilation and installation
 
 See INSTALL file.
 

@@ -401,7 +401,7 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
 RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
                            struct bRDSKblock * const blk )
 {
-    UCHAR buf[256];
+    uint8_t buf[256];
 
     RETCODE rc = adfReadBlockDev ( dev, 0, 256, buf );
     if ( rc != RC_OK )
@@ -483,7 +483,7 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
                            const int32_t             nSect,
                            struct bPARTblock * const blk )
 {
-    UCHAR buf[ sizeof(struct bPARTblock) ];
+    uint8_t buf[ sizeof(struct bPARTblock) ];
 
     RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
                                    sizeof(struct bPARTblock), buf );
@@ -562,7 +562,7 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
                            const int32_t             nSect,
                            struct bFSHDblock * const blk )
 {
-    UCHAR buf[sizeof(struct bFSHDblock)];
+    uint8_t buf[sizeof(struct bFSHDblock)];
 
     RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
     if ( rc != RC_OK )
@@ -631,7 +631,7 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
                            const int32_t             nSect,
                            struct bLSEGblock * const blk )
 {
-    UCHAR buf[sizeof(struct bLSEGblock)];
+    uint8_t buf[sizeof(struct bLSEGblock)];
 
     RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
                                    sizeof(struct bLSEGblock), buf );

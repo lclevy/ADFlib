@@ -3,5 +3,5 @@
 # For the release - configure both static and shared
 #
 
-util/cmake_static_configure
-util/cmake_shared_configure
+util/cmake_static_configure $@
+util/cmake_shared_configure $@

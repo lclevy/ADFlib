@@ -3,6 +3,8 @@ name: ADFlib autotools
 on:
   push:
     branches: [ "master", "deve|", "citest" ]
+    tags:
+      - '**'
   pull_request:
     branches: [ "master", "devel" ]
 
