@@ -7,15 +7,22 @@ endif ( ADFLIB_BUILD_DLL )
 
 
 if ( ADFLIB_ENABLE_NATIVE_DEV )
-    if ( WIN32 )
+# Useful info (not that CYGWIN went from WIN32 to UNIX...):
+# https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
+    if ( WIN32 OR CYGWIN OR MINGW OR MSYS )
         set ( ADFLIB_NATIVE_DEV_DIR win32 )
         set ( ADFLIB_NATIVE_DEV_SRC
               win32/adf_nativ.c
               win32/nt4_dev.c
               win32/nt4_dev.h )
     else()
-        set ( ADFLIB_NATIVE_DEV_DIR linux )
-        set ( ADFLIB_NATIVE_DEV_SRC linux/adf_nativ.c )
+        if ( UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+	    set ( ADFLIB_NATIVE_DEV_DIR linux )
+            set ( ADFLIB_NATIVE_DEV_SRC linux/adf_nativ.c )
+        else()
+            set ( ADFLIB_NATIVE_DEV_DIR generic )
+            set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+        endif()
     endif()
 else()
     set ( ADFLIB_NATIVE_DEV_DIR generic )
