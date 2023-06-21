@@ -116,8 +116,8 @@ if ( ADFLIB_ENABLE_TESTS )
     message ( STATUS "Testing enabled" )
     enable_testing()
     add_subdirectory ( regtests/Test )
-    if ( ADFLIB_ENABLE_UNIT_TESTS )
-      #if ( NOT MINGW )
+    if ( ADFLIB_ENABLE_UNIT_TESTS AND
+	 NOT ( UNIX AND MINGW ) )       # cannot build tests (ie. Check) cross-compiling
         message ( STATUS "Unit tests (in tests/) enabled." )
         add_subdirectory ( tests )
     else()
