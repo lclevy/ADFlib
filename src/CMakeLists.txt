@@ -7,7 +7,7 @@ endif ( ADFLIB_BUILD_DLL )
 
 
 if ( ADFLIB_ENABLE_NATIVE_DEV )
-# Useful info (not that CYGWIN went from WIN32 to UNIX...):
+# Useful info (note that CYGWIN went from WIN32 to UNIX...):
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
     if ( WIN32 OR CYGWIN OR MINGW OR MSYS )
         set ( ADFLIB_NATIVE_DEV_DIR win32 )
@@ -33,9 +33,6 @@ message ( STATUS "Native device sources:   ${ADFLIB_NATIVE_DEV_SRC}" )
 
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
-#  ${PROJECT_SOURCE_DIR}/src/generic
-#  ${PROJECT_SOURCE_DIR}/src/linux
-#  ${PROJECT_SOURCE_DIR}/src/win32
   ${ADFLIB_NATIVE_DEV_DIR}
   ${PROJECT_BINARY_DIR}/src
 )
@@ -111,7 +108,6 @@ target_include_directories ( adf
 
 #target_link_libraries ( adf ${SOME_LIBRARIES} )
 
-#install(TARGETS adf DESTINATION /usr/local/lib)
 install ( TARGETS adf
   LIBRARY
     DESTINATION "${CMAKE_INSTALL_LIBDIR}"
