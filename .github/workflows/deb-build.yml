@@ -3,6 +3,8 @@ name: ADFlib deb build/packaging
 on:
   push:
     branches: [ "master", "devel", "citest" ]
+    tags:
+      - '**'
   pull_request:
     branches: [ "master", "devel" ]
 
