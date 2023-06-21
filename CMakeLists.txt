@@ -20,6 +20,8 @@ set ( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
 # ( https://lists.debian.org/debian-mentors/2018/04/msg00244.html )
 #set ( CMAKE_BUILD_TYPE Release )
 
+message ( STATUS "Compiler ID: ${CMAKE_C_COMPILER_ID}" )
+
 add_compile_options (
     -Wall
     $<$<CONFIG:RELEASE>:-O3>
@@ -44,20 +46,35 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     )
 endif()
 
-option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" ON )
-# no address sanitizer for Visual Studio or MinGW
-if ( ADFLIB_ENABLE_ADDRESS_SANITIZER AND
-     NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" AND NOT MINGW )
-    message ( STATUS "Enable address sanitizer" )
-    add_compile_options ( $<$<CONFIG:DEBUG>:-fsanitize=address> )
-    add_link_options (
-        $<$<CONFIG:DEBUG>:-fsanitize=address>
-    #    $<$<CONFIG:DEBUG>:-lasan>
-        $<$<CONFIG:DEBUG>:-static-libasan>
-    )
+
+option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" OFF )
+
+if ( ADFLIB_ENABLE_ADDRESS_SANITIZER )
+
+    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
+        message ( STATUS "Enabling GNU address sanitizer" )
+        add_compile_options ( -fsanitize=address )
+        add_link_options (
+            -fsanitize=address
+	# for library need either this or LD_PRELOAD (-lasan does not work )
+            -static-libasan
+	)
+    endif()
+
+    if ( "${CMAKE_C_COMPILER_ID}" MATCHES ".*Clang" )
+        message ( STATUS "Enabling Clang address sanitizer" )
+        # https://releases.llvm.org/10.0.0/tools/clang/docs/AddressSanitizer.html
+        add_compile_options ( -fsanitize=address )
+        add_link_options ( -fsanitize=address )
+    endif()
+
+    if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" OR MINGW )
+        message ( STATUS "No address sanitizer for MSVC (?) or MinGW (not available)")
+    endif()
 else()
-    message ( STATUS "Disable address sanitizer" )
+    message ( STATUS "Address sanitizer disabled - not configuring" )
 endif()
+
 
 option ( ADFLIB_BUILD_DLL "Build Windows DLL" OFF )
 if ( ADFLIB_BUILD_DLL )
