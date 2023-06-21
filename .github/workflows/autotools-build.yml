@@ -2,9 +2,9 @@ name: ADFlib autotools
 
 on:
   push:
-    branches: [ "master", "citest" ]
+    branches: [ "master", "deve|", "citest" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "devel" ]
 
 jobs:
   ubuntu_native_default:

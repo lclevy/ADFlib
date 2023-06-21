@@ -19,7 +19,7 @@ typedef struct test_data_s {
     char *             volname;
     uint8_t            fstype;   // 0 - OFS, 1 - FFS
     unsigned           nVolumeBlocks;
-    char *             openMode;  // "w" or "a"
+    AdfFileMode        openMode;
     unsigned char *    buffer;
     unsigned           bufsize;
     unsigned           truncsize;
@@ -82,7 +82,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_ptr_nonnull ( file );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
@@ -98,7 +98,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ///
     
     // open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -135,7 +135,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( bufsize, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -151,7 +151,7 @@ void test_file_truncate ( test_data_t * const tdata )
     const unsigned truncsize = tdata->truncsize;
     
     // truncate the file
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_ptr_nonnull ( file );
 
 #if ( TEST_VERBOSITY >= 1 )
@@ -188,7 +188,7 @@ void test_file_truncate ( test_data_t * const tdata )
         free_blocks_file_truncated, free_blocks_file_truncated_expected, bufsize, truncsize );
     
     // reread the truncated file
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_ptr_nonnull ( file );
     unsigned char * rbuf = malloc ( truncsize + 1 );
     ck_assert_ptr_nonnull ( rbuf );
@@ -291,7 +291,7 @@ void test_file_truncate ( test_data_t * const tdata )
         printf ("Checking the enlarged (zero-filled) part\n");
         fflush (stdout);
 #endif
-        file = adfFileOpen ( vol, filename, "r" );
+        file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
         ck_assert_ptr_nonnull ( file );
         adfFileSeek ( file, bufsize );
         size_t extrasize = truncsize - bufsize;
@@ -368,7 +368,7 @@ START_TEST ( test_file_truncate_ofs )
         .adfname = "test_file_truncate_ofs.adf",
         .volname = "Test_file_truncate_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {
@@ -392,7 +392,7 @@ START_TEST ( test_file_truncate_ffs )
         .adfname = "test_file_truncate_ffs.adf",
         .volname = "Test_file_truncate_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {

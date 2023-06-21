@@ -155,7 +155,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     int status = 0;
     for ( unsigned int i = 0 ; i < test_data->nchecks - 1; ++i ) {
 
-        struct AdfFile * file = adfFileOpen ( vol, test_data->filename, "r" );
+        struct AdfFile * file = adfFileOpen ( vol, test_data->filename, ADF_FILE_MODE_READ );
         if ( ! file ) {
             printf ("Cannot open file %s - aborting...\n", test_data->filename );
             status = 1;
@@ -169,7 +169,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     }
 
     // test EOF
-    struct AdfFile * file = adfFileOpen ( vol, test_data->filename, "r" );
+    struct AdfFile * file = adfFileOpen ( vol, test_data->filename, ADF_FILE_MODE_READ );
     if ( ! file ) {
         printf ("Cannot open file %s - aborting...\n", test_data->filename );
         status = 1;

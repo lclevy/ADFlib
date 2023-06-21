@@ -17,7 +17,7 @@ typedef struct test_data_s {
     char *          volname;
     uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
-//    char *          openMode;  // "w" or "a"
+//    AdfFileMode          openMode;
     unsigned char * buffer;
     unsigned        bufsize;    // at least 2 bytes
 } test_data_t;
@@ -62,7 +62,7 @@ void test_file_overwrite ( test_data_t * const tdata )
 
     // create a new file
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfFileOpen ( vol, filename, "w" );
+    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_ptr_nonnull ( file );
     adfFileClose ( file );
 
@@ -80,7 +80,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -100,7 +100,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     adfFileClose ( file );
 */
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -116,7 +116,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -163,7 +163,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -205,7 +205,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open the file for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
 
     // verify metadata after opening
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );
@@ -247,7 +247,7 @@ void test_file_overwrite ( test_data_t * const tdata )
         adfMount ( device, 0, FALSE );
     
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( buf2size, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );   // 0 is bootblock
     ck_assert_uint_eq ( 0, file->pos );

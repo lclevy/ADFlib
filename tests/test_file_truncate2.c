@@ -19,7 +19,7 @@ typedef struct test_data_s {
     char *             volname;
     uint8_t            fstype;   // 0 - OFS, 1 - FFS
     unsigned           nVolumeBlocks;
-    char *             openMode;  // "w" or "a"
+    AdfFileMode        openMode;
     unsigned char *    buffer;
     unsigned           bufsize;
     unsigned           truncsize;
@@ -82,7 +82,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -102,7 +102,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     adfFileClose ( file );
 */
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -117,7 +117,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ///
     
     // open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -157,7 +157,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     vol = //tdata->vol =
         adfMount ( device, 0, FALSE );
 
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_ptr_nonnull ( file );
 
     const unsigned truncsize = tdata->truncsize;
@@ -245,7 +245,7 @@ START_TEST ( test_file_truncate2_ofs )
         .adfname = "test_file_truncate2_ofs.adf",
         .volname = "Test_file_truncate2_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {
@@ -269,7 +269,7 @@ START_TEST ( test_file_truncate2_ffs )
         .adfname = "test_file_truncate2_ffs.adf",
         .volname = "Test_file_truncate2_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {

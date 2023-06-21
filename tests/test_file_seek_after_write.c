@@ -17,7 +17,7 @@ typedef struct test_data_s {
     char *             volname;
     uint8_t            fstype;   // 0 - OFS, 1 - FFS
     unsigned           nVolumeBlocks;
-    char *             openMode;  // "w" or "a"
+    AdfFileMode        openMode;
     unsigned char *    buffer;
     unsigned           bufsize;
     unsigned           chunksize;
@@ -229,7 +229,7 @@ START_TEST ( test_file_seek_after_write_ofs )
         .adfname = "test_file_seek_after_write_ofs.adf",
         .volname = "Test_file_seek_after_write_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {
@@ -253,7 +253,7 @@ START_TEST ( test_file_seek_after_write_ffs )
         .adfname = "test_file_seek_after_write_ffs.adf",
         .volname = "Test_file_seek_after_write_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_READWRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {

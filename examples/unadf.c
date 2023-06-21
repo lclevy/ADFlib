@@ -414,7 +414,7 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;
 
-    if ( ( f = adfFileOpen ( vol, filename, "r" ) ) == NULL )  {
+    if ( ( f = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ ) ) == NULL )  {
         fprintf(stderr, "%s: can't find file %s in volume\n", adf_file, filename);
         goto error_handler;
     }

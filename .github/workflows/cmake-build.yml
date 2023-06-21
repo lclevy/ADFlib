@@ -2,9 +2,9 @@ name: ADFlib CMake
 
 on:
   push:
-    branches: [ "master", "citest" ]
+    branches: [ "master", "devel", "citest" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "devel" ]
 
 jobs:
   ubuntu_cmake_shared:

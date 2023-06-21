@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfFileOpen ( vol, "mod.and.distantcall", "r" );
+    file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("mod.distant","wb");
     if (!out) return 1;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    file = adfFileOpen ( vol, "emptyfile", "r" );
+    file = adfFileOpen ( vol, "emptyfile", ADF_FILE_MODE_READ );
     if (!file) { 
 		adfUnMount(vol); adfUnMountDev(hd); 
         fprintf(stderr, "can't open file\n");
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfFileOpen ( vol, "moon.gif", "r" );
+    file = adfFileOpen ( vol, "moon.gif", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;
