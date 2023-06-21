@@ -73,8 +73,12 @@ if ( ADFLIB_ENABLE_ADDRESS_SANITIZER )
     endif()
 
     if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
-        message ( STATUS "No address sanitizer for MSVC")
+        # https://learn.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-170
+        message ( STATUS "Enabling MSVC address sanitizer" )
+        add_compile_options ( /fsanitize=address /Zi )
+        add_link_options ( /fsanitize=address /Zi)
     endif()
+
 else()
     message ( STATUS "Address sanitizer disabled - not configuring" )
 endif()
