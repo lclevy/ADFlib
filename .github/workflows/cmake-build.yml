@@ -106,7 +106,7 @@ jobs:
                artifacts/
     - name: set env
       shell: bash
-      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _ >> $GITHUB_ENV
     - name: Test
       shell: bash
       run: |

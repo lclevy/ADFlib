@@ -37,7 +37,7 @@ jobs:
         cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
     # https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
     - name: set env
-      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _  >> $GITHUB_ENV
     - name: Test
       run: |
         echo $ADFLIB_TAG
