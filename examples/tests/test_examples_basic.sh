@@ -15,9 +15,9 @@ then
     exit 1
 fi
 
-PATH = `pwd`/$1:$PATH
-EXAMPLES_TEST_PATH = `dirname $0`
-TEST_ADF = $EXAMPLES_TEST_PATH/arccsh.adf
+PATH=`pwd`/$1:$PATH
+EXAMPLES_TEST_PATH=`dirname $0`
+TEST_ADF=$EXAMPLES_TEST_PATH/arccsh.adf
 
 if [ ! -f $EXAMPLES_TEST_PATH/arccsh.adf ]
 then
