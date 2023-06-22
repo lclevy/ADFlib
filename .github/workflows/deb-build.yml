@@ -9,7 +9,7 @@ on:
     branches: [ "master", "devel" ]
 
 jobs:
-  ubuntu_deb:
+  ubuntu_deb_build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -21,15 +21,15 @@ jobs:
       run: util/deb_build.sh
     - name: list packages
       run: ls ..
-    - name: install packages
-      run: sudo dpkg -i ../*.deb ../*.ddeb
-    - name: check installation
-      run:
-        dpkg -l 'libadf*' ;
-        dpkg -l 'libadf*' | grep "libadf" |
-        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
-    - name: test installed command-line utils
-      run: ./examples/tests/test-all-examples.sh /usr/bin
+#    - name: install packages
+#      run: sudo dpkg -i ../*.deb ../*.ddeb
+#    - name: check installation
+#      run:
+#        dpkg -l 'libadf*' ;
+#        dpkg -l 'libadf*' | grep "libadf" |
+#        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+#    - name: test installed command-line utils
+#      run: ./examples/tests/test-all-examples.sh /usr/bin
     # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
     - name: copy artifacts
       run:
@@ -37,13 +37,40 @@ jobs:
         cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
     # https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
     - name: set env
-      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _  >> $GITHUB_ENV
     - name: Test
       run: |
         echo $ADFLIB_TAG
         echo ${{ env.ADFLIB_TAG }}
     - uses: actions/upload-artifact@v3
       with:
-        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-deb-ubuntu
         path: |
           artifacts/
+
+  ubuntu_deb_test:
+    runs-on: ubuntu-latest
+    needs: ubuntu_deb_build
+    steps:
+#    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-deb-ubuntu
+        path: .
+    - name: get packages from artifact
+      run: |
+        ls -l
+        unzip adflib-deb-ubuntu.zip
+        ls -l
+    - name: install packages
+#      run: sudo dpkg -i ../*.deb ../*.ddeb
+      run: sudo dpkg -i *.deb *.ddeb
+    - name: check installation
+      run:
+        dpkg -l 'libadf*' ;
+        dpkg -l 'libadf*' | grep "libadf" |
+        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /usr/bin
