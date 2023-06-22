@@ -48,11 +48,15 @@ jobs:
         name: adflib-deb-ubuntu
         path: |
           artifacts/
+    - name: archive examples/tests
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
     - uses: actions/upload-artifact@v3
       with:
         name: adflib-examples-tests
         path: |
-          examples/tests
+          artifact-tests
 
   ubuntu_deb_test:
     runs-on: ubuntu-latest
@@ -79,8 +83,8 @@ jobs:
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-examples-tests
-        path: examples/tests
-    - name: list files
-      run: find .
+        path: .
+    - name: extract examples/tests
+      run: tar xvzf examples_tests.tgz
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/bin
