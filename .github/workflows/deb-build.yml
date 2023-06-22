@@ -48,6 +48,11 @@ jobs:
         name: adflib-deb-ubuntu
         path: |
           artifacts/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          examples/tests
 
   ubuntu_deb_test:
     runs-on: ubuntu-latest
@@ -70,5 +75,12 @@ jobs:
         dpkg -l 'libadf*' ;
         dpkg -l 'libadf*' | grep "libadf" |
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-examples-tests
+        path: examples/tests
+    - name: list files
+      run: find .
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/bin
