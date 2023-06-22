@@ -118,6 +118,16 @@ jobs:
         name: adflib-windows
         path: |
           artifacts/
+    - name: archive examples/tests
+      shell: bash
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
 
   windows_cmake_test:
     runs-on: windows-latest
@@ -129,14 +139,17 @@ jobs:
         name: adflib-windows
         path: .
     - name: list files extracted from the artifact
+      shell: bash
       run: find .
     - uses: actions/download-artifact@master
       with:
         name: adflib-examples-tests
-        path: examples/tests
+        path: .
+    - name: extract examples/tests
+      shell: bash
+      run: tar xvzf examples_tests.tgz
     - name: test command-line utils
       shell: bash
-#      run: util/test_examples
       run: ./examples/tests/test-all-examples.sh bin
 
   macos_cmake_shared:
