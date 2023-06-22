@@ -2,7 +2,7 @@ name: ADFlib CMake
 
 on:
   push:
-    branches: [ "master", "devel", "citest" ]
+    branches: [ "master", "devel", "citest", "citest-deb" ]
     tags:
       - '**'
   pull_request:
@@ -51,7 +51,7 @@ jobs:
 #    - name: test command-line utils
 #      run: util/test_examples
 
-  windows_cmake:
+  windows_cmake_build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -114,12 +114,30 @@ jobs:
         echo ${{ env.ADFLIB_TAG }}
     - uses: actions/upload-artifact@v3
       with:
-        name: adflib-${{ env.ADFLIB_TAG }}-windows
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
         path: |
           artifacts/
-#    - name: test command-line utils
-#      shell: bash
+
+  windows_cmake_test:
+    runs-on: windows-latest
+    needs: windows_cmake_build
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
+        path: .
+    - name: list files extracted from the artifact
+      run: find .
+    - uses: actions/download-artifact@master
+      with:
+        name: adflib-examples-tests
+        path: examples/tests
+    - name: test command-line utils
+      shell: bash
 #      run: util/test_examples
+      run: ./examples/tests/test-all-examples.sh bin
 
   macos_cmake_shared:
     runs-on: macos-latest
