@@ -160,5 +160,50 @@ jobs:
       run: find /usr/local -iname '*adf*'
 #    - name: update ldconfig
 #      run: sudo ldconfig
-#    - name: test command-line utils
-#      run: util/test_examples
+
+    - name: prepare artifact
+      run:
+        tar czvf adflib-macos.tgz
+            /usr/local/bin/*adf*
+            /usr/local/include/*adf*
+            /usr/local/lib/*adf*
+#            /usr/local/share/man/man3/*adf*
+    - uses: actions/upload-artifact@v3
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-macos
+        path: |
+          adflib-macos.tgz
+    - name: archive examples/tests
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
+
+
+  macos_test:
+    needs: macos_shared
+    runs-on: macos-latest
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#      name: adflib-${{ env.ADFLIB_TAG }}-macos
+        name: adflib-macos
+        path: .
+    - name: extract file from the artifact
+      run: tar xzv -C / -f adflib-macos.tgz
+    - name: list files extracted from the artifact
+      run: find /usr/local -name "*adf*"
+    - uses: actions/download-artifact@master
+      with:
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      run: tar xzvf examples_tests.tgz
+    - name: test command-line utils
+      run: |
+        examples/tests/test_examples_basic.sh bin/
