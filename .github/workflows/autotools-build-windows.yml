@@ -2,12 +2,14 @@ name: ADFlib autotools windows
 
 on:
   workflow_dispatch:
+    branches:
+      - '*'
 #  push:
 #    branches: [ "master", "deve|", "citest" ]
 #    tags:
 #      - '**'
-  pull_request:
-    branches: [ "master", "devel" ]
+#  pull_request:
+#    branches: [ "master", "devel" ]
 
 jobs:
   cygwin_native_default:
