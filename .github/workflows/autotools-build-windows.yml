@@ -6,8 +6,8 @@ on:
 #    branches: [ "master", "deve|", "citest" ]
 #    tags:
 #      - '**'
-#  pull_request:
-#    branches: [ "master", "devel" ]
+  pull_request:
+    branches: [ "master", "devel" ]
 
 jobs:
   cygwin_native_default:
