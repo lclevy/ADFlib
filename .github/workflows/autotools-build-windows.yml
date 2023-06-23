@@ -3,7 +3,7 @@ name: ADFlib autotools windows
 on:
   workflow_dispatch:
     branches:
-      - '*'
+      - '**'
 #  push:
 #    branches: [ "master", "deve|", "citest" ]
 #    tags:
