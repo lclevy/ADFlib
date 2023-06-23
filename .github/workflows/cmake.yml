@@ -9,41 +9,23 @@ on:
     branches: [ "master", "devel" ]
 
 jobs:
-  ubuntu_cmake_shared:
+  ubuntu:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [ shared, debug ]
     steps:
     - uses: actions/checkout@v3
     - name: install prereq.
       run: sudo apt-get update ; sudo apt-get install -y check
-    - name: cmake_shared_configure
-      run: util/cmake_shared_configure
-    - name: cmake_shared_build
-      run: util/cmake_shared_build
-    - name: cmake_shared_test
-      run: util/cmake_shared_test
-    - name: cmake_shared_install
-      run: sudo bash util/cmake_shared_install
-    - name: check installation
-      run: find /usr/local -iname '*adf*'
-    - name: update ldconfig
-      run: sudo ldconfig
-#    - name: test command-line utils
-#      run: ./examples/test/test-all-examples.sh /usr/local/bin
-
-  ubuntu_cmake_debug:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: install prereq.
-      run: sudo apt-get update ; sudo apt-get install -y check
-    - name: cmake_debug_configure
-      run: util/cmake_debug_configure
-    - name: cmake_debug_build
-      run: util/cmake_debug_build
-    - name: cmake_debug_test
-      run: util/cmake_debug_test
-    - name: cmake_debug_install
-      run: sudo bash util/cmake_debug_install
+    - name: cmake_${{ matrix.build_type }}_configure
+      run: util/cmake_${{ matrix.build_type }}_configure
+    - name: cmake_${{ matrix.build_type }}_build
+      run: util/cmake_${{ matrix.build_type }}_build
+    - name: cmake_${{ matrix.build_type }}_test
+      run: util/cmake_${{ matrix.build_type }}_test
+    - name: cmake_${{ matrix.build_type }}_install
+      run: sudo bash util/cmake_${{ matrix.build_type }}_install
     - name: check installation
       run: find /usr/local -iname '*adf*'
     - name: update ldconfig
