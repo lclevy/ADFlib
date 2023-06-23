@@ -25,7 +25,7 @@ jobs:
     - name: copy artifacts
       run:
         mkdir -v artifacts ;
-        cp -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
+        mv -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
     # https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
     - name: set env
       run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _  >> $GITHUB_ENV
@@ -50,10 +50,9 @@ jobs:
           artifact-tests
 
   test:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     steps:
-#    - uses: actions/checkout@v3
     - uses: actions/download-artifact@master
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
@@ -77,4 +76,6 @@ jobs:
     - name: extract examples/tests
       run: tar xvzf examples_tests.tgz
     - name: test installed command-line utils
-      run: ./examples/tests/test-all-examples.sh /usr/bin
+      run: |
+        ./examples/tests/test_examples_basic.sh /usr/bin
+        ./examples/tests/test-all-examples.sh /usr/bin
