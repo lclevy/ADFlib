@@ -33,7 +33,7 @@ jobs:
 #    - name: test command-line utils
 #      run: ./examples/test/test-all-examples.sh /usr/local/bin
 
-  windows_cmake_build:
+  windows_build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -111,9 +111,9 @@ jobs:
         path: |
           artifact-tests
 
-  windows_cmake_test:
+  windows_test:
     runs-on: windows-latest
-    needs: windows_cmake_build
+    needs: windows_build
     steps:
     - uses: actions/download-artifact@master
       with:
@@ -142,7 +142,7 @@ jobs:
 #        bin/adf_floppy_format
 #        bin/adf_show_metadata
 
-  macos_cmake_shared:
+  macos_shared:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
