@@ -1,6 +1,9 @@
 name: ADFlib autotools windows
 
 on:
+  push:
+    branches:
+      - autotools-windows
   workflow_dispatch:
     branches:
       - autotools-windows
