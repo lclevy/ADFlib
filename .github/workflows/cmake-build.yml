@@ -2,7 +2,7 @@ name: ADFlib CMake
 
 on:
   push:
-    branches: [ "master", "devel", "citest" ]
+    branches: [ "master", "devel", "citest", "citest-deb" ]
     tags:
       - '**'
   pull_request:
@@ -51,7 +51,7 @@ jobs:
 #    - name: test command-line utils
 #      run: ./examples/test/test-all-examples.sh /usr/local/bin
 
-  windows_cmake:
+  windows_cmake_build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -114,12 +114,51 @@ jobs:
         echo ${{ env.ADFLIB_TAG }}
     - uses: actions/upload-artifact@v3
       with:
-        name: adflib-${{ env.ADFLIB_TAG }}-windows
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
         path: |
           artifacts/
-#    - name: test command-line utils
-#      shell: bash
-#      run: util/test_examples
+    - name: archive examples/tests
+      shell: bash
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
+
+  windows_cmake_test:
+    runs-on: windows-latest
+    needs: windows_cmake_build
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
+        path: .
+    - name: list files extracted from the artifact
+      shell: bash
+      run: find .
+    - uses: actions/download-artifact@master
+      with:
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      shell: bash
+      run: tar xvzf examples_tests.tgz
+    - name: test command-line utils
+      shell: bash
+# these test does not work - output on windows is different (EOL is CR+LF)
+#      run: ./examples/tests/test-all-examples.sh bin
+# for just check if they execute at all instead
+      run: |
+        examples/tests/test_examples_basic.sh bin/
+#        bin/unadf
+#        bin/adf_floppy_create
+#        bin/adf_floppy_format
+#        bin/adf_show_metadata
 
   macos_cmake_shared:
     runs-on: macos-latest

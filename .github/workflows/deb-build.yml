@@ -48,6 +48,15 @@ jobs:
         name: adflib-deb-ubuntu
         path: |
           artifacts/
+    - name: archive examples/tests
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
 
   ubuntu_deb_test:
     runs-on: ubuntu-latest
@@ -59,18 +68,23 @@ jobs:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-deb-ubuntu
         path: .
-    - name: get packages from artifact
-      run: |
-        ls -l
-        unzip adflib-deb-ubuntu.zip
-        ls -l
+    - name: list packages extracted from the artifact
+      run: ls -l
     - name: install packages
 #      run: sudo dpkg -i ../*.deb ../*.ddeb
-      run: sudo apt install *.deb *.ddeb
+      run: sudo dpkg -i *.deb *.ddeb
+#      run: sudo apt install *.deb *.ddeb
     - name: check installation
       run:
         dpkg -l 'libadf*' ;
         dpkg -l 'libadf*' | grep "libadf" |
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      run: tar xvzf examples_tests.tgz
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/bin
