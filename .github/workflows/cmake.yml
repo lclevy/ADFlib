@@ -1,4 +1,4 @@
-name: ADFlib CMake
+name: cmake
 
 on:
   push:
