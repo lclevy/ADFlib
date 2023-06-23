@@ -20,7 +20,7 @@ compare_with() {
 }
 
 get_test_cmd() {
-    [ -n "$cmd_path" ] || cmd_path=.
+    cmd_path=${cmd_path:-.} # default directory to search: "."
     if [ ! -d "$cmd_path" ]; then
         echo no-such-command
         echo >&2 cmd_path $cmd_path is not a directory
