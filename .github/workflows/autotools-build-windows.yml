@@ -1,4 +1,4 @@
-name: ADFlib autotools windows (cygwin, msys2)
+name: ADFlib autotools windows
 
 on:
   workflow_dispatch:
