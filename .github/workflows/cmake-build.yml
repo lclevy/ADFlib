@@ -2,7 +2,7 @@ name: ADFlib CMake
 
 on:
   push:
-    branches: [ "master", "devel", "citest", "citest-deb" ]
+    branches: [ "master", "devel", "citest", "citest-cmake" ]
     tags:
       - '**'
   pull_request:
