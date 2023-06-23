@@ -108,11 +108,17 @@ target_include_directories ( adf
 
 #target_link_libraries ( adf ${SOME_LIBRARIES} )
 
+if (APPLE)
+    set ( ADFLIB_INSTALL_INCLUDE_DIR /usr/local/include )
+else()
+    set ( ADFLIB_INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}" )
+endif()
+
 install ( TARGETS adf
   LIBRARY
     DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   PUBLIC_HEADER
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
+    DESTINATION "${ADFLIB_INSTALL_INCLUDE_DIR}/adf"
   PRIVATE_HEADER
 #    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
     DESTINATION FALSE
