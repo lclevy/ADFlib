@@ -21,15 +21,6 @@ jobs:
       run: util/deb_build.sh
     - name: list packages
       run: ls ..
-#    - name: install packages
-#      run: sudo dpkg -i ../*.deb ../*.ddeb
-#    - name: check installation
-#      run:
-#        dpkg -l 'libadf*' ;
-#        dpkg -l 'libadf*' | grep "libadf" |
-#        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
-#    - name: test installed command-line utils
-#      run: ./examples/tests/test-all-examples.sh /usr/bin
     # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
     - name: copy artifacts
       run:
@@ -71,7 +62,6 @@ jobs:
     - name: list packages extracted from the artifact
       run: ls -l
     - name: install packages
-#      run: sudo dpkg -i ../*.deb ../*.ddeb
       run: sudo dpkg -i *.deb *.ddeb
 #      run: sudo apt install *.deb *.ddeb
     - name: check installation
