@@ -1,4 +1,4 @@
-name: ADFlib deb build/packaging
+name: deb packaging Ubuntu
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     branches: [ "master", "devel" ]
 
 jobs:
-  ubuntu_deb_build:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -49,9 +49,9 @@ jobs:
         path: |
           artifact-tests
 
-  ubuntu_deb_test:
+  test:
     runs-on: ubuntu-latest
-    needs: ubuntu_deb_build
+    needs: build
     steps:
 #    - uses: actions/checkout@v3
     - uses: actions/download-artifact@master

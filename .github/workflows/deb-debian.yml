@@ -1,4 +1,4 @@
-name: ADFlib Debian build/packaging
+name: deb packaging Debian
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 
 jobs:
-  debian_build:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,8 +55,8 @@ jobs:
         path: |
           artifact-tests
 
-  debian_test:
-    needs: debian_build
+  test:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
