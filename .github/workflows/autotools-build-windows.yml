@@ -1,0 +1,70 @@
+name: ADFlib autotools windows (cygwin, msys2)
+
+on:
+#  push:
+#    branches: [ "master", "deve|", "citest" ]
+#    tags:
+#      - '**'
+#  pull_request:
+#    branches: [ "master", "devel" ]
+  workflow_dispatch:
+
+jobs:
+  cygwin_native_default:
+#    if: false
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: C:\tools\cygwin\bin\bash.exe '{0}'
+    env:
+      SHELLOPTS: igncr
+    steps:
+    - uses: actions/checkout@v3
+    - uses: egor-tensin/setup-cygwin@v4
+      with:
+        packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --prefix=/tmp/adflib
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+
+  msys2_native_default:
+#    if: false
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 '{0}'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: autotools diffutils mingw-w64-x86_64-check mingw-w64-x86_64-toolchain
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --prefix=/tmp/adflib
+    - name: make
+      run: make
+    - name: make check
+      run: ( make check || grep . examples/*.log examples/tests/*.log )
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
