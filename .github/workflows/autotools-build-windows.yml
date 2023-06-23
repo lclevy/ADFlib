@@ -2,8 +2,8 @@ name: ADFlib autotools windows
 
 on:
   workflow_dispatch:
-#    branches:
-#      - '**'
+    branches:
+      - autotools-windows
 #  push:
 #    branches: [ "master", "deve|", "citest" ]
 #    tags:
