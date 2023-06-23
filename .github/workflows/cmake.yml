@@ -137,10 +137,6 @@ jobs:
 # for just check if they execute at all instead
       run: |
         examples/tests/test_examples_basic.sh bin/
-#        bin/unadf
-#        bin/adf_floppy_create
-#        bin/adf_floppy_format
-#        bin/adf_show_metadata
 
   macos_shared:
     runs-on: macos-latest
