@@ -1,4 +1,4 @@
-name: ADFlib autotools
+name: autotools
 
 on:
   push:
