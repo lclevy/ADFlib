@@ -2,7 +2,7 @@ name: autotools
 
 on:
   push:
-    branches: [ "master", "deve|", "citest" ]
+    branches: [ "master", "devel", "citest", "citest-autotools" ]
     tags:
       - '**'
   pull_request:
