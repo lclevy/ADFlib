@@ -73,4 +73,4 @@ sed -i~ -e "s/^set ( ADFLIB_VERSION .*/set ( ADFLIB_VERSION $new_pkg_version )/"
 
 # update version numbers in ADFlib's header files
 sed -i~ -e "s/^#define ADFLIB_VERSION .*/#define ADFLIB_VERSION \"$new_pkg_version\"/" \
-    "$basedir/src/adf_defs.h"
+    "$basedir/src/adf_version.h"
