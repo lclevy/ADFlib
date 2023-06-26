@@ -27,6 +27,6 @@ Files: debian/* examples/adf_* tests/* util/cmake* util/deb* */CMakeLists.txt
 Copyright: 2022-2023 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
 
-Files: util/bump-version
+Files: util/bump_project_version
 Copyright: 2023 Stuart Caie (kyzer@cabextract.org.uk)
 License: GPL-2.0+
