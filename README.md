@@ -25,20 +25,15 @@ Untested and/or exprerimental support exists for:
 It is written in portable C.
 
 The current version was built and tested in the CI system (GitHub Actions)
-on Ubuntu Linux, Windows and MacOs. The library was also built and tested on:
-- Debian GNU/Linux 11 (current stable)
-
-and briefly on:
-- CygWin (x86_64, Windows 10)
-- Visual Studio 19 (Windows 10)
-- MacOSX 10.x (Intel)
+on Linux (Debian 11 and 12, Ubuntu), Windows (native build with MSVC and
+CygWin) and MacOs.
 
 It should be possible to build on (or cross-compile for) other systems.
 
 
 ## Command-line utilities
 
-The `examples/` directory contains a few useful command-line utilities
+The `examples/` directory contains few useful command-line utilities
 (as well as examples of the library usage).
 
 Usage info is shown when they are executed without any parameters
@@ -89,9 +84,9 @@ of Amiga filesystems (for anyone curious...).
 
 - main design and code : Laurent Clevy
 - current maintainer, recent core developments (Dec 2022-): Tomasz Wolak
+- unadf rewrite (in 2019) : Stuart Caie
 - Bug fixes and C++ wrapper : Bjarke Viksoe (adfwrapper.h)
 - WinNT native driver : Dan Sutherland and Gary Harris
-
 
 New versions and contact e-mail can be found at : https://github.com/lclevy/ADFlib
 
@@ -122,6 +117,7 @@ See INSTALL file.
 - `README.md` : The file you are reading
 - `ChangeLog` : updates in subsequent versions
 - `INSTALL` : compilation, testing and installation information
+- `TODO` : possible future changes/improvements
 - `src/` :	main library files
 - `src/win32/` : WinNT native driver (untested!)
 - `src/linux/` : Linux native driver (experimental!)
@@ -136,8 +132,9 @@ See INSTALL file.
 
 ## Current status
 Most of the code has certain age (the lib was designed and in large part
-implemented before the year 2000). Some subsystems have been improved, but
-many remain untouched for a long time, and untested.
+implemented before the year 2000). Some subsystems have improved, but many
+remain untouched for a long time and may not have dedicated tests (meaning:
+are not tested).
 
 ### Native devices
 The library is mostly tested with ADF disk (ie. floppy) images, not with
@@ -161,6 +158,8 @@ well tested, but still, writing is a new feature so do not experiment on
 a unique copy of an ADF image with your precious data. Please do it on a copy
 and report if any issues are encountered.
 
+(See also TODO).
+
 ## Possible bugs
 - in dircache updates
 
@@ -169,9 +168,10 @@ and report if any issues are encountered.
 ... in major part is outdated. The lib underwent many changes and, possibly,
 many are to come, no enough time to fully deal with this, too...
 
-Please use it as a reference for the concepts and use (as those have not changed)
-while for the details regarding functions check the header files, `tests/` and
-`examples/` to see how the current API can be used.
+Please use it as a reference for the concepts and general ways of use (as those
+have not changed) while for the details regarding functions check the header
+files, sources in `tests/` and `examples/` to see in details how the current
+API can be used.
 
 <!--Please report any bugs or mistakes in the documentation !-->
 

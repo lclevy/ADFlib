@@ -27,4 +27,4 @@ sed -i~ -e "s/^set ( ADFLIB_DATE .*/set ( ADFLIB_DATE $CUR_DATE )/" \
 
 # update date in ADFlib's header files
 sed -i~ -e "s/^#define ADFLIB_DATE .*/#define ADFLIB_DATE \"$CUR_DATE\"/" \
-    "$BASEDIR/src/adf_defs.h"
+    "$BASEDIR/src/adf_version.h"

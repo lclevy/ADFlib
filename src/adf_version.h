@@ -34,7 +34,7 @@
 //#define ADFLIB_VERSION PACKAGE_VERSION
 //#endif
 #define ADFLIB_VERSION "0.8.0"
-#define ADFLIB_DATE "2023-06-05"
+#define ADFLIB_DATE "2023-06-26"
 
 #endif /* _ADF_VERSION_H */
 /*##########################################################################*/

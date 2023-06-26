@@ -1,0 +1,63 @@
+
+To do and/or consider (no particular order):
+
+
+* Optimize writing files
+
+  Currently writing does a lot of updates of the file header block (with
+  adfFileFlush() - which also writes the block and update allocation map).
+  This has some advantages:
+  - less data (blocks) lost on a powercut (only the last, incompletely
+    saved data block is lost in such case)
+  but also some (important) drawbacks:
+  - lower performace
+  - extensive writing on disks (attention with flash drives!)
+  This was done as a relatively quick and safe first implementation, but can
+  (and probably should) be (carefully) improved.
+
+
+* File / file blocks implementation in general
+
+  This is kind of related with the thing above - the file i/o performance
+  could be improved and file state management (probably) could be easier
+  if some file block cache subsystem was added and separated from file.
+
+
+* Review all subsystems and add tests
+
+  In particular, directory cache. But also bitmap allocation code or utilities
+  like undelete.
+
+
+* Implement more disk utilities
+
+  undelete, checkdisk, defragment and similar.
+  (Some functionality maybe can be in the library, but some probably should go
+  to utility programs - like in case of any repair/recovery tools, where
+  algorithms/methods used can differ).
+
+
+* Review devices implementation, better abstract devices
+
+  Currently there are several types of devices (dumps / file images of floppies
+  and hard disks, native (physical) devices), It would be good to provide an
+  interface and a way to implement additional devices that could be used along
+  with the existing ones (like an in-memory device, or any other user-defined /
+  implemented).
+
+
+* Test "native" (physical) devices
+
+  This is a tricky one and must be done carefully. Probably not possible to do
+  automatically in CI, it rather should be done on a VM or some special box
+  dedicated for such purpose.
+
+
+* Review and update the API
+
+  Make consistent prefixing in all modules/subsystems, to separate namespace
+  of the ADFlib and (in the second part) of a (sub)module.
+
+
+* Update documentation
+  ...

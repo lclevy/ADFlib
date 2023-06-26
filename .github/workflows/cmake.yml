@@ -1,0 +1,209 @@
+name: cmake
+
+on:
+  push:
+    branches: [ "master", "devel", "citest", "citest-cmake" ]
+    tags:
+      - '**'
+  pull_request:
+    branches: [ "master", "devel" ]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [ shared, debug ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: cmake_${{ matrix.build_type }}_configure
+      run: util/cmake_${{ matrix.build_type }}_configure
+    - name: cmake_${{ matrix.build_type }}_build
+      run: util/cmake_${{ matrix.build_type }}_build
+    - name: cmake_${{ matrix.build_type }}_test
+      run: util/cmake_${{ matrix.build_type }}_test
+    - name: cmake_${{ matrix.build_type }}_install
+      run: sudo bash util/cmake_${{ matrix.build_type }}_install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+#    - name: test command-line utils
+#      run: ./examples/test/test-all-examples.sh /usr/local/bin
+
+  windows_build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: |
+        choco install ninja cmake
+        ninja --version
+        cmake --version
+    - name: cmake_shared_configure
+      shell: bash
+      run: util/cmake_shared_configure
+    - name: cmake_shared_build
+      shell: bash
+      run: util/cmake_shared_build
+    - name: copy binaries to orig. dirs
+      shell: bash
+      run: |
+        cp -v build/shared/regtests/Test/Debug/*.exe build/shared/regtests/Test/
+        cp -v build/shared/tests/Debug/*.exe build/shared/tests/
+        cp -v build/shared/examples/Debug/*.exe build/shared/examples/
+    - name: copy dll to dirs with test exe
+      shell: bash
+      run: |
+        cp -v build/shared/src/Debug/*.dll build/shared/regtests/Test/
+        cp -v build/shared/src/Debug/*.dll build/shared/tests/
+        cp -v build/shared/src/Debug/*.dll build/shared/examples/
+    - name: cmake_shared_test
+      shell: bash
+      run: util/cmake_shared_test
+#    - name: cmake_shared_install
+#      shell: bash
+#      run: util/cmake_shared_install
+    - name: check build files
+      shell: bash
+      run: |
+        pwd
+        find
+    - name: prepare artifacts
+      shell: bash
+      run: |
+        mkdir -p artifacts/bin
+        cp -v build/shared/src/Debug/*.dll \
+              build/shared/examples/Debug/*.exe \
+              artifacts/bin
+        mkdir artifacts/include
+        cp -vR src/*.h artifacts/include
+        cp -vR README.md \
+               COPYING \
+               AUTHORS \
+               ChangeLog \
+               doc \
+               artifacts/
+    - name: set env
+      shell: bash
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _ >> $GITHUB_ENV
+    - name: Test
+      shell: bash
+      run: |
+        echo $ADFLIB_TAG
+        echo ${{ env.ADFLIB_TAG }}
+    - uses: actions/upload-artifact@v3
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
+        path: |
+          artifacts/
+    - name: archive examples/tests
+      shell: bash
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
+
+  windows_test:
+    runs-on: windows-latest
+    needs: windows_build
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-windows
+        path: .
+    - name: list files extracted from the artifact
+      shell: bash
+      run: find .
+    - uses: actions/download-artifact@master
+      with:
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      shell: bash
+      run: tar xvzf examples_tests.tgz
+    - name: test command-line utils
+      shell: bash
+# these test does not work - output on windows is different (EOL is CR+LF)
+#      run: ./examples/tests/test-all-examples.sh bin
+# for just check if they execute at all instead
+      run: |
+        examples/tests/test_examples_basic.sh bin/
+
+  macos_shared:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: |
+        brew install cmake ninja coreutils
+        ninja --version
+        cmake --version
+        gstdbuf --version
+    - name: cmake_shared_configure
+      run: util/cmake_shared_configure
+    - name: cmake_shared_build
+      run: util/cmake_shared_build
+    - name: cmake_shared_test
+      run: util/cmake_shared_test
+    - name: cmake_shared_install
+      run: sudo bash util/cmake_shared_install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+#    - name: update ldconfig
+#      run: sudo ldconfig
+
+    - name: prepare artifact
+      run:
+        tar czvf adflib-macos.tgz
+            /usr/local/bin/*adf*
+            /usr/local/include/*adf*
+            /usr/local/lib/*adf*
+#            /usr/local/share/man/man3/*adf*
+    - uses: actions/upload-artifact@v3
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-windows
+        name: adflib-macos
+        path: |
+          adflib-macos.tgz
+    - name: archive examples/tests
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
+
+
+  macos_test:
+    needs: macos_shared
+    runs-on: macos-latest
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#      name: adflib-${{ env.ADFLIB_TAG }}-macos
+        name: adflib-macos
+        path: .
+    - name: extract file from the artifact
+      run: tar xzv -C / -f adflib-macos.tgz
+    - name: list files extracted from the artifact
+      run: find /usr/local -name "*adf*"
+    - uses: actions/download-artifact@master
+      with:
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      run: tar xzvf examples_tests.tgz
+    - name: test command-line utils
+      run: |
+        examples/tests/test_examples_basic.sh bin/

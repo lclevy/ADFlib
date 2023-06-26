@@ -92,7 +92,7 @@ add_library ( adf
 
 set_target_properties ( adf PROPERTIES
     #PUBLIC_HEADER "adflib.h"
-    PUBLIC_HEADER "*.h"
+    PUBLIC_HEADER "adf_bitm.h;adf_blk.h;adf_cache.h;adf_dev_dump.h;adf_dev_flop.h;adf_dev.h;adf_dev_hd.h;adf_dir.h;adf_env.h;adf_err.h;adf_file_block.h;adf_file.h;adf_file_util.h;adflib.h;adf_link.h;adf_nativ.h;adf_raw.h;adf_salv.h;adf_str.h;adf_types.h;adf_util.h;adf_version.h;adf_vol.h;debug_util.h;defendian.h;hd_blk.h;prefix.h"
     #PRIVATE_HEADER ...
     VERSION ${CMAKE_PROJECT_VERSION}
 #    SOVERSION ${PROJECT_VERSION_MAJOR}
@@ -108,11 +108,17 @@ target_include_directories ( adf
 
 #target_link_libraries ( adf ${SOME_LIBRARIES} )
 
+if (APPLE)
+    set ( ADFLIB_INSTALL_INCLUDE_DIR /usr/local/include )
+else()
+    set ( ADFLIB_INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}" )
+endif()
+
 install ( TARGETS adf
   LIBRARY
     DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   PUBLIC_HEADER
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
+    DESTINATION "${ADFLIB_INSTALL_INCLUDE_DIR}/adf"
   PRIVATE_HEADER
 #    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
     DESTINATION FALSE
