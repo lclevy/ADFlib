@@ -134,9 +134,7 @@ Installation
 install fine on current Debian stable and on Ubuntu in GitHub Actions).
 
 Basic checks are done by the CI system for CMake and autotools on Linux
-(Ubuntu), so those should work fine.
-
-No installation tests on other systems so far...
+(Debian and Ubuntu) and MacOS, so those should work fine.
 
 
 Installation with CMake
