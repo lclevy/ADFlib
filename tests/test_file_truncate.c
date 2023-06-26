@@ -98,7 +98,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ///
     
     // open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -151,7 +151,7 @@ void test_file_truncate ( test_data_t * const tdata )
     const unsigned truncsize = tdata->truncsize;
     
     // truncate the file
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_ptr_nonnull ( file );
 
 #if ( TEST_VERBOSITY >= 1 )
@@ -297,7 +297,7 @@ void test_file_truncate ( test_data_t * const tdata )
         size_t extrasize = truncsize - bufsize;
         uint8_t * ebuf = malloc ( extrasize );
         ck_assert_ptr_nonnull ( ebuf );
-        ck_assert_int_eq ( adfFileRead (file, extrasize, ebuf ), extrasize );
+        ck_assert_uint_eq ( adfFileRead (file, (uint32_t) extrasize, ebuf ), extrasize );
         for ( unsigned i = 0 ; i < extrasize ; ++i ) {
             if ( ebuf[i] != 0 ) {
                 ck_assert_msg ( 0,
@@ -368,7 +368,7 @@ START_TEST ( test_file_truncate_ofs )
         .adfname = "test_file_truncate_ofs.adf",
         .volname = "Test_file_truncate_ofs",
         .fstype  = 0,          // OFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {
@@ -392,7 +392,7 @@ START_TEST ( test_file_truncate_ffs )
         .adfname = "test_file_truncate_ffs.adf",
         .volname = "Test_file_truncate_ffs",
         .fstype  = 1,          // FFS
-        .openMode = ADF_FILE_MODE_READWRITE,
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i ) {

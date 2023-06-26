@@ -3,7 +3,7 @@
     {
       "name": "x64-Debug-Static",
       "generator": "Ninja",
-      "configurationType": "Debug",
+      "configurationType": "DEBUG",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
@@ -14,7 +14,7 @@
     {
       "name": "x64-Debug-Shared",
       "generator": "Ninja",
-      "configurationType": "Debug",
+      "configurationType": "DEBUG",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "-DBUILD_SHARED_LIBS:BOOL=ON -DADFLIB_BUILD_DLL=ON",

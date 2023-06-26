@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Sets the current date as the date of the project built.
+#
+# Usage: util/set_project_date
+#
+
+# require(!) executing from the main project directory
+# (minimal checking preventing executing in a wrong place...)
+[ "$0"x != "util/set_project_date"x ] && {
+    echo "The script must be executed in the main project directory!"
+    exit 1
+}
+
+BASEDIR="."
+
+CUR_DATE=`date +%F`
+echo "Setting date to $CUR_DATE"
+
+# update date in configure.ac
+sed -i~ -e "s/^m4_define..adflib_date.*/m4_define([adflib_date],[$CUR_DATE])/" \
+    "$BASEDIR/configure.ac"
+
+# update date in CMakeLists.txt
+sed -i~ -e "s/^set ( ADFLIB_DATE .*/set ( ADFLIB_DATE $CUR_DATE )/" \
+    "$BASEDIR/CMakeLists.txt"
+
+# update date in ADFlib's header files
+sed -i~ -e "s/^#define ADFLIB_DATE .*/#define ADFLIB_DATE \"$CUR_DATE\"/" \
+    "$BASEDIR/src/adf_version.h"

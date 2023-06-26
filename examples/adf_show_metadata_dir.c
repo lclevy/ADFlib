@@ -1,10 +1,11 @@
 
-#include <adf_dir.h>
-#include <stdio.h>
-
 #include "adf_show_metadata_dir.h"
 
 #include "adf_show_metadata_common.h"
+
+#include <adf_dir.h>
+#include <stdio.h>
+#include <string.h>
 
 
 void show_directory_metadata ( struct AdfVolume * const vol,
@@ -20,6 +21,11 @@ void show_directory_metadata ( struct AdfVolume * const vol,
         return;
     }
 
+    uint8_t dirblock_orig_endian[512];
+    memcpy ( dirblock_orig_endian, &dir_block, 512 );
+    swapEndian ( dirblock_orig_endian, SWBL_DIR );
+    uint32_t checksum_calculated = adfNormalSum ( dirblock_orig_endian, 0x14,
+                                                  sizeof (struct bDirBlock ) );
     printf ( "\nDirectory block:\n"
              //"  Offset  field\t\tvalue\n"
              "  0x000  type\t\t0x%x\t\t%u\n"
@@ -28,6 +34,7 @@ void show_directory_metadata ( struct AdfVolume * const vol,
              "  0x00c  hashTableSize\t0x%x\t\t%u\n"
              "  0x010  r1\t\t0x%x\n"
              "  0x014  checkSum\t0x%x\n"
+             "     ->  calculated:\t0x%x%s\n"
              "  0x018  hashTable[%u]:\t(see below)\n"
              "  0x138  r2[2]:\t\t(see below)\n"
              "  0x140  access\t\t0x%x\n"
@@ -54,6 +61,8 @@ void show_directory_metadata ( struct AdfVolume * const vol,
              dir_block.hashTableSize, dir_block.hashTableSize,
              dir_block.r1,
              dir_block.checkSum,
+             checksum_calculated,
+             dir_block.checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              HT_SIZE, //hashTable[HT_SIZE],
              //dir_block.r2[2],
              dir_block.access,

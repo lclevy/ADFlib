@@ -9,5 +9,5 @@ Version: @VERSION@
 Requires:
 Conflicts:
 Libs: -L${libdir} -ladf
-Cflags:  -I${includedir} -I${includedir}/generic
+Cflags: -I${includedir}
 

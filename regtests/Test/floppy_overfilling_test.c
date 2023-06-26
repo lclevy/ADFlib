@@ -114,7 +114,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
 
-    struct AdfFile * output = adfFileOpen ( vol, tdata->filename, ADF_FILE_MODE_READWRITE );
+    struct AdfFile * output = adfFileOpen ( vol, tdata->filename, ADF_FILE_MODE_WRITE );
     if ( ! output )
         return 1;
 

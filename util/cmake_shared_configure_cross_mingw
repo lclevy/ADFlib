@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# Generate configuration to build a shared library cross-compiling for Windows (with MinGW)
+#
+
+CC=i686-w64-mingw32-gcc-10 util/cmake_shared_configure \
+    -DADFLIB_ENABLE_NATIVE_DEV:BOOL=ON \
+    $@

@@ -3,5 +3,5 @@
 # For the release - build both static and shared
 #
 
-util/cmake_static_build
-util/cmake_shared_build
+util/cmake_static_build $@
+util/cmake_shared_build $@

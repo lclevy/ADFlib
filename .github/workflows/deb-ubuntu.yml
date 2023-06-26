@@ -1,0 +1,81 @@
+name: deb packaging Ubuntu
+
+on:
+  push:
+    branches: [ "master", "devel", "citest", "citest-deb" ]
+    tags:
+      - '**'
+  pull_request:
+    branches: [ "master", "devel" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run:
+        sudo apt-get update &&
+        sudo apt-get install -y check devscripts debhelper
+    - name: debuild
+      run: util/deb_build.sh
+    - name: list packages
+      run: ls ..
+    # https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+    - name: copy artifacts
+      run:
+        mkdir -v artifacts ;
+        mv -v ../*.deb ../*.ddeb ../*.gz ../*.xz artifacts/
+    # https://stackoverflow.com/questions/58177786/get-the-current-pushed-tag-in-github-actions
+    - name: set env
+      run: echo "ADFLIB_TAG=${GITHUB_REF#refs/*/}" | tr / _  >> $GITHUB_ENV
+    - name: Test
+      run: |
+        echo $ADFLIB_TAG
+        echo ${{ env.ADFLIB_TAG }}
+    - uses: actions/upload-artifact@v3
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-deb-ubuntu
+        path: |
+          artifacts/
+    - name: archive examples/tests
+      run: |
+        mkdir -v artifact-tests
+        tar cvzf artifact-tests/examples_tests.tgz examples/tests/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: adflib-examples-tests
+        path: |
+          artifact-tests
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-deb-ubuntu
+        path: .
+    - name: list packages extracted from the artifact
+      run: ls -l
+    - name: install packages
+      run: sudo dpkg -i *.deb *.ddeb
+#      run: sudo apt install *.deb *.ddeb
+    - name: check installation
+      run:
+        dpkg -l 'libadf*' ;
+        dpkg -l 'libadf*' | grep "libadf" |
+        cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
+    - uses: actions/download-artifact@master
+      with:
+#        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
+        name: adflib-examples-tests
+        path: .
+    - name: extract examples/tests
+      run: tar xvzf examples_tests.tgz
+    - name: test installed command-line utils
+      run: |
+        ./examples/tests/test_examples_basic.sh /usr/bin
+        ./examples/tests/test-all-examples.sh /usr/bin

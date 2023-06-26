@@ -29,14 +29,14 @@
 #ifndef _HD_BLK_H
 #define _HD_BLK_H 1
 
-#include "adf_defs.h"
+#include <stdint.h>
 
 /* ------- RDSK ---------*/
 
 struct bRDSKblock {
 /*000*/	char	id[4];		/* RDSK */
 /*004*/	uint32_t 	size; 		/* 64 int32_ts */
-/*008*/	ULONG	checksum;
+/*008*/	uint32_t checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	uint32_t 	blockSize; 	/* 512 bytes */
 /*014*/ 	int32_t 	flags; 		/* 0x17 */
@@ -83,7 +83,7 @@ struct bBADBentry {
 struct bBADBblock {
 /*000*/	char	id[4]; 		/* BADB */
 /*004*/	uint32_t 	size; 		/* 128 int32_ts */
-/*008*/	ULONG	checksum; 	
+/*008*/	uint32_t checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
 /*014*/ 	int32_t 	r1;
@@ -95,7 +95,7 @@ struct bBADBblock {
 struct bPARTblock {
 /*000*/	char	id[4]; 		/* PART */
 /*004*/	uint32_t 	size; 		/* 64 int32_ts */
-/*008*/	ULONG	checksum;
+/*008*/	uint32_t checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
 /*014*/ 	int32_t 	flags;
@@ -129,7 +129,7 @@ struct bPARTblock {
 struct bLSEGblock {
 /*000*/	char	id[4]; 		/* LSEG */
 /*004*/	uint32_t 	size; 		/* 128 int32_ts */
-/*008*/	ULONG	checksum;
+/*008*/	uint32_t checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
 /*014*/ 	char 	loadData[123*4];
@@ -139,7 +139,7 @@ struct bLSEGblock {
 struct bFSHDblock {
 /*000*/	char	id[4]; 		/* FSHD */
 /*004*/	uint32_t 	size; 		/* 64 */
-/*008*/	ULONG	checksum;
+/*008*/	uint32_t checksum;
 /*00c*/	int32_t	hostID; 	/* 7 */
 /*010*/ 	int32_t 	next;
 /*014*/ 	int32_t 	flags;

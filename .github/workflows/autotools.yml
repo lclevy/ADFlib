@@ -1,0 +1,119 @@
+name: autotools
+
+on:
+  push:
+    branches: [ "master", "devel", "citest", "citest-autotools" ]
+    tags:
+      - '**'
+  pull_request:
+    branches: [ "master", "devel" ]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        conf_options: [ "", --enable-native-generic ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: sudo apt-get update ; sudo apt-get install -y check
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure ${{ matrix.conf_options }}
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: sudo make install
+    - name: check installation
+      run: find /usr/local -iname '*adf*'
+    - name: update ldconfig
+      run: sudo ldconfig
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /usr/local/bin
+
+  cygwin_native_default:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: C:\tools\cygwin\bin\bash.exe '{0}'
+    env:
+      SHELLOPTS: igncr
+    steps:
+    - uses: actions/checkout@v3
+    - uses: egor-tensin/setup-cygwin@v4
+      with:
+        packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --prefix=/tmp/adflib
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+
+  msys2_native_default:
+    if: false
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 '{0}'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: autotools diffutils mingw-w64-x86_64-check mingw-w64-x86_64-toolchain
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure --prefix=/tmp/adflib
+    - name: make
+      run: make
+    - name: make check
+      run: ( make check || grep . examples/*.log examples/tests/*.log )
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+
+  macos_native_default:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install prereq.
+      run: brew install automake check
+    - name: autogen
+      run: ./autogen.sh
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: ( make check || grep .  regtests/Test/*.log )
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /usr/local/ -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /usr/local/bin

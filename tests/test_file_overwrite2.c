@@ -62,7 +62,7 @@ void test_file_overwrite ( test_data_t * const tdata )
 
     // create a new file
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_ptr_nonnull ( file );
     adfFileClose ( file );
 
@@ -100,7 +100,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     adfFileClose ( file );
 */
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -116,7 +116,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -205,7 +205,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open the file for writing
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
 
     // verify metadata after opening
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );

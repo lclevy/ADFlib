@@ -29,7 +29,7 @@
 #ifndef ADF_BLK_H
 #define ADF_BLK_H 1
 
-#include "adf_defs.h"
+#include <stdint.h>
 
 
 #define LOGICAL_BLOCK_SIZE    512
@@ -103,9 +103,9 @@
 
 struct bBootBlock {
 /*000*/	char	dosType[4];
-/*004*/	ULONG	checkSum;
+/*004*/	uint32_t checkSum;
 /*008*/	int32_t	rootBlock;
-/*00c*/	UCHAR	data[500+512];
+/*00c*/	uint8_t data[500+512];
 };
 
 
@@ -115,7 +115,7 @@ struct bRootBlock {
         int32_t	highSeq;
 /*00c*/	int32_t	hashTableSize;
         int32_t	firstData;
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
 /*138*/	int32_t	bmFlag;				/* bitmap flag, -1 means VALID */
 /*13c*/	int32_t	bmPages[BM_SIZE];
@@ -173,7 +173,7 @@ struct bFileHeaderBlock {
 /*008*/	int32_t	highSeq;	/* number of data block in this hdr block */
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	int32_t	dataBlocks[MAX_DATABLK];
 /*138*/	int32_t	r1;
 /*13c*/	int32_t	r2;
@@ -206,7 +206,7 @@ struct bFileExtBlock {
 /*008*/	int32_t	highSeq;
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;	/* == 0 */
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	int32_t	dataBlocks[MAX_DATABLK];
         int32_t	r[45];
         int32_t	info;		/* == 0 */
@@ -224,7 +224,7 @@ struct bDirBlock {
 /*008*/	int32_t	highSeq;	/* == 0 */
 /*00c*/	int32_t	hashTableSize;	/* == 0 */
         int32_t	r1;		/* == 0 */
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
         int32_t	r2[2];
 /*140*/	int32_t	access;
@@ -255,16 +255,16 @@ struct bOFSDataBlock{
 /*008*/	uint32_t seqNum;	/* file data block number */
 /*00c*/	uint32_t dataSize;	/* <= 0x1e8 */
 /*010*/	int32_t	nextData;	/* next data block */
-/*014*/	ULONG	checkSum;
-/*018*/	UCHAR	data[488];
+/*014*/	uint32_t checkSum;
+/*018*/	uint8_t data[488];
 /*200*/	};
 
 
 /* --- bitmap --- */
 
 struct bBitmapBlock {
-/*000*/	ULONG	checkSum;
-/*004*/	ULONG	map[127];
+/*000*/	uint32_t checkSum;
+/*004*/	uint32_t map[127];
 	};
 
 
@@ -278,7 +278,7 @@ struct bLinkBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* self pointer */
         int32_t	r1[3];
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	char	realName[64];
         int32_t	r2[83];
 /*1a4*/	int32_t	days;		/* last access */
@@ -306,7 +306,7 @@ struct bDirCacheBlock {
 /*008*/	int32_t	parent;
 /*00c*/	int32_t	recordsNb;
 /*010*/	int32_t	nextDirC;
-/*014*/	ULONG	checkSum;
+/*014*/	uint32_t checkSum;
 /*018*/	uint8_t records[488];
 	};
 

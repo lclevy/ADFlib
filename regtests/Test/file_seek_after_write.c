@@ -279,7 +279,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
 
     // create a new file in th ADF volume
     const char filename[] = "testfile_chunk_overwrite.tmp";
-    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     if ( file == NULL )  {
         errors += 1;
         goto cleanup;
@@ -293,7 +293,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
 
     // write file without seek (for off-line comparison / double-check)
     const char filename2[] = "testfile_wo_seek.tmp";
-    file = adfFileOpen ( vol, filename2, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename2, ADF_FILE_MODE_WRITE );
     if ( file == NULL )  {
         errors += 1;
         goto cleanup;
@@ -311,7 +311,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     errors += verify_file_data ( vol, filename2, buffer_random, bufsize, 10 );
     
     // reopen the test file
-    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READWRITE );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     if ( file == NULL )  {
         errors += 1;
         goto cleanup;

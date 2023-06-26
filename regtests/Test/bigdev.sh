@@ -8,14 +8,6 @@
 NFAILED=0
 FAILED=
 
-case `uname` in
-    Darwin*)
-        STDBUF=gstdbuf
-        ;;
-    *)
-        STDBUF=stdbuf
-esac
-
 for A_TEST in \
    ./hd_test.sh \
    ./hd_test2.sh \
@@ -26,9 +18,9 @@ do
     echo "    Executing: ${A_TEST}"
     echo "---------------------------------------------------"
     if [ -n "${srcdir}" -a -x "${srcdir}/${A_TEST}" ]; then
-        ${STDBUF} -oL -eL ${srcdir}/${A_TEST}
+        ${srcdir}/${A_TEST}
     else
-        ${STDBUF} -oL -eL ./${A_TEST}
+        ./${A_TEST}
     fi
     RESULT=${?}
     #echo "Result: ${RESULT}"
