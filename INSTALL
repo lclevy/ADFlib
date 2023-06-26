@@ -9,15 +9,6 @@ Testing require also the Check testing framework for C (link below).
 Building deb packages require typical tools for that (ie. helper script uses
 debuild from devscripts).
 
-ADFlib-0.8.0 was built and tested in the CI system (GitHub Actions) on Ubuntu
-Linux, Windows and MacOs. The library was also built and tested on:
-- Debian GNU/Linux 11 (current stable)
-
-and briefly on:
-- CygWin (x86_64, Windows 10)
-- Visual Studio 19 (Windows 10)
-- MacOSX 10.x (Intel)
-
 
 Building with CMake
 --------------------
