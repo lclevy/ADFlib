@@ -248,7 +248,7 @@ C example :
 
 struct lcell {
 	char name[10];
-	/* contains next cell adress, or NULL if this cell is the last */
+	/* contains next cell address, or NULL if this cell is the last */
 	struct lcell *next_cell;
 	};
 
@@ -306,7 +306,7 @@ the encoding scheme is MFM (Modified frequency modulation).
         Notes on the Amiga floppy disk controller :
 
 The Amiga floppy disk controller (FDC) which is called 'Paula' is very
-flexible. It is capable of reading/writting
+flexible. It is capable of reading/writing
 Amiga/PC/Macintosh/AppleII/C64 3.5 inches and 5.25 inches floppy disks.
 
 Paula can read a variable number of bytes from disk, the PC FDC can't.
@@ -358,7 +358,7 @@ Here follows the MFM encoding scheme :
 User data long words are split in two parts, a part with even bits part
 first, followed by a part with odd bits. Once encoded, the amount of
 data stored doubles.
-The MFM decoding will transform magnetic fields into computer usuable bits.
+The MFM decoding will transform magnetic fields into computer usable bits.
 
 The encoding process will take one long (user's data), and produces two
 longs (MFM coded longs): one for the even bits of the user long, a
@@ -570,7 +570,7 @@ For example, to decode the DATA field of a MFM sector :
 
     3. What is the Amiga floppy disk geometry ?
 
-After MFM decoding, you have usuable 'sectors' or 'blocks' into memory.
+After MFM decoding, you have usable 'sectors' or 'blocks' into memory.
 
 Here we remind the disk geometries for Double Density disks (DD) and
 High Density disks (HD) :
@@ -666,7 +666,7 @@ The main data types are a trees and linked lists.
 Prior to Kickstart 2.0 the bootblock was hardcoded to consist of the
 first two sectors of the floppy disks (sector #0 and #1). As of Kick
 2.0, booting via the boot-block could be done with any device driver and
-the number of blocks could be changed independantly of the number of
+the number of blocks could be changed independently of the number of
 reserved blocks by using BOOTBLOCKS in the DOS environment vector
 (DosEnvVec).
 
@@ -892,7 +892,7 @@ return(hash);
 
 The *toupper()* function is the one thing that distinguishes
 international from non-international filesystems. There was a bug in old
-AmigaDOS versions for this function applied to international caracters
+AmigaDOS versions for this function applied to international characters
 (ASCII codes > 128). A specific toupper() function (see section 5.4
 <#p54>) was then created available with the 'international mode'.
 
@@ -1265,7 +1265,7 @@ With the FFS, links were introduced. Alas, Commodore blundered again:
 soft like where terribly broken, so they removed support for them in
 AmigaDOS 3.0. Hard links are seen as files, and hard links to
 directories are allowed, which opens the way to endless recursion...
-In short, the whole implmentation is a mess.
+In short, the whole implementation is a mess.
 However, some shells (like Csh 5.37) support them, so I'm supplying the
 structure.
 
@@ -1604,7 +1604,7 @@ int intl_toupper(int c)
 }
 
 In the Amiga ASCII table, the international character codes are between
-192 and 254. Uppercase caracters are between 192 and 222, the lowercase
+192 and 254. Uppercase characters are between 192 and 222, the lowercase
 versions of them are between 224 and 254. The only exception are the
 codes 215 and 247, which are respectively the multiply sign and the
 divide sign.
@@ -1627,7 +1627,7 @@ written partitions sizes and the filesystem bootcode.
 
 The five kind of blocks are in a reserved area, at the beginning of the
 surface. The first of them, Rigid Disk block (RDSK), must be found
-within the first 16 blocks of BSIZE lenght. But it can be written inside
+within the first 16 blocks of BSIZE length. But it can be written inside
 the data area, which is dangerous.
 
 
@@ -1652,8 +1652,8 @@ the data area, which is dangerous.
 					greater than this one on this SCSI bus
 				3 	Don't bother trying to perform
 					reselection when talking to this drive
-				4 	Disk indentification valid
-				5 	Controller indentification valid
+				4 	Disk identification valid
+				5 	Controller identification valid
 				6 	Drive supports SCSI synchronous mode
 					(can be dangerous if it doesn't)
 24/18 	ulong 	1 	Bad blockList 	block pointer (-1 means last block)
@@ -1664,7 +1664,7 @@ the data area, which is dangerous.
 					"C" stack and d0/a0/a1
 40/28 	ulong 	6 	RESERVED 	== -1
 
-	Physical drive caracteristics
+	Physical drive characteristics
 64/40	ulong 	1 	cylinders 	number of drive cylinder
 68/44 	ulong 	1 	sectors 	sectors per track
 72/48	ulong 	1 	heads 		number of drive heads
@@ -1677,7 +1677,7 @@ the data area, which is dangerous.
 104/68 	ulong 	1 	StepRate 	drive step rate
 108/6c 	ulong 	5 	RESERVED 	== 0
 
-	Logical drive caracteristics
+	Logical drive characteristics
 128/80 	ulong 	1 	RDB_BlockLo 	low block of range reserved for hardblk
 132/84 	ulong 	1 	RDB_BlockHi 	high block of range for this hardblocks
 136/88 	ulong 	1 	LoCylinder 	low cylinder of partitionable disk area
@@ -1872,7 +1872,7 @@ field.
 172/ac 	ulong 	21 	RESERVED
 -------------------------------------------------------------------------------
 
-This block contains information on how to lauch the task which will
+This block contains information on how to launch the task which will
 manage the filesystem. You don't need it to reach partitions.
 ------------------------------------------------------------------------
 
@@ -1904,7 +1904,7 @@ A hardfile is a file which contains an Amiga volume.
 
 It is created with WinUAE (http://www.winuae.net/), and not the Amiga
 and the AmigaDOS. WinUAE is able to produce an empty file with random
-contents of a choosen size, often several megabytes long.
+contents of a chosen size, often several megabytes long.
 Under WinUAE, a AmigaDOS device appears, associated with the
 uaehf.device (UAE hardfile). You have to format it with the Workbench,
 and you obtain an 'hardfile'. This volume is then usable inside the

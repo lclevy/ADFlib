@@ -233,7 +233,7 @@ You must define one function to initialize a device, for example :
 
 BOOL myInitDevice(struct Device *dev, char* name)
 {
-    /* allocate and initailize dev->nativeDev */
+    /* allocate and initialize dev->nativeDev */
 
     /* return TRUE if everything happens right */
 }
