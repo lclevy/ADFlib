@@ -31,7 +31,7 @@ are included and no money is charged for this document.
 
 This document is provided "as is". No warranties are made as to its correctness.
 
-Amiga, AmigaDos are registred trademarks of Gateway 2000.
+Amiga, AmigaDos are registered trademarks of Gateway 2000.
 
 
 
@@ -114,7 +114,7 @@ C example :
 
 struct lcell {
 	char name[10];
-		/* contains next cell adress, or NULL if this cell is the last */
+		/* contains next cell address, or NULL if this cell is the last */
 	struct lcell* next_cell;
 	};
 
@@ -165,7 +165,7 @@ with the lower or upper side head. A track of 0x1900 words is usually read.
 -----------------
 
 Because bits can't be written with magnetic fields directly on disk, an
-encoding scheme is required. Amiga floppy disks are MFM (Modified Frequence
+encoding scheme is required. Amiga floppy disks are MFM (Modified Frequency
 Modulation) encoded.
 
 The MFM encoding scheme is :
@@ -176,7 +176,7 @@ The MFM encoding scheme is :
 	0			10 if following a 0 data bit
 	0			00 if following a 1 data bit
 
-User data longs are splitted in two parts, a part with even bits part first,
+User data longs are split in two parts, a part with even bits part first,
 followed by a part with odd bits.
 
 
@@ -325,7 +325,7 @@ The length of .ADF files for a DD disk is then 512*11*2*80 = 901120 bytes.
 The logical low level object of a Amiga disk is the 'sector' (or 'block') : 512
 consecutive bytes.
 
-Disk information is distribued in the Bootblocks, the Rootblock and Bitmap
+Disk information is distributed in the Bootblocks, the Rootblock and Bitmap
 block(s).
 FFS has block structures to provide directory list caching and (hard) links :
 Directory cache blocks and Link blocks.
@@ -1078,7 +1078,7 @@ No specified fields are null.
 		<ftp://ftp.funet.fi/pub/amiga/utilities/disk/Ded-1.11.lha>
 	- A clean track-loader which don't use AmigaDOS :
 		<ftp://ftp.wustl.edu/pub/aminet/dev/asm/t-loader.lha>
-	- A remplacement for 'trackdisk.device' :
+	- A replacement for 'trackdisk.device' :
 		<ftp://ftp.wustl.edu/pub/aminet/disk/misc/hackdisk202.lha>
 	- 'amigadisk_hardware.doc'  (by Dave Edwards, Mark Meany, ... of ACC)
 		<http://home.sol.no/svjohan/assem/refs/diskHW.lha>
