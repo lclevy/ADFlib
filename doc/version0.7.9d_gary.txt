@@ -55,7 +55,7 @@ Changes
 -Removed C++ comment tags and replaced them with C tags across the board. ADFLib should
  hopefully be pure C again now.
 
--Removed a change implemented for Opus which was inadvertantly left in during earlier updates
+-Removed a change implemented for Opus which was inadvertently left in during earlier updates
  i.e. a string added to struct nativeDevice in adf_nativ.h.
 
 -Updated Laurent's copyright on every page to include 2002.
