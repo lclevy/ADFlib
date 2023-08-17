@@ -9,6 +9,7 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
 check_PROGRAMS = \
 	access \
 	bootdisk \
+	bitmap_read_segfault \
 	cache_crash \
 	comment \
 	del_test \
@@ -42,6 +43,7 @@ check_PROGRAMS = \
 dist_check_SCRIPTS = \
 	bigdev.sh \
 	bootdisk.sh \
+	bitmap_read_segfault.sh \
 	cache_crash.sh \
 	common.sh \
 	del_test.sh \
