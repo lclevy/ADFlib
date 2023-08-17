@@ -124,8 +124,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     j=0; i=0;
     /* bitmap pointers in rootblock : 0 <= i <BM_SIZE */
     SECTNUM nSect;
-    while ( i < BM_SIZE && root->bmPages[i] != 0 ) {
-            vol->bitmapBlocks[j] = nSect = root->bmPages[i];
+    while ( i < vol->bitmapSize &&
+            root->bmPages[i] != 0 )
+    {
+        vol->bitmapBlocks[j] = nSect = root->bmPages[i];
         if ( ! isSectNumValid ( vol, nSect ) ) {
             adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
             // abort here?
@@ -138,6 +140,16 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         }
         j++; i++;
     }
+
+    /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
+       more info:  https://github.com/lclevy/ADFlib/issues/63 */
+    for ( uint32_t i2 = i ; i2 < BM_SIZE ; i2++ ) {
+        if ( root->bmPages[i2] != 0 )
+            adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
+                          "bmpage[%u] in a volume with bmpage size %d",
+                          root->bmPages[i2], root->bmPages[i2], i2, vol->bitmapSize );
+    }
+
     nSect = root->bmExt;
     while ( nSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
