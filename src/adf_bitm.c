@@ -481,7 +481,6 @@ void adfSetBlockUsed ( struct AdfVolume * const vol,
                        const SECTNUM            nSect )
 {
     assert ( nSect >= 2 );
-    assert ( nSect != vol->rootBlock );
 
     uint32_t oldValue;
     int sectOfMap = nSect-2;
