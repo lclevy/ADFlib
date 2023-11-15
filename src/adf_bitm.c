@@ -27,7 +27,10 @@
 
 #include "adf_bitm.h"
 
+#include "adf_cache.h"
+#include "adf_dir.h"
 #include "adf_env.h"
+#include "adf_file_block.h"
 #include "adf_raw.h"
 #include "adf_util.h"
 #include "defendian.h"
@@ -40,6 +43,17 @@
 extern uint32_t bitMask[32];
 
 static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol );
+
+static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
+                                      const struct AdfList * const list );
+
+static RETCODE adfBitmapFileBlocksSetUsed (
+    struct AdfVolume * const              vol,
+    const struct bFileHeaderBlock * const fhBlock );
+
+static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
+                                          SECTNUM                  dCacheBlockNum );
+
 
 static uint32_t nBlock2bitmapSize ( uint32_t nBlock )
 {
@@ -182,6 +196,234 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 
 
 /*
+ * adfRecreateBitmap
+ *
+ */
+RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
+                               const uint32_t                  nBlock,
+                               const struct bRootBlock * const root )
+{
+    uint32_t i, j;
+
+    vol->bitmapSize = nBlock2bitmapSize ( nBlock );
+    RETCODE rc = adfBitmapAllocate ( vol );
+    if ( rc != RC_OK )
+        return rc;
+
+    // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
+    for ( unsigned i = 0 ; i < vol->bitmapSize ; i++ ) {
+        vol->bitmapBlocksChg[i] = TRUE;  // FALSE;
+    }
+
+    //j=0;
+    i = 0;
+    /* bitmap pointers in rootblock : 0 <= i <BM_SIZE */
+    SECTNUM nSect;
+    while ( i < vol->bitmapSize &&
+            root->bmPages[i] != 0 )
+    {
+        vol->bitmapBlocks[j] = nSect = root->bmPages[i];
+        if ( ! isSectNumValid ( vol, nSect ) ) {
+            adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+            return RC_ERROR;
+        }
+
+        //rc = adfReadBitmapBlock ( vol, nSect, vol->bitmapTable[j] );
+        //if ( rc != RC_OK ) {
+        //    adfFreeBitmap(vol);
+        //    return rc;
+        //}
+        //j++;
+        i++;
+    }
+
+    /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
+       more info:  https://github.com/lclevy/ADFlib/issues/63 */
+    for ( uint32_t i2 = i ; i2 < BM_SIZE ; i2++ ) {
+        if ( root->bmPages[i2] != 0 )
+            adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
+                          "bmpage[%u] in a volume with bmpage size %d",
+                          root->bmPages[i2], root->bmPages[i2], i2, vol->bitmapSize );
+    }
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    //     -> REPAIR INSTEAD (?) -> JUST SET TO 0
+    //
+
+    nSect = root->bmExt;
+    while ( nSect != 0 ) {
+        struct bBitmapExtBlock bmExtBlock;
+
+        /* bitmap pointers in bitmapExtBlock, j <= mapSize */
+        rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
+        if ( rc != RC_OK ) {
+            adfFreeBitmap(vol);
+            return rc;
+        }
+        i=0;
+        while ( i < 127 && j < vol->bitmapSize ) {
+            nSect = bmExtBlock.bmPages[i];
+            if ( ! isSectNumValid ( vol, nSect ) ) {
+                adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+                // abort here?
+            }
+            vol->bitmapBlocks[j] = nSect;
+
+            //rc = adfReadBitmapBlock ( vol, nSect, vol->bitmapTable[j] );
+            //if ( rc != RC_OK ) {
+            //    adfFreeBitmap(vol);
+            //    return rc;
+            //}
+            i++; j++;
+        }
+        nSect = bmExtBlock.nextBlock;
+    }
+
+    // initially - set all free
+    for ( int32_t i = 2 ;
+          i < vol->lastBlock - vol->firstBlock ;   // CHECK UPPER COND
+          i++ )
+    {
+        adfSetBlockFree(vol, i);
+    }
+
+    // then - mark all used blocks
+
+    // mark rootblock
+    adfSetBlockUsed(vol, vol->rootBlock);
+
+    // mark bitmap blocks (all - from rootblock and bitmap ext. blocks)
+    for ( uint32_t i = 0 ; i < vol->bitmapSize ; i++ ) {
+        //if ( vol->bitmapBlocks[i] > 0 )  -- this should always be TRUE
+        adfSetBlockUsed ( vol, vol->bitmapBlocks[i] );
+    }
+
+    // traverse all files and directories
+    struct AdfEntry rootEntry;
+    rc = adfEntBlock2Entry ( (struct bEntryBlock *) &root, &rootEntry );
+    if ( rc != RC_OK )
+        return rc;
+    if ( ! isDirEmpty ( (const struct bDirBlock * const) &rootEntry) ) {
+        // note: for a large volume (a hard disk) getting all entries can become big
+        // - it may need to be optimized
+        struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, TRUE );
+        adfBitmapListSetUsed ( vol, entries );
+    }
+
+    // directory cache blocks? (TO CHECK!)
+    //  -> done above
+
+    // any other blocks to check????
+
+    // immediate update ?
+    return ( rc == RC_OK ) ? adfUpdateBitmap ( vol ) : rc;
+}
+
+static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
+                                      const struct AdfList * const list )
+{
+    RETCODE rc = RC_OK;
+
+    const struct AdfList * cell = list;
+    while ( cell != NULL ) {
+        const struct AdfEntry * const entry =
+            (const struct AdfEntry * const) cell->content;
+
+        // mark entry block
+        adfSetBlockUsed ( vol, entry->sector );
+
+        // mark file blocks
+        if ( entry->type == ST_FILE ) {
+            struct bFileHeaderBlock fhBlock;
+            RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
+                                              (struct bEntryBlock *) &fhBlock );
+            if ( rc2 != RC_OK ) {
+                //showerror ?
+                rc = rc2;
+                break;
+            }
+
+            rc2 = adfBitmapFileBlocksSetUsed ( vol, &fhBlock );
+            if ( rc2 != RC_OK ) {
+                //showerror ?
+                rc = rc2;
+                break;
+            }
+        }
+
+        // mark directory and directory cache blocks
+        else if ( entry->type == ST_DIR ) {
+            struct bDirBlock dirBlock;
+            RETCODE rc = adfReadEntryBlock ( vol, entry->sector,
+                                             (struct bEntryBlock *) &dirBlock );
+            if ( rc != RC_OK )
+                return rc;
+            rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );
+        }
+
+        // if any subdirectory present - process recursively
+        if ( cell->subdir != NULL ) {
+            RETCODE rc2 = adfBitmapListSetUsed ( vol,
+                ( const struct AdfList * const ) cell->subdir );
+            if ( rc2 != RC_OK )
+                rc = rc2;
+        }
+        cell = cell->next;
+    }
+    return rc;
+}
+
+
+static RETCODE adfBitmapFileBlocksSetUsed (
+    struct AdfVolume * const              vol,
+    const struct bFileHeaderBlock * const fhBlock )
+{
+    // mark blocks from the header
+    for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ )
+        if ( fhBlock->dataBlocks[block] > 1 )  // make sure that bootblock is safe
+            adfSetBlockUsed ( vol, fhBlock->dataBlocks[block] );
+
+    // mark blocks from ext blocks
+
+    //const int nExtBlocks = (int) adfFileSize2Extblocks ( fhBlock->byteSize,
+    //                                                     vol->datablockSize );
+    SECTNUM extBlockPtr = fhBlock->extension;
+    struct bFileExtBlock fext;
+    while ( extBlockPtr != 0 ) {
+        if ( adfReadFileExtBlock ( vol, extBlockPtr, &fext ) != RC_OK ) {
+            adfEnv.eFct ( "adfBitmapMarkFileBlocks: "
+                          "error reading ext block %d, file '%s'",
+                          extBlockPtr, fhBlock->fileName );
+            return RC_BLOCKREAD;
+        }
+        for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ )
+            if ( fext.dataBlocks[block] > 1 )  // make sure that bootblock is safe
+                adfSetBlockUsed ( vol, fext.dataBlocks[block] );
+        extBlockPtr = fext.extension;
+    }
+    return RC_OK;
+}
+
+
+static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
+                                          SECTNUM                  dCacheBlockNum )
+{
+    RETCODE rc = RC_OK;
+    while ( dCacheBlockNum != 0 ) {
+        adfSetBlockUsed ( vol, dCacheBlockNum );
+
+        struct bDirBlock dirBlock;
+        rc = adfReadDirCBlock ( vol, dCacheBlockNum, &dirBlock );
+        if ( rc != RC_OK )
+            break;
+
+        dCacheBlockNum = dirBlock.extension;
+    }
+    return rc;
+}
+
+
+
+/*
  * adfIsBlockFree
  *
  */
@@ -237,6 +479,9 @@ printf("bit=%d,  ",sectOfMap%32);
 void adfSetBlockUsed ( struct AdfVolume * const vol,
                        const SECTNUM            nSect )
 {
+    assert ( nSect >= 2 );
+    assert ( nSect != vol->rootBlock );
+
     uint32_t oldValue;
     int sectOfMap = nSect-2;
     int block = sectOfMap/(127*32);

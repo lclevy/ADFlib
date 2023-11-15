@@ -57,6 +57,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                         const uint32_t                  nBlock,
                         const struct bRootBlock * const root );
 
+RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
+                            const uint32_t                  nBlock,
+                            const struct bRootBlock * const root );
+
 BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
                       const SECTNUM            nSect );
 

@@ -212,7 +212,22 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
     nBlock = vol->lastBlock - vol->firstBlock + 1 - 2;
 
-    adfReadBitmap ( vol, (uint32_t) nBlock, &root );
+    if ( root.bmFlag == BM_VALID ) {
+        RETCODE rc = adfReadBitmap ( vol, (uint32_t) nBlock, &root );
+        if ( rc != RC_OK ) {
+            adfEnv.wFct ( "adfMount : adfReadBitmap() returned error %d, "
+                          "mounting read-only (failsafe)", rc );
+            vol->readOnly = TRUE;
+        }
+    } else {
+        RETCODE rc = adfReconstructBitmap ( vol, (uint32_t) nBlock, &root );
+        if ( rc != RC_OK ) {
+            adfEnv.wFct ( "adfMount : adfReconstructBitmap() returned error %d, "
+                          "mounting read-only (failsafe)", rc );
+            vol->readOnly = TRUE;
+        }
+    }
+
     vol->curDirPtr = vol->rootBlock;
 
 /*printf("blockSize=%d\n",vol->blockSize);*/
