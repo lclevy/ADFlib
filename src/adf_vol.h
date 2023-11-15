@@ -34,6 +34,13 @@
 
 /* ----- VOLUME ----- */
 
+struct AdfBitmap {
+    uint32_t               size;         /* in blocks */
+    SECTNUM *              blocks;       /* bitmap blocks pointers */
+    struct bBitmapBlock ** table;
+    BOOL *                 blocksChg;
+};
+
 struct AdfVolume {
     struct AdfDevice *dev;
 
@@ -51,10 +58,7 @@ struct AdfVolume {
 
     BOOL mounted;
 
-    uint32_t bitmapSize;         /* in blocks */
-    SECTNUM *bitmapBlocks;       /* bitmap blocks pointers */
-    struct bBitmapBlock **bitmapTable;
-    BOOL *bitmapBlocksChg;
+    struct AdfBitmap bitmap;
 
     SECTNUM curDirPtr;
 };
