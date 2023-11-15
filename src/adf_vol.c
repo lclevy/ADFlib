@@ -184,13 +184,14 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
     vol = dev->volList[nPart];
     vol->dev = dev;
-    vol->mounted = FALSE;
+    vol->mounted = TRUE;
 
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
     if (adfReadBootBlock(vol, &boot)!=RC_OK) {
         adfEnv.eFct ( "adfMount : invalid BootBlock" );
+        vol->mounted = FALSE;
         return NULL;
     }       
     
@@ -207,6 +208,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 	   	
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         adfEnv.eFct ( "adfMount : invalid RootBlock, sector %u", vol->rootBlock );
+        vol->mounted = FALSE;
         return NULL;
     }
 
@@ -231,8 +233,6 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
     vol->curDirPtr = vol->rootBlock;
 
 /*printf("blockSize=%d\n",vol->blockSize);*/
-
-    vol->mounted = TRUE;
 
     return( vol );
 }
