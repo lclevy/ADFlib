@@ -78,7 +78,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 
     nSect = adfNameToEntryBlk(vol, parent.hashTable, oldName, &entry, &prevSect);
     if (nSect==-1) {
-        (*adfEnv.wFct)("adfRenameEntry : existing entry not found");
+        adfEnv.wFct ( "adfRenameEntry : entry '%s' not found", oldName );
         return RC_ERROR;
     }
 
