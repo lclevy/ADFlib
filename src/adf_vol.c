@@ -172,7 +172,6 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
                                      const BOOL               readOnly )
 {
-    int32_t nBlock;
     struct bRootBlock root;
     struct bBootBlock boot;
     struct AdfVolume * vol;
@@ -212,17 +211,20 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
         return NULL;
     }
 
-    nBlock = vol->lastBlock - vol->firstBlock + 1 - 2;
-
-    if ( root.bmFlag == BM_VALID ) {
-        RETCODE rc = adfReadBitmap ( vol, (uint32_t) nBlock, &root );
+    RETCODE rc = adfBitmapAllocate ( vol );
+    if ( rc != RC_OK ) {
+            adfEnv.wFct ( "adfMount : adfBitmapAllocate() returned error %d, "
+                          "mounting read-only (failsafe)", rc );
+            vol->readOnly = TRUE;
+    } else if ( root.bmFlag == BM_VALID ) {
+        rc = adfReadBitmap ( vol, &root );
         if ( rc != RC_OK ) {
             adfEnv.wFct ( "adfMount : adfReadBitmap() returned error %d, "
                           "mounting read-only (failsafe)", rc );
             vol->readOnly = TRUE;
         }
     } else {
-        RETCODE rc = adfReconstructBitmap ( vol, (uint32_t) nBlock, &root );
+        rc = adfReconstructBitmap ( vol, &root );
         if ( rc != RC_OK ) {
             adfEnv.wFct ( "adfMount : adfReconstructBitmap() returned error %d, "
                           "mounting read-only (failsafe)", rc );

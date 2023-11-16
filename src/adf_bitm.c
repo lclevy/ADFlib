@@ -42,8 +42,6 @@
 
 extern uint32_t bitMask[32];
 
-static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol );
-
 static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
                                       const struct AdfList * const list );
 
@@ -120,16 +118,11 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
  *
  */
 RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
-                        const uint32_t                  nBlock,
                         const struct bRootBlock * const root )
 {
     uint32_t i, j;
     struct bBitmapExtBlock bmExt;
-
-    vol->bitmap.size = nBlock2bitmapSize ( nBlock );
-    RETCODE rc = adfBitmapAllocate ( vol );
-    if ( rc != RC_OK )
-        return rc;
+    RETCODE rc = RC_OK;
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
         vol->bitmap.blocksChg[i] = FALSE;
@@ -200,15 +193,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
  *
  */
 RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
-                               const uint32_t                  nBlock,
                                const struct bRootBlock * const root )
 {
     uint32_t i, j;
-
-    vol->bitmap.size = nBlock2bitmapSize ( nBlock );
-    RETCODE rc = adfBitmapAllocate ( vol );
-    if ( rc != RC_OK )
-        return rc;
+    RETCODE rc = RC_OK;
 
     // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
@@ -786,8 +774,11 @@ void adfFreeBitmap ( struct AdfVolume * const vol )
  *
  * vol->bitmapSize must be set properly before calling
  */
-static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
+RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
 {
+    int32_t nBlock = vol->lastBlock - vol->firstBlock + 1 - 2;
+    vol->bitmap.size = nBlock2bitmapSize ( nBlock );
+
     vol->bitmap.table = (struct bBitmapBlock**)
         malloc ( sizeof(struct bBitmapBlock *) * vol->bitmap.size );
     if ( vol->bitmap.table == NULL ) {
@@ -798,6 +789,7 @@ static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     vol->bitmap.blocks = (SECTNUM *) malloc ( sizeof(SECTNUM) * vol->bitmap.size );
     if ( vol->bitmap.blocks == NULL ) {
         free ( vol->bitmap.table );
+        vol->bitmap.table = NULL;
         adfEnv.eFct("adfBitmapAllocate : malloc, vol->bitmapBlocks");
         return RC_MALLOC;
     }
@@ -805,7 +797,9 @@ static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     vol->bitmap.blocksChg = (BOOL*) malloc ( sizeof(BOOL) * vol->bitmap.size );
     if ( vol->bitmap.blocksChg == NULL ) {
         free ( vol->bitmap.table );
+        vol->bitmap.table = NULL;
         free ( vol->bitmap.blocks );
+        vol->bitmap.blocks = NULL;
         adfEnv.eFct("adfBitmapAllocate : malloc, vol->bitmapBlocksChg");
         return RC_MALLOC;
     }
@@ -816,10 +810,13 @@ static RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
 
         if ( vol->bitmap.table[i] == NULL) {
             free ( vol->bitmap.blocksChg );
+            vol->bitmap.blocksChg = NULL;
             free ( vol->bitmap.blocks );
+            vol->bitmap.blocks = NULL;
             for ( unsigned j = 0 ; j < i ; j++ )
                 free ( vol->bitmap.table[j] );
             free ( vol->bitmap.table );
+            vol->bitmap.table = NULL;
             adfEnv.eFct("adfBitmapAllocate : malloc");
             return RC_MALLOC;
         }
