@@ -170,7 +170,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             SECTNUM nSect = bmExt.bmPages[i];
             if ( ! isSectNumValid ( vol, nSect ) ) {
                 adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
-                // abort here?
+                return RC_ERROR;
             }
             vol->bitmap.blocks[j] = nSect;
 
