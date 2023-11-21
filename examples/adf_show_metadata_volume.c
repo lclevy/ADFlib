@@ -8,7 +8,8 @@
 
 #include "adf_show_metadata_common.h"
 
-static void show_bmpages ( const int32_t bmpages [ BM_SIZE ] );
+static void show_bmpages ( const int32_t * const bmpages,
+                           const unsigned        size );
 
 
 void show_volume_metadata ( struct AdfVolume * const vol )
@@ -132,7 +133,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              rblock->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              HT_SIZE, //rblock->hashTable[HT_SIZE],
              rblock->bmFlag,
-             BM_SIZE, //rblock->bmPages[BM_SIZE],
+             BM_PAGES_ROOT_SIZE, //rblock->bmPages[BM_PAGES_ROOT_SIZE],
              rblock->bmExt,
              rblock->cDays, rblock->cDays,
              rblock->cMins, rblock->cMins,
@@ -153,14 +154,17 @@ void show_rootblock ( const struct bRootBlock * const rblock )
         );
 
     show_hashtable ( ( const uint32_t * const ) rblock->hashTable );
-    show_bmpages ( rblock->bmPages );
+    show_bmpages ( rblock->bmPages, BM_PAGES_ROOT_SIZE );
+
+    // add showing also bm ext block pages
 }
 
 
-static void show_bmpages ( const int32_t bmpages [ BM_SIZE ] )
+static void show_bmpages ( const int32_t * const bmpages,
+                           const unsigned        size )
 {
     printf ( "\nBitmap block pointers (bmPages) (non-zero):\n" );
-    for ( unsigned i = 0 ; i < BM_SIZE ; ++i ) {
+    for ( unsigned i = 0 ; i < size ; ++i ) {
         uint32_t bmpage_i = (uint32_t) bmpages [ i ];
         if ( bmpage_i )
             printf ( "  bmpages [ %2u ]:\t\t0x%x\t\t%u\n",
