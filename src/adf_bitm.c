@@ -181,6 +181,17 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             }
             i++; j++;
         }
+
+        /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
+           more info:  https://github.com/lclevy/ADFlib/issues/63 */
+        for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
+            if ( bmExt.bmPages[i2] != 0 )
+                adfEnv.wFct (
+                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d"
+                    "bmpage[%u] in a volume with bmpage size %d",
+                    nSect, bmExt.bmPages[i2], bmExt.bmPages[i2], i2, vol->bitmap.size );
+        }
+
         nSect = bmExt.nextBlock;
     }
 
@@ -263,6 +274,20 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
             //}
             i++; j++;
         }
+
+        /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
+           more info:  https://github.com/lclevy/ADFlib/issues/63 */
+        for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
+            if ( bmExtBlock.bmPages[i2] != 0 )
+                adfEnv.wFct (
+                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d"
+                    "bmpage[%u] in a volume with bmpage size %d",
+                    nSect,
+                    bmExtBlock.bmPages[i2],
+                    bmExtBlock.bmPages[i2],
+                    i2, vol->bitmap.size );
+        }
+
         nSect = bmExtBlock.nextBlock;
     }
 
