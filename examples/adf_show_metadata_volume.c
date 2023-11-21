@@ -8,8 +8,12 @@
 
 #include "adf_show_metadata_common.h"
 
-static void show_bmpages ( const int32_t * const bmpages,
-                           const unsigned        size );
+
+static void show_bmpages ( struct AdfVolume * const vol,
+                           const struct bRootBlock * const rblock );
+
+static void show_bmpages_array ( const int32_t * const bmpages,
+                                 const unsigned        size );
 
 
 void show_volume_metadata ( struct AdfVolume * const vol )
@@ -40,6 +44,8 @@ void show_volume_metadata ( struct AdfVolume * const vol )
         return;
     }
     show_rootblock ( &rblock );
+
+    show_bmpages ( vol, &rblock );
 }
 
 
@@ -154,14 +160,34 @@ void show_rootblock ( const struct bRootBlock * const rblock )
         );
 
     show_hashtable ( ( const uint32_t * const ) rblock->hashTable );
-    show_bmpages ( rblock->bmPages, BM_PAGES_ROOT_SIZE );
-
-    // add showing also bm ext block pages
 }
 
 
-static void show_bmpages ( const int32_t * const bmpages,
-                           const unsigned        size )
+static void show_bmpages ( struct AdfVolume * const        vol,
+                           const struct bRootBlock * const rblock )
+{
+    // show bmpages from the root block
+    show_bmpages_array ( rblock->bmPages, BM_PAGES_ROOT_SIZE );
+
+    // show bm ext block pages
+    SECTNUM nSect = rblock->bmExt;
+    while ( nSect != 0 ) {
+        struct bBitmapExtBlock bmExtBlock;
+        RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
+        if ( rc == RC_OK ) {
+            show_bmpages_array ( (const int32_t * const) &bmExtBlock.bmPages,
+                                 BM_PAGES_EXT_SIZE );
+        } else {
+            fprintf ( stderr, "Error reading bitmap allocation block, sector %u.\n",
+                      nSect );
+        }
+        nSect = bmExtBlock.nextBlock;
+    }
+}
+
+
+static void show_bmpages_array ( const int32_t * const bmpages,
+                                 const unsigned        size )
 {
     printf ( "\nBitmap block pointers (bmPages) (non-zero):\n" );
     for ( unsigned i = 0 ; i < size ; ++i ) {
