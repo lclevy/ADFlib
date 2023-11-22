@@ -28,6 +28,9 @@ add_executable ( adf_show_metadata
 
 TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
 
+add_executable ( adf_bitmap adf_bitmap.c )
+TARGET_LINK_LIBRARIES ( adf_bitmap adf )
+
 file (
   COPY ${PROJECT_SOURCE_DIR}/examples/tests
   DESTINATION ${PROJECT_BINARY_DIR}/examples/
@@ -48,4 +51,5 @@ install ( TARGETS
   adf_floppy_create
   adf_floppy_format
   adf_show_metadata
+  adf_bitmap
 )
