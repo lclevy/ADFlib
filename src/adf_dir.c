@@ -666,6 +666,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         entry->comment = strdup(buf);
         if (entry->comment==NULL) {
             free(entry->name);
+            entry->name = NULL;
             return RC_MALLOC;
         }
         break;
@@ -678,6 +679,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         entry->comment = strdup(buf);
         if (entry->comment==NULL) {
             free(entry->name);
+            entry->name = NULL;
             return RC_MALLOC;
         }
         break;
