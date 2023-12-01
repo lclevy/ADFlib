@@ -15,8 +15,9 @@ char* basename(char* path);
 
 int show_block_allocation_bitmap ( struct AdfVolume * const vol );
 
-char * num32_to_bit_str ( uint32_t num,
-                          char     str[33] );
+typedef char bitstr32_t [36];
+char * num32_to_bit_str ( uint32_t   num,
+                          bitstr32_t str );
 
 
 void usage ( void )
@@ -96,7 +97,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     
     /* Check root bm pages  */
     unsigned nerrors = 0;
-    char bitStr[33];
+    bitstr32_t bitStr;
     for ( unsigned i = 0 ; i < BM_PAGES_ROOT_SIZE ; i++ ) {
         SECTNUM bmPage = rb.bmPages[i];
 
@@ -112,7 +113,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
 
         printf ( "\nBitmap allocation block - rootblock.bmPages[ %u ], block %d\n\n"
-                     "index  block  -> hex       value   bitmap ('.' = free, 'o' = used)\n",
+                 "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n",
                  i, bmPage );
 
         for ( unsigned i = 0 ; i < BM_MAP_SIZE ; i++ ) {
@@ -129,18 +130,25 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     return ( nerrors > 0 ) ? 1 : 0;    
 }
 
-char * num32_to_bit_str ( uint32_t num,
-                          char     str[33] )
+char * num32_to_bit_str ( uint32_t   num,
+                          bitstr32_t str )
 {
-    for (unsigned i = 0 ; i <= 31 ; i++ ) {
-        uint32_t mask = 1 << i;        // check endian!
+    for (unsigned i = 0, j = 0 ; i <= 31 ; i++, j++ ) {
+        uint32_t mask = 1u << i;        // check endian!
         uint32_t bitValue = ( num & mask ) >> i;
         //str[i] = bitValue ? 'o' : '.';
-        str[i] = bitValue ?
-            '.' :  // 1 - free
-            'o';   // 0 - allocated
+
+        // byte separator
+        if ( i % 8 == 0 && i > 0 ) {
+            str[j] = ' ';
+            j++;
+        }
+
+        str[j] = bitValue ?
+            '.' :  // 1 -> free block
+            'o';   // 0 -> allocated block
     }
-    str[32] = '\0';
+    str[35] = '\0';
     return str;
 }
 
