@@ -689,7 +689,8 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
     case ST_LSOFT:
         break;
     default:
-        (*adfEnv.wFct)("unknown entry type");
+        adfEnv.wFct ( "adfEntBlock2Entry: unknown type %u for entry '%s', sector %u",
+                      entry->type, entry->name, entry->sector );
     }
 	
     return RC_OK;
