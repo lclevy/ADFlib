@@ -108,6 +108,7 @@ int main ( const int          argc,
         log_error (
             stderr, "error reconstructing block allocation bitmap, volume %d\n", 0 );
         error_status = TRUE;
+        goto umount_vol_updated;
     }
 
     /* compare the original and reconstructed */
@@ -122,6 +123,7 @@ int main ( const int          argc,
 
     /* cleanup */
 
+umount_vol_updated:
     adfUnMount ( volUpdate );
 
 umount_dev_updated:
