@@ -256,8 +256,8 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
                     valUpdate = bmUpdate.map[i];
                 log_error ( stderr,
                             "bm differ at %u:\n"
-                            "  orig   %10u  %s\n"
-                            "  update %10u  %s\n",
+                            "  orig   0x%08x  %s\n"
+                            "  update 0x%08x  %s\n",
                             i,
                             valOrig,   num32_to_bit_str ( valOrig, bitStrOrig ),
                             valUpdate, num32_to_bit_str ( valUpdate, bitStrUpdate ) );
