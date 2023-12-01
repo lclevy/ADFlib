@@ -311,19 +311,36 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     }
 
     // traverse all files and directories
+
+    struct bDirBlock //bEntryBlock
+        rootDirBlock;
+    rc = adfReadEntryBlock ( vol, vol->rootBlock,
+                             ( struct bEntryBlock * ) &rootDirBlock );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Error reading directory entry block (%d)\n",
+                      vol->rootBlock );
+        return rc;
+    }
+
     struct AdfEntry rootEntry;
-    rc = adfEntBlock2Entry ( (struct bEntryBlock *) &root, &rootEntry );
+    rc = adfEntBlock2Entry ( (struct bEntryBlock *) &rootDirBlock, &rootEntry );
     if ( rc != RC_OK )
         return rc;
     if ( ! isDirEmpty ( (const struct bDirBlock * const) &rootEntry) ) {
         // note: for a large volume (a hard disk) getting all entries can become big
         // - it may need to be optimized
         struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, TRUE );
+        if ( entries == NULL ) {
+            return RC_ERROR;
+        }
         adfBitmapListSetUsed ( vol, entries );
+        adfFreeDirList ( entries );
     }
+    free ( rootEntry.name );
+    rootEntry.name = NULL;
 
     // directory cache blocks? (TO CHECK!)
-    //  -> done above
+    //  -> done above (in adfBitmapListSetUsed() )
 
     // any other blocks to check????
 
