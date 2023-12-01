@@ -425,12 +425,12 @@ static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
     while ( dCacheBlockNum != 0 ) {
         adfSetBlockUsed ( vol, dCacheBlockNum );
 
-        struct bDirBlock dirBlock;
-        rc = adfReadDirCBlock ( vol, dCacheBlockNum, &dirBlock );
+        struct bDirCacheBlock dirCacheBlock;
+        rc = adfReadDirCBlock ( vol, dCacheBlockNum, &dirCacheBlock );
         if ( rc != RC_OK )
             break;
 
-        dCacheBlockNum = dirBlock.extension;
+        dCacheBlockNum = dirCacheBlock.nextDirC;
     }
     return rc;
 }
