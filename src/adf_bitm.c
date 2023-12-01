@@ -392,9 +392,10 @@ static RETCODE adfBitmapFileBlocksSetUsed (
     const struct bFileHeaderBlock * const fhBlock )
 {
     // mark blocks from the header
-    for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ )
-        if ( fhBlock->dataBlocks[block] > 1 )  // make sure that bootblock is safe
+    for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+        if ( fhBlock->dataBlocks[block] > 1 )
             adfSetBlockUsed ( vol, fhBlock->dataBlocks[block] );
+    }
 
     // mark blocks from ext blocks
 
@@ -403,15 +404,17 @@ static RETCODE adfBitmapFileBlocksSetUsed (
     SECTNUM extBlockPtr = fhBlock->extension;
     struct bFileExtBlock fext;
     while ( extBlockPtr != 0 ) {
+        adfSetBlockUsed ( vol, extBlockPtr );
         if ( adfReadFileExtBlock ( vol, extBlockPtr, &fext ) != RC_OK ) {
             adfEnv.eFct ( "adfBitmapMarkFileBlocks: "
                           "error reading ext block %d, file '%s'",
                           extBlockPtr, fhBlock->fileName );
             return RC_BLOCKREAD;
         }
-        for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ )
-            if ( fext.dataBlocks[block] > 1 )  // make sure that bootblock is safe
+        for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+            if ( fext.dataBlocks[block] > 1 )
                 adfSetBlockUsed ( vol, fext.dataBlocks[block] );
+        }
         extBlockPtr = fext.extension;
     }
     return RC_OK;
