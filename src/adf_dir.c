@@ -528,7 +528,7 @@ struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
  */
 void adfFreeEntry ( struct AdfEntry * const entry )
 {
-	if (entry==NULL)
+    if (entry==NULL)
        return;
     if (entry->name)
         free(entry->name);
@@ -636,7 +636,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
 {
     char buf[MAXCMMTLEN+1];
 
-	entry->type = entryBlk->secType;
+    entry->type   = entryBlk->secType;
     entry->parent = entryBlk->parent;
 
     unsigned len = min ( entryBlk->nameLen, (unsigned) MAXNAMELEN );
@@ -647,9 +647,9 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         return RC_MALLOC;
 /*printf("len=%d name=%s parent=%ld\n",entryBlk->nameLen, entry->name,entry->parent );*/
     adfDays2Date( entryBlk->days, &(entry->year), &(entry->month), &(entry->days));
-	entry->hour = entryBlk->mins/60;
-    entry->mins = entryBlk->mins%60;
-    entry->secs = entryBlk->ticks/50;
+    entry->hour = entryBlk->mins / 60;
+    entry->mins = entryBlk->mins % 60;
+    entry->secs = entryBlk->ticks / 50;
 
     entry->access = -1;
     entry->size = 0L;
