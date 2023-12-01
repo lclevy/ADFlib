@@ -206,7 +206,6 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
                                const struct bRootBlock * const root )
 {
-    uint32_t i, j;
     RETCODE rc = RC_OK;
 
     // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
@@ -214,8 +213,8 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         vol->bitmap.blocksChg[i] = TRUE;  // FALSE;
     }
 
-    //j=0;
-    i = 0;
+    uint32_t i = 0,
+             j = 0;
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM nSect;
     while ( i < vol->bitmap.size &&
@@ -232,7 +231,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         //    adfFreeBitmap(vol);
         //    return rc;
         //}
-        //j++;
+        j++;
         i++;
     }
 
