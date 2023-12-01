@@ -467,6 +467,9 @@ printf("res=%x,  ",vol->bitmapTable[ block ]->map[ indexInMap ]
 void adfSetBlockFree ( struct AdfVolume * const vol,
                        const SECTNUM            nSect )
 {
+    assert ( nSect >= 2 );
+    assert ( nSect <= vol->lastBlock - vol->firstBlock );
+
     uint32_t oldValue;
     int sectOfMap = nSect-2;
     int block      = sectOfMap / ( BM_MAP_SIZE * 32 );
@@ -494,6 +497,7 @@ void adfSetBlockUsed ( struct AdfVolume * const vol,
                        const SECTNUM            nSect )
 {
     assert ( nSect >= 2 );
+    assert ( nSect <= vol->lastBlock - vol->firstBlock );
 
     uint32_t oldValue;
     int sectOfMap = nSect-2;
