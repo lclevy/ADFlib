@@ -321,22 +321,17 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         return rc;
     }
 
-    struct AdfEntry rootEntry;
-    rc = adfEntBlock2Entry ( (struct bEntryBlock *) &rootDirBlock, &rootEntry );
-    if ( rc != RC_OK )
-        return rc;
-    if ( ! isDirEmpty ( (const struct bDirBlock * const) &rootEntry) ) {
+    if ( ! isDirEmpty ( (const struct bDirBlock * const) &rootDirBlock) ) {
         // note: for a large volume (a hard disk) getting all entries can become big
         // - it may need to be optimized
         struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, TRUE );
         if ( entries == NULL ) {
             return RC_ERROR;
         }
+
         adfBitmapListSetUsed ( vol, entries );
         adfFreeDirList ( entries );
     }
-    free ( rootEntry.name );
-    rootEntry.name = NULL;
 
     // directory cache blocks? (TO CHECK!)
     //  -> done above (in adfBitmapListSetUsed() )
@@ -359,6 +354,7 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
             (const struct AdfEntry * const) cell->content;
 
         // mark entry block
+        // (all header blocks (file, dir, links) are done with this)
         adfSetBlockUsed ( vol, entry->sector );
 
         // mark file blocks
