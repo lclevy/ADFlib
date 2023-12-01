@@ -801,7 +801,7 @@ void adfFreeBitmap ( struct AdfVolume * const vol )
  */
 RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
 {
-    int32_t nBlock = vol->lastBlock - vol->firstBlock + 1 - 2;
+    uint32_t nBlock = (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 - 2 );
     vol->bitmap.size = nBlock2bitmapSize ( nBlock );
 
     vol->bitmap.table = (struct bBitmapBlock**)
