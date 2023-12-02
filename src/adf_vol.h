@@ -72,7 +72,7 @@ PREFIX BOOL isSectNumValid ( const struct AdfVolume * const vol,
 
 PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
-                                     const BOOL               readOnly );
+                                     const AdfAccessMode      mode );
 
 PREFIX void adfUnMount ( struct AdfVolume * const vol );
 

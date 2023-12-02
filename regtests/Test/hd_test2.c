@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     free(partList);
     free(part1.volName);
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
     /* mount the created device */
 
-    hd = adfMountDev ( tmpdevname, FALSE );
+    hd = adfMountDev ( tmpdevname, ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
     adfDeviceInfo(hd);
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");

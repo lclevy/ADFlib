@@ -170,7 +170,7 @@ void adfVolumeInfo ( struct AdfVolume * const vol )
  */
 PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
-                                     const BOOL               readOnly )
+                                     const AdfAccessMode      mode )
 {
     struct bRootBlock root;
     struct bBootBlock boot;
@@ -203,7 +203,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
     if (dev->readOnly /*|| isDIRCACHE(vol->dosType)*/)
         vol->readOnly = TRUE;
     else
-        vol->readOnly = readOnly;
+        vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 	   	
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         adfEnv.eFct ( "adfMount : invalid RootBlock, sector %u", vol->rootBlock );

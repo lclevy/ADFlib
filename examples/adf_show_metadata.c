@@ -45,7 +45,7 @@ int main ( int     argc,
     adfEnvInitDefault();
 
     printf ( "\nOpening image/device:\t'%s'\n", adfname );
-    struct AdfDevice * const dev = adfMountDev ( adfname, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( adfname, ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
@@ -54,7 +54,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct AdfVolume * const vol = adfMount ( dev, vol_id, 1 );
+    struct AdfVolume * const vol = adfMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );

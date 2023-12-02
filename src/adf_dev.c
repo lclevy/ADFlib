@@ -52,8 +52,8 @@
  *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
  *          EXIST ALREADY ON THE DEVICE(!)
  */
-struct AdfDevice * adfOpenDev ( const char * const filename,
-                                const BOOL         ro )
+struct AdfDevice * adfOpenDev ( const char * const  filename,
+                                const AdfAccessMode mode )
 {
     struct AdfDevice * dev = ( struct AdfDevice * )
         malloc ( sizeof ( struct AdfDevice ) );
@@ -62,7 +62,7 @@ struct AdfDevice * adfOpenDev ( const char * const filename,
         return NULL;
     }
 
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 
     /* switch between dump files and real devices */
     struct AdfNativeFunctions * nFct = adfEnv.nativeFct;
@@ -70,9 +70,9 @@ struct AdfDevice * adfOpenDev ( const char * const filename,
 
     RETCODE rc;
     if ( dev->isNativeDev )
-        rc = ( *nFct->adfInitDevice )( dev, filename, ro );
+        rc = nFct->adfInitDevice ( dev, filename, mode );
     else
-        rc = adfInitDumpDevice ( dev, filename, ro );
+        rc = adfInitDumpDevice ( dev, filename, mode );
     if ( rc != RC_OK ) {
         ( *adfEnv.eFct )( "adfOpenDev : device init error" );
         free ( dev );
@@ -228,13 +228,13 @@ void adfDeviceInfo ( struct AdfDevice * dev )
  *
  * adfInitDevice() must fill dev->size !
  */
-struct AdfDevice * adfMountDev ( const char * const filename,
-                                 const BOOL         ro )
+struct AdfDevice * adfMountDev ( const char * const  filename,
+                                 const AdfAccessMode mode )
 {
     RETCODE rc;
     uint8_t buf[512];
 
-    struct AdfDevice * dev = adfOpenDev ( filename, ro );
+    struct AdfDevice * dev = adfOpenDev ( filename, mode );
     if ( ! dev ) {
         //(*adfEnv.eFct)("adfMountDev : malloc error");
         return NULL;

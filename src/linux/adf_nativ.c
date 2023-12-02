@@ -47,7 +47,7 @@ struct AdfNativeDevice {
  */
 static RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
                                     const char * const       name,
-                                    const BOOL               ro )
+                                    const AdfAccessMode      mode )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
         malloc ( sizeof ( struct AdfNativeDevice ) );
@@ -59,7 +59,7 @@ static RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
 
     dev->nativeDev = nDev;
 
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
     if ( ! dev->readOnly ) {
         nDev->fd = open ( name, O_RDWR );
         dev->readOnly = ( nDev->fd < 0 ) ? TRUE : FALSE;

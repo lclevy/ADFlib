@@ -37,7 +37,7 @@ int main ( const int          argc,
 
 //	adfSetEnvFct(0,0,MyVer,0);
     BOOL error_status = FALSE;
-    struct AdfDevice * const dev = adfMountDev ( argv[1], FALSE );
+    struct AdfDevice * const dev = adfMountDev ( argv[1], ADF_ACCESS_MODE_READONLY );
     if ( dev == NULL ) {
         log_error ( stderr, "can't mount device %s\n", argv[1] );
         error_status = TRUE;
@@ -45,7 +45,7 @@ int main ( const int          argc,
     }
 
     /*** crash happens here, on mounting the volume, in adfReadBitmap() ***/
-    struct AdfVolume * const vol = adfMount ( dev, 0, FALSE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( vol == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;

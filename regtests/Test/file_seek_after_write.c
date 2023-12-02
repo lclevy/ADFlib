@@ -247,7 +247,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     unsigned errors = 0;
 
     // mount volume
-    struct AdfVolume * vol = adfMount ( device, 0, FALSE );
+    struct AdfVolume * vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     if ( vol == NULL ) {
         errors += 1;
         goto umount_device;

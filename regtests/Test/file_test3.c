@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount existing device : OFS */
-    hd = adfMountDev( argv[1],FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
 
     adfVolumeInfo(vol);
 

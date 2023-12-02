@@ -42,11 +42,11 @@
  */
 RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
                             const char * const       name,
-                            const BOOL               ro )
+                            const AdfAccessMode      mode )
 {
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
     errno = 0;
-    if (!ro) {
+    if ( ! dev->readOnly ) {
         dev->fd = fopen ( name, "rb+" );
         /* force read only */
         if ( ! dev->fd && ( errno == EACCES || errno == EROFS ) ) {

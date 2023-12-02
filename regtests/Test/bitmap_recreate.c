@@ -71,14 +71,16 @@ int main ( const int          argc,
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount the original image */
-    struct AdfDevice * const devOrig = adfMountDev ( adfOrig, FALSE );
+    struct AdfDevice * const devOrig = adfMountDev ( adfOrig,
+                                                     ADF_ACCESS_MODE_READONLY );
     if ( devOrig == NULL ) {
         log_error ( stderr, "can't mount device %s\n", adfOrig );
         error_status = TRUE;
         goto clean_up;
     }
 
-    struct AdfVolume * const volOrig = adfMount ( devOrig, 0, FALSE );
+    struct AdfVolume * const volOrig = adfMount ( devOrig, 0,
+                                                  ADF_ACCESS_MODE_READONLY );
     if ( volOrig == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;
@@ -87,14 +89,17 @@ int main ( const int          argc,
 
     
     /* mount the image copy (for updating) */
-    struct AdfDevice * const devUpdate = adfMountDev ( adfUpdate, FALSE );
+    struct AdfDevice * const devUpdate = adfMountDev ( adfUpdate,
+                                                       ADF_ACCESS_MODE_READWRITE );
+
     if ( devUpdate == NULL ) {
         log_error ( stderr, "can't mount device %s\n", adfUpdate );
         error_status = TRUE;
         goto umount_vol_orig;
     }
 
-    struct AdfVolume * const volUpdate = adfMount ( devUpdate, 0, FALSE );
+    struct AdfVolume * const volUpdate = adfMount ( devUpdate, 0,
+                                                    ADF_ACCESS_MODE_READWRITE );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;

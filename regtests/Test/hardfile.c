@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
 
-    hd = adfMountDev( argv[1],FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     adfDeviceInfo(hd);
 
     /* mount the 2 partitions */
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");

@@ -65,7 +65,8 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    BOOL mode = ( command == COMMAND_REBUILD ? FALSE : TRUE );
+    AdfAccessMode mode = ( command == COMMAND_REBUILD ? ADF_ACCESS_MODE_READWRITE :
+                                                        ADF_ACCESS_MODE_READONLY );
 
     printf ( "\nOpening image/device:\t'%s' (%s)\n",
              adfname, mode ? "read-only" : "read-write" );

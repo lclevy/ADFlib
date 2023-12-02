@@ -36,4 +36,9 @@ typedef int      BOOL;
 #define TRUE    1
 #define FALSE   0
 
+typedef enum {
+    ADF_ACCESS_MODE_READWRITE = 0,
+    ADF_ACCESS_MODE_READONLY  = 1
+} AdfAccessMode;
+
 #endif
