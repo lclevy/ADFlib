@@ -19,12 +19,20 @@ typedef char bitstr32_t [36];
 char * num32_to_bit_str ( uint32_t   num,
                           bitstr32_t str );
 
+typedef enum {
+    COMMAND_SHOW,
+    COMMAND_REBUILD,
+    COMMAND_HELP,
+    COMMAND_UNKNOWN
+} command_t;
+
 
 void usage ( void )
 {
-    printf ( "adf_bitmap - show block allocation bitmap\n\n"
-             "Usage:  adf_bitmap adf_device\n\n"
-             "where:\n  adf_device - an adf file (image) or a native (real) device\n\n"
+    printf ( "\nadf_bitmap - show or rebuild block allocation bitmap\n\n"
+             "Usage:  adf_bitmap <command> adf_device\n\n"
+             "where:\n  command      - 'show', 'rebuild' or 'help'\n"
+             "  adf_device   - an adf file (image) or a native (real) device\n\n"
              "(using adflib version %s)\n", adfGetVersionNumber() );
 }
 
@@ -32,19 +40,37 @@ void usage ( void )
 int main ( int     argc,
            char ** argv )
 {
-    if ( argc < 2 ) {
+    if ( argc < 3 ) {
         usage();
         return 1;
     }
-    char * const adfname = argv[1];
-    //char * const path = ( argc == 3 ) ? argv[2] : NULL;
+
+    command_t command;
+    if ( strcmp ( argv[1], "rebuild" ) == 0 )
+        command = COMMAND_REBUILD;
+    else if ( strcmp ( argv[1], "show" ) == 0 )
+        command = COMMAND_SHOW;
+    else if ( strcmp ( argv[1], "help" ) == 0 )
+        usage();
+    else {
+        fprintf ( stderr, "\nUnknown command '%s'  "
+                  "(use 'adf_bitmap help' for usage info)\n\n",
+                  argv[1] );
+        return 1;
+    }
+
+    char * const adfname = argv[2];
 
     int status = 0;
 
     adfEnvInitDefault();
 
-    printf ( "\nOpening image/device:\t'%s'\n", adfname );
-    struct AdfDevice * const dev = adfMountDev ( adfname, TRUE );
+    BOOL mode = ( command == COMMAND_REBUILD ? FALSE : TRUE );
+
+    printf ( "\nOpening image/device:\t'%s' (%s)\n",
+             adfname, mode ? "read-only" : "read-write" );
+
+    struct AdfDevice * const dev = adfMountDev ( adfname, mode );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
@@ -53,7 +79,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct AdfVolume * const vol = adfMount ( dev, vol_id, 1 );
+    struct AdfVolume * const vol = adfMount ( dev, vol_id, mode );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );
@@ -71,7 +97,11 @@ int main ( int     argc,
              volSizeBlocks, volSizeBlocks - 2,
              1 + ( volSizeBlocks - 2 ) / ( BM_MAP_SIZE * 4 * 8 ) );
 
-    status = show_block_allocation_bitmap ( vol );
+    if ( command == COMMAND_REBUILD ) {
+        status = ( adfVolReconstructBitmap ( vol ) == RC_OK ? 0 : 1 );
+    } else {  // COMMAND_SHOW
+        status = show_block_allocation_bitmap ( vol );
+    }
 
     adfUnMount ( vol );
 
