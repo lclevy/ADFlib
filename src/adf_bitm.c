@@ -132,6 +132,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM nSect;
     while ( i < vol->bitmap.size &&
+            i < BM_PAGES_ROOT_SIZE &&
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = nSect = root->bmPages[i];
@@ -218,6 +219,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM nSect;
     while ( i < vol->bitmap.size &&
+            i < BM_PAGES_ROOT_SIZE &&
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = nSect = root->bmPages[i];
