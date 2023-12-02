@@ -216,7 +216,9 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
             adfEnv.wFct ( "adfMount : adfBitmapAllocate() returned error %d, "
                           "mounting read-only (failsafe)", rc );
             vol->readOnly = TRUE;
-    } else if ( root.bmFlag == BM_VALID ) {
+    } else if ( root.bmFlag == BM_VALID ||
+                vol->readOnly == TRUE )
+    {
         rc = adfReadBitmap ( vol, &root );
         if ( rc != RC_OK ) {
             adfEnv.wFct ( "adfMount : adfReadBitmap() returned error %d, "
