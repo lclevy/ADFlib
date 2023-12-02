@@ -120,7 +120,6 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
 RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                         const struct bRootBlock * const root )
 {
-    uint32_t i, j;
     struct bBitmapExtBlock bmExt;
     RETCODE rc = RC_OK;
 
@@ -128,7 +127,8 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         vol->bitmap.blocksChg[i] = FALSE;
     }
 
-    j=0; i=0;
+    uint32_t j = 0,
+             i = 0;
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM nSect;
     while ( i < vol->bitmap.size &&
@@ -146,7 +146,8 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             adfFreeBitmap(vol);
             return rc;
         }
-        j++; i++;
+        j++;
+        i++;
     }
 
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
@@ -188,7 +189,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
             if ( bmExt.bmPages[i2] != 0 )
                 adfEnv.wFct (
-                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d"
+                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d "
                     "bmpage[%u] in a volume with bmpage size %d",
                     nSect, bmExt.bmPages[i2], bmExt.bmPages[i2], i2, vol->bitmap.size );
         }
