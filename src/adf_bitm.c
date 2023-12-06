@@ -262,12 +262,12 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         }
         i=0;
         while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
-            nSect = bmExtBlock.bmPages[i];
-            if ( ! isSectNumValid ( vol, nSect ) ) {
-                adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+            SECTNUM bmBlkPtr = bmExtBlock.bmPages[i];
+            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+                adfEnv.wFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
                 // abort here?
             }
-            vol->bitmap.blocks[j] = nSect;
+            vol->bitmap.blocks[j] = bmBlkPtr;
 
             //rc = adfReadBitmapBlock ( vol, nSect, vol->bitmapTable[j] );
             //if ( rc != RC_OK ) {
