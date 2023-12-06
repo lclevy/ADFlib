@@ -90,7 +90,7 @@ int main ( int     argc,
         goto dev_cleanup;
     }
 
-    unsigned volSizeBlocks = (unsigned) (vol->lastBlock - vol->firstBlock) + 1;
+    unsigned volSizeBlocks = adfVolGetBlockNum ( vol );
     printf ( "\nMounted volume:\t\t%d, '%s'\n"
              "\nVolume size in blocks:   \n"
              "   total (including boot block)   %u\n"
