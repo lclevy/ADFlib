@@ -27,16 +27,8 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     }    
     show_bootblock ( &bblock, false );
 
-
     struct bRootBlock rblock;
-
-    //proper calc (?):
-    //numCyls = highCyl - lowCyl + 1
-    //highKey = numCyls * numSurfaces * numBlocksPerTrack - 1
-    //rootKey = INT (numReserved + highKey) / 2
-    uint32_t root_block_sector = //880,
-        //bblock.rootBlock,  // in many images is 0 ???
-        (uint32_t) ( ( vol->lastBlock - vol->firstBlock ) / 2 + 1 ); // this seems to work
+    uint32_t root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
 
     if ( adfReadRootBlock ( vol, root_block_sector, &rblock ) != RC_OK ) {

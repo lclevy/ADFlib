@@ -174,7 +174,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 
         vol->firstBlock = (int32_t) rdsk.cylBlocks * part.lowCyl;
         vol->lastBlock = ( part.highCyl + 1 ) * (int32_t) rdsk.cylBlocks - 1;
-        vol->rootBlock = (vol->lastBlock - vol->firstBlock+1)/2;
+        vol->rootBlock = adfVolCalcRootBlk ( vol );
         vol->blockSize = part.blockSize*4;
 
         len = (unsigned) min ( 31, part.nameLen );

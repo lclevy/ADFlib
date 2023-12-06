@@ -293,7 +293,8 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
     vol->dev = dev;
     vol->firstBlock = (int32_t) ( dev->heads * dev->sectors * start );
     vol->lastBlock = vol->firstBlock + (int32_t) ( dev->heads * dev->sectors * len ) - 1;
-    vol->rootBlock = ( vol->lastBlock - vol->firstBlock + 1 ) / 2;
+    vol->rootBlock = adfVolCalcRootBlk ( vol );
+
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
