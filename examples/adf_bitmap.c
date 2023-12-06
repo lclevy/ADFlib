@@ -16,8 +16,14 @@ char* basename(char* path);
 int show_block_allocation_bitmap ( struct AdfVolume * const vol );
 
 typedef char bitstr32_t [36];
-char * num32_to_bit_str ( uint32_t   num,
-                          bitstr32_t str );
+char * num32_to_bit_str ( const uint32_t num,
+                          bitstr32_t     str );
+
+unsigned num32_count_bits ( const uint32_t num,
+                            const unsigned nskip_bits );
+
+//unsigned num32_count_bits ( const uint32_t num );
+
 
 typedef enum {
     COMMAND_SHOW,
@@ -125,10 +131,19 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                   vol->rootBlock );
         return 1;
     }
+
+    printf ( "\nBlock allocation bitmap valid:    %s\n",
+             rb.bmFlag == BM_VALID ? "yes" : "No!" );
     
     /* Check root bm pages  */
-    unsigned nerrors = 0;
+    unsigned nerrors = 0,
+        nblocks_free = 0,
+        nblocks_used = 0;
     bitstr32_t bitStr;
+    unsigned filesystem_blocks_num = adfVolGetBlockNumWithoutBootblock ( vol );
+    unsigned last_uint32_bits_unused =
+        filesystem_blocks_num % 32 == 0 ? 0 : 32 - filesystem_blocks_num % 32;
+
     for ( unsigned i = 0 ; i < BM_PAGES_ROOT_SIZE ; i++ ) {
         SECTNUM bmPage = rb.bmPages[i];
 
@@ -147,22 +162,38 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                  "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n",
                  i, bmPage );
 
-        for ( unsigned i = 0 ; i < BM_MAP_SIZE ; i++ ) {
-            uint32_t val = bm.map[i];
-            unsigned blockNum = 2 + i * 32;
+        for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+            uint32_t val = bm.map[j];
+            unsigned blockNum = ( i * BM_MAP_SIZE + j ) * 32;
             printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
-                     i, blockNum, blockNum,
+                     j, blockNum, blockNum,
                      val,  num32_to_bit_str ( val, bitStr ) );
+            if ( blockNum < filesystem_blocks_num ) {
+                unsigned nbits_unused =
+                    ( blockNum + 32 < filesystem_blocks_num ) ?
+                    0 : last_uint32_bits_unused;
+                unsigned nbits_true = num32_count_bits ( val, nbits_unused );
+                nblocks_free += nbits_true;
+                nblocks_used += 32 - nbits_unused - nbits_true;
+            }
         }
     }
 
     /* add showing bmExt blocks! */
 
+    printf ( "\nBlocks used  %6u (%u bytes)"
+             "\n       free  %6u (%u bytes)"
+             "\n       total %6u (%u bytes)\n",
+             nblocks_used, nblocks_used * 512,
+             nblocks_free, nblocks_free * 512,
+             filesystem_blocks_num, filesystem_blocks_num * 512 );
+
     return ( nerrors > 0 ) ? 1 : 0;    
 }
 
-char * num32_to_bit_str ( uint32_t   num,
-                          bitstr32_t str )
+
+char * num32_to_bit_str ( const uint32_t num,
+                          bitstr32_t     str )
 {
     for (unsigned i = 0, j = 0 ; i <= 31 ; i++, j++ ) {
         uint32_t mask = 1u << i;        // check endian!
@@ -182,6 +213,48 @@ char * num32_to_bit_str ( uint32_t   num,
     str[35] = '\0';
     return str;
 }
+
+
+unsigned num32_count_bits ( const uint32_t num,
+                            const unsigned nskip_bits )
+{
+    unsigned ntrue = 0;
+    for ( unsigned i = 0 ; i <= 31u - nskip_bits ; i++ ) {
+        uint32_t mask = 1u << i;
+        uint32_t bitValue = ( num & mask ) >> i;
+        ntrue  += bitValue;
+    }
+    return ntrue;
+}
+
+/*
+unsigned num32_count_bits ( const uint32_t num )
+{
+    unsigned ntrue = 0;
+    for ( unsigned i = 0 ; i <= 31 ; i++ ) {
+        uint32_t mask = 1u << i;
+        uint32_t bitValue = ( num & mask ) >> i;
+        ntrue  += bitValue;
+    }
+    return ntrue;
+}
+*/
+
+/*
+void num32_count_bits ( const uint32_t   num,
+                        unsigned * const ntrue,
+                        unsigned * const nfalse )
+{
+    *ntrue = *nfalse = 0;
+    for ( unsigned i = 0 ; i <= 31 ; i++ ) {
+        uint32_t mask = 1u << i;
+        uint32_t bitValue = ( num & mask ) >> i;
+        *ntrue  += bitValue;
+        *nfalse += //( ! bitValue ) & 1u;
+            1u - bitValue;
+    }
+}
+*/
 
 
 #if defined(_WIN32) && !defined(_CYGWIN)
