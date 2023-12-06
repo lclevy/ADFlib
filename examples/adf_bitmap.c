@@ -123,6 +123,11 @@ env_cleanup:
 
 int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 {
+    const char
+        separatorLine1[] =
+        "----------------------------------------------------------------------",
+        separatorLine2[] =
+        "======================================================================";
     struct bRootBlock   rb;
     struct bBitmapBlock bm;
 
@@ -152,15 +157,15 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
         RETCODE rc = adfReadBitmapBlock ( vol, bmPage, &bm );
         if ( rc != RC_OK ) {
-            fprintf ( stderr, "error reading bitmap block on vol. orig, block %u\n",
-                      bmPage );
+            fprintf ( stderr, "error reading bitmap block on vol. %s, block %u\n",
+                      vol->volName, bmPage );
             nerrors++;
             continue;
         }
 
-        printf ( "\nBitmap allocation block - rootblock.bmPages[ %u ], block %d\n\n"
-                 "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n",
-                 i, bmPage );
+        printf ( "\n%s\nBitmap allocation block - rootblock.bmPages[ %u ], block %d\n\n"
+                 "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
+                 separatorLine2, i, bmPage, separatorLine1 );
 
         for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
             uint32_t val = bm.map[j];
@@ -179,15 +184,75 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
     }
 
-    /* add showing bmExt blocks! */
+    /* show bmExt blocks */
+    SECTNUM bmExtBlkPtr = rb.bmExt;
+    unsigned bmExt_i = 0;
+    while ( bmExtBlkPtr != 0 ) {
+        struct bBitmapExtBlock bmExtBlk;
+        RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
+        if ( rc != RC_OK ) {
+            adfFreeBitmap ( vol );
+            return 1;
+        }
 
+        unsigned i = 0;
+        while ( i < BM_PAGES_EXT_SIZE ) {
+            SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
+            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+                adfEnv.eFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
+                adfFreeBitmap ( vol );
+                return 1;
+            }
+
+            rc = adfReadBitmapBlock ( vol, bmBlkPtr, &bm );
+            if ( rc != RC_OK ) {
+                fprintf ( stderr, "error reading bitmap block on vol. %s, block %u\n",
+                      vol->volName, bmBlkPtr );
+                nerrors++;
+                i++;
+                continue;
+            }
+
+            printf ( "\n%s\nBitmap allocation block - bmExt(%u).bmPages[ %u ], block %d\n\n"
+                     "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
+                     separatorLine2, bmExtBlkPtr, i, bmBlkPtr, separatorLine1 );
+
+            for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+                uint32_t val = bm.map[j];
+                unsigned blockNum = ( BM_PAGES_ROOT_SIZE * BM_MAP_SIZE +
+                                      i * BM_MAP_SIZE + j ) * 32;
+                printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
+                         j, blockNum, blockNum,
+                         val,  num32_to_bit_str ( val, bitStr ) );
+                if ( blockNum < filesystem_blocks_num ) {
+                    unsigned nbits_unused =
+                        ( blockNum + 32 < filesystem_blocks_num ) ?
+                        0 : last_uint32_bits_unused;
+                    unsigned nbits_true = num32_count_bits ( val, nbits_unused );
+                    nblocks_free += nbits_true;
+                    nblocks_used += 32 - nbits_unused - nbits_true;
+                }
+            }
+
+            i++;
+        }
+
+        bmExtBlkPtr = bmExtBlk.nextBlock;
+        bmExt_i++;
+    }
+
+    /* show block statistics */
     printf ( "\nBlocks used  %6u (%u bytes)"
              "\n       free  %6u (%u bytes)"
              "\n       total %6u (%u bytes)\n",
              nblocks_used, nblocks_used * 512,
              nblocks_free, nblocks_free * 512,
              filesystem_blocks_num, filesystem_blocks_num * 512 );
-
+    if ( nerrors > 0 )
+        printf ("\nWARNING: %u errors occured meaning that some bitmap "
+                "(or bitmap ext.) blocks could not be read\n"
+                " so the numbers above are not fully accurate "
+                "(exclude data from the unchecked bitmap blocks!)\n", nerrors );
     return ( nerrors > 0 ) ? 1 : 0;    
 }
 
