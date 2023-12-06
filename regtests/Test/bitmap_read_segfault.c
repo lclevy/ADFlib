@@ -23,6 +23,8 @@ static void log_error ( FILE * const       file,
     //fprintf ( stderr, "Warning <" );
     vfprintf ( file, format, ap );
     va_end ( ap );
+#else
+    (void) file, (void) format;
 #endif
 }
 
