@@ -63,6 +63,17 @@ struct AdfVolume {
     SECTNUM curDirPtr;
 };
 
+static inline uint32_t adfVolGetBlockNumWithoutBootblock (
+    const struct AdfVolume * const vol )
+{
+    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 - 2 );
+}
+
+static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
+{
+    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 );
+}
+
 
 PREFIX RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
                                      const uint8_t * const    code );
