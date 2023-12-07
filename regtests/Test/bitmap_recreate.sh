@@ -16,15 +16,8 @@ do
     [ "$DUMP" = "testffs.adf" ]     && continue;     
     [ "$DUMP" = "testhd.adf" ]      && continue;
 
-    #DUMP_UPDATED=${DUMP}.bitmap_update.adf
-    echo "Copying ${DUMP_ORIG} to ${DUMP} ${DUMP_UPDATED}"
-    #cat $DUMP_ORIG | tee $DUMP > $DUMP_UPDATED
+    echo "Copying ${DUMP_ORIG} to ${DUMP}"
     cat "${DUMP_ORIG}" > "${DUMP}"
-
     ./bitmap_recreate "${DUMP}"
-
-    #cmp -l ${DUMP_COPY} $DUMP_UPDATED
-
-    #rm -fv $DUMP $DUMP_UPDATED
     rm -fv "${DUMP}"
 done
