@@ -103,7 +103,10 @@ Note that:
   to the directories with test binaries (it probably can be fixed and done
   automatically but no time for it now; if sb has good solution for this,
   help welcomed).
-
+  For the x64-Debug-Shared configuration, also the library with the address sanitizer:
+  Microsoft\VisualStudio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\clang_rt.asan_dbg_dynamic-x86_64.dll
+  has to be copied.
+  (see also: https://stackoverflow.com/questions/66531482/application-crashes-when-using-address-sanitizer-with-msvc )
 
 Testing with CMake
 -------------------
