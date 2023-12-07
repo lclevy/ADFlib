@@ -9,13 +9,21 @@
 
 set -e
 
+#if [ $# -ne 1 ]
+#then
+#    echo 2>&1 "Usage: $0 <bin install path>"
+#    exit 1
+#fi
+#PATH=`pwd`/$1:$PATH
+
 if [ $# -ne 1 ]
 then
-    echo 2>&1 "Usage: $0 <bin install path>"
-    exit 1
+    ADF_EXAMPLES_BIN="."
+else
+    ADF_EXAMPLES_BIN="$1"
 fi
 
-PATH=`pwd`/$1:$PATH
+PATH=$ADF_EXAMPLES_BIN:$PATH
 EXAMPLES_TEST_PATH=`dirname $0`
 TEST_ADF=$EXAMPLES_TEST_PATH/arccsh.adf
 
