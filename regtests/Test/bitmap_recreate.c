@@ -18,7 +18,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+
+#ifndef _WIN32
+#include <unistd.h>   // for unlink()
+#endif
 
 #include "adflib.h"
 
