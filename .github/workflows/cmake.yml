@@ -107,7 +107,7 @@ jobs:
         tar cvzf artifact-tests/examples_tests.tgz examples/tests/
     - uses: actions/upload-artifact@v3
       with:
-        name: adflib-examples-tests
+        name: adflib-windows-examples-tests
         path: |
           artifact-tests
 
@@ -125,7 +125,7 @@ jobs:
       run: find .
     - uses: actions/download-artifact@master
       with:
-        name: adflib-examples-tests
+        name: adflib-windows-examples-tests
         path: .
     - name: extract examples/tests
       shell: bash
@@ -180,7 +180,7 @@ jobs:
         tar cvzf artifact-tests/examples_tests.tgz examples/tests/
     - uses: actions/upload-artifact@v3
       with:
-        name: adflib-examples-tests
+        name: adflib-macos-examples-tests
         path: |
           artifact-tests
 
@@ -200,7 +200,7 @@ jobs:
       run: find /usr/local -name "*adf*"
     - uses: actions/download-artifact@master
       with:
-        name: adflib-examples-tests
+        name: adflib-macos-examples-tests
         path: .
     - name: extract examples/tests
       run: tar xzvf examples_tests.tgz
