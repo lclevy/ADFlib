@@ -52,6 +52,7 @@ CMDS[5]="adf_floppy_create testflopdd1.adf dd"
 CMDS[6]="adf_floppy_format testflopdd1.adf TestFlopDD1 1"
 CMDS[7]="adf_show_metadata testflopdd1.adf"
 CMDS[8]="rm -v testflopdd1.adf"
+CMDS[9]="adf_bitmap show $TEST_ADF"
 
 for CMD in "${CMDS[@]}"
 do
