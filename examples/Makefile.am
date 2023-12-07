@@ -5,6 +5,7 @@ bin_PROGRAMS = unadf \
 	adf_show_metadata
 
 dist_check_SCRIPTS = \
+	tests/test_examples_basic.sh \
 	tests/adf-floppy-test.sh \
 	tests/adf-show-metadata-test.sh \
 	tests/unadf-test.sh

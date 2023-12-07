@@ -38,6 +38,8 @@ file (
 
 if ( ADFLIB_ENABLE_TESTS )
     message ( STATUS "Enable tests in examples/" )
+    add_test ( tests/test_examples_basic.sh ${BASH_PROGRAM}
+               tests/test_examples_basic.sh . )
     add_test ( tests/adf-floppy-test.sh ${BASH_PROGRAM}
                tests/adf-floppy-test.sh )
     add_test ( tests/adf-show-metadata-test.sh ${BASH_PROGRAM}
