@@ -57,6 +57,15 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cygwin_native_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
     - name: make distcheck
       run: make distcheck
     - name: make install
