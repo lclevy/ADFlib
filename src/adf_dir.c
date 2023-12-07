@@ -1127,19 +1127,26 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
 #endif
 /*printf("readentry=%d\n",nSect);*/
     if (ent->checkSum!=adfNormalSum((uint8_t*)buf,20,512)) {
-        (*adfEnv.wFct)("adfReadEntryBlock : invalid checksum");
+        adfEnv.wFct ( "adfReadEntryBlock : invalid checksum, volume '%s', block %u",
+                      vol->volName, nSect );
         return RC_BLOCKSUM;
     }
     if (ent->type!=T_HEADER) {
-        (*adfEnv.wFct)("adfReadEntryBlock : T_HEADER id not found");
+        adfEnv.wFct ( "adfReadEntryBlock : T_HEADER id not found, volume '%s', block %u",
+                      vol->volName, nSect );
         return RC_ERROR;
     }
-    if ( ent->nameLen > MAXNAMELEN ||
-         ent->commLen > MAXCMMTLEN )
-    {
-        (*adfEnv.wFct)("adfReadEntryBlock : nameLen or commLen incorrect"); 
-        printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
-            ent->nameLen,ent->commLen,ent->name, ent->headerKey);
+    if ( ent->nameLen > MAXNAMELEN ) {
+        adfEnv.wFct ( "adfReadEntryBlock : nameLen (%d) incorrect, volume '%s', block %u, entry %s",
+                      ent->nameLen, vol->volName, nSect, ent->name );
+        //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
+        //    ent->nameLen,ent->commLen,ent->name, ent->headerKey);
+    }
+    if ( ent->commLen > MAXCMMTLEN ) {
+        adfEnv.wFct ( "adfReadEntryBlock : commLen (%d) incorrect, volume '%s', block %u, entry %s",
+                      ent->commLen, vol->volName, nSect, ent->name);
+        //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
+        //    ent->nameLen, ent->commLen, ent->name, ent->headerKey);
     }
 
     return RC_OK;

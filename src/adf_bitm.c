@@ -713,7 +713,8 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
 #endif
 
     if ( bitm->checkSum != adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE ) ) {
-        adfEnv.wFct("adfReadBitmapBlock : invalid checksum");
+        adfEnv.wFct ( "adfReadBitmapBlock : invalid checksum, volume '%s', block %u",
+                      vol->volName, nSect );
         // return error here?
     }
 
