@@ -42,7 +42,7 @@ Usage info is shown when they are executed without any parameters
 
 ### unADF
 
-`unADF` is a unzip like utility for .ADF files:
+`unADF` is an unzip like utility for .ADF files:
 
 ```
 unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
@@ -204,3 +204,5 @@ and such, very likely release branch(es) will also appear).
 
 [`fuseadf`](https://gitlab.com/t-m/fuseadf) - FUSE-based Linux filesystem allowing
 to mount and access ADF images in read/write mode.
+[`patool`](https://pypi.org/project/patool/) - an archive file manager written
+in Python.
