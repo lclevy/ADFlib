@@ -277,14 +277,16 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     uint32_t i = 0,
              j = 0;
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
-    SECTNUM nSect;
+    SECTNUM bmSect;
     while ( i < vol->bitmap.size &&
             i < BM_PAGES_ROOT_SIZE &&
             root->bmPages[i] != 0 )
     {
-        vol->bitmap.blocks[j] = nSect = root->bmPages[i];
-        if ( ! isSectNumValid ( vol, nSect ) ) {
-            adfEnv.wFct ( "adfReadBitmap : sector %d out of range", nSect );
+        vol->bitmap.blocks[j] = bmSect = root->bmPages[i];
+        if ( ! isSectNumValid ( vol, bmSect ) ) {
+            adfEnv.wFct ( "adfReconstructBitmap: sector %d out of range, root bm[%u]",
+                          bmSect, i );
+            adfFreeBitmap ( vol );
             return RC_ERROR;
         }
 
@@ -380,9 +382,9 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
                 adfEnv.wFct (
                     "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d"
                     "bmpage[%u] in a volume with bmpage size %d",
-                    nSect,
                     bmExtBlock.bmPages[i2],
                     bmExtBlock.bmPages[i2],
+                    bmExtSect,
                     i2, vol->bitmap.size );
         }
 
