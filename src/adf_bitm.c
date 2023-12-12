@@ -40,6 +40,8 @@
 #include <string.h>
 
 
+#define CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE 0
+
 extern uint32_t bitMask[32];
 
 static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
@@ -188,6 +190,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
     for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
         if ( root->bmPages[i2] != 0 )
             adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
@@ -196,13 +199,16 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                           root->bmPages[i2],
                           i2, vol->bitmap.size );
     }
+#endif
 
     if ( root->bmExt == 0 )
         return rc;
 
     struct bBitmapExtBlock bmExt;
     SECTNUM bmExtSect = root->bmExt;
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
     unsigned bmExt_i = 0;
+#endif
     while ( bmExtSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
         rc = adfReadBitmapExtBlock ( vol, bmExtSect, &bmExt );
@@ -228,8 +234,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             i++; j++;
         }
 
-        /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
+        /* check for erratic (?) (non-zero) entries in bmpages beyond
+           the expected size,
            more info:  https://github.com/lclevy/ADFlib/issues/63 */
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
         for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
             if ( bmExt.bmPages[i2] != 0 )
                 adfEnv.wFct (
@@ -243,6 +251,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                     vol->bitmap.size );
         }
         bmExt_i++;
+#endif
 
         bmExtSect = bmExt.nextBlock;
     }
