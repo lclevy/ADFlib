@@ -297,6 +297,41 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         i++;
     }
 
+    /* state validity checks */
+    assert ( i <= BM_PAGES_ROOT_SIZE );
+
+    assert ( ( i < vol->bitmap.size &&
+               root->bmPages[i] != 0 ) ||
+             ( i == vol->bitmap.size ) );
+
+    // some images fail on this, https://github.com/lclevy/ADFlib/issues/63
+    //   assert ( ( i == vol->bitmap.size && root->bmPages[i] == 0 ) ||
+    //            ( i < vol->bitmap.size ) );
+
+    assert ( ( i < vol->bitmap.size &&
+               root->bmExt != 0 ) ||
+             ( i == vol->bitmap.size ) );
+
+    assert ( ( i == vol->bitmap.size &&
+               root->bmExt == 0 ) ||
+             ( i < vol->bitmap.size ) );
+
+    if  ( i < vol->bitmap.size  &&  root->bmPages[i] == 0 ) {
+        adfEnv.eFct ( "adfReadBitmap: root bmpages[%u] == 0, "
+                      "but vol. %s should have %u bm sectors",
+                      i, vol->volName, vol->bitmap.size );
+        adfFreeBitmap ( vol );
+        return RC_ERROR;
+    }
+
+    if ( i < vol->bitmap.size  &&  root->bmExt == 0 ) {
+        adfEnv.eFct ( "adfReadBitmap: read %u of %u from root bm sectors of "
+                      "%u total to read, but root->bmExt is 0",
+                      i, BM_PAGES_ROOT_SIZE, vol->bitmap.size );
+        adfFreeBitmap ( vol );
+        return RC_ERROR;
+    }
+
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
     for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
