@@ -162,10 +162,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         return rc;
 
     struct bBitmapExtBlock bmExt;
-    nSect = root->bmExt;
-    while ( nSect != 0 ) {
+    SECTNUM bmExtSect = root->bmExt;
+    while ( bmExtSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
-        rc = adfReadBitmapExtBlock ( vol, nSect, &bmExt );
+        rc = adfReadBitmapExtBlock ( vol, bmExtSect, &bmExt );
         if ( rc != RC_OK ) {
             adfFreeBitmap(vol);
             return rc;
@@ -194,10 +194,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                 adfEnv.wFct (
                     "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d "
                     "bmpage[%u] in a volume with bmpage size %d",
-                    nSect, bmExt.bmPages[i2], bmExt.bmPages[i2], i2, vol->bitmap.size );
+                    bmExtSect, bmExt.bmPages[i2], bmExt.bmPages[i2], i2, vol->bitmap.size );
         }
 
-        nSect = bmExt.nextBlock;
+        bmExtSect = bmExt.nextBlock;
     }
 
     return rc;
