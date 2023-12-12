@@ -192,7 +192,9 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         if ( root->bmPages[i2] != 0 )
             adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
                           "bmpage[%u] in a volume with bmpage size %d",
-                          root->bmPages[i2], root->bmPages[i2], i2, vol->bitmap.size );
+                          root->bmPages[i2],
+                          root->bmPages[i2],
+                          i2, vol->bitmap.size );
     }
 
     if ( root->bmExt == 0 )
@@ -200,6 +202,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
 
     struct bBitmapExtBlock bmExt;
     SECTNUM bmExtSect = root->bmExt;
+    unsigned bmExt_i = 0;
     while ( bmExtSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
         rc = adfReadBitmapExtBlock ( vol, bmExtSect, &bmExt );
@@ -211,7 +214,8 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
             bmSect = bmExt.bmPages[i];
             if ( ! isSectNumValid ( vol, bmSect ) ) {
-                adfEnv.wFct ( "adfReadBitmap : sector %d out of range", bmSect );
+                adfEnv.wFct ( "adfReadBitmap : sector %d out of range, "
+                              "bmext %d bmpages[%u]", bmSect, bmExtSect, i );
                 return RC_ERROR;
             }
             vol->bitmap.blocks[j] = bmSect;
@@ -229,10 +233,16 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
             if ( bmExt.bmPages[i2] != 0 )
                 adfEnv.wFct (
-                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d "
-                    "bmpage[%u] in a volume with bmpage size %d",
-                    bmExtSect, bmExt.bmPages[i2], bmExt.bmPages[i2], i2, vol->bitmap.size );
+                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. %u (%d) "
+                    "bmext.bmpage[%u] (bmpage %u), volume bm blocks %d",
+                    bmExt.bmPages[i2],
+                    bmExt.bmPages[i2],
+                    bmExt_i, bmExtSect,
+                    i2,
+                    i2 + BM_PAGES_ROOT_SIZE + bmExt_i * BM_PAGES_EXT_SIZE,
+                    vol->bitmap.size );
         }
+        bmExt_i++;
 
         bmExtSect = bmExt.nextBlock;
     }
