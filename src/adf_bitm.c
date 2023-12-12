@@ -271,7 +271,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
 
     // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.blocksChg[i] = TRUE;  // FALSE;
+        vol->bitmap.blocksChg[i] = TRUE;
     }
 
     uint32_t i = 0,
@@ -309,12 +309,12 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     //     -> REPAIR INSTEAD (?) -> JUST SET TO 0
     //
 
-    nSect = root->bmExt;
-    while ( nSect != 0 ) {
+    SECTNUM bmExtSect = root->bmExt;
+    while ( bmExtSect != 0 ) {
         struct bBitmapExtBlock bmExtBlock;
 
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
-        rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
+        rc = adfReadBitmapExtBlock ( vol, bmExtSect, &bmExtBlock );
         if ( rc != RC_OK ) {
             adfFreeBitmap(vol);
             return rc;
@@ -349,7 +349,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
                     i2, vol->bitmap.size );
         }
 
-        nSect = bmExtBlock.nextBlock;
+        bmExtSect = bmExtBlock.nextBlock;
     }
 
     // initially - set all free
