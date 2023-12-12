@@ -336,6 +336,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
 
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
     for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
         if ( root->bmPages[i2] != 0 )
             adfEnv.wFct ( "adfReconstructBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
@@ -347,9 +348,12 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //     -> REPAIR INSTEAD (?) -> JUST SET TO 0
     //
+#endif
 
     SECTNUM bmExtSect = root->bmExt;
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
     unsigned bmExt_i = 0;
+#endif
     while ( bmExtSect != 0 ) {
         struct bBitmapExtBlock bmExtBlock;
 
@@ -380,6 +384,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
 
         /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
            more info:  https://github.com/lclevy/ADFlib/issues/63 */
+#if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
         for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
             if ( bmExtBlock.bmPages[i2] != 0 )
                 adfEnv.wFct (
@@ -393,6 +398,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
                     vol->bitmap.size );
         }
         bmExt_i++;
+#endif
 
         bmExtSect = bmExtBlock.nextBlock;
     }
