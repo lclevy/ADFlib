@@ -120,7 +120,6 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
 RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                         const struct bRootBlock * const root )
 {
-    struct bBitmapExtBlock bmExt;
     RETCODE rc = RC_OK;
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
@@ -159,6 +158,10 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
                           root->bmPages[i2], root->bmPages[i2], i2, vol->bitmap.size );
     }
 
+    if ( root->bmExt == 0 )
+        return rc;
+
+    struct bBitmapExtBlock bmExt;
     nSect = root->bmExt;
     while ( nSect != 0 ) {
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
