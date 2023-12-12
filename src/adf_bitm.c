@@ -319,7 +319,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
              ( i < vol->bitmap.size ) );
 
     if  ( i < vol->bitmap.size  &&  root->bmPages[i] == 0 ) {
-        adfEnv.eFct ( "adfReadBitmap: root bmpages[%u] == 0, "
+        adfEnv.eFct ( "adfReconstructBitmap: root bmpages[%u] == 0, "
                       "but vol. %s should have %u bm sectors",
                       i, vol->volName, vol->bitmap.size );
         adfFreeBitmap ( vol );
@@ -327,7 +327,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     }
 
     if ( i < vol->bitmap.size  &&  root->bmExt == 0 ) {
-        adfEnv.eFct ( "adfReadBitmap: read %u of %u from root bm sectors of "
+        adfEnv.eFct ( "adfReconstructBitmap: read %u of %u from root bm sectors of "
                       "%u total to read, but root->bmExt is 0",
                       i, BM_PAGES_ROOT_SIZE, vol->bitmap.size );
         adfFreeBitmap ( vol );
@@ -338,15 +338,18 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
     for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
         if ( root->bmPages[i2] != 0 )
-            adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
+            adfEnv.wFct ( "adfReconstructBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
                           "bmpage[%u] in a volume with bmpage size %d",
-                          root->bmPages[i2], root->bmPages[i2], i2, vol->bitmap.size );
+                          root->bmPages[i2],
+                          root->bmPages[i2],
+                          i2, vol->bitmap.size );
     }
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //     -> REPAIR INSTEAD (?) -> JUST SET TO 0
     //
 
     SECTNUM bmExtSect = root->bmExt;
+    unsigned bmExt_i = 0;
     while ( bmExtSect != 0 ) {
         struct bBitmapExtBlock bmExtBlock;
 
@@ -380,13 +383,16 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         for ( uint32_t i2 = i ; i2 < BM_PAGES_EXT_SIZE ; i2++ ) {
             if ( bmExtBlock.bmPages[i2] != 0 )
                 adfEnv.wFct (
-                    "adfReadBitmap: a non-zero (%u, 0x%02x) entry in bm ext. block %d"
-                    "bmpage[%u] in a volume with bmpage size %d",
+                    "adfReconstructBitmap: a non-zero (%u, 0x%02x) entry in bm ext. %u (%d) "
+                    "bmext.bmpage[%u] (bmpage %u), volume bmpage blocks %d",
                     bmExtBlock.bmPages[i2],
                     bmExtBlock.bmPages[i2],
-                    bmExtSect,
-                    i2, vol->bitmap.size );
+                    bmExt_i, bmExtSect,
+                    i2,
+                    i2 + BM_PAGES_ROOT_SIZE + bmExt_i * BM_PAGES_EXT_SIZE,
+                    vol->bitmap.size );
         }
+        bmExt_i++;
 
         bmExtSect = bmExtBlock.nextBlock;
     }
