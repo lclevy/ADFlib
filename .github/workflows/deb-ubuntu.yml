@@ -53,7 +53,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-deb-ubuntu
@@ -68,7 +68,7 @@ jobs:
         dpkg -l 'libadf*' ;
         dpkg -l 'libadf*' | grep "libadf" |
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-examples-tests

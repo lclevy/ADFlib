@@ -115,7 +115,7 @@ jobs:
     runs-on: windows-latest
     needs: windows_build
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-windows
         name: adflib-windows
@@ -123,7 +123,7 @@ jobs:
     - name: list files extracted from the artifact
       shell: bash
       run: find .
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
         name: adflib-windows-examples-tests
         path: .
@@ -189,7 +189,7 @@ jobs:
     needs: macos_shared
     runs-on: macos-latest
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
 #      name: adflib-${{ env.ADFLIB_TAG }}-macos
         name: adflib-macos
@@ -198,7 +198,7 @@ jobs:
       run: tar xzv -C / -f adflib-macos.tgz
     - name: list files extracted from the artifact
       run: find /usr/local -name "*adf*"
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
         name: adflib-macos-examples-tests
         path: .
