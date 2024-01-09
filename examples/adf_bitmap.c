@@ -67,13 +67,13 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    AdfAccessMode mode = ( command == COMMAND_REBUILD ? ADF_ACCESS_MODE_READWRITE :
-                                                        ADF_ACCESS_MODE_READONLY );
+    AdfAccessMode devMode = ( command == COMMAND_REBUILD ? ADF_ACCESS_MODE_READWRITE :
+                                                           ADF_ACCESS_MODE_READONLY );
 
     printf ( "\nOpening image/device:\t'%s' (%s)\n",
-             adfname, mode ? "read-only" : "read-write" );
+             adfname, devMode ? "read-only" : "read-write" );
 
-    struct AdfDevice * const dev = adfMountDev ( adfname, mode );
+    struct AdfDevice * const dev = adfMountDev ( adfname, devMode );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
@@ -82,7 +82,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct AdfVolume * const vol = adfMount ( dev, vol_id, mode );
+    struct AdfVolume * const vol = adfMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );
@@ -101,7 +101,14 @@ int main ( int     argc,
              1 + ( volSizeBlocks - 2 ) / ( BM_MAP_SIZE * 4 * 8 ) );
 
     if ( command == COMMAND_REBUILD ) {
-        status = ( adfVolReconstructBitmap ( vol ) == RC_OK ? 0 : 1 );
+        RETCODE rc = adfRemountReadWrite ( vol );
+        if ( rc != RC_OK ) {
+            fprintf ( stderr, "Remounting the volume read-write has failed -"
+                      " writing the rebuilt block allocation bitmap has failed.\n" );
+        } else {
+            printf ("Bitmap reconstruction complete.\n");
+        }
+        status = ( rc == RC_OK ? 0 : 1 );
     } else {  // COMMAND_SHOW
         status = show_block_allocation_bitmap ( vol );
     }
