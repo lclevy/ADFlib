@@ -451,8 +451,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
 
     // any other blocks to check????
 
-    // immediate update ?
-    return ( rc == RC_OK ) ? adfUpdateBitmap ( vol ) : rc;
+    return rc;
 }
 
 
