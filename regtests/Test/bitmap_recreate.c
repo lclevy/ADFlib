@@ -101,8 +101,8 @@ int main ( const int          argc,
         goto umount_vol_orig;
     }
 
-    struct AdfVolume * const volUpdate = adfMount ( devUpdate, 0,
-                                                    ADF_ACCESS_MODE_READWRITE );
+    struct AdfVolume * volUpdate = adfMount ( devUpdate, 0,
+                                              ADF_ACCESS_MODE_READONLY );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;
@@ -111,12 +111,22 @@ int main ( const int          argc,
 
 
     /* update the block allocation bitmap */
-    RETCODE rc = adfVolReconstructBitmap ( volUpdate );
+    RETCODE rc = adfRemountReadWrite ( volUpdate );
     if ( rc != RC_OK ) {
         log_error (
-            stderr, "error reconstructing block allocation bitmap, volume %d\n", 0 );
+            stderr, "error remounting read-write, volume %d\n", 0 );
         error_status = TRUE;
         goto umount_vol_updated;
+    }
+
+    adfUnMount ( volUpdate );
+
+    volUpdate = adfMount ( devUpdate, 0,
+                           ADF_ACCESS_MODE_READWRITE );
+    if ( volUpdate == NULL ) {
+        log_error ( stderr, "can't mount volume %d\n", 0 );
+        error_status = TRUE;
+        goto umount_dev_updated;
     }
 
     /* compare the original and reconstructed */
