@@ -213,24 +213,27 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
     RETCODE rc = adfBitmapAllocate ( vol );
     if ( rc != RC_OK ) {
-            adfEnv.wFct ( "adfMount : adfBitmapAllocate() returned error %d, "
-                          "mounting read-only (failsafe)", rc );
-            vol->readOnly = TRUE;
+            adfEnv.eFct ( "adfMount : adfBitmapAllocate() returned error %d, "
+                          "mounting volume %s failed", rc, vol->volName );
+            adfUnMount ( vol );
+            return NULL;
     } else if ( root.bmFlag == BM_VALID ||
                 vol->readOnly == TRUE )
     {
         rc = adfReadBitmap ( vol, &root );
         if ( rc != RC_OK ) {
-            adfEnv.wFct ( "adfMount : adfReadBitmap() returned error %d, "
-                          "mounting read-only (failsafe)", rc );
-            vol->readOnly = TRUE;
+            adfEnv.eFct ( "adfMount : adfReadBitmap() returned error %d, "
+                          "mounting volume %s failed", rc, vol->volName );
+            adfUnMount ( vol );
+            return NULL;
         }
     } else {
         rc = adfReconstructBitmap ( vol, &root );
         if ( rc != RC_OK ) {
-            adfEnv.wFct ( "adfMount : adfReconstructBitmap() returned error %d, "
-                          "mounting read-only (failsafe)", rc );
-            vol->readOnly = TRUE;
+            adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
+                          "mounting volume %s failed", rc, vol->volName );
+            adfUnMount ( vol );
+            return NULL;
         }
     }
 
