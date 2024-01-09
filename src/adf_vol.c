@@ -217,21 +217,28 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                           "mounting volume %s failed", rc, vol->volName );
             adfUnMount ( vol );
             return NULL;
-    } else if ( root.bmFlag == BM_VALID ||
-                vol->readOnly == TRUE )
-    {
-        rc = adfReadBitmap ( vol, &root );
-        if ( rc != RC_OK ) {
-            adfEnv.eFct ( "adfMount : adfReadBitmap() returned error %d, "
-                          "mounting volume %s failed", rc, vol->volName );
-            adfUnMount ( vol );
-            return NULL;
-        }
-    } else {
-        rc = adfReconstructBitmap ( vol, &root );
-        if ( rc != RC_OK ) {
-            adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
-                          "mounting volume %s failed", rc, vol->volName );
+    }
+
+    rc = adfReadBitmap ( vol, &root );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "adfMount : adfReadBitmap() returned error %d, "
+                      "mounting volume %s failed", rc, vol->volName );
+        adfUnMount ( vol );
+        return NULL;
+    }
+
+    if ( root.bmFlag != BM_VALID ) {
+        if ( vol->readOnly == TRUE ) {
+            rc = adfReconstructBitmap ( vol, &root );
+            if ( rc != RC_OK ) {
+                adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
+                              "mounting volume %s failed", rc, vol->volName );
+                adfUnMount ( vol );
+                return NULL;
+            }
+        } else {
+            adfEnv.eFct ( "adfMount : block allocation bitmap marked invalid in root block, "
+                          "mounting the volume %s read-write not possible", vol->volName );
             adfUnMount ( vol );
             return NULL;
         }
