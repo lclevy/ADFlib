@@ -253,6 +253,43 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
 
 /*
+ * adfRemountReadWrite
+ *
+ *
+ */
+PREFIX RETCODE adfRemountReadWrite ( struct AdfVolume * vol )
+{
+    if ( vol == NULL )
+        return RC_ERROR;
+
+    if ( vol->readOnly == FALSE ) {
+        adfEnv.wFct ( "adfRemountReadWrite : volume %s already mounted read-write",
+                      vol->volName );
+        return RC_OK;
+    }
+
+    if ( vol->dev->readOnly ) {
+        adfEnv.eFct ( "adfRemountReadWrite : device read-only, "
+                      "cannot mount %s read-write", vol->volName );
+        return RC_ERROR;
+    }
+
+    // the volume's bitmap could have been rebuilt in memory,
+    // write it to the volume when entering read-write mode
+    vol->readOnly = FALSE;
+    RETCODE rc = adfUpdateBitmap ( vol );
+    if ( rc != RC_OK ) {
+        vol->readOnly = TRUE;
+        return rc;
+    }
+
+    vol->readOnly = FALSE;
+    return RC_OK;
+}
+
+
+
+/*
 *
 * adfUnMount
 *
