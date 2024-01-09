@@ -440,7 +440,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     return(vol);
 }
 
-
+/*
 RETCODE adfVolReconstructBitmap ( struct AdfVolume * const vol )
 {
     struct bRootBlock root;
@@ -454,7 +454,7 @@ RETCODE adfVolReconstructBitmap ( struct AdfVolume * const vol )
     //printf ("root block read, name %s\n", root.diskName );
     return adfReconstructBitmap ( vol, &root );
 }
-
+*/
 
 /*-----*/
 

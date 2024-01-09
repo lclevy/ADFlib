@@ -102,7 +102,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType );
 
-PREFIX RETCODE adfVolReconstructBitmap ( struct AdfVolume * const vol );
+//PREFIX RETCODE adfVolReconstructBitmap ( struct AdfVolume * const vol );
 
 /*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
 void adfUpdateBitmap(struct AdfVolume*);
