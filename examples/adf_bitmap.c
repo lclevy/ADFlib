@@ -121,7 +121,7 @@ env_cleanup:
 
 RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
 {
-    RETCODE rc = adfRemountReadWrite ( vol );
+    RETCODE rc = adfRemount ( vol, ADF_ACCESS_MODE_READWRITE );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Remounting the volume read-write has failed -"
                   " aborting...\n" );

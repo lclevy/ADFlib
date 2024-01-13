@@ -111,7 +111,7 @@ int main ( const int          argc,
 
 
     /* update the block allocation bitmap */
-    RETCODE rc = adfRemountReadWrite ( volUpdate );
+    RETCODE rc = adfRemount ( volUpdate, ADF_ACCESS_MODE_READWRITE );
     if ( rc != RC_OK ) {
         log_error (
             stderr, "error remounting read-write, volume %d\n", 0 );

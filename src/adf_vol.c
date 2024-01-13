@@ -259,35 +259,29 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
  *
  *
  */
-PREFIX RETCODE adfRemountReadWrite ( struct AdfVolume * vol )
+PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
+                            const AdfAccessMode mode )
 {
     if ( vol == NULL )
         return RC_ERROR;
 
-    if ( vol->readOnly == FALSE ) {
-        adfEnv.wFct ( "adfRemountReadWrite : volume %s already mounted read-write",
-                      vol->volName );
-        return RC_OK;
-    }
+    if ( ! vol->mounted )
+        return RC_ERROR;
 
-    if ( vol->dev->readOnly ) {
-        adfEnv.eFct ( "adfRemountReadWrite : device read-only, "
-                      "cannot mount %s read-write", vol->volName );
+    if ( mode == ADF_ACCESS_MODE_READWRITE ) {
+        if ( vol->dev->readOnly ) {
+            adfEnv.eFct ( "adfRemount : device read-only, cannot mount "
+                          "volume '%s' read-write", vol->volName );
+            return RC_ERROR;
+        }
+        vol->readOnly = FALSE;
+    } else if ( mode == ADF_ACCESS_MODE_READONLY ) {
+        vol->readOnly = TRUE;
+    } else {
+        adfEnv.eFct ( "adfRemount : cannot remount volume %s, invalid mode %d",
+                      vol->volName, mode );
         return RC_ERROR;
     }
-
-    // the volume's bitmap could have been rebuilt in memory,
-    // write it to the volume when entering read-write mode
-    /*
-    vol->readOnly = FALSE;
-    RETCODE rc = adfUpdateBitmap ( vol );
-    if ( rc != RC_OK ) {
-        vol->readOnly = TRUE;
-        return rc;
-    }
-    */
-
-    vol->readOnly = FALSE;
     return RC_OK;
 }
 
