@@ -176,8 +176,22 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
     struct bBootBlock boot;
     struct AdfVolume * vol;
 
-    if (dev==NULL || nPart >= dev->nVol) {
-        (*adfEnv.eFct)("adfMount : invalid parameter(s)");
+    if ( dev == NULL ) {
+        adfEnv.eFct ( "adfMount : invalid device (NULL)" );
+        return NULL;
+    }
+
+    if ( nPart < 0  ||
+         nPart >= dev->nVol )
+    {
+        adfEnv.eFct ( "adfMount : invalid partition %d", nPart );
+        return NULL;
+    }
+
+    if ( mode != ADF_ACCESS_MODE_READONLY  &&
+         mode != ADF_ACCESS_MODE_READWRITE )
+    {
+        adfEnv.eFct ( "adfMount : invalid mode %d", mode );
         return NULL;
     }
 
