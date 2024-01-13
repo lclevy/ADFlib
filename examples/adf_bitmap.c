@@ -13,6 +13,7 @@ char* basename(char* path);
 #include <adflib.h>
 
 
+RETCODE rebuild_bitmap ( struct AdfVolume * const vol );
 int show_block_allocation_bitmap ( struct AdfVolume * const vol );
 
 typedef char bitstr32_t [36];
@@ -101,13 +102,7 @@ int main ( int     argc,
              1 + ( volSizeBlocks - 2 ) / ( BM_MAP_SIZE * 4 * 8 ) );
 
     if ( command == COMMAND_REBUILD ) {
-        RETCODE rc = adfRemountReadWrite ( vol );
-        if ( rc != RC_OK ) {
-            fprintf ( stderr, "Remounting the volume read-write has failed -"
-                      " writing the rebuilt block allocation bitmap has failed.\n" );
-        } else {
-            printf ("Bitmap reconstruction complete.\n");
-        }
+        RETCODE rc = rebuild_bitmap ( vol );
         status = ( rc == RC_OK ? 0 : 1 );
     } else {  // COMMAND_SHOW
         status = show_block_allocation_bitmap ( vol );
@@ -121,6 +116,43 @@ env_cleanup:
     adfEnvCleanUp();
 
     return status;
+}
+
+
+RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
+{
+    RETCODE rc = adfRemountReadWrite ( vol );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, "Remounting the volume read-write has failed -"
+                  " aborting...\n" );
+        return rc;
+    }
+
+    struct bRootBlock root;
+    //printf ("reading root block from %u\n", vol->rootBlock );
+    rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Invalid RootBlock, sector %u - aborting...",
+                      vol->rootBlock );
+        return rc;
+    }
+    //printf ("root block read, name %s\n", root.diskName );
+
+    rc = adfReconstructBitmap ( vol, &root );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Error rebuilding the bitmap (%d)", rc );
+        return rc;
+    }
+
+    rc = adfUpdateBitmap ( vol );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Error writing updated bitmap (%d)", rc );
+        return rc;
+    }
+
+    printf ("Bitmap reconstruction complete.\n");
+
+    return RC_OK;
 }
 
 
