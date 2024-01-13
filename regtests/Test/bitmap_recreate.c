@@ -119,6 +119,29 @@ int main ( const int          argc,
         goto umount_vol_updated;
     }
 
+    struct bRootBlock root;
+    rc = adfReadRootBlock ( volUpdate, (uint32_t) volUpdate->rootBlock, &root );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Invalid RootBlock, volume %s, sector %u - aborting...",
+                      volUpdate->volName, volUpdate->rootBlock );
+        return rc;
+    }
+
+    rc = adfReconstructBitmap ( volUpdate, &root );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Error rebuilding the bitmap (%d), volume %s",
+                      rc, volUpdate->volName );
+        return rc;
+    }
+
+    /*
+    rc = adfUpdateBitmap ( vol );
+    if ( rc != RC_OK ) {
+        adfEnv.eFct ( "Error writing updated bitmap (%d), volume %s",
+                      rc, volUpdate->volName );
+        return rc;
+    }
+
     adfUnMount ( volUpdate );
 
     volUpdate = adfMount ( devUpdate, 0,
@@ -128,6 +151,7 @@ int main ( const int          argc,
         error_status = TRUE;
         goto umount_dev_updated;
     }
+    */
 
     /* compare the original and reconstructed */
     unsigned nerrors = compare_bitmaps ( volOrig, volUpdate );
