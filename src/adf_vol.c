@@ -278,12 +278,14 @@ PREFIX RETCODE adfRemountReadWrite ( struct AdfVolume * vol )
 
     // the volume's bitmap could have been rebuilt in memory,
     // write it to the volume when entering read-write mode
+    /*
     vol->readOnly = FALSE;
     RETCODE rc = adfUpdateBitmap ( vol );
     if ( rc != RC_OK ) {
         vol->readOnly = TRUE;
         return rc;
     }
+    */
 
     vol->readOnly = FALSE;
     return RC_OK;
