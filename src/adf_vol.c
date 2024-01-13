@@ -227,6 +227,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
         return NULL;
     }
 
+    /*
     if ( root.bmFlag != BM_VALID ) {
         if ( vol->readOnly == TRUE ) {
             rc = adfReconstructBitmap ( vol, &root );
@@ -243,6 +244,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
             return NULL;
         }
     }
+    */
 
     vol->curDirPtr = vol->rootBlock;
 
