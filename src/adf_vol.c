@@ -444,21 +444,6 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     return(vol);
 }
 
-/*
-RETCODE adfVolReconstructBitmap ( struct AdfVolume * const vol )
-{
-    struct bRootBlock root;
-    //printf ("reading root block from %u\n", vol->rootBlock );
-    RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
-    if ( rc != RC_OK ) {
-        adfEnv.eFct ( "adfVolReconstructBitmap : invalid RootBlock, sector %u",
-                      vol->rootBlock );
-        return rc;
-    }
-    //printf ("root block read, name %s\n", root.diskName );
-    return adfReconstructBitmap ( vol, &root );
-}
-*/
 
 /*-----*/
 
