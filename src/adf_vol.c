@@ -259,6 +259,8 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
         }
     }
     */
+    if ( root.bmFlag != BM_VALID )
+        adfEnv.wFct ( "adfMount : invalid bitmap on volume '%s'", vol->volName );
 
     vol->curDirPtr = vol->rootBlock;
 
