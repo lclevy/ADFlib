@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     }
     adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");

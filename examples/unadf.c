@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     parse_args(argc, argv);
 
     /* mount device */
-    if (!(dev = adfMountDev(adf_file, TRUE))) {
+    if (!(dev = adfMountDev(adf_file, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount as device\n", adf_file);
         goto error_handler;
     }
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
             adf_file, vol_number, dev->nVol);
         goto error_handler;
     }
-    if (!(vol = adfMount(dev, vol_number, TRUE))) {
+    if (!(vol = adfMount(dev, vol_number, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount volume %d\n",
             adf_file, vol_number);
         goto error_handler;

@@ -36,9 +36,9 @@
  */
 RETCODE myInitDevice ( struct AdfDevice * const dev,
                        const char * const       name,
-                       const BOOL               ro )
+                       const AdfAccessMode      mode )
 {
-    (void) dev, (void) name, (void) ro;
+    (void) dev, (void) name, (void) mode;
     return RC_ERROR;
 }
 

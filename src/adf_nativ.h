@@ -31,7 +31,7 @@ struct AdfNativeFunctions {
     /* called by adfMount() */
     RETCODE (*adfInitDevice)( struct AdfDevice * const dev,
                               const char * const       name,
-                              const BOOL               ro );
+                              const AdfAccessMode      mode );
 
     /* called by adfUnMount() */
     RETCODE (*adfReleaseDevice)(struct AdfDevice * const dev);

@@ -1,6 +1,11 @@
-bin_PROGRAMS = unadf adf_floppy_create adf_floppy_format adf_show_metadata
+bin_PROGRAMS = unadf \
+	adf_bitmap \
+	adf_floppy_create \
+	adf_floppy_format \
+	adf_show_metadata
 
 dist_check_SCRIPTS = \
+	tests/test_examples_basic.sh \
 	tests/adf-floppy-test.sh \
 	tests/adf-show-metadata-test.sh \
 	tests/unadf-test.sh
@@ -16,6 +21,10 @@ ADFLIBS = $(top_builddir)/src/libadf.la
 unadf_SOURCES = unadf.c
 unadf_LDADD = $(ADFLIBS)
 unadf_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+adf_bitmap_SOURCES = adf_bitmap.c
+adf_bitmap_LDADD = $(ADFLIBS)
+adf_bitmap_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 adf_floppy_create_SOURCES = adf_floppy_create.c
 adf_floppy_create_LDADD = $(ADFLIBS)

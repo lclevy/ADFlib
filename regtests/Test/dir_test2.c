@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount existing device */
-    hd = adfMountDev( argv[1],FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");

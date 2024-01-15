@@ -101,10 +101,19 @@ TARGET_LINK_LIBRARIES ( undel3 adf )
 add_executable ( floppy_overfilling_test floppy_overfilling_test.c )
 TARGET_LINK_LIBRARIES ( floppy_overfilling_test adf )
 
+add_executable ( bitmap_read_segfault bitmap_read_segfault.c )
+TARGET_LINK_LIBRARIES ( bitmap_read_segfault adf )
+
+add_executable ( bitmap_recreate bitmap_recreate.c )
+TARGET_LINK_LIBRARIES ( bitmap_recreate adf )
+
+
 foreach ( a_file
     floppy.sh
     bigdev.sh
     bootdisk.sh
+    bitmap_read_segfault.sh
+    bitmap_recreate.sh
     cache_crash.sh
     common.sh
     del_test.sh

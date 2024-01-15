@@ -13,8 +13,8 @@ int main(int argc, char *argv[]) {
 
     if (argc <= 1) return 1;
     adfEnvInitDefault();
-    if ((dev = adfMountDev(argv[1], TRUE))) {
-        if ((vol = adfMount(dev, 0, TRUE))) {
+    if ((dev = adfMountDev(argv[1], ADF_ACCESS_MODE_READONLY))) {
+        if ((vol = adfMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
             /* use dir cache (enables the crash) */
             adfChgEnvProp(PR_USEDIRC, &true);
             /* read all directory entries (crash happens here) */

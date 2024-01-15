@@ -9,13 +9,21 @@
 
 set -e
 
+#if [ $# -ne 1 ]
+#then
+#    echo 2>&1 "Usage: $0 <bin install path>"
+#    exit 1
+#fi
+#PATH=`pwd`/$1:$PATH
+
 if [ $# -ne 1 ]
 then
-    echo 2>&1 "Usage: $0 <bin install path>"
-    exit 1
+    ADF_EXAMPLES_BIN="."
+else
+    ADF_EXAMPLES_BIN="$1"
 fi
 
-PATH=`pwd`/$1:$PATH
+PATH=$ADF_EXAMPLES_BIN:$PATH
 EXAMPLES_TEST_PATH=`dirname $0`
 TEST_ADF=$EXAMPLES_TEST_PATH/arccsh.adf
 
@@ -52,6 +60,7 @@ CMDS[5]="adf_floppy_create testflopdd1.adf dd"
 CMDS[6]="adf_floppy_format testflopdd1.adf TestFlopDD1 1"
 CMDS[7]="adf_show_metadata testflopdd1.adf"
 CMDS[8]="rm -v testflopdd1.adf"
+CMDS[9]="adf_bitmap show $TEST_ADF"
 
 for CMD in "${CMDS[@]}"
 do

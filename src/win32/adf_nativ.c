@@ -47,7 +47,7 @@ static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
 
 static RETCODE Win32InitDevice ( struct AdfDevice * const dev,
                                  const char * const       lpstrName,
-                                 const BOOL               ro )
+                                 const AdfAccessMode      mode )
 {
 	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
             malloc ( sizeof(struct AdfNativeDevice) );

@@ -82,7 +82,7 @@ PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();
 PREFIX char* adfGetVersionDate();
 
-extern struct AdfEnv adfEnv;
+PREFIX extern struct AdfEnv adfEnv;
 
 #endif /* ADF_ENV_H */
 /*##########################################################################*/

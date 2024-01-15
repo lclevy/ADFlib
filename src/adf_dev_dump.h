@@ -40,7 +40,7 @@ PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
 
 RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
                             const char * const       name,
-                            const BOOL               ro );
+                            const AdfAccessMode      mode );
 
 RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
                             const uint32_t           n,

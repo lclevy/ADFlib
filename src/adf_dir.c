@@ -78,7 +78,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 
     nSect = adfNameToEntryBlk(vol, parent.hashTable, oldName, &entry, &prevSect);
     if (nSect==-1) {
-        (*adfEnv.wFct)("adfRenameEntry : existing entry not found");
+        adfEnv.wFct ( "adfRenameEntry : entry '%s' not found", oldName );
         return RC_ERROR;
     }
 
@@ -528,7 +528,7 @@ struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
  */
 void adfFreeEntry ( struct AdfEntry * const entry )
 {
-	if (entry==NULL)
+    if (entry==NULL)
        return;
     if (entry->name)
         free(entry->name);
@@ -636,7 +636,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
 {
     char buf[MAXCMMTLEN+1];
 
-	entry->type = entryBlk->secType;
+    entry->type   = entryBlk->secType;
     entry->parent = entryBlk->parent;
 
     unsigned len = min ( entryBlk->nameLen, (unsigned) MAXNAMELEN );
@@ -647,9 +647,9 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         return RC_MALLOC;
 /*printf("len=%d name=%s parent=%ld\n",entryBlk->nameLen, entry->name,entry->parent );*/
     adfDays2Date( entryBlk->days, &(entry->year), &(entry->month), &(entry->days));
-	entry->hour = entryBlk->mins/60;
-    entry->mins = entryBlk->mins%60;
-    entry->secs = entryBlk->ticks/50;
+    entry->hour = entryBlk->mins / 60;
+    entry->mins = entryBlk->mins % 60;
+    entry->secs = entryBlk->ticks / 50;
 
     entry->access = -1;
     entry->size = 0L;
@@ -666,6 +666,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         entry->comment = strdup(buf);
         if (entry->comment==NULL) {
             free(entry->name);
+            entry->name = NULL;
             return RC_MALLOC;
         }
         break;
@@ -678,6 +679,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         entry->comment = strdup(buf);
         if (entry->comment==NULL) {
             free(entry->name);
+            entry->name = NULL;
             return RC_MALLOC;
         }
         break;
@@ -687,7 +689,8 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
     case ST_LSOFT:
         break;
     default:
-        (*adfEnv.wFct)("unknown entry type");
+        adfEnv.wFct ( "adfEntBlock2Entry: unknown type %u for entry '%s', sector %u",
+                      entry->type, entry->name, entry->sector );
     }
 	
     return RC_OK;
@@ -1124,19 +1127,26 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
 #endif
 /*printf("readentry=%d\n",nSect);*/
     if (ent->checkSum!=adfNormalSum((uint8_t*)buf,20,512)) {
-        (*adfEnv.wFct)("adfReadEntryBlock : invalid checksum");
+        adfEnv.wFct ( "adfReadEntryBlock : invalid checksum, volume '%s', block %u",
+                      vol->volName, nSect );
         return RC_BLOCKSUM;
     }
     if (ent->type!=T_HEADER) {
-        (*adfEnv.wFct)("adfReadEntryBlock : T_HEADER id not found");
+        adfEnv.wFct ( "adfReadEntryBlock : T_HEADER id not found, volume '%s', block %u",
+                      vol->volName, nSect );
         return RC_ERROR;
     }
-    if ( ent->nameLen > MAXNAMELEN ||
-         ent->commLen > MAXCMMTLEN )
-    {
-        (*adfEnv.wFct)("adfReadEntryBlock : nameLen or commLen incorrect"); 
-        printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
-            ent->nameLen,ent->commLen,ent->name, ent->headerKey);
+    if ( ent->nameLen > MAXNAMELEN ) {
+        adfEnv.wFct ( "adfReadEntryBlock : nameLen (%d) incorrect, volume '%s', block %u, entry %s",
+                      ent->nameLen, vol->volName, nSect, ent->name );
+        //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
+        //    ent->nameLen,ent->commLen,ent->name, ent->headerKey);
+    }
+    if ( ent->commLen > MAXCMMTLEN ) {
+        adfEnv.wFct ( "adfReadEntryBlock : commLen (%d) incorrect, volume '%s', block %u, entry %s",
+                      ent->commLen, vol->volName, nSect, ent->name);
+        //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
+        //    ent->nameLen, ent->commLen, ent->name, ent->headerKey);
     }
 
     return RC_OK;

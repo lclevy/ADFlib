@@ -9,6 +9,8 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
 check_PROGRAMS = \
 	access \
 	bootdisk \
+	bitmap_read_segfault \
+	bitmap_recreate \
 	cache_crash \
 	comment \
 	del_test \
@@ -42,6 +44,8 @@ check_PROGRAMS = \
 dist_check_SCRIPTS = \
 	bigdev.sh \
 	bootdisk.sh \
+	bitmap_read_segfault.sh \
+	bitmap_recreate.sh \
 	cache_crash.sh \
 	common.sh \
 	del_test.sh \
@@ -194,3 +198,11 @@ undel3_DEPENDENCIES = $(top_builddir)/src/libadf.la
 floppy_overfilling_test_SOURCES = floppy_overfilling_test.c
 floppy_overfilling_test_LDADD = $(ADFLIBS)
 floppy_overfilling_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_read_segfault_SOURCES = bitmap_read_segfault.c
+bitmap_read_segfault_LDADD = $(ADFLIBS)
+bitmap_read_segfault_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_recreate_SOURCES = bitmap_recreate.c
+bitmap_recreate_LDADD = $(ADFLIBS)
+bitmap_recreate_DEPENDENCIES = $(top_builddir)/src/libadf.la

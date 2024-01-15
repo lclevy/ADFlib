@@ -13,6 +13,7 @@ It supports:
 - create, open, close, delete, rename/move a file or a directory
 - file operations: read, write, truncate
 - directory operations: get contents, change current, get parent
+- volume operations: rebuild block allocation bitmap
 - use dir cache to get directory contents
 - hard- and softlinks for accessing files and directories
 
@@ -42,7 +43,7 @@ Usage info is shown when they are executed without any parameters
 
 ### unADF
 
-`unADF` is a unzip like utility for .ADF files:
+`unADF` is an unzip like utility for .ADF files:
 
 ```
 unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
@@ -79,6 +80,11 @@ image or a file/directory inside the Amiga filesystem. In particular, it shows
 contents of Amiga filesystem metadata blocks, it can help understand structure
 of Amiga filesystems (for anyone curious...).
 
+### adf_bitmap
+
+A low-level utility / diagnostic tool for block allocation bitmap of ADF volumes.
+It can display the bitmap or rebuild it (in fact, enforce rebuilding it, even if
+the volume's flag says that the bitmap is valid).
 
 ## Credits:
 
@@ -152,11 +158,16 @@ and treat as such (ie. use in a safe environment like a VM).
 
 **YOU HAVE BEEN WARNED**
 
-### The new (completed) file write support
+### The new (fixed and completed) file write support (but writing still experimental!)
 The (fixed) file read support and the (new) file write support are rather
 well tested, but still, writing is a new feature so do not experiment on
 a unique copy of an ADF image with your precious data. Please do it on a copy
 and report if any issues are encountered.
+Update: The notice above is especially actual that it was discovered that
+the version `0.8.0` and earlier **do not rebuild the block allocation bitmap
+for volumes where it is marked invalid**. In short, this means that if the bitmap
+is really incorrect, writing to such volume may lead to data loss/corruption.
+Because of this, it is strongly advised to **UPDATE TO THE LATEST VERSION**.
 
 (See also TODO).
 
@@ -204,3 +215,5 @@ and such, very likely release branch(es) will also appear).
 
 [`fuseadf`](https://gitlab.com/t-m/fuseadf) - FUSE-based Linux filesystem allowing
 to mount and access ADF images in read/write mode.
+[`patool`](https://pypi.org/project/patool/) - an archive file manager written
+in Python.

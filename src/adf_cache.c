@@ -632,11 +632,14 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
     swapEndian((uint8_t*)dirc,SWBL_CACHE);
 #endif
     if (dirc->checkSum!=adfNormalSum(buf,20,512))
-        (*adfEnv.wFct)("adfReadDirCBlock : invalid checksum");
+        adfEnv.wFct ( "adfReadDirCBlock : invalid checksum, volume '%s', block %u",
+                      vol->volName, nSect );
     if (dirc->type!=T_DIRC)
-        (*adfEnv.wFct)("adfReadDirCBlock : T_DIRC not found");
+        adfEnv.wFct ( "adfReadDirCBlock : T_DIRC not found, volume '%s', block %u",
+                      vol->volName, nSect );
     if (dirc->headerKey!=nSect)
-        (*adfEnv.wFct)("adfReadDirCBlock : headerKey!=nSect");
+        adfEnv.wFct ( "adfReadDirCBlock : headerKey (%u) != nSect (%u), volume '%s', block %u",
+            dirc->headerKey, nSect, vol->volName, nSect );
 
     return RC_OK;
 }

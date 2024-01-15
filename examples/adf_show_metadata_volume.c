@@ -8,7 +8,12 @@
 
 #include "adf_show_metadata_common.h"
 
-static void show_bmpages ( const int32_t bmpages [ BM_SIZE ] );
+
+static void show_bmpages ( struct AdfVolume * const vol,
+                           const struct bRootBlock * const rblock );
+
+static void show_bmpages_array ( const int32_t * const bmpages,
+                                 const unsigned        size );
 
 
 void show_volume_metadata ( struct AdfVolume * const vol )
@@ -22,16 +27,8 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     }    
     show_bootblock ( &bblock, false );
 
-
     struct bRootBlock rblock;
-
-    //proper calc (?):
-    //numCyls = highCyl - lowCyl + 1
-    //highKey = numCyls * numSurfaces * numBlocksPerTrack - 1
-    //rootKey = INT (numReserved + highKey) / 2
-    uint32_t root_block_sector = //880,
-        //bblock.rootBlock,  // in many images is 0 ???
-        (uint32_t) ( ( vol->lastBlock - vol->firstBlock ) / 2 + 1 ); // this seems to work
+    uint32_t root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
 
     if ( adfReadRootBlock ( vol, root_block_sector, &rblock ) != RC_OK ) {
@@ -39,6 +36,8 @@ void show_volume_metadata ( struct AdfVolume * const vol )
         return;
     }
     show_rootblock ( &rblock );
+
+    show_bmpages ( vol, &rblock );
 }
 
 
@@ -132,7 +131,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              rblock->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
              HT_SIZE, //rblock->hashTable[HT_SIZE],
              rblock->bmFlag,
-             BM_SIZE, //rblock->bmPages[BM_SIZE],
+             BM_PAGES_ROOT_SIZE, //rblock->bmPages[BM_PAGES_ROOT_SIZE],
              rblock->bmExt,
              rblock->cDays, rblock->cDays,
              rblock->cMins, rblock->cMins,
@@ -153,14 +152,37 @@ void show_rootblock ( const struct bRootBlock * const rblock )
         );
 
     show_hashtable ( ( const uint32_t * const ) rblock->hashTable );
-    show_bmpages ( rblock->bmPages );
 }
 
 
-static void show_bmpages ( const int32_t bmpages [ BM_SIZE ] )
+static void show_bmpages ( struct AdfVolume * const        vol,
+                           const struct bRootBlock * const rblock )
+{
+    // show bmpages from the root block
+    show_bmpages_array ( rblock->bmPages, BM_PAGES_ROOT_SIZE );
+
+    // show bm ext block pages
+    SECTNUM nSect = rblock->bmExt;
+    while ( nSect != 0 ) {
+        struct bBitmapExtBlock bmExtBlock;
+        RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
+        if ( rc == RC_OK ) {
+            show_bmpages_array ( (const int32_t * const) &bmExtBlock.bmPages,
+                                 BM_PAGES_EXT_SIZE );
+        } else {
+            fprintf ( stderr, "Error reading bitmap allocation block, sector %u.\n",
+                      nSect );
+        }
+        nSect = bmExtBlock.nextBlock;
+    }
+}
+
+
+static void show_bmpages_array ( const int32_t * const bmpages,
+                                 const unsigned        size )
 {
     printf ( "\nBitmap block pointers (bmPages) (non-zero):\n" );
-    for ( unsigned i = 0 ; i < BM_SIZE ; ++i ) {
+    for ( unsigned i = 0 ; i < size ; ++i ) {
         uint32_t bmpage_i = (uint32_t) bmpages [ i ];
         if ( bmpage_i )
             printf ( "  bmpages [ %2u ]:\t\t0x%x\t\t%u\n",

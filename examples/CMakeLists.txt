@@ -28,6 +28,9 @@ add_executable ( adf_show_metadata
 
 TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
 
+add_executable ( adf_bitmap adf_bitmap.c )
+TARGET_LINK_LIBRARIES ( adf_bitmap adf )
+
 file (
   COPY ${PROJECT_SOURCE_DIR}/examples/tests
   DESTINATION ${PROJECT_BINARY_DIR}/examples/
@@ -35,6 +38,8 @@ file (
 
 if ( ADFLIB_ENABLE_TESTS )
     message ( STATUS "Enable tests in examples/" )
+    add_test ( tests/test_examples_basic.sh ${BASH_PROGRAM}
+               tests/test_examples_basic.sh . )
     add_test ( tests/adf-floppy-test.sh ${BASH_PROGRAM}
                tests/adf-floppy-test.sh )
     add_test ( tests/adf-show-metadata-test.sh ${BASH_PROGRAM}
@@ -48,4 +53,5 @@ install ( TARGETS
   adf_floppy_create
   adf_floppy_format
   adf_show_metadata
+  adf_bitmap
 )
