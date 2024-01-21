@@ -59,7 +59,12 @@ Depends: libadf (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
-Description: unadf - list and extract utility for ADF files.
- unadf - an utility for listing and extracting files from Amiga disk image
- files (ADF).
+Description: Extract files from an Amiga Disk File dump (.adf)
+ Tool for extracting and listing files in an Amiga Disk File.
+ .
+ Amiga Disk File aka ADF is a file format used by Amiga computers and emulators
+ to store images of disks. ADF is not really a file format but actually a
+ track-by-track dump of the disk data as read by the Amiga operating system,
+ and so the "format" is really fixed-width AmigaDOS data tracks appended one
+ after another and held in a file.
 
