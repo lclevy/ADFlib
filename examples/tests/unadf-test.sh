@@ -2,11 +2,69 @@
 basedir=`dirname "$0"`
 . $basedir/common.sh
 
-unadf=`get_test_cmd unadf`
+UNADF=`get_test_cmd unadf`
+
+# check if it works at all
+#$unadf >$actual 2>/dev/null
+$UNADF 2>&1 | grep -v "powered" >$actual 2>/dev/null
+compare_with "check if it works at all" <<EOF
+
+unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]
+    -l : lists root directory contents
+    -r : lists directory tree contents
+    -c : use dircache data (must be used with -l)
+    -s : display entries logical block pointer (must be used with -l)
+    -m : display file comments, if exists (must be used with -l)
+    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)
+    -w : mangle filenames to be compatible with Windows filesystems
+
+    -v n : mount volume #n instead of default #0 volume
+
+    -d dir : extract to 'dir' directory
+EOF
+
+
+# check invalid args
+#$unadf -v >$actual 2>/dev/null
+$UNADF -v 2>&1 | grep -v "powered" >$actual 2>/dev/null
+compare_with "check invalid arg for -v" <<EOF
+
+unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]
+    -l : lists root directory contents
+    -r : lists directory tree contents
+    -c : use dircache data (must be used with -l)
+    -s : display entries logical block pointer (must be used with -l)
+    -m : display file comments, if exists (must be used with -l)
+    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)
+    -w : mangle filenames to be compatible with Windows filesystems
+
+    -v n : mount volume #n instead of default #0 volume
+
+    -d dir : extract to 'dir' directory
+EOF
+
+#$unadf -d >$actual 2>/dev/null
+$UNADF -d 2>&1 | grep -v "powered" >$actual 2>/dev/null
+compare_with "check invalid arg for -d" <<EOF
+
+unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]
+    -l : lists root directory contents
+    -r : lists directory tree contents
+    -c : use dircache data (must be used with -l)
+    -s : display entries logical block pointer (must be used with -l)
+    -m : display file comments, if exists (must be used with -l)
+    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)
+    -w : mangle filenames to be compatible with Windows filesystems
+
+    -v n : mount volume #n instead of default #0 volume
+
+    -d dir : extract to 'dir' directory
+EOF
+
 
 # -l (list root directory) option
-$unadf -l "$basedir/arccsh.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -l "$basedir/arccsh.adf" >$actual 2>/dev/null
+compare_with "-l (list root directory) option" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
          1999/07/30  22:35:01  c/
@@ -20,8 +78,8 @@ Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75
 EOF
 
 # -r (list entire disk) option
-$unadf -r "$basedir/arccsh.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -r "$basedir/arccsh.adf" >$actual 2>/dev/null
+compare_with "-r (list entire disk) option" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
          1999/07/30  22:35:01  c/
@@ -65,8 +123,8 @@ Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75
 EOF
 
 # -s (show logical block pointer) option
-$unadf -ls "$basedir/arccsh.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -ls "$basedir/arccsh.adf" >$actual 2>/dev/null
+compare_with "-s (show logical block pointer) option" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
          1999/07/30  22:35:01  000882  c/
@@ -84,8 +142,8 @@ EOF
 # TODO -v (mount different volume) option
 
 # -d (extract to dir)
-$unadf -d $tmpdir/x "$basedir/arccsh.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -d $tmpdir/x "$basedir/arccsh.adf" >$actual 2>/dev/null
+compare_with "-d (extract to dir)" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
 x - $tmpdir/x/c/
@@ -133,8 +191,8 @@ EOF
 [ -x $tmpdir/x/c/LZX ] || echo failed >$status
 
 # -d (extract to dir) with specific files, not all their original case
-$unadf -d $tmpdir/x "$basedir/arccsh.adf" csh s/startup-sequence devs/system-configuration >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -d $tmpdir/x "$basedir/arccsh.adf" csh s/startup-sequence devs/system-configuration >$actual 2>/dev/null
+compare_with "-d (extract to dir) with specific files, not all their original case" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
 x - $tmpdir/x/csh
@@ -145,8 +203,8 @@ EOF
 # TODO check permissions were set (bug: currently they aren't)
 
 # -p (extract to pipe) option
-$unadf -p "$basedir/arccsh.adf" s/startup-sequence >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -p "$basedir/arccsh.adf" s/startup-sequence >$actual 2>/dev/null
+compare_with " -p (extract to pipe) option" <<EOF
 c:assign ENV: ram:
 path C: ram: add
 mount sd0:
@@ -156,8 +214,8 @@ endcli
 EOF
 
 # -w (mangle win32 filenames) option
-$unadf -d $tmpdir/x -w "$basedir/win32-names.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -d $tmpdir/x -w "$basedir/win32-names.adf" >$actual 2>/dev/null
+compare_with "-w (mangle win32 filenames) option" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "win32-names" between sectors [0-1759]. FFS DIRCACHE. Filled at 5.0%.
 x - $tmpdir/x/win32-names.sh
@@ -233,8 +291,8 @@ x - $tmpdir/x/forbidden-chars/test_test_test.txt
 EOF
 
 # confirm the mangling (-w) only occurs on extraction
-$unadf -r -w "$basedir/win32-names.adf" >$actual 2>/dev/null
-compare_with <<EOF
+$UNADF -r -w "$basedir/win32-names.adf" >$actual 2>/dev/null
+compare_with "confirm the mangling (-w) only occurs on extraction" <<EOF
 Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
 Volume : Floppy 880 KBytes, "win32-names" between sectors [0-1759]. FFS DIRCACHE. Filled at 5.0%.
    3398  2023/05/26  11:43:32  win32-names.sh
