@@ -6,7 +6,7 @@
 #endif
 
 #include "adflib.h"
-#include "ramdisk.h"
+#include "adf_dev_ramdisk.h"
 //#include "adf_util.h"
 
 

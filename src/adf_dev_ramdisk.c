@@ -23,7 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "ramdisk.h"
+#include "adf_dev_ramdisk.h"
 
 uint8_t ramdiskData[RAMDISK_SIZE];
 

@@ -1,5 +1,5 @@
-#ifndef RAMDISK_H
-#define RAMDISK_H
+#ifndef ADF_DEV_RAMDISK_H
+#define ADF_DEV_RAMDISK_H
 
 #include "adf_err.h"
 #include "adf_nativ.h"
