@@ -37,15 +37,6 @@
 #include "adf_env.h"
 
 
-struct AdfNativeFunctions adfLinuxNativeDevice = {
-    NULL,
-    &adfLinuxInitDevice,
-    &adfLinuxReleaseDevice,
-    &adfLinuxReadSector,
-    &adfLinuxWriteSector,
-    &adfLinuxIsDevNative
-};
-
 struct AdfNativeDevice {
     int fd;
 };
@@ -197,6 +188,17 @@ static BOOL adfLinuxIsDevNative ( const char * const devName )
 
     return ( ( sb.st_mode & S_IFMT ) == S_IFBLK );
 }
+
+
+struct AdfNativeFunctions adfLinuxNativeDevice = {
+    NULL,
+    &adfLinuxInitDevice,
+    &adfLinuxReleaseDevice,
+    &adfLinuxReadSector,
+    &adfLinuxWriteSector,
+    &adfLinuxIsDevNative
+};
+
 
 /*
  * adfInitNativeFct
