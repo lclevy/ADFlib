@@ -109,14 +109,15 @@ int test_hlink_read ( reading_test_t * test_data )
              test_data->real_file );
 #endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image_filename );
@@ -145,7 +146,8 @@ int test_hlink_read ( reading_test_t * test_data )
         }
     }
 
-    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->hlink_name,
+                                                    ADF_FILE_MODE_READ );
     if ( ! file_adf ) {
         fprintf ( stderr, " -> Cannot open hard link file %s - aborting...\n",
                   test_data->hlink_name );

@@ -46,9 +46,17 @@ struct AdfNativeFunctions adfWindowsNativeDevice = {
     &Win32IsDevNative
 };
 
-RETCODE Win32InitDevice ( struct AdfDevice * const dev,
-                          const char * const       lpstrName,
-                          const BOOL               ro )
+struct AdfNativeDevice {
+       void *hDrv;
+};
+
+
+static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
+
+
+static RETCODE Win32InitDevice ( struct AdfDevice * const dev,
+                                 const char * const       lpstrName,
+                                 const AdfAccessMode      mode )
 {
 	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
             malloc ( sizeof(struct AdfNativeDevice) );
@@ -105,10 +113,10 @@ RETCODE Win32InitDevice ( struct AdfDevice * const dev,
 }
 
 
-RETCODE Win32ReadSector ( struct AdfDevice * const dev,
-                          const uint32_t           n,
-                          const unsigned           size,
-                          uint8_t * const          buf )
+static RETCODE Win32ReadSector ( struct AdfDevice * const dev,
+                                 const uint32_t           n,
+                                 const unsigned           size,
+                                 uint8_t * const          buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -122,10 +130,10 @@ RETCODE Win32ReadSector ( struct AdfDevice * const dev,
 }
 
 
-RETCODE Win32WriteSector ( struct AdfDevice * const dev,
-                           const uint32_t           n,
-                           const unsigned           size,
-                           const uint8_t * const    buf )
+static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
+                                  const uint32_t           n,
+                                  const unsigned           size,
+                                  const uint8_t * const    buf )
 {
 	struct AdfNativeDevice * tDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -139,7 +147,7 @@ RETCODE Win32WriteSector ( struct AdfDevice * const dev,
 }
 
 
-RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
+static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
 	struct AdfNativeDevice * nDev =
             ( struct AdfNativeDevice * ) dev->nativeDev;
@@ -157,8 +165,7 @@ struct AdfNativeFunctions *adfInitNativeFct() {
     return &adfWindowsNativeDevice;
 }
 
-
-BOOL Win32IsDevNative ( const char * const devName )
+static BOOL Win32IsDevNative ( const char * const devName )
 {
-	return devName[0] == '|';
+        return devName[0] == '|';
 }

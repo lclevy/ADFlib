@@ -40,13 +40,13 @@ int main(int argc, char *argv[])
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount existing device : FFS */
-    hd = adfMountDev( argv[1],FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
 
     /* write one file */
-    file = adfFileOpen ( vol, "moon_gif", "w" );
+    file = adfFileOpen ( vol, "moon_gif", ADF_FILE_MODE_WRITE );
     if (!file) return 1;
     out = fopen( argv[2],"rb");
     if (!out) return 1;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 
     /* re read this file */
-    file = adfFileOpen ( vol, "moon_gif", "r" );
+    file = adfFileOpen ( vol, "moon_gif", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("moon__gif","wb");
     if (!out) return 1;

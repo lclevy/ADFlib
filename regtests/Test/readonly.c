@@ -31,18 +31,17 @@ int main(int argc, char *argv[])
     struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list;
-    SECTNUM nSect;
  
     adfEnvInitDefault();
 
     /* mount existing device */
-    hd = adfMountDev( argv[1], FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -64,7 +63,8 @@ int main(int argc, char *argv[])
     adfCreateDir(vol,vol->curDirPtr,"newdir");
 
     /* cd dir_2 */
-    nSect = adfChangeDir(vol, "same_hash");
+    //SECTNUM nSect = adfChangeDir(vol, "same_hash");
+    adfChangeDir(vol, "same_hash");
 
     list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {

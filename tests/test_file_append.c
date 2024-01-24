@@ -16,7 +16,7 @@ typedef struct test_data_s {
     char *          volname;
     uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
-    char *          openMode;  // "w" or "a"
+    AdfFileMode     openMode;
 } test_data_t;
 
 
@@ -41,7 +41,7 @@ void test_file_append ( test_data_t * const tdata )
     ///
 
     // mount the test volume
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     struct AdfVolume * const vol = tdata->vol;
     ck_assert_ptr_nonnull ( vol );
 
@@ -59,14 +59,17 @@ void test_file_append ( test_data_t * const tdata )
     // create a new file
     char filename[] = "testfile.tmp";
     struct AdfFile * file = adfFileOpen ( vol, filename, tdata->openMode );
-    ck_assert_ptr_null ( file );  // cannot open a new file in append mode
-    file = adfFileOpen ( vol, filename, "w" );
-    ck_assert_msg ( file != 0, "Cannot open file %s for %s", filename, tdata->openMode );
+    //ck_assert_ptr_null ( file );  // cannot open a new file in append mode
+    //file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
+    ck_assert_msg ( file != 0, "Cannot open file %s for %s", filename,
+                    tdata->openMode == ADF_FILE_MODE_READ  ? "reading" :
+                    tdata->openMode == ADF_FILE_MODE_WRITE ? "writing" :
+                    "an unknown mode" );
     adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -77,17 +80,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
-    ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
-    ck_assert_uint_eq ( 0, file->pos );
-    ck_assert_int_eq ( 0, file->posInExtBlk );
-    //ck_assert_int_eq ( 0, file->posInDataBlk );
-    ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
-    adfFileClose ( file );
-
-    // the same when open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -97,7 +90,7 @@ void test_file_append ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -109,11 +102,20 @@ void test_file_append ( test_data_t * const tdata )
 
     ///
     /// test writing 1 byte to the created above, empty file
-    /// in append mode
     ///
 
-    // open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+    // open for writing
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
+    ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
+    ck_assert_int_eq ( file->fileHdr->firstData, 0 );
+    ck_assert_uint_eq ( 0, file->pos );
+    ck_assert_int_eq ( 0, file->posInExtBlk );
+    //ck_assert_int_eq ( 0, file->posInDataBlk );
+    ck_assert_int_eq ( 0, file->nDataBlock );
+    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+
+    RETCODE rc = adfFileSeek ( file, adfFileGetSize ( file ) );
+    ck_assert_int_eq ( rc, RC_OK );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -137,7 +139,7 @@ void test_file_append ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file - 1,
@@ -147,7 +149,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 1, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -178,13 +180,15 @@ START_TEST ( test_file_append_ofs )
         .adfname = "test_file_append_ofs.adf",
         .volname = "Test_file_append_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "a",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
     test_file_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
+
 
 START_TEST ( test_file_append_ffs )
 {
@@ -192,19 +196,20 @@ START_TEST ( test_file_append_ffs )
         .adfname = "test_file_append_ffs.adf",
         .volname = "Test_file_append_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "a",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
     test_file_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )
 {
     Suite * s = suite_create ( "adflib" );
-    
+
     TCase * tc = tcase_create ( "check framework" );
     tcase_add_test ( tc, test_check_framework );
     suite_add_tcase ( s, tc );
@@ -252,7 +257,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

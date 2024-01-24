@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# Increases the project and library (libtool/soname) version
+# according to the specified rule.
+#
+# Usage: util/bump_project_version <no-api-changes |
+#                                   compatible-api-changes |
+#                                   breaking-api-changes>
+#
+
+# require(!) executing from the main project directory
+# (minimal checking preventing executing in a wrong place...)
+[ "$0"x != "util/bump_project_version"x ] && {
+    echo "The script must be executed in the main project directory!"
+    exit 1
+}
+basedir="."
+
+# extract current package and library version from configure.ac
+old_pkg_version=`grep ^m4_define..adflib_version "$basedir/configure.ac" | sed -e 's/.*\[//' -e 's/\].*//'`
+old_lt_version=`grep ^m4_define..adflib_lt_version "$basedir/configure.ac" | sed -e 's/.*\[//' -e 's/\].*//'`
+
+# split versions into their components
+pkg_major=`echo $old_pkg_version | sed 's/\..*//'`
+pkg_minor=`echo $old_pkg_version | sed -e 's/[^.]*\.//' -e 's/\..*//'`
+pkg_patch=`echo $old_pkg_version | sed -e 's/.*\.//' -e 's/[^0-9]//g'`
+lt_current=`echo $old_lt_version | sed 's/:.*//'`
+lt_revision=`echo $old_lt_version | sed -e 's/[^:]*://' -e 's/:.*//'`
+lt_age=`echo $old_lt_version | sed -e 's/.*://'`
+
+# update versions
+case "$1" in
+    no-api-changes)
+       pkg_patch=`expr $pkg_patch + 1`
+       lt_revision=`expr $lt_revision + 1`
+    ;;
+    compatible-api-changes)
+       pkg_minor=`expr $pkg_minor + 1`
+       pkg_patch=0
+       lt_current=`expr $lt_current + 1`
+       lt_revision=0
+       lt_age=`expr $lt_age + 1`
+    ;;
+    breaking-api-changes)
+       # note that adflib package versioning _IS NOT SEMVER_
+       # semver would bump pkg_major for breaking changes, adflib chooses not to
+       pkg_minor=`expr $pkg_minor + 1`
+       pkg_patch=0
+       lt_current=`expr $lt_current + 1`
+       lt_revision=0
+       lt_age=0
+    ;;
+    *)
+    echo >&2 "Usage: $0 <no-api-changes|compatible-api-changes|breaking-api-changes>"
+    exit 1
+    ;;
+esac
+
+new_pkg_version="$pkg_major.$pkg_minor.$pkg_patch"
+new_lt_version="$lt_current:$lt_revision:$lt_age"
+
+echo "Bumping package version $old_pkg_version -> $new_pkg_version"
+echo "Bumping library version $old_lt_version -> $new_lt_version"
+
+# update version numbers in configure.ac
+sed -i~ -e "s/^m4_define..adflib_version.*/m4_define([adflib_version],[$new_pkg_version])/" \
+        -e "s/^m4_define..adflib_lt_version.*/m4_define([adflib_lt_version],[$new_lt_version])/" \
+    "$basedir/configure.ac"
+
+# update version numbers in CMakeLists.txt
+sed -i~ -e "s/^set ( ADFLIB_VERSION .*/set ( ADFLIB_VERSION $new_pkg_version )/" \
+    "$basedir/CMakeLists.txt"
+
+# update version numbers in ADFlib's header files
+sed -i~ -e "s/^#define ADFLIB_VERSION .*/#define ADFLIB_VERSION \"$new_pkg_version\"/" \
+    "$basedir/src/adf_version.h"

@@ -1,25 +1,25 @@
 
-find_package(CHECK QUIET)
-if (NOT CHECK_FOUND)
-    find_package(PkgConfig QUIET)
-    if (PkgConfig_FOUND)
-        set(PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON)
-        pkg_check_modules ( CHECK check )
+find_package ( CHECK 0.11.0 QUIET )
+if ( NOT CHECK_FOUND )
+    find_package ( PkgConfig QUIET )
+    if ( PkgConfig_FOUND )
+        set ( PKG_CONFIG_USE_CMAKE_PREFIX_PATH ON )
+        pkg_check_modules ( CHECK check>=0.11.0 )
     endif (PkgConfig_FOUND)
-endif (NOT CHECK_FOUND)
+endif ( NOT CHECK_FOUND )
 
-if (NOT CHECK_FOUND)
+if ( NOT CHECK_FOUND )
     # Automatic fetching external dependency
     # ( https://cmake.org/cmake/help/latest/module/FetchContent.html
     #   https://cmake.org/cmake/help/latest/guide/using-dependencies/ )
-    message("Fetching Check library")
-    include(FetchContent)
-    FetchContent_Declare(
+    message ( STATUS "Fetching Check library" )
+    include ( FetchContent )
+    FetchContent_Declare (
       CHECK
       GIT_REPOSITORY https://github.com/libcheck/check.git
       GIT_TAG        0.15.2
     )
-    FetchContent_MakeAvailable(CHECK)
+    FetchContent_MakeAvailable ( CHECK )
 endif()
 
 #if (NOT Check_FOUND AND NOT DEFINED Check_QUIET)
@@ -28,14 +28,16 @@ endif()
 
 #add_compile_options(-pthread)
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_BINARY_DIR}/src)
+include_directories ( ${PROJECT_SOURCE_DIR}/src )
+include_directories ( ${PROJECT_BINARY_DIR}/src )
 
-#message ("Check include dir: ${CHECK_INCLUDE_DIR}, libraries: ${CHECK_LIBRARIES}")
+message ( STATUS "Check CFLAGS: ${CHECK_CFLAGS}" )
+message ( STATUS "Check LDFLAGS: ${CHECK_LDFLAGS}" )
+#message ( STATUS "Check include dir: ${CHECK_INCLUDE_DIR}, libraries: ${CHECK_LIBRARIES}")
 #if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
 #include_directories(${CHECK_INCLUDE_DIR})
 #else()
-add_compile_options(${CHECK_CFLAGS})
+add_compile_options ( ${CHECK_CFLAGS} )
 #endif()
 
 add_executable ( test_test_util
@@ -154,9 +156,6 @@ target_link_libraries ( test_file_truncate2 PUBLIC
   adf ${CHECK_LIBRARIES}
 )
 
-configure_file(test_examples test_examples COPYONLY)
-configure_file(arccsh.adf arccsh.adf COPYONLY)
-
 add_test ( test_test_util test_test_util )
 add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
 add_test ( test_adfDays2Date test_adfDays2Date )
@@ -171,4 +170,3 @@ add_test ( test_file_seek test_file_seek )
 add_test ( test_file_seek_after_write test_file_seek_after_write )
 add_test ( test_file_truncate test_file_truncate )
 add_test ( test_file_truncate2 test_file_truncate2 )
-add_test ( test_examples ${BASH_PROGRAM} test_examples )

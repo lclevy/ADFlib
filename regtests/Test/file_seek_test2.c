@@ -82,14 +82,15 @@ int run_multiple_seek_tests ( test_file_t * test_data )
              test_data->filename_local );
 #endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         printf ( "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
@@ -101,7 +102,8 @@ int run_multiple_seek_tests ( test_file_t * test_data )
 #endif
 
     int status = 0;
-    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf, "r" );
+    struct AdfFile * const file_adf = adfFileOpen ( vol, test_data->filename_adf,
+                                                    ADF_FILE_MODE_READ );
     if ( ! file_adf ) {
         fprintf ( stderr, "Cannot open adf file %s - aborting...\n",
                   test_data->filename_adf );

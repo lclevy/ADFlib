@@ -42,6 +42,7 @@ typedef uint32_t mode_t;
 
 #if defined _MSC_VER
 #include <direct.h>     // for _mkdir()
+#define strcasecmp _stricmp
 #endif
 
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
@@ -58,7 +59,8 @@ typedef uint32_t mode_t;
 
 /* command-line arguments */
 BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
-     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE;
+     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE,
+     win32_mangle = FALSE;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
 struct AdfList *file_list = NULL;
@@ -78,7 +80,7 @@ char *join_path(char *path, char *name);
 void set_file_date(char *out, struct AdfEntry *e);
 void mkdir_if_needed(char *path, mode_t perms);
 mode_t permissions(struct AdfEntry *e);
-int replace_not_allowed_chars ( char * const path );
+void fix_win32_filename(char *name);
 
 int main(int argc, char *argv[]) {
     struct AdfDevice *dev = NULL;
@@ -92,7 +94,7 @@ int main(int argc, char *argv[]) {
     parse_args(argc, argv);
 
     /* mount device */
-    if (!(dev = adfMountDev(adf_file, TRUE))) {
+    if (!(dev = adfMountDev(adf_file, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount as device\n", adf_file);
         goto error_handler;
     }
@@ -106,7 +108,7 @@ int main(int argc, char *argv[]) {
             adf_file, vol_number, dev->nVol);
         goto error_handler;
     }
-    if (!(vol = adfMount(dev, vol_number, TRUE))) {
+    if (!(vol = adfMount(dev, vol_number, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount volume %d\n",
             adf_file, vol_number);
         goto error_handler;
@@ -185,6 +187,7 @@ void parse_args(int argc, char *argv[]) {
             case 'c': use_dircache  = TRUE; break;
             case 's': show_sectors  = TRUE; break;
             case 'm': show_comments = TRUE; break;
+            case 'w': win32_mangle  = TRUE; break;
             case 'p':
                 pipe_mode = TRUE;
                 fprintf(stderr, list_mode
@@ -226,13 +229,14 @@ void parse_args(int argc, char *argv[]) {
 
 void help() {
     fprintf(stderr,
-        "unadf [-lrcsmp] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
+        "unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
         "    -l : lists root directory contents\n"
         "    -r : lists directory tree contents\n"
         "    -c : use dircache data (must be used with -l)\n"
         "    -s : display entries logical block pointer (must be used with -l)\n"
         "    -m : display file comments, if exists (must be used with -l)\n"
-        "    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)\n\n"
+        "    -p : send extracted files to pipe (unadf -p dump.adf Pics/pic1.gif | xv -)\n"
+        "    -w : mangle filenames to be compatible with Windows filesystems\n\n"
         "    -v n : mount volume #n instead of default #0 volume\n\n"
         "    -d dir : extract to 'dir' directory\n");
 }
@@ -410,7 +414,7 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
     uint8_t buf[EXTRACT_BUFFER_SIZE];
     int fd = 0;
 
-    if ( ( f = adfFileOpen ( vol, filename, "r" ) ) == NULL )  {
+    if ( ( f = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ ) ) == NULL )  {
         fprintf(stderr, "%s: can't find file %s in volume\n", adf_file, filename);
         goto error_handler;
     }
@@ -421,7 +425,7 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
     }
     else {
         printf("x - %s\n", out);
-        fd = open(out, O_CREAT | O_WRONLY, perms);
+        fd = open(out, O_CREAT | O_WRONLY | O_TRUNC, perms);
         if (fd < 0) {
             perror(out);
             goto error_handler;
@@ -455,8 +459,9 @@ char *join_path(char *path, char *file) {
 
 /* creates a suitable output filename from the amiga filename */
 char *output_name(char *path, char *name) {
+    /* maybe (extract_dir + "/") + path + "/" + name + maybe "_" + "\0" */
     size_t dirlen = ( extract_dir ? strlen(extract_dir) + 1 : 0 );
-    char *out = malloc(dirlen + strlen(path) + strlen(name) + 2), *s, *o;
+    char *out = malloc(dirlen + strlen(path) + strlen(name) + 3), *s, *o;
     if (!out) {
         perror(adf_file);
         exit(1);
@@ -477,6 +482,11 @@ char *output_name(char *path, char *name) {
     }
     strcpy(o, name);
 
+    /* alter filenames that are a problem for Windows */
+    if (win32_mangle) {
+        fix_win32_filename(o);
+    }
+
     /* search for "../" and change to "xx" to stop directory traversal */
     for (o = &out[dirlen]; *o; o++) {
         if (o[0] == '.' && o[1] == '.' && (o[2] == '/' || o[2] == '\\')) {
@@ -485,19 +495,10 @@ char *output_name(char *path, char *name) {
         }
     }
 
-    replace_not_allowed_chars ( out );
-#ifdef WIN32
-    /* TODO: remove characters : * " ? < > | from names (not allowed in Win32)
-     * and remove any trailing dot or space (breaks Windows File Explorer)
-     * Edit: most done above with replace_not_allowed_chars()
-     *       so only trailing dots or spaces are left to do
-     */
-#endif
-
     if (!pipe_mode) {
         /* create directories leading up to name, if needed */
         for (o = out; *o; o++) {
-            if (*o == DIRSEP) {
+            if (o > out && *o == DIRSEP) {
                 *o = 0;
                 mkdir_if_needed(out, 0777);
                 *o = DIRSEP;
@@ -574,23 +575,69 @@ void mkdir_if_needed(char *path, mode_t perms) {
 
 /* convert amiga permissions to unix permissions */
 mode_t permissions(struct AdfEntry *e) {
-    return (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
+    return (mode_t)
+        (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
         (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */
         ((e->access >> 5) & 0070); /* rwx for group */
 }
 
-/* replace all special characters (forbidden on most systems) with an underscore ('_') */
-int replace_not_allowed_chars ( char * const path )
-{
-    const char not_allowed_chars[] = ":*\"?<>|\0";
-    int replace_count = 0;
-    for ( const char *c = not_allowed_chars ; *c ; ++c ) {
-        char *pathc = path;
-        while ( ( pathc = strchr ( pathc, *c ) ) ) {
-            *pathc = '_';
-            replace_count++;
+/* alter filenames that would cause problems on Windows:
+ * https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+ * 1. replace characters : * " ? < > | / \ and chars 1-31 with underscore
+ * 2. replace any trailng dot or space with underscore (breaks Windows File Explorer)
+ * 3. if filename is CON PRN AUX NUL COM[1-9] LPT[1-9], regardless of case or
+ *    extension, insert an underscore (vestiges of CP/M retained by Windows)
+ *
+ * In this last case, the name will be _extended_ by 1 character!
+ */
+void fix_win32_filename(char *name) {
+    /* work forwards through name, replacing forbidden characters */
+    char *o;
+    for (o = name; *o; o++) {
+        if (*o < 32   || *o == ':' || *o == '*' || *o == '"' || *o == '?' ||
+            *o == '<' || *o == '>' || *o == '|' || *o == '/' || *o == '\\')
+        {
+            *o = '_';
         }
     }
-    return replace_count;
+    /* work backwards through name, replacing forbidden trailing chars */
+    for (o--; o >= name && (*o == '.' || *o == ' '); o--) {
+       *o = '_';
+    }
+
+    /* temporarily remove file extension */
+    char *ext = strchr(name, '.');
+    if (ext) {
+        *ext = 0;
+    }
+
+    /* is the name (excluding extension) a reserved name in Windows? */
+    const char *reserved_names[] = {
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+    };
+    for (unsigned int i = 0; i < sizeof(reserved_names)/sizeof(char **); i++) {
+       if (strcasecmp(reserved_names[i], name) == 0) {
+           if (ext) {
+               /* restore extension and insert underscore, PRN.txt -> PRN_.txt */
+               *ext = '.';
+               memmove(&ext[1], ext, strlen(ext) + 1);
+               *ext = '_';
+           }
+           else {
+               /* no extension: append underscore, e.g. CON -> CON_ */
+               o = &name[strlen(name)];
+               *o++ = '_';
+               *o++ = 0;
+           }
+           return;
+       }
+    }
+
+    /* not a reserved name, restore file extension */
+    if (ext) {
+        *ext = '.';
+    }
 }

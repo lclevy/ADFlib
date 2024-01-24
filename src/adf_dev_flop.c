@@ -25,16 +25,14 @@
  *
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "adf_dev_flop.h"
 
 #include "adf_env.h"
-#include "adf_err.h"
 #include "adf_raw.h"
 #include "adf_vol.h"
 
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -67,7 +65,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol->mounted = TRUE;
     vol->firstBlock = 0;
     vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
-    vol->rootBlock = (vol->lastBlock+1 - vol->firstBlock)/2;
+    vol->rootBlock = adfVolCalcRootBlk ( vol );
     vol->blockSize = 512;
     vol->dev = dev;
  

@@ -12,7 +12,7 @@ unsigned verify_file_data ( struct AdfVolume * const    vol,
                             const unsigned              fsize,
                             const unsigned              errors_max )
 {
-    struct AdfFile * const output = adfFileOpen ( vol, filename, "r" );
+    struct AdfFile * const output = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     if ( ! output )
         return 1;
 
@@ -138,7 +138,8 @@ unsigned validate_file_metadata ( struct AdfVolume * const vol,
                                   const char * const       filename,
                                   const unsigned           errors_max )
 {
-    struct AdfFile * const file = adfFileOpen ( vol, filename, "r" );
+    (void) errors_max;
+    struct AdfFile * const file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     if ( ! file )
         return 1;
     unsigned nerrors = validate_file_metadata_last_ext ( file );

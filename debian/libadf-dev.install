@@ -1,6 +1,5 @@
 #usr/lib/*/*.so.*
 src/*.h				usr/include/adf
-src/generic/*.h			usr/include/adf/generic
 usr/lib/*/lib*.a
 usr/lib/*/lib*.la
 usr/lib/*/lib*.so

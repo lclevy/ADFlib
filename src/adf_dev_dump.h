@@ -1,5 +1,5 @@
-#ifndef ADF_DUMP_H
-#define ADF_DUMP_H 1
+#ifndef ADF_DEV_DUMP_H
+#define ADF_DEV_DUMP_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
@@ -27,6 +27,7 @@
  */
 
 #include "adf_dev.h"
+#include "adf_err.h"
 
 PREFIX struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
                                                 const uint32_t     cyl,
@@ -39,7 +40,7 @@ PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
 
 RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
                             const char * const       name,
-                            const BOOL               ro );
+                            const AdfAccessMode      mode );
 
 RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
                             const uint32_t           n,

@@ -69,18 +69,19 @@ The dynamic memory allocation/releasing is done by the library (i hope :).
 <P>
 
 <PRE>
-struct Device {
-    int devType;                      /* DEVTYPE_FLOPDD, DEVTYPE_FLOPHD or DEVTYPE_HARDDISK */
-    long size;                        /* size in bytes of the media. ADFlib is limited to 4Gb */
+struct AdfDevice {
+    int                 devType;     /* DEVTYPE_FLOPDD, DEVTYPE_FLOPHD or DEVTYPE_HARDDISK */
+    long                size;        /* size in bytes of the media. ADFlib is limited to 4Gb */
     
-    int nVol;                         /* number of partitions (volumes) */
-    struct Volume* *volList;          /* volumes */
+    int nVol;                        /* number of partitions (volumes) */
+    struct adfVolume ** volList;     /* volumes */
 
-    long cylinders, heads, sectors;   /* device geometry */
+    long                cylinders,   /* device geometry */
+                        heads,
+                        sectors;
     
-    BOOL isNativeDev;
-
-    void *nativeDev;                  /* native specific and private structure */
+    BOOL                isNativeDev;
+    void *              nativeDev;   /* native specific and private structure */
 }
 </PRE>
 
@@ -95,7 +96,7 @@ struct Partition{
 
     char* volName;      /* name of the volume, if any. Instead filled with 0.  */
 
-    int volType;        /* filesystem caracteristics : use the flags FSMASK_FFS, 
+    int volType;        /* filesystem characteristics : use the flags FSMASK_FFS, 
                             FSMASK_INTL and FSMASK_DIRCACHE                     */
 
 } 
@@ -109,21 +110,22 @@ struct Partition{
 
 <H2>Syntax</H2>
 
- <B>struct Device*</B> adfMountDev( <B>char*</B> name)
+ <B>struct adfDevice*</B> adfMountDev( <B>char*</B> name)
 
 <H2>Description</H2>
 
-Mounts a device. The name could be a filename for an ADF dump, or a
-real device name like "|F:" for the Win32 F: partition. <BR>
-The real device name is plateform dependent.
+Mounts a device. The name could be a filename for an ADF image ("dump"),
+or a real device name like "|F:" for the Win32 F: partition
+or "/dev/sdf1" for a Linux partition. <BR>
+The real device name is platform dependent.
 
 <H2>Return values</H2>
 
- NULL if an error occurs, a Device structure pointer instead.
+ NULL if an error occurs, an AdfDevice structure pointer otherwise.
 
 <H2>Internals</H2>
 <OL>
-<LI>Allocation of <I>struct Device *dev</I>
+<LI>Allocation of <I>struct AdfDevice *dev</I>
 <LI>Calls <I>adfIsNativeDev()</I> to determine if the name point out
 a ADF dump or a real (native) device. The field <I>dev->isNativeDev</I> is filled.
 <LI>Initialize the (real or dump) device. The field <I>dev->size</I> is filled. 
@@ -138,7 +140,7 @@ and <I>vol->rootBlock</I> are filled !
 
 <H2>See also</H2>
 
- struct Device, real (native) devices
+ struct AdfDevice, real (native) devices
 
 <H2>Files</H2>
 
@@ -152,7 +154,7 @@ ADF allocation : adf_dump.c, adf_dump.h
 
 <H2>Syntax</H2>
 
-<B>void</B> adfUnMountDev( <B>struct Device*</B> dev)
+<B>void</B> adfUnMountDev( <B>struct AdfDevice*</B> dev)
 
 <H2>Description</H2>
 
@@ -170,7 +172,7 @@ Releases a Device and frees related resources.
 
 <H2>Syntax</H2>
 
-<B>RETCODE</B> adfCreateHd(<B>struct Device*</B> dev, <B>int</B> nPart,
+<B>RETCODE</B> adfCreateHd(<B>struct AdfDevice*</B> dev, <B>int</B> nPart,
  <B>struct Partition*</B> *partList )
 
 <H2>Description</H2>
@@ -197,13 +199,12 @@ Creation of an ADF Zip disk dump : <BR>
 <PRE>
 struct Partition part1;
 struct Partition **partList;
-struct Device *hd;
-RETCODE rc;
+
 
 /* Env init */
 
 /* cyl = 2891, heads = 1, sectors = 68 */
-hd = adfCreateDumpDevice("newdev",2891,1,68);
+struct AdfDevice * hd = adfCreateDumpDevice("newdev", 2891, 1, 68);
 if (!hd) { /* cleanup and exit */ }
 
 /* allocation of partlist[] */
@@ -212,13 +213,13 @@ if (!hd) { /* cleanup and exit */ }
 part1.startCyl = 2;
 part1.lenCyl = 2889;
 part1.volName = strdup("zip");
-part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
+part1.volType = FSMASK_FFS | FSMASK_DIRCACHE;
 
 partList[0] = &part1;
 
 /* creates the filesystem */
-rc = adfCreateHd(hd,1,partList);
-if (rc!=RC_OK) { /* something wrong, cleaning up and exit */ }
+RETCODE rc = adfCreateHd(hd,1,partList);
+if (rc != RC_OK) { /* something wrong, cleaning up and exit */ }
 
 /* freeing of partList[] and part1.volName */
 
@@ -246,7 +247,7 @@ adfUnMountDev(hd);
 
 <H2>Syntax</H2>
 
-<B>RETCODE</B> adfCreateFlop(<B>struct Device*</B> dev, 
+<B>RETCODE</B> adfCreateFlop(<B>struct AdfDevice*</B> dev, 
  <B>char*</B> volName, <B>int</B> volType )
 
 <H2>Description</H2>
@@ -268,7 +269,7 @@ RC_OK, or Something different in case of error.
 <H2>Examples</H2>
 
 <PRE>
-struct Device *flop;
+struct AdfDevice *flop;
 
 /* Env init */
 
@@ -279,7 +280,7 @@ if (!flop) { /* cleanup and exit */ }
 
 /* create the filesystem : OFS with DIRCACHE */
 rc = adfCreateFlop( flop, "empty", FSMASK_DIRCACHE );
-if (rc!=RC_OK) { /* error : cleanup and exit() */
+if (rc != RC_OK) { /* error : cleanup and exit() */
 
 /* device usage */
 
@@ -302,7 +303,7 @@ adfUnMountDev(flop);
 
 <H2>Syntax</H2>
 
-<B>struct Device*</B> adfCreateDumpDevice(<B>char*</B> filename,
+<B>struct AdfDevice*</B> adfCreateDumpDevice(<B>char*</B> filename,
 <B>long</B> cyl, <B>long</B> heads, <B>long</B> sect)
 
 <H2>Description</H2>
@@ -312,7 +313,7 @@ structure. Must be followed by adfCreateFlop() and adfCreateHd().
 
 <H2>Return values</H2>
 
-the Device, NULL in case of error.
+the AdfDevice, NULL in case of error.
 
 <H2>Examples</H2>
 See adfCreateFlop() and adfCreateHd() examples.
@@ -320,7 +321,7 @@ See adfCreateFlop() and adfCreateHd() examples.
 <H2>Internals</H2>
 
 <OL>
-<LI>Allocate <I>struct Device* dev</I>
+<LI>Allocate <I>struct AdfDevice* dev</I>
 <LI>Allocate <I>dev->nativeDev</I>
 <LI>Create an empty file with a size equals to : cyl*heads*sect*512.
 <LI>Open this file with "rb+" mode

@@ -1,4 +1,5 @@
-#include "config.h"
+#ifndef _ADF_DEFENDIAN_H
+#define _ADF_DEFENDIAN_H
 
 #ifndef LITT_ENDIAN
  #if defined(__hppa__) || \
@@ -11,3 +12,4 @@
  #endif
 #endif
 
+#endif

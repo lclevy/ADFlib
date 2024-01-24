@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # common settings
-. ./common.sh
+. "`dirname $0`/common.sh"
 
 set -e
 

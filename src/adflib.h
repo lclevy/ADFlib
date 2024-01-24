@@ -35,7 +35,8 @@ extern "C" {
 /* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
 #include "prefix.h"
 
-#include "adf_defs.h"
+#include "adf_types.h"
+#include "adf_version.h"
 
 /* util */
 #include "adf_util.h"
@@ -56,7 +57,7 @@ extern "C" {
 #include "adf_dev_hd.h"
 
 /* dump device */
-#include "adf_dump.h"
+#include "adf_dev_dump.h"
 
 /* env */
 #include "adf_env.h"
@@ -72,7 +73,7 @@ extern "C" {
 /* low level API */
 
 #include "adf_bitm.h"
-
+#include "adf_raw.h"
 
 #ifdef __cplusplus
 }

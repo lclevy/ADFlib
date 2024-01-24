@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     adfChgEnvProp(PR_USEDIRC,&true);
  
-    hd = adfMountDev(argv[1], FALSE);
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     adfDeviceInfo(hd);
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, "MOON.GIF", "r" );
+    file = adfFileOpen ( vol, "MOON.GIF", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;

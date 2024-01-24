@@ -9,6 +9,8 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
 check_PROGRAMS = \
 	access \
 	bootdisk \
+	bitmap_read_segfault \
+	bitmap_recreate \
 	cache_crash \
 	comment \
 	del_test \
@@ -39,14 +41,39 @@ check_PROGRAMS = \
 	undel2 \
 	undel3
 
-#TESTS = $(check_PROGRAMS)
+dist_check_SCRIPTS = \
+	bigdev.sh \
+	bootdisk.sh \
+	bitmap_read_segfault.sh \
+	bitmap_recreate.sh \
+	cache_crash.sh \
+	common.sh \
+	del_test.sh \
+	dir_test.sh \
+	dir_test2.sh \
+	dir_test_chdir.sh \
+	fl_test.sh \
+	fl_test2.sh \
+	floppy.sh \
+	floppy_overfilling_test.sh \
+	file_test.sh \
+	file_test2.sh \
+	file_test3.sh \
+	file_seek_test.sh \
+	file_seek_test2.sh \
+	file_read_hard_link_test.sh \
+	hardfile.sh \
+	hd_test.sh \
+	hd_test2.sh \
+	hd_test3.sh \
+	rename.sh \
+	undel.sh \
+	undel2.sh \
+	undel3.sh 
+
 TESTS = floppy.sh bigdev.sh
-#EXTRA_DIST = $(TESTS)
 
 ADFLIBS = $(top_builddir)/src/libadf.la
-if ADFLIB_OS_CYGWIN
-    ADFLIBS += $(top_builddir)/src/$(NATIVE_DIR)/libadfnative.a
-endif
 
 fl_test_SOURCES = fl_test.c
 fl_test_LDADD = $(ADFLIBS)
@@ -171,3 +198,11 @@ undel3_DEPENDENCIES = $(top_builddir)/src/libadf.la
 floppy_overfilling_test_SOURCES = floppy_overfilling_test.c
 floppy_overfilling_test_LDADD = $(ADFLIBS)
 floppy_overfilling_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_read_segfault_SOURCES = bitmap_read_segfault.c
+bitmap_read_segfault_LDADD = $(ADFLIBS)
+bitmap_read_segfault_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_recreate_SOURCES = bitmap_recreate.c
+bitmap_recreate_LDADD = $(ADFLIBS)
+bitmap_recreate_DEPENDENCIES = $(top_builddir)/src/libadf.la

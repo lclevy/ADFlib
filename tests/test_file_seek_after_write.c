@@ -17,7 +17,7 @@ typedef struct test_data_s {
     char *             volname;
     uint8_t            fstype;   // 0 - OFS, 1 - FFS
     unsigned           nVolumeBlocks;
-    char *             openMode;  // "w" or "a"
+    AdfFileMode        openMode;
     unsigned char *    buffer;
     unsigned           bufsize;
     unsigned           chunksize;
@@ -50,7 +50,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -77,7 +77,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // put random data in the buffer
     pattern_random ( buffer, bufsize );
@@ -222,13 +222,14 @@ static const unsigned chunklen[] = {
 };
 static const unsigned chunklensize = sizeof ( chunklen ) / sizeof (unsigned);
 
+
 START_TEST ( test_file_seek_after_write_ofs )
 {
     test_data_t test_data = {
         .adfname = "test_file_seek_after_write_ofs.adf",
         .volname = "Test_file_seek_after_write_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {
@@ -243,6 +244,8 @@ START_TEST ( test_file_seek_after_write_ofs )
         }
     }
 }
+END_TEST
+
 
 START_TEST ( test_file_seek_after_write_ffs )
 {
@@ -250,7 +253,7 @@ START_TEST ( test_file_seek_after_write_ffs )
         .adfname = "test_file_seek_after_write_ffs.adf",
         .volname = "Test_file_seek_after_write_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     for ( unsigned i = 0 ; i < buflensize ; ++i )  {
@@ -265,6 +268,7 @@ START_TEST ( test_file_seek_after_write_ffs )
         }
     }
 }
+END_TEST
 
 
 Suite * adflib_suite ( void )
@@ -320,7 +324,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

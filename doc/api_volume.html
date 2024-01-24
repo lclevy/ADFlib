@@ -17,31 +17,31 @@ See Device API use cases.
 <H1>Data structures</H1>
 
 <PRE>
-struct Volume{
-    struct Device *dev;            /* the pointer of the Device structure of which the volume belongs to */
+struct AdfVolume{
+    struct AdfDevice *     dev;              /* the pointer of the Device structure of which the volume belongs to */
 
     /* physical sector numbers */
-    SECTNUM firstBlock;            /* first block of the data area (from the beginning of the media) */
-    SECTNUM lastBlock;             /* last usable block (from the beginning of the media) */
+    SECTNUM                firstBlock;       /* first block of the data area (from the beginning of the media) */
+    SECTNUM                lastBlock;        /* last usable block (from the beginning of the media) */
 
     /* logical sector number */
-    SECTNUM rootBlock;             /* root block (from firstBlock) */
+    SECTNUM                rootBlock;        /* root block (from firstBlock) */
 
-    char dosType;                  /* FFS/OFS, DIRCACHE, INTERNATIONAL */
-    BOOL bootCode;                 /* TRUE if a floppy is bootable */
-    int dataBlockSize;             /* 488 or 512 */
+    char                   dosType;          /* FFS/OFS, DIRCACHE, INTERNATIONAL */
+    BOOL                   bootCode;         /* TRUE if a floppy is bootable */
+    int                    dataBlockSize;    /* 488 or 512 */
 
-    char* volName;
+    char *                 volName;
 
     /* bitmap */
-    long bitmapSize;                    /* number of blocks used to store the bitmap 
-                                            (excluding the bitmapExtension blocks)         */
-    SECTNUM *bitmapBlocks;              /* bitmap blocks pointers (excluding bitmap extensions blocks) */
-    struct bBitmapBlock* *bitmapTable;  /* stores the bitmap blocks */
-    BOOL *bitmapBlocksChg;              /* bitmapBlocksChg[i] is TRUE if bitmapTable[i} has changed,
-                                            and need to be written at bitmapBlocks[i]                  */
+    long                   bitmapSize;       /* number of blocks used to store the bitmap
+                                                (excluding the bitmapExtension blocks)         */
+    SECTNUM *              bitmapBlocks;     /* bitmap blocks pointers (excluding bitmap extensions blocks) */
+    struct bBitmapBlock ** bitmapTable;      /* stores the bitmap blocks */
+    BOOL *                 bitmapBlocksChg;  /* bitmapBlocksChg[i] is TRUE if bitmapTable[i} has changed,
+                                                and need to be written at bitmapBlocks[i]                  */
 
-    SECTNUM curDirPtr;      /* number of the current working directory */
+    SECTNUM curDirPtr;                       /* number of the current working directory */
 }
 </PRE>
 
@@ -64,7 +64,7 @@ If <I>vol</I> is one Volume structure returned by adfMount() :
 
 <H2>Syntax</H2>
 
-<B>struct Volume*</B> adfMount(<B>struct Device *</B>dev, 
+<B>struct AdfVolume*</B> adfMount(<B>struct AdfDevice *</B>dev,
  <B>int</B> nPart, <B>BOOL</B> readOnly)
 
 <H2>Description</H2>
@@ -95,7 +95,7 @@ The Volume, NULL in case of error.
 
 <H2>Syntax</H2>
 
-<B>void</B> adfUnMount(<B>struct Volume *</B>vol) 
+<B>void</B> adfUnMount(<B>struct AdfVolume *</B>vol)
 
 <H2>Description</H2>
 
@@ -107,7 +107,7 @@ Release a Volume. Free the bitmap structures.
 
 <H2>Syntax</H2>
 
-<B>long</B> adfCountFreeBlocks(<B>struct Volume *</B>vol)
+<B>long</B> adfCountFreeBlocks(<B>struct AdfVolume *</B>vol)
 
 <H2>Description</H2>
 
@@ -123,7 +123,7 @@ The number of free blocks.
 
 <H2>Syntax</H2>
 
-<B>RETCODE</B> adfInstallBootBlock(<B>struct Volume*</B> vol, <B>unsigned char*</B> code)
+<B>RETCODE</B> adfInstallBootBlock(<B>struct AdfVolume*</B> vol, <B>unsigned char*</B> code)
 
 <H2>Description</H2>
 
@@ -144,7 +144,7 @@ RC_OK, something different in case of error.
 
 <H2>Syntax</H2>
 
-<B>RETCODE</B> adfCreateHdFile(<B>struct Device*</B> dev, <B>char*</B> volName, <B>int</B> volType)
+<B>RETCODE</B> adfCreateHdFile(<B>struct AdfDevice*</B> dev, <B>char*</B> volName, <B>int</B> volType)
 
 <H2>Description</H2>
 

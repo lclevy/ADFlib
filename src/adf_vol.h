@@ -28,10 +28,18 @@
 
 #include "prefix.h"
 
+#include "adf_types.h"
+#include "adf_err.h"
 #include "adf_str.h"
-#include "adf_defs.h"
 
 /* ----- VOLUME ----- */
+
+struct AdfBitmap {
+    uint32_t               size;         /* in blocks */
+    SECTNUM *              blocks;       /* bitmap blocks pointers */
+    struct bBitmapBlock ** table;
+    BOOL *                 blocksChg;
+};
 
 struct AdfVolume {
     struct AdfDevice *dev;
@@ -50,13 +58,26 @@ struct AdfVolume {
 
     BOOL mounted;
 
-    int32_t bitmapSize;             /* in blocks */
-    SECTNUM *bitmapBlocks;       /* bitmap blocks pointers */
-    struct bBitmapBlock **bitmapTable;
-    BOOL *bitmapBlocksChg;
+    struct AdfBitmap bitmap;
 
     SECTNUM curDirPtr;
 };
+
+static inline uint32_t adfVolGetBlockNumWithoutBootblock (
+    const struct AdfVolume * const vol )
+{
+    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 - 2 );
+}
+
+static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
+{
+    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 );
+}
+
+static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
+{
+    return ( vol->lastBlock - vol->firstBlock + 1 ) / 2;
+}
 
 
 PREFIX RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
@@ -67,7 +88,10 @@ PREFIX BOOL isSectNumValid ( const struct AdfVolume * const vol,
 
 PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
                                      const int                nPart,
-                                     const BOOL               readOnly );
+                                     const AdfAccessMode      mode );
+
+PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
+                            const AdfAccessMode mode );
 
 PREFIX void adfUnMount ( struct AdfVolume * const vol );
 
@@ -79,9 +103,6 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType );
 
-/*void adfReadBitmap(struct AdfVolume* , int32_t nBlock, struct bRootBlock* root);
-void adfUpdateBitmap(struct AdfVolume*);
-*/
 PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
                               const uint32_t           nSect,
                               uint8_t * const          buf );

@@ -17,7 +17,7 @@ typedef struct test_data_s {
     char *          volname;
     uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
-//    char *          openMode;  // "w" or "a"
+//    AdfFileMode          openMode;
     unsigned char * buffer;
     unsigned        bufsize;    // at least 2 bytes
 } test_data_t;
@@ -46,7 +46,7 @@ void test_file_overwrite ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = //tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -62,14 +62,14 @@ void test_file_overwrite ( test_data_t * const tdata )
 
     // create a new file
     char filename[] = "testfile.tmp";
-    struct AdfFile * file = adfFileOpen ( vol, filename, "w" );
+    struct AdfFile * file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_ptr_nonnull ( file );
     adfFileClose ( file );
 
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -80,7 +80,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -90,7 +90,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+/*    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -98,9 +98,9 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
     adfFileClose ( file );
-
+*/
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -116,7 +116,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -152,7 +152,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     //ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file -
@@ -163,7 +163,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -197,7 +197,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
 
     ///
@@ -205,7 +205,7 @@ void test_file_overwrite ( test_data_t * const tdata )
     ///
 
     // open the file for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
 
     // verify metadata after opening
     ck_assert_uint_eq ( buf1size, file->fileHdr->byteSize );
@@ -244,10 +244,10 @@ void test_file_overwrite ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, FALSE );
+        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( buf2size, file->fileHdr->byteSize );
     ck_assert_int_gt ( file->fileHdr->firstData, 0 );   // 0 is bootblock
     ck_assert_uint_eq ( 0, file->pos );
@@ -318,6 +318,7 @@ START_TEST ( test_file_overwrite_ofs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 START_TEST ( test_file_overwrite_ffs )
 {
@@ -335,6 +336,7 @@ START_TEST ( test_file_overwrite_ffs )
         teardown ( &test_data );
     }
 }
+END_TEST
 
 Suite * adflib_suite ( void )
 {
@@ -389,7 +391,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

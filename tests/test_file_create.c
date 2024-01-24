@@ -16,7 +16,7 @@ typedef struct test_data_s {
     char *          volname;
     uint8_t         fstype;   // 0 - OFS, 1 - FFS
     unsigned        nVolumeBlocks;
-    char *          openMode;  // "w" or "a"
+    AdfFileMode     openMode;
 } test_data_t;
 
 
@@ -37,7 +37,7 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( device );
 
     // mount the test volume
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     struct AdfVolume * const vol    = tdata->vol;
     ck_assert_ptr_nonnull ( vol );
 
@@ -55,7 +55,7 @@ void test_file_create ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -66,7 +66,7 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
 
     // verify file information (meta-data)
-    file = adfFileOpen ( vol, filename, "r" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -76,7 +76,7 @@ void test_file_create ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // the same when open for appending
-    file = adfFileOpen ( vol, filename, "a" );
+/*    file = adfFileOpen ( vol, filename, "a" );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -84,9 +84,9 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert ( adfEndOfFile ( file ) != 0 );
     adfFileClose ( file );
-
+*/
     // the same when open for writing
-    file = adfFileOpen ( vol, filename, "w" );
+    file = adfFileOpen ( vol, filename, ADF_FILE_MODE_WRITE );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_uint_eq ( 0, file->pos );
     ck_assert_int_eq ( 0, file->posInExtBlk );
@@ -99,14 +99,14 @@ void test_file_create ( test_data_t * const tdata )
     adfUnMount ( tdata->vol );
 }
 
-
+/*
 void test_file_create_with_append ( test_data_t * const tdata )
 {
     struct AdfDevice * const device = tdata->device;
     ck_assert_ptr_nonnull ( device );
 
     // mount the test volume
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     struct AdfVolume * const vol    = tdata->vol;
     ck_assert_ptr_nonnull ( vol );
 
@@ -124,7 +124,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     ck_assert_int_eq ( free_blocks_before,
@@ -136,7 +136,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
     // umount volume
     adfUnMount ( tdata->vol );
 }
-
+*/
 
 
 START_TEST ( test_file_create_empty_ofs_write )
@@ -145,13 +145,15 @@ START_TEST ( test_file_create_empty_ofs_write )
         .adfname = "test_file_create_ofs_write.adf",
         .volname = "Test_file_create_ofs",
         .fstype  = 0,          // OFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
     test_file_create ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
+
 
 START_TEST ( test_file_create_empty_ffs_write )
 {
@@ -159,15 +161,16 @@ START_TEST ( test_file_create_empty_ffs_write )
         .adfname = "test_file_create_ffs_write.adf",
         .volname = "Test_file_create_ffs",
         .fstype  = 1,          // FFS
-        .openMode = "w",
+        .openMode = ADF_FILE_MODE_WRITE,
         .nVolumeBlocks = 1756
     };
     setup ( &test_data );
     test_file_create ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
-
+/*
 START_TEST ( test_file_create_empty_ofs_append )
 {
     test_data_t test_data = {
@@ -181,6 +184,7 @@ START_TEST ( test_file_create_empty_ofs_append )
     test_file_create_with_append ( &test_data );
     teardown ( &test_data );
 }
+END_TEST
 
 START_TEST ( test_file_create_empty_ffs_append)
 {
@@ -195,7 +199,8 @@ START_TEST ( test_file_create_empty_ffs_append)
     test_file_create_with_append ( &test_data );
     teardown ( &test_data );
 }
-
+END_TEST
+*/
 
 Suite * adflib_suite ( void )
 {
@@ -213,7 +218,7 @@ Suite * adflib_suite ( void )
     tc = tcase_create ( "adflib test_file_create_empty_ffs_write" );
     tcase_add_test ( tc, test_file_create_empty_ffs_write );
     suite_add_tcase ( s, tc );
-
+/*
     tc = tcase_create ( "adflib test_file_create_empty_ofs_append" );
     tcase_add_test ( tc, test_file_create_empty_ofs_append );
     suite_add_tcase ( s, tc );
@@ -221,7 +226,7 @@ Suite * adflib_suite ( void )
     tc = tcase_create ( "adflib test_file_create_empty_ffs_append" );
     tcase_add_test ( tc, test_file_create_empty_ffs_append );
     suite_add_tcase ( s, tc );
-
+*/
     return s;
 }
 
@@ -256,7 +261,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, FALSE );
+    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

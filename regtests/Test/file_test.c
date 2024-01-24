@@ -39,13 +39,13 @@ int main(int argc, char *argv[])
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount existing device : FFS */
-    hd = adfMountDev( argv[1],FALSE );
+    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfFileOpen ( vol, "mod.and.distantcall", "r" );
+    file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("mod.distant","wb");
     if (!out) return 1;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    file = adfFileOpen ( vol, "emptyfile", "r" );
+    file = adfFileOpen ( vol, "emptyfile", ADF_FILE_MODE_READ );
     if (!file) { 
 		adfUnMount(vol); adfUnMountDev(hd); 
         fprintf(stderr, "can't open file\n");
@@ -89,13 +89,13 @@ int main(int argc, char *argv[])
 
     /* ofs */
 
-    hd = adfMountDev( argv[2],FALSE );
+    hd = adfMountDev ( argv[2], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    file = adfFileOpen ( vol, "moon.gif", "r" );
+    file = adfFileOpen ( vol, "moon.gif", ADF_FILE_MODE_READ );
     if (!file) return 1;
     out = fopen("moon_gif","wb");
     if (!out) return 1;

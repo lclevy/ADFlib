@@ -36,6 +36,7 @@
 #include "adf_nativ.h"
 #include "adf_env.h"
 
+
 struct AdfNativeFunctions adfLinuxNativeDevice = {
     NULL,
     &adfLinuxInitDevice,
@@ -45,14 +46,18 @@ struct AdfNativeFunctions adfLinuxNativeDevice = {
     &adfLinuxIsDevNative
 };
 
+struct AdfNativeDevice {
+    int fd;
+};
+
 /*
  * adfLinuxInitDevice
  *
  * must fill 'dev->size'
  */
-RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
-                             const char * const       name,
-                             const BOOL               ro )
+static RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
+                                    const char * const       name,
+                                    const AdfAccessMode      mode )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
         malloc ( sizeof ( struct AdfNativeDevice ) );
@@ -64,7 +69,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
 
     dev->nativeDev = nDev;
 
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
     if ( ! dev->readOnly ) {
         nDev->fd = open ( name, O_RDWR );
         dev->readOnly = ( nDev->fd < 0 ) ? TRUE : FALSE;
@@ -98,7 +103,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
         lseek ( nDev->fd, 0, SEEK_SET );
     }
 
-    dev->size = (int) size;
+    dev->size = (uint32_t) size;
     
     // https://docs.kernel.org/userspace-api/ioctl/hdio.html
     struct hd_geometry geom;
@@ -121,7 +126,7 @@ RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
  *
  * free native device
  */
-RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
+static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
     close ( nDev->fd );
@@ -134,10 +139,10 @@ RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
  * adfLinuxReadSector
  *
  */
-RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                             const uint32_t           n,
-                             const unsigned           size,
-                             uint8_t * const          buf )
+static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                                    const uint32_t           n,
+                                    const unsigned           size,
+                                    uint8_t * const          buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -146,7 +151,7 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    if ( write ( nDev->fd, buf, (size_t) size ) != (ssize_t) size )
+    if ( read ( nDev->fd, buf, (size_t) size ) != (ssize_t) size )
         return RC_ERROR;
 
     return RC_OK;   
@@ -157,10 +162,10 @@ RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
  * adfLinuxWriteSector
  *
  */
-RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                              const uint32_t           n,
-                              const unsigned           size,
-                              const uint8_t * const    buf )
+static RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                                     const uint32_t           n,
+                                     const unsigned           size,
+                                     const uint8_t * const    buf )
 {
     struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * ) dev->nativeDev;
 
@@ -169,7 +174,7 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    if ( read ( nDev->fd, (void *) buf, (size_t) size ) != size )
+    if ( write ( nDev->fd, (void *) buf, (size_t) size ) != size )
         return RC_ERROR;
 
     return RC_OK;
@@ -177,18 +182,10 @@ RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
 
 
 /*
- * adfInitNativeFct
- *
- */
-struct AdfNativeFunctions *adfInitNativeFct() {
-    return &adfLinuxNativeDevice;
-}
-
-/*
  * adfLinuxIsDevNative
  *
  */
-BOOL adfLinuxIsDevNative ( const char * const devName )
+static BOOL adfLinuxIsDevNative ( const char * const devName )
 {
     //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
 
@@ -199,4 +196,12 @@ BOOL adfLinuxIsDevNative ( const char * const devName )
     }
 
     return ( ( sb.st_mode & S_IFMT ) == S_IFBLK );
+}
+
+/*
+ * adfInitNativeFct
+ *
+ */
+struct AdfNativeFunctions *adfInitNativeFct() {
+    return &adfLinuxNativeDevice;
 }

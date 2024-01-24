@@ -24,63 +24,37 @@
 #ifndef ADF_NATIV_H
 #define ADF_NATIV_H
 
-#include "adf_dev.h"
-
-#define NATIVE_FILE  8001
-
-#ifndef BOOL
-#define BOOL int
-#endif
-
-#ifndef RETCODE
-#define RETCODE int32_t
-#endif
-
-struct AdfNativeDevice {
-    //FILE * fd;
-    int fd;
-};
+#include"adf_dev.h"
 
 struct AdfNativeFunctions {
     struct AdfNativeFunctions *next;
 
+    /* called by adfMount() */
     RETCODE (*adfInitDevice)( struct AdfDevice * const dev,
                               const char * const       name,
-                              const BOOL               ro );
+                              const AdfAccessMode      mode );
 
-    RETCODE (*adfReleaseDevice)( struct AdfDevice * const dev );
+    /* called by adfUnMount() */
+    RETCODE (*adfReleaseDevice)(struct AdfDevice * const dev);
 
+    /* called by adfReadBlock() */
     RETCODE (*adfNativeReadSector)( struct AdfDevice * const dev,
                                     const uint32_t           n,
                                     const unsigned           size,
                                     uint8_t * const          buf );
 
+    /* called by adfWriteBlock() */
     RETCODE (*adfNativeWriteSector)( struct AdfDevice * const dev,
                                      const uint32_t           n,
                                      const unsigned           size,
                                      const uint8_t * const    buf );
 
+    /* called by adfMount() */
     BOOL (*adfIsDevNative)( const char * const devName );
 };
 
 struct AdfNativeFunctions *adfInitNativeFct();
 
-RETCODE adfLinuxInitDevice ( struct AdfDevice * const dev,
-                             const char * const       name,
-                             const BOOL               ro );
-
-RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev );
-
-RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                             const uint32_t           n,
-                             const unsigned           size,
-                             uint8_t * const          buf );
-
-RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                              const uint32_t           n,
-                              const unsigned           size,
-                              const uint8_t * const    buf );
-
-BOOL adfLinuxIsDevNative ( const char * const devName );
-
 #endif /* ADF_NATIV_H */
+
+/*#######################################################################################*/

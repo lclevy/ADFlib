@@ -37,7 +37,7 @@ Description: ADFlib - development files
 
 Package: libadf-utils
 Architecture: any
-Multi-Arch: same
+Multi-Arch: no
 Section: utils
 Depends: libadf (= ${binary:Version}),
          ${shlibs:Depends},

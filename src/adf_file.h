@@ -47,9 +47,32 @@ struct AdfFile {
 
     unsigned posInDataBlk;
     unsigned posInExtBlk;
-    BOOL writeMode;
-    BOOL currentDataBlockChanged;
+
+    BOOL     modeRead,
+             modeWrite;
+
+    BOOL     currentDataBlockChanged;
 };
+
+
+typedef enum {
+    ADF_FILE_MODE_READ      = 0x01,   /* 01 */
+    ADF_FILE_MODE_WRITE     = 0x02,   /* 10 */
+    //ADF_FILE_MODE_READWRITE = 0x03    /* 11 */
+} AdfFileMode;
+
+
+static inline uint32_t adfFileGetPos ( const struct AdfFile * const file ) {
+    return file->pos;
+}
+
+static inline uint32_t adfFileGetSize ( const struct AdfFile * const file ) {
+    return file->fileHdr->byteSize;
+}
+
+static inline BOOL adfEndOfFile ( const struct AdfFile * const file ) {
+    return ( file->pos == file->fileHdr->byteSize );
+}
 
 
 PREFIX int32_t adfPos2DataBlock ( const unsigned   pos,
@@ -60,7 +83,7 @@ PREFIX int32_t adfPos2DataBlock ( const unsigned   pos,
 
 PREFIX struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
                                       const char * const       name,
-                                      const char * const       mode );
+                                      const AdfFileMode        mode );
 
 PREFIX void adfFileClose ( struct AdfFile * const file );
 
@@ -68,10 +91,18 @@ PREFIX uint32_t adfFileRead ( struct AdfFile * const file,
                               const uint32_t         n,
                               uint8_t * const        buffer );
 
-PREFIX BOOL adfEndOfFile ( const struct AdfFile * const file );
-
 PREFIX RETCODE adfFileSeek ( struct AdfFile * const file,
                              const uint32_t         pos );		/* BV */
+
+static inline RETCODE adfFileSeekStart ( struct AdfFile * const file ) {
+    return adfFileSeek ( file, 0 );
+}
+
+
+static inline RETCODE adfFileSeekEOF ( struct AdfFile * const file ) {
+    return adfFileSeek ( file, adfFileGetSize ( file ) );
+}
+
 
 RETCODE adfFileReadNextBlock ( struct AdfFile * const file );
 
@@ -86,7 +117,7 @@ PREFIX unsigned adfFileWriteFilled ( struct AdfFile * const file,
 PREFIX RETCODE adfFileTruncate ( struct AdfFile * const file,
                                  const uint32_t         fileSizeNew );
 
-SECTNUM adfFileCreateNextBlock ( struct AdfFile * const file );
+RETCODE adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 

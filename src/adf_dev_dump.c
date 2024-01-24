@@ -25,19 +25,15 @@
  *
  */
 
-#include<stdio.h>
-#include<stdlib.h>
-#include <string.h>
-#include<errno.h>
+#include "adf_dev_dump.h"
 
 #include "adf_blk.h"
-#include"adf_defs.h"
-#include"adf_str.h"
-#include "adf_vol.h"
-#include"adf_nativ.h"
-#include"adf_err.h"
-#include"adf_dump.h"
 #include "adf_env.h"
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -46,11 +42,11 @@
  */
 RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
                             const char * const       name,
-                            const BOOL               ro )
+                            const AdfAccessMode      mode )
 {
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
     errno = 0;
-    if (!ro) {
+    if ( ! dev->readOnly ) {
         dev->fd = fopen ( name, "rb+" );
         /* force read only */
         if ( ! dev->fd && ( errno == EACCES || errno == EROFS ) ) {

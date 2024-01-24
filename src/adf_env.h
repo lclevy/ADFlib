@@ -26,36 +26,42 @@
  *
  */
 
-#include"prefix.h"
+#include "adf_types.h"
+#include "prefix.h"
 
 /* ----- ENVIRONMENT ----- */
 
-#define PR_VFCT			1
-#define PR_WFCT			2
-#define PR_EFCT			3
-#define PR_NOTFCT		4
-#define PR_USEDIRC		5
-#define PR_USE_NOTFCT 	6
-#define PR_PROGBAR 		7
-#define PR_USE_PROGBAR 	8
-#define PR_RWACCESS 	9
+#define PR_VFCT	        1
+#define PR_WFCT	        2
+#define PR_EFCT	        3
+#define PR_NOTFCT       4
+#define PR_USEDIRC      5
+#define PR_USE_NOTFCT   6
+#define PR_PROGBAR      7
+#define PR_USE_PROGBAR  8
+#define PR_RWACCESS     9
 #define PR_USE_RWACCESS 10
 
-struct AdfEnv {
-    void (*vFct)(char*);       /* verbose callback function */
-    void (*wFct)(char*);       /* warning callback function */
-    void (*eFct)(char*);       /* error callback function */
-    void (*vFctf)(const char * const format, ...); /* verbose cb formatted */
-    void (*wFctf)(const char * const format, ...); /* warning cb formatted */
-    void (*eFctf)(const char * const format, ...); /* error cb formatted */
+//typedef void (*AdfLogFct)(const char * const txt);
+typedef void (*AdfLogFct)(const char * const format, ...);
+//typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
-    void (*notifyFct)(SECTNUM, int);
+typedef void (*AdfNotifyFct)(SECTNUM, int);
+typedef void (*AdfRwhAccessFct)(SECTNUM,SECTNUM,BOOL);
+typedef void (*AdfProgressBarFct)(int);
+
+struct AdfEnv {
+    AdfLogFct vFct;       /* verbose callback function */
+    AdfLogFct wFct;       /* warning callback function */
+    AdfLogFct eFct;       /* error callback function */
+
+    AdfNotifyFct notifyFct;
     BOOL useNotify;
 
-    void (*rwhAccess)(SECTNUM,SECTNUM,BOOL);
+    AdfRwhAccessFct rwhAccess;
     BOOL useRWAccess;
 
-    void (*progressBar)(int);
+    AdfProgressBarFct progressBar;
     BOOL useProgressBar;
 
     BOOL useDirCache;
@@ -65,8 +71,12 @@ struct AdfEnv {
 
 
 PREFIX void adfEnvInitDefault();
-PREFIX void adfSetEnvFct( void(*e)(char*), void(*w)(char*), void(*v)(char*),
-	void(*n)(SECTNUM,int) );
+
+PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
+                           const AdfLogFct    wFct,
+                           const AdfLogFct    vFct,
+                           const AdfNotifyFct notifyFct );
+
 PREFIX void adfEnvCleanUp();
 PREFIX void adfChgEnvProp(int prop, void *new);
 PREFIX char* adfGetVersionNumber();
@@ -74,7 +84,7 @@ PREFIX char* adfGetVersionDate();
 PREFIX void adfAddNativeDriver(struct AdfNativeFunctions *driver);
 PREFIX void adfRemoveNativeDriver(struct AdfNativeFunctions *driver);
 
-extern struct AdfEnv adfEnv;
+PREFIX extern struct AdfEnv adfEnv;
 
 #endif /* ADF_ENV_H */
 /*##########################################################################*/

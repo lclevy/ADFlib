@@ -106,7 +106,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
         return 1;
     adfCreateFlop ( device, "OverfillTest", tdata->fstype );
 
-    struct AdfVolume * vol = adfMount ( device, 0, FALSE );
+    struct AdfVolume * vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     if ( ! vol )
         return 1;
 
@@ -114,7 +114,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     printf ( "\nFree blocks: %d\n", adfCountFreeBlocks ( vol ) );
 #endif
 
-    struct AdfFile * output = adfFileOpen ( vol, tdata->filename, "w" );
+    struct AdfFile * output = adfFileOpen ( vol, tdata->filename, ADF_FILE_MODE_WRITE );
     if ( ! output )
         return 1;
 
@@ -174,7 +174,7 @@ int verify_file_data ( struct AdfVolume * const vol,
                        const unsigned           bytes_written,
                        const int                max_errors )
 {
-    struct AdfFile * output = adfFileOpen ( vol, filename, "r" );
+    struct AdfFile * output = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     if ( ! output )
         return 1;
 

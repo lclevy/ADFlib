@@ -26,17 +26,17 @@
  *
  */
 
-#include"prefix.h"
-
-#include "adf_defs.h"
+#include "adf_types.h"
 #include "adf_vol.h"
+
+#include "prefix.h"
+
 
 PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                        SECTNUM            nSect,
                                        SECTNUM            lPar,
                                        char **            name,
                                        int32_t *          size );
-
 
 #endif /* ADF_LINK_H */
 /*##########################################################################*/

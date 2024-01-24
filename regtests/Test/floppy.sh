@@ -8,16 +8,10 @@
 NFAILED=0
 FAILED=
 
-case `uname` in
-    Darwin*)
-	STDBUF=gstdbuf
-	;;
-    *)
-	STDBUF=stdbuf
-esac
-
 for A_TEST in \
     bootdisk.sh \
+    bitmap_read_segfault.sh \
+    bitmap_recreate.sh \
     cache_crash.sh \
     del_test.sh \
     dir_test.sh \
@@ -41,7 +35,11 @@ do
     echo "---------------------------------------------------"
     echo "    Executing: ${A_TEST}"
     echo "---------------------------------------------------"
-    ${STDBUF} -oL -eL ./${A_TEST}
+    if [ -n "${srcdir}" -a -x "${srcdir}/${A_TEST}" ]; then
+        ${srcdir}/${A_TEST}
+    else
+        ./${A_TEST}
+    fi
     RESULT=${?}
     #echo "Result: ${RESULT}"
     if [ ${RESULT} -ne 0 ]

@@ -29,13 +29,8 @@
 #define _ADF_RAW_H 1
 
 #include "adf_blk.h"
+#include "adf_err.h"
 #include "adf_vol.h"
-
-#define SW_LONG  4
-#define SW_SHORT 2
-#define SW_CHAR  1
-
-#define MAX_SWTYPE 11
 
 #define SWBL_BOOT         0
 #define SWBL_ROOT         1
@@ -68,13 +63,14 @@ PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
 PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
                                    struct bBootBlock * const boot );
 
-uint32_t adfBootSum ( const uint8_t * const buf );
-uint32_t adfNormalSum ( const uint8_t * const buf,
-                        const int offset,
-                        const int bufLen );
+PREFIX uint32_t adfBootSum ( const uint8_t * const buf );
 
-void swapEndian ( uint8_t * const buf,
-                  const int       type );
+PREFIX uint32_t adfNormalSum ( const uint8_t * const buf,
+			       const int offset,
+			       const int bufLen );
+
+PREFIX void swapEndian ( uint8_t * const buf,
+			 const int       type );
 
 #endif /* _ADF_RAW_H */
 

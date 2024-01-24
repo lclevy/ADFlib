@@ -1,35 +1,51 @@
-24JAN2022
-ADFlib 0.7.13
-- files: fixed seek
-- directories: added a function for counting entries
-- hardlinks: added support (can open a file or enter a dir using a hardlink)
-- softlinks: added basic support (can get path where it points to)
-- devices: added functions to open/close a device without mounting (eg. for formatting)
+26MAY2023
+ADFlib 0.8.0
+- files:
+  - complete and tested read/write support (#30)
+- directories:
+  - added a function for counting entries
+- links (#23):
+  - hardlinks: added support (can open a file or enter a dir using a hardlink)
+  - softlinks: added basic support (can get path where it points to)
+- devices:
+  - added functions to open/close a device without mounting (eg. for formatting)
 - native devices:
   - getting geometry directly from the device (if possible)
   - added support for Linux native devices (experimental, assume testing only
     and use with care!)
 - command-line utilities:
-  - added creating and formatting devices/images
-  - added showing device and file/directory metadata
-  - unadf: replacing special characters in paths when extracting
+  - added adf_floppy_create/format - create and format devices/images
+  - added adf_show_metadata - show device/volume/file/directory metadata
+  - unadf: added option -w enabling replacement of forbidden characters and
+    filenames on Windows (#39)
 - numerous bugfixes, among them
-  - some mem. leaks (adfFreeGenBlock, tests, ...)
+  - some memory leaks (adfFreeGenBlock, tests, ...)
   - a buffer overflow (in adfGetDelEnt())
-  - problems when filling up the disk
-- testing: added more tests, some improvements and bugfixes in existing ones
-- code quality: some refactoring and tidying up
-- building: added support for building wirh CMake (besides existing autotools),
-            can be build easier eg. with Visual Studio
-- packaging: added basic Debian support (should work on other systems with deb packages)
-- issues found:
-  - file write support has many problems (consider it experimental(!) until fixed)
+  - fixed Debian bug 862740 (buffer overflow in adfGetCacheEntry; #35)
+  - problems when filling up the disk (#9)
+- testing - improved and extended:
+  - added more reg. tests, some improvements and bugfixes in existing ones
+  - added unit tests (using Check framework)
+  - automatic building and testing with GitHub Actions
+- code quality:
+  - some refactoring and tidying up
+- build configuration:
+  - added configuration for CMake (besides existing autotools), so that the lib
+    can be more portable and build easier eg. with Visual Studio on Windows
+- packaging:
+  - added basic Debian support (works also on Ubuntu, should work on other
+    systems with deb packages)
+- many changes in the API (note the version change!):
+  - mainly in adf_file (new/changed functions, function naming)
+  - some changes in data structures and/or data types
+
 20MAR08
 ADFlib 0.7.12
 - use GNU autotools build system
 - fix building on 64bit architectures but needs C99 compliant compliler
 - remove some windows specific stuff maybe one should add it again updating it
 to use the current directory structure
+
 20JAN07
 ADFlib 0.7.11a
 - Minor Makefile fixes. Works under Fedora Core 5, gcc 4.1.0.

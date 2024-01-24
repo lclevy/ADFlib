@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
@@ -55,22 +55,22 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    fic = adfFileOpen ( vol, "file_1a", "w" );
+    fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
-    fic = adfFileOpen ( vol, "file_24", "w" );
+    fic = adfFileOpen ( vol, "file_24", ADF_FILE_MODE_WRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
-    fic = adfFileOpen ( vol, "dir_1a", "w" );
+    fic = adfFileOpen ( vol, "dir_1a", ADF_FILE_MODE_WRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
-    fic = adfFileOpen ( vol, "dir_5u", "w" );
+    fic = adfFileOpen ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 
     puts("Create dir_5u, Rename dir_3 into toto");
 /*
-    fic = adfOpenFile(vol, "dir_5u","w");
+    fic = adfOpenFile ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
     if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
     adfWriteFile(fic,1,buf);
     adfCloseFile(fic);
