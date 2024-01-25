@@ -1,9 +1,12 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: libadf
+Upstream-Name: ADFlib
+Upstream-Contact: Laurent Clévy <laurent.clevy@club-internet.fr>
 Source: https://github.com/lclevy/ADFlib
 
 Files: *
-Copyright: 1999-2023 Laurent Clévy (laurent.clevy@club-internet.fr)
+Copyright: 1999-2024 Laurent Clévy (laurent.clevy@club-internet.fr)
+           2019-2023 Stuart Caie (kyzer@cabextract.org.uk)
+           2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
 
 License: GPL-2.0+
@@ -23,8 +26,13 @@ License: GPL-2.0+
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
-Files: debian/* examples/adf_* tests/* util/cmake* util/deb* */CMakeLists.txt
-Copyright: 2022-2023 Tomasz Wolak (tomas.wolak@gmail.com)
+Files: debian/* examples/adf_* tests/*
+Copyright: 2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
+License: GPL-2.0+
+
+Files: examples/unadf*
+Copyright: 1999-2019 Laurent Clévy (laurent.clevy@club-internet.fr)
+           2019-2023 Stuart Caie (kyzer@cabextract.org.uk)
 License: GPL-2.0+
 
 Files: util/bump_project_version
