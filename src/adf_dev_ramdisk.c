@@ -29,9 +29,9 @@ uint8_t ramdiskData[RAMDISK_SIZE];
 
 static RETCODE ramdiskInit( struct AdfDevice * const dev,
                             const char * const       name,
-                            const BOOL               ro )
+                            const AdfAccessMode      mode )
 {
-    dev->readOnly = ro;
+    dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
     dev->heads = 2;
     dev->sectors = 11;
     dev->cylinders = 80;
