@@ -1,1 +1,2 @@
-examples/.libs/unadf			/usr/bin
+#examples/.libs/unadf			/usr/bin
+/usr/bin/unadf

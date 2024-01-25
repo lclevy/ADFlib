@@ -1,4 +1,9 @@
-examples/.libs/adf_bitmap		/usr/bin
-examples/.libs/adf_floppy_create	/usr/bin
-examples/.libs/adf_floppy_format	/usr/bin
-examples/.libs/adf_show_metadata	/usr/bin
+#examples/.libs/adf_bitmap		/usr/bin
+#examples/.libs/adf_floppy_create	/usr/bin
+#examples/.libs/adf_floppy_format	/usr/bin
+#examples/.libs/adf_show_metadata	/usr/bin
+usr/bin/adf_bitmap
+usr/bin/adf_floppy_create
+usr/bin/adf_floppy_format
+usr/bin/adf_show_metadata
+
