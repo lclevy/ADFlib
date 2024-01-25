@@ -19,7 +19,7 @@ VERSION_DEBIAN=`grep -e '^[a-z]' debian/changelog \
             | cut -d'(' -f 2 | cut -d')' -f 1`
 VERSION=`echo $VERSION_DEBIAN | cut -d'-' -f 1`
 
-SRC_ARCHIVE="../libadf_${VERSION}.orig.tar.gz"
+SRC_ARCHIVE="../adflib_${VERSION}.orig.tar.gz"
 echo -e "\nCreating source archive:\n" \
      "  version: $VERSION\n" \
      "  archive: $SRC_ARCHIVE\n"
