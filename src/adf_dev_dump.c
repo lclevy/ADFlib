@@ -239,6 +239,7 @@ struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
     dev->nVol = 0;
     dev->isNativeDev = FALSE;
     dev->readOnly = FALSE;
+    dev->mounted = FALSE;
 
     return(dev);
 }

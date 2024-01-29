@@ -390,6 +390,8 @@ vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
+    dev->mounted = TRUE;
+
     return adfCreateHdHeader ( dev, (int) n, partList );
 }
 

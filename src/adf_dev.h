@@ -28,9 +28,6 @@ struct AdfDevice {
     BOOL readOnly;
     uint32_t size;                /* in bytes */
 
-    int nVol;                  /* partitions */
-    struct AdfVolume** volList;
-
     uint32_t cylinders;            /* geometry */
     uint32_t heads;
     uint32_t sectors;
@@ -40,6 +37,12 @@ struct AdfDevice {
     void *nativeDev; /* for use by native functions */
 
     FILE *fd;
+
+    BOOL mounted;
+
+    // stuff available when mounted
+    int nVol;                  /* partitions */
+    struct AdfVolume** volList;
 };
 
 
@@ -50,8 +53,7 @@ PREFIX void adfCloseDev ( struct AdfDevice * const dev );
 PREFIX int adfDevType ( struct AdfDevice * dev );
 PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
 
-PREFIX struct AdfDevice * adfMountDev ( const char * const  filename,
-                                        const AdfAccessMode mode );
+PREFIX RETCODE adfMountDev ( struct AdfDevice * dev );
 PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
 
 //struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);

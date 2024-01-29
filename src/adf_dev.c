@@ -40,17 +40,13 @@
 /*
  * adfOpenDev
  *
- * open a device without mounting it, used by adfMountDev() or
- * for partitioning/formatting with adfCreateFlop/Hd
+ * open a device without reading any data (ie. without finding volumes)
  *
- * Note that:
- * - an opened device must be closed with adfCloseDev()
- *   before mounting it with adfMountDev()
- *
- * WARNING: IT IS NOT CHECKING WHETHER THERE IS ANY EXISTING FILESYSTEM
- *          ON THE DEVICE, IT DOES NOT LOAD ROOTBLOCK ETC.
- *          IF UNSURE USE adfMountDev() FIRST TO CHECK IF FILESYSTEM STRUCTURES
- *          EXIST ALREADY ON THE DEVICE(!)
+ * An opened device either has to be mounted (to be used with functions
+ * requiring volume data) or only functions using block access on the device
+ * level (with adfRead/WriteBlockDev) can be used
+ * (ie. this applies to adfCreateFlop/Hd); in general this level of access
+ * is for: partitioning / formatting / creating file system data
  */
 struct AdfDevice * adfOpenDev ( const char * const  filename,
                                 const AdfAccessMode mode )
@@ -87,8 +83,10 @@ struct AdfDevice * adfOpenDev ( const char * const  filename,
     }
 
     dev->devType = adfDevType ( dev );
+
     dev->nVol    = 0;
     dev->volList = NULL;
+    dev->mounted = FALSE;
 
     /*
     if ( dev->devType == DEVTYPE_FLOPDD ) {
@@ -117,23 +115,14 @@ struct AdfDevice * adfOpenDev ( const char * const  filename,
  * adfCloseDev
  *
  * Closes/releases an opened device.
- * Called by adfUnMountDev()
  */
 void adfCloseDev ( struct AdfDevice * const dev )
 {
     if ( ! dev )
         return;
 
-    // free volume list
-    //if ( dev->volList ) {
-    if ( dev->nVol > 0 ) {
-        for ( int i = 0 ; i < dev->nVol ; i++ ) {
-            free ( dev->volList[i]->volName );
-            free ( dev->volList[i] );
-        }
-        free ( dev->volList );
-        dev->nVol = 0;
-    }
+    if ( dev->mounted )
+        adfUnMountDev ( dev );
 
     if ( dev->isNativeDev ) {
         dev->nativeFct->adfReleaseDevice( dev );
@@ -234,58 +223,54 @@ void adfDeviceInfo ( struct AdfDevice * dev )
  *
  * adfInitDevice() must fill dev->size !
  */
-struct AdfDevice * adfMountDev ( const char * const  filename,
-                                 const AdfAccessMode mode )
+RETCODE adfMountDev ( struct AdfDevice * dev )
 {
-    RETCODE rc;
-    uint8_t buf[512];
+    if ( dev == NULL )
+        return RC_ERROR;
 
-    struct AdfDevice * dev = adfOpenDev ( filename, mode );
-    if ( ! dev ) {
-        //(*adfEnv.eFct)("adfMountDev : malloc error");
-        return NULL;
-    }
+    RETCODE rc;
 
     switch( dev->devType ) {
 
     case DEVTYPE_FLOPDD:
-    case DEVTYPE_FLOPHD:
-        if ( adfMountFlop ( dev ) != RC_OK ) {
-            adfCloseDev ( dev );
-            return NULL;
+    case DEVTYPE_FLOPHD: {
+        rc = adfMountFlop ( dev );
+        if ( rc != RC_OK )
+            return rc;
         }
         break;
 
-    case DEVTYPE_HARDDISK:
+    case DEVTYPE_HARDDISK: {
+        uint8_t buf[512];
         rc = adfReadBlockDev ( dev, 0, 512, buf );
 
        /* BV ...from here*/
         if( rc != RC_OK ) {
-            adfCloseDev ( dev );
-            (*adfEnv.eFct)("adfMountDev : adfReadDumpSector failed");
-            return NULL;
+            adfEnv.eFct ( "adfMountDev : adfReadBlockDev 0 (bootblock) failed");
+            return rc;
         }
 
         /* a file with the first three bytes equal to 'DOS' */
     	if (!dev->isNativeDev && strncmp("DOS",(char*)buf,3)==0) {
-            if ( adfMountHdFile ( dev ) != RC_OK ) {
-                adfCloseDev ( dev );
-                return NULL;
+            rc = adfMountHdFile ( dev );
+            if ( rc != RC_OK )
+                return rc;
+        }
+        else {
+            rc = adfMountHd ( dev );
+            if ( rc != RC_OK )
+                return rc;								/* BV ...to here.*/
             }
         }
-        else if ( adfMountHd ( dev ) != RC_OK ) {
-            adfCloseDev ( dev );
-            return NULL;								/* BV ...to here.*/
-        }
-	    break;
+        break;
 
     default:
         (*adfEnv.eFct)("adfMountDev : unknown device type");
-        adfCloseDev ( dev );
-        return NULL;								/* BV */
+        return RC_ERROR;								/* BV */
     }
 
-	return dev;
+    dev->mounted = TRUE;
+    return RC_OK;
 }
 
 
@@ -295,7 +280,22 @@ struct AdfDevice * adfMountDev ( const char * const  filename,
  */
 void adfUnMountDev ( struct AdfDevice * const dev )
 {
-    adfCloseDev ( dev );
+    if ( ! dev->mounted )
+        return;
+
+    // free volume list
+    //if ( dev->volList ) {
+    if ( dev->nVol > 0 ) {
+        for ( int i = 0 ; i < dev->nVol ; i++ ) {
+            free ( dev->volList[i]->volName );
+            free ( dev->volList[i] );
+        }
+        free ( dev->volList );
+        dev->nVol = 0;
+    }
+
+    dev->volList = NULL;
+    dev->mounted = FALSE;
 }
 
 
