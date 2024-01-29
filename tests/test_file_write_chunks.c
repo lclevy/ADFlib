@@ -396,5 +396,6 @@ void teardown ( test_data_t * const tdata )
 
     //adfUnMount ( tdata->vol );
     adfUnMountDev ( tdata->device );
+    adfCloseDev ( tdata->device );
     unlink ( tdata->adfname );
 }
