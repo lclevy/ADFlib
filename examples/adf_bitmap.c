@@ -74,12 +74,19 @@ int main ( int     argc,
     printf ( "\nOpening image/device:\t'%s' (%s)\n",
              adfname, devMode ? "read-only" : "read-write" );
 
-    struct AdfDevice * const dev = adfMountDev ( adfname, devMode );
+    struct AdfDevice * const dev = adfOpenDev ( adfname, devMode );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
         status = 1;
         goto env_cleanup;
+    }
+
+    RETCODE rc = adfMountDev ( dev );
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
+                  adfname );
+        goto dev_cleanup;
     }
 
     int vol_id = 0;
@@ -88,7 +95,7 @@ int main ( int     argc,
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );
         status = 1;
-        goto dev_cleanup;
+        goto dev_mount_cleanup;
     }
 
     unsigned volSizeBlocks = adfVolGetBlockNum ( vol );
@@ -110,8 +117,10 @@ int main ( int     argc,
 
     adfUnMount ( vol );
 
-dev_cleanup:
+dev_mount_cleanup:
     adfUnMountDev ( dev );
+dev_cleanup:
+    adfCloseDev ( dev );
 env_cleanup:
     adfEnvCleanUp();
 

@@ -30,19 +30,21 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct AdfDevice * device = adfMountDev ( adfname, ADF_ACCESS_MODE_READWRITE );
-    if ( device ) {
-        fprintf ( stderr, "The floppy disk %s already contains a filesystem - aborting...\n",
-                  adfname );
-        adfUnMountDev ( device );
-        return 1;
-    }
-
-    device = adfOpenDev ( adfname, ADF_ACCESS_MODE_READWRITE );
-    if ( ! device ) {
+    struct AdfDevice * const device = adfOpenDev ( adfname, ADF_ACCESS_MODE_READWRITE );
+    if ( device == NULL ) {
         fprintf ( stderr, "Cannot open floppy disk %s - aborting...\n", adfname );
         return 1;
     }
+
+    RETCODE rc = adfMountDev ( device );
+    if ( rc == RC_OK ) {
+        fprintf ( stderr, "The floppy disk %s already contains a filesystem - aborting...\n",
+                  adfname );
+        adfUnMountDev ( device );
+        adfCloseDev ( device );
+        return 1;
+    }
+
 
     //adfDeviceInfo ( device );
 

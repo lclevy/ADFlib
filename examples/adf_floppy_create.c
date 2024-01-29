@@ -68,6 +68,7 @@ int main ( int     argc,
     printf ( "Done!\n" );
 
     adfUnMountDev ( device );
+    adfCloseDev ( device );
     adfEnvCleanUp();
 
     return 0;
