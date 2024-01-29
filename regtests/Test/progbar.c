@@ -47,12 +47,14 @@ puts("\ncreate floppy");
     if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
 		fprintf(stderr, "can't create floppy\n");
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -61,6 +63,7 @@ puts("\ncreate floppy");
 
     adfUnMount(vol);
     adfUnMountDev(hd);
+    adfCloseDev(hd);
 
     adfEnvCleanUp();
 

@@ -377,6 +377,7 @@ umount_volume:
     adfUnMount ( vol );
 umount_device:
     adfUnMountDev ( device );
+    adfCloseDev ( device );
     if ( unlink ( adfname ) != 0 )
         perror ("error deleting the image");
     return errors;

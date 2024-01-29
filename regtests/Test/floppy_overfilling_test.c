@@ -159,6 +159,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
 
     adfUnMount ( vol );
     adfUnMountDev ( device );
+    adfCloseDev ( device );
 
 #if TEST_VERBOSITY > 0
     printf (" -> %s\n", status ? "ERROR" : "OK" );

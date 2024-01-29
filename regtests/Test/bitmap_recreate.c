@@ -74,12 +74,19 @@ int main ( const int          argc,
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount the original image */
-    struct AdfDevice * const devOrig = adfMountDev ( adfOrig,
-                                                     ADF_ACCESS_MODE_READONLY );
-    if ( devOrig == NULL ) {
-        log_error ( stderr, "can't mount device %s\n", adfOrig );
+    struct AdfDevice * devOrig = adfOpenDev ( adfOrig, ADF_ACCESS_MODE_READONLY );
+    if ( ! devOrig ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  adfOrig );
         error_status = TRUE;
         goto clean_up;
+    }
+
+    RETCODE rc = adfMountDev ( devOrig );
+    if ( rc != RC_OK ) {
+        log_error ( stderr, "can't mount device %s\n", adfOrig );
+        error_status = TRUE;
+        goto close_dev_orig;
     }
 
     struct AdfVolume * const volOrig = adfMount ( devOrig, 0,
@@ -92,13 +99,20 @@ int main ( const int          argc,
 
     
     /* mount the image copy (for updating) */
-    struct AdfDevice * const devUpdate = adfMountDev ( adfUpdate,
-                                                       ADF_ACCESS_MODE_READWRITE );
-
-    if ( devUpdate == NULL ) {
-        log_error ( stderr, "can't mount device %s\n", adfUpdate );
+    struct AdfDevice * const devUpdate = adfOpenDev ( adfUpdate,
+                                                      ADF_ACCESS_MODE_READWRITE );
+    if ( ! devUpdate ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  adfUpdate );
         error_status = TRUE;
         goto umount_vol_orig;
+    }
+
+    rc = adfMountDev ( devUpdate );
+    if ( rc != RC_OK ) {
+        log_error ( stderr, "can't mount device %s\n", adfUpdate );
+        error_status = TRUE;
+        goto close_dev_updated;
     }
 
     struct AdfVolume * volUpdate = adfMount ( devUpdate, 0,
@@ -111,7 +125,7 @@ int main ( const int          argc,
 
 
     /* update the block allocation bitmap */
-    RETCODE rc = adfRemount ( volUpdate, ADF_ACCESS_MODE_READWRITE );
+    rc = adfRemount ( volUpdate, ADF_ACCESS_MODE_READWRITE );
     if ( rc != RC_OK ) {
         log_error (
             stderr, "error remounting read-write, volume %d\n", 0 );
@@ -124,14 +138,16 @@ int main ( const int          argc,
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Invalid RootBlock, volume %s, sector %u - aborting...",
                       volUpdate->volName, volUpdate->rootBlock );
-        return rc;
+        error_status = TRUE;
+        goto umount_vol_updated;
     }
 
     rc = adfReconstructBitmap ( volUpdate, &root );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Error rebuilding the bitmap (%d), volume %s",
                       rc, volUpdate->volName );
-        return rc;
+        error_status = TRUE;
+        goto umount_vol_updated;
     }
 
     /*
@@ -167,15 +183,17 @@ int main ( const int          argc,
 
 umount_vol_updated:
     adfUnMount ( volUpdate );
-
 umount_dev_updated:
     adfUnMountDev ( devUpdate );
+close_dev_updated:
+    adfCloseDev ( devUpdate );
 
 umount_vol_orig:
     adfUnMount ( volOrig );
-
 umount_dev_orig:
     adfUnMountDev ( devOrig );
+close_dev_orig:
+    adfCloseDev ( devOrig );
 
 clean_up:
     adfEnvCleanUp();

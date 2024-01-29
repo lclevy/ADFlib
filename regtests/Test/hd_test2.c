@@ -50,13 +50,20 @@ int main(int argc, char *argv[])
     part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
 
     partList[0] = &part1;
-    adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
+    RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
+    if ( rc != RC_OK ) {
+        adfUnMountDev(hd);
+        adfCloseDev(hd);
+        fprintf ( stderr, "adfCreateHd returned error %d\n", rc );
+        adfEnvCleanUp(); exit(1);
+    }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -64,12 +71,21 @@ int main(int argc, char *argv[])
     adfVolumeInfo(vol);
     adfUnMount(vol);
     adfUnMountDev(hd);
+    adfCloseDev(hd);
 
 
     /* mount the created device */
+    hd = adfOpenDev ( tmpdevname, ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  tmpdevname );
+        adfEnvCleanUp();
+        exit(1);
+    }
 
-    hd = adfMountDev ( tmpdevname, ADF_ACCESS_MODE_READWRITE );
-    if (!hd) {
+    rc = adfMountDev ( hd );
+    if ( rc != RC_OK ) {
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -79,6 +95,7 @@ int main(int argc, char *argv[])
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -87,7 +104,7 @@ int main(int argc, char *argv[])
 
     adfUnMount(vol);
     adfUnMountDev(hd);
-
+    adfCloseDev(hd);
 
     adfEnvCleanUp();
 

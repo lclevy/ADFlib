@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
 
     adfUnMount(vol);
     adfUnMountDev(hd);
-
+    adfCloseDev(hd);
 
     adfEnvCleanUp();
 
