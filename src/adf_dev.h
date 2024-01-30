@@ -50,10 +50,10 @@ PREFIX struct AdfDevice * adfOpenDev ( const char * const  filename,
                                        const AdfAccessMode mode );
 PREFIX void adfCloseDev ( struct AdfDevice * const dev );
 
-PREFIX int adfDevType ( struct AdfDevice * dev );
-PREFIX void adfDeviceInfo ( struct AdfDevice * dev );
+PREFIX int adfDevType ( const struct AdfDevice * const dev );
+PREFIX void adfDeviceInfo ( const struct AdfDevice * const dev );
 
-PREFIX RETCODE adfMountDev ( struct AdfDevice * dev );
+PREFIX RETCODE adfMountDev ( struct AdfDevice * const dev );
 PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
 
 //struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);

@@ -139,7 +139,7 @@ void adfCloseDev ( struct AdfDevice * const dev )
  * returns the type of a device
  * only based of the field 'dev->size'
  */
-int adfDevType ( struct AdfDevice * dev )
+int adfDevType ( const struct AdfDevice * const dev )
 {
     if( (dev->size==512*11*2*80) ||		/* BV */
         (dev->size==512*11*2*81) ||		/* BV */
@@ -165,7 +165,7 @@ int adfDevType ( struct AdfDevice * dev )
  *
  * can be used before adfCreateVol() or adfMount()
  */
-void adfDeviceInfo ( struct AdfDevice * dev )
+void adfDeviceInfo ( const struct AdfDevice * const dev )
 {
     const char * devTypeInfo = NULL;
     switch ( dev->devType ) {
@@ -223,7 +223,7 @@ void adfDeviceInfo ( struct AdfDevice * dev )
  *
  * adfInitDevice() must fill dev->size !
  */
-RETCODE adfMountDev ( struct AdfDevice * dev )
+RETCODE adfMountDev ( struct AdfDevice * const dev )
 {
     if ( dev == NULL )
         return RC_ERROR;
