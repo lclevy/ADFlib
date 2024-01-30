@@ -409,8 +409,8 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct Volume *));
-    if (!dev->volList) {
-                (*adfEnv.eFct)("adfCreateHdFile : unknown device type");
+    if ( dev->volList == NULL ) {
+        adfEnv.eFct ( "adfCreateHdFile : malloc" );
         return RC_ERROR;
     }
 
