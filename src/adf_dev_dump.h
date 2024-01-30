@@ -34,10 +34,6 @@ PREFIX struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
                                                 const uint32_t     heads,
                                                 const uint32_t     sec );
 
-PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
-                                 const char * const       volName,
-                                 const uint8_t            volType );
-
 RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
                             const char * const       name,
                             const AdfAccessMode      mode );

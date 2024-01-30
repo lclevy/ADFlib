@@ -136,37 +136,6 @@ RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
 
 
 /*
- * adfCreateHdFile
- *
- */
-RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
-                          const char * const       volName,
-                          const uint8_t            volType )
-{
-    if (dev==NULL) {
-        (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
-        return RC_ERROR;
-    }
-    dev->volList = (struct AdfVolume **) malloc (sizeof(struct Volume *));
-    if (!dev->volList) { 
-                (*adfEnv.eFct)("adfCreateHdFile : unknown device type");
-        return RC_ERROR;
-    }
-
-    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
-    if (dev->volList[0]==NULL) {
-        free(dev->volList);
-        return RC_ERROR;
-    }
-
-    dev->nVol = 1;
-    dev->devType = DEVTYPE_HARDFILE;
-
-    return RC_OK;
-}
-
-
-/*
  * adfCreateDumpDevice
  *
  * returns NULL if failed
