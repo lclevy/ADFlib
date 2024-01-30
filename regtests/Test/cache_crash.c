@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     if (argc <= 1) return 1;
     adfEnvInitDefault();
-    if (dev = adfOpenDev(argv[1], ADF_ACCESS_MODE_READONLY)) {
+    if ((dev = adfOpenDev(argv[1], ADF_ACCESS_MODE_READONLY))) {
         if (adfMountDev(dev) == RC_OK) {
             if ((vol = adfMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
                 /* use dir cache (enables the crash) */
