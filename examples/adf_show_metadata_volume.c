@@ -24,7 +24,7 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     if ( adfReadBootBlock ( vol, &bblock ) != RC_OK ) {
         fprintf ( stderr, "Error reading rootblock\n");
         return;
-    }    
+    }
     show_bootblock ( &bblock, false );
 
     struct bRootBlock rblock;

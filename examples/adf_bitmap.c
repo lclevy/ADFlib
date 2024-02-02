@@ -174,7 +174,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
     printf ( "\nBlock allocation bitmap valid:    %s\n",
              rb.bmFlag == BM_VALID ? "yes" : "No!" );
-    
+
     /* Check root bm pages  */
     unsigned nerrors = 0,
         nblocks_free = 0,
@@ -288,7 +288,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                 "(or bitmap ext.) blocks could not be read\n"
                 " so the numbers above are not fully accurate "
                 "(exclude data from the unchecked bitmap blocks!)\n", nerrors );
-    return ( nerrors > 0 ) ? 1 : 0;    
+    return ( nerrors > 0 ) ? 1 : 0;
 }
 
 

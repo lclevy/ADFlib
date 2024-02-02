@@ -7,7 +7,7 @@
  *  adf_env.h
  *
  *  $Id$
- *  
+ *
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify

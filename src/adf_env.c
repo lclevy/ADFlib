@@ -71,7 +71,7 @@ void adfEnvInitDefault()
     adfEnv.notifyFct = Changed;
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
-	
+
     adfEnv.useDirCache = FALSE;
     adfEnv.useRWAccess = FALSE;
     adfEnv.useNotify = FALSE;
