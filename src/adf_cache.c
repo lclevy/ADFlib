@@ -229,7 +229,7 @@ int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
     memcpy(dirc->records+ptr+18,&(cEntry->mins),2);
     memcpy(dirc->records+ptr+20,&(cEntry->ticks),2);
 #endif
-    dirc->records[ptr+22] =(signed char)cEntry->type;
+    dirc->records[ptr+22] =(uint8_t)cEntry->type;
 
     dirc->records[ptr+23] = cEntry->nLen;
     memcpy(dirc->records+ptr+24, cEntry->name, cEntry->nLen);
