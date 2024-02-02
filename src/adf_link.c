@@ -24,11 +24,6 @@
  */
 
 
-#if defined (__ANY_IDEA_WHAT_IS_THIS_FOR__)
-// the code below is not used anywhere and seems unfinished
-// (not clear what it was meant for...)
-// -> disabling it for now
-
 #include<string.h>
 
 #include"adf_str.h"
@@ -36,6 +31,11 @@
 #include"adf_dir.h"
 #include "adf_env.h"
 
+
+#if defined (__ANY_IDEA_WHAT_IS_THIS_FOR__)
+// the code below is not used anywhere and seems unfinished
+// (not clear what it was meant for...)
+// -> disabling it for now
 
 /*
  *
