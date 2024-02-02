@@ -67,7 +67,7 @@ struct AdfList *file_list = NULL;
 
 /* prototypes */
 void parse_args(int argc, char *argv[]);
-void help();
+void help(void);
 void print_device(struct AdfDevice *dev);
 void print_volume(struct AdfVolume * vol);
 void print_tree(struct AdfList *node, char *path);
@@ -227,7 +227,7 @@ void parse_args(int argc, char *argv[]) {
     }
 }
 
-void help() {
+void help(void) {
     fprintf(stderr,
         "unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
         "    -l : lists root directory contents\n"
