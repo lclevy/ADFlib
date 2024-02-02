@@ -223,7 +223,6 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
     /* show bmExt blocks */
     SECTNUM bmExtBlkPtr = rb.bmExt;
-    unsigned bmExt_i = 0;
     while ( bmExtBlkPtr != 0 ) {
         struct bBitmapExtBlock bmExtBlk;
         RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
@@ -275,7 +274,6 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
 
         bmExtBlkPtr = bmExtBlk.nextBlock;
-        bmExt_i++;
     }
 
     /* show block statistics */
