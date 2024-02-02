@@ -53,8 +53,10 @@ int main ( int     argc,
         command = COMMAND_REBUILD;
     else if ( strcmp ( argv[1], "show" ) == 0 )
         command = COMMAND_SHOW;
-    else if ( strcmp ( argv[1], "help" ) == 0 )
+    else if ( strcmp ( argv[1], "help" ) == 0 ) {
         usage();
+        return 0;
+    }
     else {
         fprintf ( stderr, "\nUnknown command '%s'  "
                   "(use 'adf_bitmap help' for usage info)\n\n",
