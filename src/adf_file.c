@@ -115,14 +115,18 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
 #endif
 
     unsigned blocksCount = 0;
+#ifdef DEBUG_ADF_FILE
     unsigned dataBlocksCount = 0;
+#endif
     if ( nExtBlocksOld < 1 ) {
         // no ext. blocks (neither in orig. or truncated)
         int32_t * const dataBlocks = file->fileHdr->dataBlocks;
         for ( unsigned i = nDBlocksNew + 1 ; i <= nDBlocksOld ; ++i ) {
             assert ( blocksCount < nBlocksToRemove );
             blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+#ifdef DEBUG_ADF_FILE
             dataBlocksCount++;
+#endif
         }
     } else {
         // the file to truncate has at least one ext. block
@@ -142,7 +146,9 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
             for ( unsigned i = nDBlocksNew + 1 ; i <= MAX_DATABLK ; ++i ) {
                 assert ( blocksCount < nBlocksToRemove );
                 blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+#ifdef DEBUG_ADF_FILE
                 dataBlocksCount++;
+#endif
             }
             nextExt = (unsigned) file->fileHdr->extension;
         }
@@ -183,7 +189,9 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 for ( unsigned i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i ) {
                     assert ( blocksCount < nBlocksToRemove );
                     blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+#ifdef DEBUG_ADF_FILE
                     dataBlocksCount++;
+#endif
                 }
             }
 
@@ -217,13 +225,17 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 SECTNUM dblock = dataBlocks [ MAX_DATABLK - i ];
                 if ( dblock > 0 ) {
                     blocksToRemove->sectors [ blocksCount++ ] = dblock;
+#ifdef DEBUG_ADF_FILE
                     dataBlocksCount++;
+#endif
                 }
             }*/
             for ( unsigned i = 1 ; i <= lastDBlockToRemove ; ++i ) {
                 assert ( dataBlocks [ MAX_DATABLK - i ] > 0 );
                 blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+#ifdef DEBUG_ADF_FILE
                 dataBlocksCount++;
+#endif
             }
 
             // add currently loaded ext. to remove
