@@ -103,7 +103,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
     do {
-        adfReadDumpSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
+        dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
         found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
         if (!found)
             (vol->rootBlock)--;

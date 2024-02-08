@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    hd = adfCreateDumpDevice("comment-newdev", 80, 2, 11);
+    hd = adfCreateDev ( "dump", "comment-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

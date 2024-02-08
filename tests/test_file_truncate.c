@@ -452,7 +452,7 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfCreateDumpDevice ( tdata->adfname, 80, 2, 11 );
+    tdata->device = adfCreateDev ( "ramdisk", tdata->adfname, 80, 2, 11 );
     if ( ! tdata->device ) {       
         //return;
         exit(1);
@@ -483,6 +483,6 @@ void teardown ( test_data_t * const tdata )
     //adfUnMount ( tdata->vol );
     adfUnMountDev ( tdata->device );
     adfCloseDev ( tdata->device );
-    if ( unlink ( tdata->adfname ) != 0 )
-        perror("error deleting the image");
+    //if ( unlink ( tdata->adfname ) != 0 )
+    //    perror("error deleting the image");
 }

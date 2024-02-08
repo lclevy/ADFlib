@@ -15,6 +15,7 @@ libadf_la_SOURCES = \
     adf_bitm.c \
     adf_cache.c \
     adf_dev.c \
+    adf_dev_drivers.c \
     adf_dev_dump.c \
     adf_dev_flop.c \
     adf_dev_hd.c \
@@ -37,6 +38,8 @@ adfinc_HEADERS = \
     adf_bitm.h \
     adf_blk.h \
     adf_cache.h \
+    adf_dev_driver.h \
+    adf_dev_drivers.h \
     adf_dev_dump.h \
     adf_dev_flop.h \
     adf_dev.h \

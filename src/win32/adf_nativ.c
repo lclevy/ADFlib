@@ -42,25 +42,38 @@ struct AdfNativeDevice {
        void *hDrv;
 };
 
-
+static BOOL Win32IsDevice ( const char * const devName );
 static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
 
 
-static RETCODE Win32InitDevice ( struct AdfDevice * const dev,
-                                 const char * const       lpstrName,
-                                 const AdfAccessMode      mode )
+static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
+                                            const AdfAccessMode mode )
 {
-	struct AdfNativeDevice * nDev = ( struct AdfNativeDevice * )
-            malloc ( sizeof(struct AdfNativeDevice) );
-	if (!nDev) {
-		(*adfEnv.eFct)("Win32InitDevice : malloc");
-		return RC_ERROR;													/* BV */
+	if ( ! Win32IsDevice ( lpstrName ) ) {
+		return NULL;
+	}
+
+	struct AdfDevice * dev = malloc ( sizeof ( struct AdfDevice ) );
+	if ( dev == NULL ) {
+		adfEnv.eFct ( "Win32InitDevice : malloc error" );
+		return NULL;
+	}
+
+	dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
+
+	dev->drvData = malloc ( sizeof ( struct AdfNativeDevice ) );
+	if ( dev->drvData == NULL ) {
+		adfEnv.eFct("Win32InitDevice : malloc data error");
+		free ( dev );
+		return NULL;
 	}
 
 	/* convert device name to something usable by Win32 functions */
 	if (strlen(lpstrName) != 3) {
 		(*adfEnv.eFct)("Win32InitDevice : invalid drive specifier");
-		return RC_ERROR;													/* BV */
+		free ( dev->drvData );
+		free ( dev );
+		return NULL;
 	}
 
 	char strTempName[3];
@@ -68,25 +81,27 @@ static RETCODE Win32InitDevice ( struct AdfDevice * const dev,
 	strTempName[1] = lpstrName[2];
 	strTempName[2] = '\0';
 
-	nDev->hDrv = NT4OpenDrive(strTempName);
-
-	if (nDev->hDrv == NULL) {
+	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
+	*hDrv = NT4OpenDrive ( strTempName );
+	if ( *hDrv == NULL ) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4OpenDrive");
-		return RC_ERROR;													/* BV */
+		free ( dev->drvData );
+		free ( dev );
+		return NULL;
 	}
 
         NT4DriveGeometry_t geometry;
-        if ( ! NT4GetDriveGeometry ( nDev->hDrv, &geometry ) ) {
+        if ( ! NT4GetDriveGeometry ( *hDrv, &geometry ) ) {
             (*adfEnv.eFct)("Win32InitDevice : error getting drive geometry");
             Win32ReleaseDevice ( dev );
-            return RC_ERROR;
+            return NULL;
         }
 
         // no support for disks with non 512-byte sectors (-> to improve?)
         if ( geometry.bytesPerSector != 512 ) {
             (*adfEnv.eFct)("Win32InitDevice : non 512-byte sector size");
             Win32ReleaseDevice ( dev );
-            return RC_ERROR;
+            return NULL;
         }
 
         dev->cylinders = geometry.cylinders;
@@ -99,9 +114,14 @@ static RETCODE Win32InitDevice ( struct AdfDevice * const dev,
                     geometry.sectorsPerTrack *
                     geometry.bytesPerSector;
 
-	dev->nativeDev = nDev;
+	dev->devType = adfDevType ( dev );
+	dev->nVol    = 0;
+	dev->volList = NULL;
+	dev->mounted = FALSE;
+	dev->name    = strdup ( lpstrName );
+	dev->drv     = &adfDeviceDriverNative;
 
-	return RC_OK;
+	return dev;
 }
 
 
@@ -110,10 +130,9 @@ static RETCODE Win32ReadSector ( struct AdfDevice * const dev,
                                  const unsigned           size,
                                  uint8_t * const          buf )
 {
-	struct AdfNativeDevice * tDev =
-            ( struct AdfNativeDevice * ) dev->nativeDev;
+	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
-	if (! NT4ReadSector(tDev->hDrv, (long) n, size, buf)) {
+	if ( ! NT4ReadSector( *hDrv, (long) n, size, buf ) ) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4ReadSector");
 		return RC_ERROR;													/* BV */
 	}
@@ -127,10 +146,9 @@ static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
                                   const unsigned           size,
                                   const uint8_t * const    buf )
 {
-	struct AdfNativeDevice * tDev =
-            ( struct AdfNativeDevice * ) dev->nativeDev;
+	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
-	if (! NT4WriteSector(tDev->hDrv, (long) n, size, buf)) {
+	if ( ! NT4WriteSector ( *hDrv, (long) n, size, buf) ) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4WriteSector");
 		return RC_ERROR;													/* BV */
 	}
@@ -141,34 +159,37 @@ static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
 
 static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
-	struct AdfNativeDevice * nDev =
-            ( struct AdfNativeDevice * ) dev->nativeDev;
+	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
-	if (! NT4CloseDrive(nDev->hDrv))
+	if ( ! NT4CloseDrive ( *hDrv ) )
 		return RC_ERROR;													/* BV */
-
-	free(nDev);
+	free ( dev->name );
+	free ( dev->drvData );
+	free ( dev );
 
 	return RC_OK;
 }
 
+static BOOL Win32IsDevNative ( void )
+{
+    return TRUE;
+}
 
-static BOOL Win32IsDevNative ( const char * const devName )
+
+static BOOL Win32IsDevice ( const char * const devName )
 {
         return devName[0] == '|';
 }
 
 
-struct AdfNativeFunctions adfWindowsNativeDevice = {
-    NULL,
-    &Win32InitDevice,
-    &Win32ReleaseDevice,
-    &Win32ReadSector,
-    &Win32WriteSector,
-    &Win32IsDevNative
+const struct AdfDeviceDriver adfDeviceDriverNative = {
+    .name        = "native win32",
+    .data        = NULL,
+    .createDev   = NULL,
+    .openDev     = Win32InitDevice,
+    .closeDev    = Win32ReleaseDevice,
+    .readSector  = Win32ReadSector,
+    .writeSector = Win32WriteSector,
+    .isNative    = Win32IsDevNative,
+    .isDevice    = Win32IsDevice
 };
-
-
-struct AdfNativeFunctions *adfInitNativeFct() {
-    return &adfWindowsNativeDevice;
-}

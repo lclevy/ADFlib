@@ -1,5 +1,5 @@
 /*
- * adf_nativ.h
+ * adf_dev_drivers.h
  *
  * $ID$
  *
@@ -21,11 +21,23 @@
  *
  */
 
-#ifndef ADF_NATIV_H
-#define ADF_NATIV_H
+#ifndef ADF_DEV_DRIVERS_H
+#define ADF_DEV_DRIVERS_H
 
 #include "adf_dev_driver.h"
 
-extern const struct AdfDeviceDriver adfDeviceDriverNative;
+#include "adf_err.h"
 
-#endif
+
+RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver );
+
+RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver );
+
+void adfRemoveDeviceDrivers ( void );
+
+const struct AdfDeviceDriver * adfGetDeviceDriverByName ( const char * const driverName );
+const struct AdfDeviceDriver * adfGetDeviceDriverByDevName ( const char * const deviceName );
+
+#endif /* ADF_DEV_DRIVERS_H */
+
+/*#######################################################################################*/

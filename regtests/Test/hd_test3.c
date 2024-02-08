@@ -23,7 +23,6 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
-    struct AdfDevice *hd;
     struct AdfVolume *vol, *vol2;
     struct Partition part1;
     struct Partition part2;
@@ -35,7 +34,7 @@ int main(int argc, char *argv[])
 
     /* an harddisk, "b"=7.5Mb, "h"=74.5mb */
 
-    hd = adfCreateDumpDevice ( tmpdevname, 980, 10, 17 );
+    struct AdfDevice * hd = adfCreateDev ( "dump", tmpdevname, 980, 10, 17 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

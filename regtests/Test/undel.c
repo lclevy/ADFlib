@@ -22,7 +22,6 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfFile *fic;
     unsigned char buf[1];
@@ -35,7 +34,7 @@ int main(int argc, char *argv[])
     adfChgEnvProp(PR_USEDIRC,&true);
  
     /* create and mount one device */
-    hd = adfCreateDumpDevice("undel-newdev", 80, 2, 11);
+    struct AdfDevice * const hd = adfCreateDev ( "dump", "undel-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

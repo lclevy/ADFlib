@@ -11,7 +11,8 @@ Opening image/device:	'$basedir/arccsh.adf'
 Mounted volume:		0
 
 ADF device info:
-  Type:		floppy dd, file (image)
+  Type:		floppy dd
+  Driver:	dump
   Geometry:
     Cylinders	80
     Heads	2

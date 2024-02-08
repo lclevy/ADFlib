@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    hd = adfCreateDumpDevice("access-newdev", 80, 2, 11);
+    hd = adfCreateDev ( "dump", "access-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

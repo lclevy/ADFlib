@@ -289,7 +289,6 @@ int main ( void )
     SRunner * sr = srunner_create ( s );
 
     adfEnvInitDefault();
-    adfAddNativeDriver(&ramdiskDevice);
     srunner_run_all ( sr, CK_VERBOSE ); //CK_NORMAL );
     adfEnvCleanUp();
 
@@ -303,8 +302,9 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfOpenDev(RAMDISK_DEVICE_NAME, FALSE);
-    if ( ! tdata->device ) {       
+    tdata->device = adfCreateDev ( "ramdisk", "test_ramdisk", 80, 2, 11 );
+    if ( tdata->device == NULL ) {
+        fprintf ( stderr, "Error creating device\n");
         //return;
         exit(1);
     }

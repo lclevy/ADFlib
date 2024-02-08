@@ -28,7 +28,9 @@
 #include "adf_env.h"
 
 #include "adf_blk.h"
-#include "adf_nativ.h"
+#include "adf_dev_drivers.h"
+#include "adf_dev_dump.h"
+#include "adf_dev_ramdisk.h"
 #include "adf_version.h"
 #include "defendian.h"
 
@@ -80,7 +82,8 @@ void adfEnvInitDefault()
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
 */
-    adfEnv.nativeFct = adfInitNativeFct();
+    adfAddDeviceDriver ( &adfDeviceDriverDump );
+    adfAddDeviceDriver ( &adfDeviceDriverRamdisk );
 }
 
 
@@ -90,6 +93,7 @@ void adfEnvInitDefault()
  */
 void adfEnvCleanUp()
 {
+    adfRemoveDeviceDrivers();
 }
 
 
@@ -177,24 +181,6 @@ char* adfGetVersionNumber()
 char* adfGetVersionDate()
 {
 	return(ADFLIB_DATE);
-}
-
-void adfAddNativeDriver(struct AdfNativeFunctions *driver) {
-    if (driver) {
-        driver->next = adfEnv.nativeFct;
-        adfEnv.nativeFct = driver;
-    }
-}
-void adfRemoveNativeDriver(struct AdfNativeFunctions *driver) {
-    if (driver) {
-        struct AdfNativeFunctions *nFct = (struct AdfNativeFunctions *) &(adfEnv.nativeFct);
-        for (; nFct; nFct = nFct->next) {
-            if (nFct->next == driver) {
-                nFct->next = driver->next;
-                return;
-            }
-        }
-    }
 }
 
 /*##################################################################################*/

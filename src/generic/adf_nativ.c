@@ -87,29 +87,29 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  * myIsDevNative
  *
  */
-BOOL myIsDevNative ( const char * const devName )
+static BOOL myIsDevNative(void)
 {
-//    return (strncmp(devName,"/dev/",5)==0);
+    return FALSE;
+}
+
+static BOOL myIsDevice ( const char * const devName )
+{
+    (void) devName;
     return FALSE;
 }
 
 
-struct AdfNativeFunctions adfGenericNativeDevice = {
-    NULL,
-    &myInitDevice,
-    &myReleaseDevice,
-    &myReadSector,
-    &myWriteSector,
-    &myIsDevNative
+const struct AdfDeviceDriver adfDeviceDriverNative = {
+    .name        = "native generic",
+    .data        = NULL,
+    .createDev   = NULL,
+    .openDev     = myInitDevice,
+    .closeDev    = myReleaseDevice,
+    .readSector  = myReadSector,
+    .writeSector = myWriteSector,
+    .isNative    = myIsDevNative,
+    .isDevice    = myIsDevice
 };
 
-
-/*
- * adfInitNativeFct
- *
- */
-struct AdfNativeFunctions *adfInitNativeFct() {
-    return &adfGenericNativeDevice;
-}
 
 /*##########################################################################*/

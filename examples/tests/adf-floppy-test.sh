@@ -11,7 +11,8 @@ compare_with <<EOF
 Creating floppy disk image: '$tmpdir/testflopdd1.adf'
 
 ADF device info:
-  Type:		floppy dd, file (image)
+  Type:		floppy dd
+  Driver:	dump
   Geometry:
     Cylinders	80
     Heads	2
@@ -27,7 +28,8 @@ $adf_floppy_format $tmpdir/testflopdd1.adf TestFlopDD1 1 >$actual 2>/dev/null
 compare_with <<EOF
 
 ADF device info:
-  Type:		floppy dd, file (image)
+  Type:		floppy dd
+  Driver:	dump
   Geometry:
     Cylinders	80
     Heads	2
@@ -49,7 +51,8 @@ Opening image/device:	'$tmpdir/testflopdd1.adf'
 Mounted volume:		0
 
 ADF device info:
-  Type:		floppy dd, file (image)
+  Type:		floppy dd
+  Driver:	dump
   Geometry:
     Cylinders	80
     Heads	2

@@ -26,29 +26,9 @@
  *
  */
 
-#include "adf_dev.h"
-#include "adf_err.h"
+#include "adf_dev_driver.h"
 
-PREFIX struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
-                                                const uint32_t     cyl,
-                                                const uint32_t     heads,
-                                                const uint32_t     sec );
-
-RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
-                            const char * const       name,
-                            const AdfAccessMode      mode );
-
-RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
-                            const uint32_t           n,
-                            const unsigned           size,
-                            uint8_t * const          buf );
-
-RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
-                             const uint32_t           n,
-                             const unsigned           size,
-                             const uint8_t * const    buf );
-
-RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev );
+extern const struct AdfDeviceDriver adfDeviceDriverDump;
 
 #endif /* ADF_DUMP_H */
 /*##########################################################################*/

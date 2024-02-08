@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     adfChgEnvProp(PR_USE_RWACCESS,&true);
  
     /* create and mount one device */
-    hd = adfCreateDumpDevice("dispsect-newdev", 80, 2, 11);
+    hd = adfCreateDev ( "dump", "dispsect-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

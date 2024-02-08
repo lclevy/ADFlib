@@ -239,7 +239,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
 {
     // create device
     const char * const adfname = test_data->adfname;
-    struct AdfDevice * const device = adfCreateDumpDevice ( adfname, 80, 2, 11 );
+    struct AdfDevice * const device = adfCreateDev ( "dump", adfname, 80, 2, 11 );
     if ( ! device )
         return 1;
     adfCreateFlop ( device, test_data->volname, test_data->fstype );

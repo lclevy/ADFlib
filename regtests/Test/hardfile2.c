@@ -22,14 +22,14 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
 
     adfEnvInitDefault();
 
     /* create and mount one device : 4194304 bytes */
-    hd = adfCreateDumpDevice("hardfile2-newdev", 256, 2, 32);
+    struct AdfDevice * const hd = adfCreateDev ( "dump", "hardfile2-newdev",
+                                                 256, 2, 32 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

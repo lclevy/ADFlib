@@ -4,8 +4,10 @@
 
 #include "adf_types.h"
 #include "adf_err.h"
+#include "adf_dev_driver.h"
 #include "adf_vol.h"
 #include "prefix.h"
+
 
 #include <stdio.h>
 
@@ -24,6 +26,7 @@ struct Partition {
 #define DEVTYPE_HARDFILE 	4
 
 struct AdfDevice {
+    char * name;
     int devType;               /* see below */
     BOOL readOnly;
     uint32_t size;                /* in bytes */
@@ -32,12 +35,9 @@ struct AdfDevice {
     uint32_t heads;
     uint32_t sectors;
 
-    BOOL isNativeDev;
-    struct AdfNativeFunctions *nativeFct;
-    void *nativeDev; /* for use by native functions */
-
-    FILE *fd;
-
+    const struct AdfDeviceDriver * drv;
+    void *                   drvData;   /* driver-specific device data,
+                                           (private, use only in the driver code!) */
     BOOL mounted;
 
     // stuff available when mounted
@@ -46,9 +46,41 @@ struct AdfDevice {
 };
 
 
-PREFIX struct AdfDevice * adfOpenDev ( const char * const  filename,
+/*
+ * adfCreateDev and adfOpenDev
+ *
+ * creates or open an ADF device without reading any data (ie. without finding volumes)
+ *
+ * An created/opened device either has to be mounted (to be used with functions
+ * requiring volume data) or only functions using block access on the device
+ * level (with adfRead/WriteBlockDev) can be used
+ * (ie. this applies to adfCreateFlop/Hd); in general this level of access
+ * is for: partitioning / formatting / creating file system data / cloning
+ * the whole device on _device_ block level - and similar.
+ */
+
+PREFIX struct AdfDevice * adfCreateDev ( const char * const driverName,
+                                         const char * const name,
+                                         const uint32_t     cylinders,
+                                         const uint32_t     heads,
+                                         const uint32_t     sectors );
+
+PREFIX struct AdfDevice * adfOpenDev ( const char * const  name,
                                        const AdfAccessMode mode );
+
+/*
+ * adfOpenDevWithDriver
+ *
+ * allows to avoid automatic driver selection done in adfOpenDev and enforce
+ * opening a file/device with the driver specified by its name
+ * (esp. useful for custom, user-implemented device drivers)
+ */
+PREFIX struct AdfDevice * adfOpenDevWithDriver ( const char * const  driverName,
+                                                 const char * const  name,
+                                                 const AdfAccessMode mode );
+
 PREFIX void adfCloseDev ( struct AdfDevice * const dev );
+
 
 PREFIX int adfDevType ( const struct AdfDevice * const dev );
 PREFIX void adfDeviceInfo ( const struct AdfDevice * const dev );
@@ -56,7 +88,6 @@ PREFIX void adfDeviceInfo ( const struct AdfDevice * const dev );
 PREFIX RETCODE adfMountDev ( struct AdfDevice * const dev );
 PREFIX void adfUnMountDev ( struct AdfDevice * const dev );
 
-//struct AdfDevice* adfCreateDev(char* filename, int32_t cylinders, int32_t heads, int32_t sectors);
 
 RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
                           const uint32_t           pSect,

@@ -29,6 +29,7 @@
 
 #include "adf_blk.h"
 #include "adf_env.h"
+#include "adf_err.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -36,41 +37,74 @@
 #include <string.h>
 
 
+struct DevDumpData {
+    FILE * fd;
+};
+
+
 /*
- * adfInitDumpDevice
+ * adfDevDumpOpen
  *
  */
-RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
-                            const char * const       name,
-                            const AdfAccessMode      mode )
+static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
+                                           const AdfAccessMode mode )
 {
+    struct AdfDevice * dev = ( struct AdfDevice * )
+        malloc ( sizeof ( struct AdfDevice ) );
+    if ( dev == NULL ) {
+        adfEnv.eFct ( "adfDevDumpOpen : malloc error" );
+        return NULL;
+    }
+
     dev->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
+
+    dev->drvData = malloc ( sizeof ( struct DevDumpData ) );
+    if ( dev->drvData == NULL ) {
+        adfEnv.eFct("adfDevDumpOpen : malloc data error");
+        free ( dev );
+        return NULL;
+    }
+
+    FILE ** const fd = &( ( (struct DevDumpData *) dev->drvData )->fd );
+
     errno = 0;
     if ( ! dev->readOnly ) {
-        dev->fd = fopen ( name, "rb+" );
+        *fd = fopen ( name, "rb+" );
         /* force read only */
-        if ( ! dev->fd && ( errno == EACCES || errno == EROFS ) ) {
-            dev->fd = fopen ( name, "rb" );
+        if ( *fd == NULL && ( errno == EACCES || errno == EROFS ) ) {
+            *fd = fopen ( name, "rb" );
             dev->readOnly = TRUE;
-            if ( dev->fd )
-                (*adfEnv.wFct)("myInitDevice : fopen, read-only mode forced");
+            if ( *fd != NULL )
+                adfEnv.wFct("adfDevDumpOpen : fopen, read-only mode forced");
         }
     }
     else
         /* read only requested */
-        dev->fd = fopen ( name, "rb" );
+        *fd = fopen ( name, "rb" );
 
-    if ( ! dev->fd ) {
-        (*adfEnv.eFct)("myInitDevice : fopen");
-        return RC_ERROR;
+    if ( *fd == NULL ) {
+        adfEnv.eFct ( "adfDevDumpOpen : fopen" );
+        free ( dev->drvData );
+        free ( dev );
+        return NULL;
     }
 
     /* determines size */
-    fseek ( dev->fd, 0, SEEK_END );
-    dev->size = (uint32_t) ftell ( dev->fd );
-    fseek ( dev->fd, 0, SEEK_SET );
+    fseek ( *fd, 0, SEEK_END );
+    dev->size = (uint32_t) ftell ( *fd );
+    fseek ( *fd, 0, SEEK_SET );
 
-    return RC_OK;
+    dev->devType = adfDevType ( dev );
+
+    dev->nVol    = 0;
+    dev->volList = NULL;
+    dev->mounted = FALSE;
+
+    dev->drv = &adfDeviceDriverDump;
+
+    dev->name = strdup ( name );
+
+    return dev;
 }
 
 
@@ -78,18 +112,19 @@ RETCODE adfInitDumpDevice ( struct AdfDevice * const dev,
  * adfReadDumpSector
  *
  */
-RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
-                            const uint32_t           n,
-                            const unsigned           size,
-                            uint8_t * const          buf )
+static RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
+                                   const uint32_t           n,
+                                   const unsigned           size,
+                                   uint8_t * const          buf )
 {
 /*puts("adfReadDumpSector");*/
-    int pos = fseek ( dev->fd, 512 * n, SEEK_SET );
+    FILE * const fd = ( (struct DevDumpData *) dev->drvData )->fd;
+    int pos = fseek ( fd, 512 * n, SEEK_SET );
 /*printf("nnn=%ld size=%d\n",n,size);*/
     if ( pos == -1 )
         return RC_ERROR;
 
-    size_t bytes_read = fread ( buf, 1, size, dev->fd );
+    size_t bytes_read = fread ( buf, 1, size, fd );
 /*puts("123");*/
     if ( bytes_read != size ) {
 /*printf("rr=%d\n",r);*/
@@ -105,16 +140,17 @@ RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
  * adfWriteDumpSector
  *
  */
-RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
-                             const uint32_t           n,
-                             const unsigned           size,
-                             const uint8_t * const    buf )
+static RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
+                                    const uint32_t           n,
+                                    const unsigned           size,
+                                    const uint8_t * const    buf )
 {
-    int r = fseek ( dev->fd, 512 * n, SEEK_SET );
+    FILE * const fd = ( (struct DevDumpData *) dev->drvData )->fd;
+    int r = fseek ( fd, 512 * n, SEEK_SET );
     if (r==-1)
         return RC_ERROR;
 
-    if ( fwrite ( buf, 1, size, dev->fd ) != (unsigned int) size )
+    if ( fwrite ( buf, 1, size, fd ) != (unsigned int) size )
         return RC_ERROR;
 /*puts("adfWriteDumpSector");*/
     return RC_OK;
@@ -125,14 +161,20 @@ RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
  * adfReleaseDumpDevice
  *
  */
-RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
+static RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
 {
-    fclose ( dev->fd );
+    fclose ( ( (struct DevDumpData *) dev->drvData )->fd );
 
-    //free ( dev );  // this is done externally - maybe should be moved here?
+    if ( dev->mounted )
+        adfUnMountDev ( dev );
+
+    free ( dev->drvData );
+    free ( dev->name );
+    free ( dev );
 
     return RC_OK;
 }
+
 
 
 /*
@@ -140,10 +182,10 @@ RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
  *
  * returns NULL if failed
  */ 
-struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
-                                         const uint32_t     cylinders,
-                                         const uint32_t     heads,
-                                         const uint32_t     sectors )
+static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
+                                                const uint32_t     cylinders,
+                                                const uint32_t     heads,
+                                                const uint32_t     sectors )
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 /*    int32_t i;*/
@@ -156,8 +198,18 @@ struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
         return NULL;
     }
 
-    dev->fd = fopen ( filename, "wb" );
-    if ( ! dev->fd ) {
+    dev->drvData = malloc ( sizeof ( struct DevDumpData ) );
+    if ( dev->drvData == NULL ) {
+        adfEnv.eFct("adfDevDumpOpen : malloc data error");
+        free ( dev );
+        return NULL;
+    }
+
+    FILE ** fd = &( ( (struct DevDumpData *) dev->drvData )->fd );
+
+    *fd = fopen ( filename, "wb" );
+    if ( *fd == NULL ) {
+        free ( dev->drvData );
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
         return NULL;
@@ -168,27 +220,30 @@ struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
 */
     long lastBlockOffset = ( ( cylinders * heads * sectors ) - 1 ) *
         LOGICAL_BLOCK_SIZE;
-    r = fseek ( dev->fd, lastBlockOffset, SEEK_SET );
+    r = fseek ( *fd, lastBlockOffset, SEEK_SET );
     if (r==-1) {
-        fclose ( dev->fd );
+        fclose ( *fd );
+        free ( dev->drvData );
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fseek");
         return NULL;
     }
 
     memset ( buf, 0, LOGICAL_BLOCK_SIZE );
-    size_t blocksWritten = fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, dev->fd );
+    size_t blocksWritten = fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, *fd );
     if ( blocksWritten != 1 ) {
-        fclose ( dev->fd );
+        fclose ( *fd );
+        free ( dev->drvData );
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fwrite");
         return NULL;
     }
 
-    fclose ( dev->fd );
+    fclose ( *fd );
 
-    dev->fd = fopen ( filename, "rb+" );
-    if ( ! dev->fd ) {
+    *fd = fopen ( filename, "rb+" );
+    if ( ! *fd ) {
+        free ( dev->drvData );
         free ( dev );
         (*adfEnv.eFct)("adfCreateDumpDevice : fopen");
         return NULL;
@@ -206,11 +261,31 @@ struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
         dev->devType = DEVTYPE_HARDDISK;
 		
     dev->nVol = 0;
-    dev->isNativeDev = FALSE;
     dev->readOnly = FALSE;
     dev->mounted = FALSE;
 
+    dev->drv = &adfDeviceDriverDump;
+
+    dev->name = strdup ( filename );
+
     return(dev);
 }
+
+static BOOL adfDevDumpIsNativeDevice ( void )
+{
+    return FALSE;
+}
+
+const struct AdfDeviceDriver adfDeviceDriverDump = {
+    .name        = "dump",
+    .data        = NULL,
+    .createDev   = adfCreateDumpDevice,
+    .openDev     = adfDevDumpOpen,       // adfOpenDev + adfInitDumpDevice
+    .closeDev    = adfReleaseDumpDevice,
+    .readSector  = adfReadDumpSector,
+    .writeSector = adfWriteDumpSector,
+    .isNative    = adfDevDumpIsNativeDevice,
+    .isDevice    = NULL
+};
 
 /*##################################################################################*/
