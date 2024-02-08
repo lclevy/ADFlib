@@ -24,14 +24,14 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     if ( adfReadBootBlock ( vol, &bblock ) != RC_OK ) {
         fprintf ( stderr, "Error reading rootblock\n");
         return;
-    }    
+    }
     show_bootblock ( &bblock, false );
 
     struct bRootBlock rblock;
-    uint32_t root_block_sector = adfVolCalcRootBlk ( vol );
+    SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
 
-    if ( adfReadRootBlock ( vol, root_block_sector, &rblock ) != RC_OK ) {
+    if ( adfReadRootBlock ( vol, (uint32_t)root_block_sector, &rblock ) != RC_OK ) {
         fprintf ( stderr, "Error reading rootblock at sector %u.\n", root_block_sector );
         return;
     }

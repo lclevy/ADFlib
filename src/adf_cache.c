@@ -23,7 +23,7 @@
  *  along with Foobar; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- */ 
+ */
 
 #include "adf_cache.h"
 
@@ -103,7 +103,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
             }
             entry->size = (uint32_t) caEntry.size;
             entry->access = (int32_t) caEntry.protect;
-            adfDays2Date( caEntry.days, &(entry->year), &(entry->month), 
+            adfDays2Date( caEntry.days, &(entry->year), &(entry->month),
                 &(entry->days) );
             entry->hour = caEntry.mins/60;
             entry->mins = caEntry.mins%60;
@@ -111,9 +111,9 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
 
             /* add it into the linked list */
             if (head==NULL)
-                head = cell = newCell(NULL, (void*)entry); 
+                head = cell = newCell(NULL, (void*)entry);
             else
-                cell = newCell(cell, (void*)entry); 
+                cell = newCell(cell, (void*)entry);
 
             if (cell==NULL) {
                 adfFreeEntry(entry);
@@ -128,8 +128,8 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
         }
         nSect = dirc.nextDirC;
     }while (nSect!=0);
-    
-    return head;	
+
+    return head;
 }
 
 
@@ -193,7 +193,7 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
 /*printf("cEntry->nLen %d cEntry->cLen %d %s\n",cEntry->nLen,cEntry->cLen,cEntry->name);*/
     *p  = ptr+24+cEntry->nLen+1+cEntry->cLen;
 
-    /* the starting offset of each record must be even (68000 constraint) */ 
+    /* the starting offset of each record must be even (68000 constraint) */
     if ((*p%2)!=0)
         *p=(*p)+1;
 
@@ -229,7 +229,7 @@ int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
     memcpy(dirc->records+ptr+18,&(cEntry->mins),2);
     memcpy(dirc->records+ptr+20,&(cEntry->ticks),2);
 #endif
-    dirc->records[ptr+22] =(signed char)cEntry->type;
+    dirc->records[ptr+22] =(uint8_t)cEntry->type;
 
     dirc->records[ptr+23] = cEntry->nLen;
     memcpy(dirc->records+ptr+24, cEntry->name, cEntry->nLen);
@@ -247,7 +247,7 @@ int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
         return l+1;
     }
 
-    /* ptr%2 must be == 0, if l%2==0, (ptr+l)%2==0 */ 
+    /* ptr%2 must be == 0, if l%2==0, (ptr+l)%2==0 */
 }
 
 
@@ -348,8 +348,8 @@ RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
                         return rc;
                 }
                 else {
-                    /* dirc.recordsNb ==1 or == 0 , prevSect!=-1 : 
-                    * the only record in this dirc block and a previous dirc block exists 
+                    /* dirc.recordsNb ==1 or == 0 , prevSect!=-1 :
+                    * the only record in this dirc block and a previous dirc block exists
                     */
                     adfSetBlockFree(vol, dirc.headerKey);
 
@@ -399,7 +399,7 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
     entryLen = adfEntry2CacheEntry(entry, &newEntry);
 /*printf("adfAddInCache--%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     newEntry.header, newEntry.type, newEntry.size, newEntry.protect,
-    newEntry.days, newEntry.mins/60, newEntry.mins%60, 
+    newEntry.days, newEntry.mins/60, newEntry.mins%60,
 	newEntry.ticks/50,
 	newEntry.name, newEntry.comm);
 */
@@ -418,13 +418,13 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
     caEntry.header, caEntry.type, caEntry.size, caEntry.protect,
-    caEntry.days, caEntry.mins/60, caEntry.mins%60, 
+    caEntry.days, caEntry.mins/60, caEntry.mins%60,
 	caEntry.ticks/50,
 	caEntry.name, caEntry.comm);
 */
             n++;
         }
-        
+
 /*        if (offset+entryLen<=488) {
             adfPutCacheEntry(&dirc, &offset, &newEntry);
             dirc.recordsNb++;
@@ -528,8 +528,8 @@ RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
                 }
                 else if (oLen>nLen) {
 /*puts("oLen>nLen");*/
-                    /* the new record is shorter, write it, 
-                     * then shift down the following records 
+                    /* the new record is shorter, write it,
+                     * then shift down the following records
                      */
                     adfPutCacheEntry(&dirc, &oldOffset, &newEntry);
                     for(i=oldOffset+nLen; i<(488-sLen); i++)
@@ -605,7 +605,7 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
         (*adfEnv.wFct)("adfCreateEmptyCache : unknown secType");
 /*printf("secType=%ld\n",parent->secType);*/
     }
-        
+
     dirc.recordsNb = 0;
     dirc.nextDirC = 0;
 
@@ -655,9 +655,9 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
- 
+
     dirc->type = T_DIRC;
-    dirc->headerKey = nSect; 
+    dirc->headerKey = nSect;
 
     memcpy(buf, dirc, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
