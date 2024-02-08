@@ -46,6 +46,12 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     )
 endif()
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
+    message ( STATUS "Setting additional clang options/checks" )
+    add_compile_options (
+      -Wno-gnu-statement-expression-from-macro-expansion
+    )
+endif()
 
 option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" OFF )
 

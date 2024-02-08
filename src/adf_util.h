@@ -38,7 +38,7 @@ struct DateTime {
 
 /* defines max and min */
 #ifndef max
-#if !defined(__clang__) && defined(__GNUC__)
+#if defined(__clang__) || defined(__GNUC__)
 #define max(a,b)             \
 ({                           \
     __typeof__ (a) _a = (a); \
@@ -51,7 +51,7 @@ struct DateTime {
 #endif
 
 #ifndef min
-#if !defined(__clang__) && defined(__GNUC__)
+#if defined(__clang__) || defined(__GNUC__)
 #define min(a,b)             \
 ({                           \
     __typeof__ (a) _a = (a); \
