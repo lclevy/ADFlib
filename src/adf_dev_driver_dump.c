@@ -1,7 +1,7 @@
 /*
  * ADF Library
  *
- * adf_dump.c
+ * adf_dev_driver_dump.c
  *
  *  $Id$
  *
@@ -25,7 +25,7 @@
  *
  */
 
-#include "adf_dev_dump.h"
+#include "adf_dev_driver_dump.h"
 
 #include "adf_blk.h"
 #include "adf_env.h"

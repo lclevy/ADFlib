@@ -57,7 +57,7 @@ extern "C" {
 #include "adf_dev_hd.h"
 
 /* dump device */
-#include "adf_dev_dump.h"
+#include "adf_dev_driver_dump.h"
 
 /* env */
 #include "adf_env.h"
