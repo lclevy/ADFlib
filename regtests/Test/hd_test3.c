@@ -34,13 +34,13 @@ int main(int argc, char *argv[])
 
     /* an harddisk, "b"=7.5Mb, "h"=74.5mb */
 
-    struct AdfDevice * hd = adfCreateDev ( "dump", tmpdevname, 980, 10, 17 );
+    struct AdfDevice * hd = adfDevCreate ( "dump", tmpdevname, 980, 10, 17 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
     partList = (struct Partition**)malloc(sizeof(struct Partition*)*2);
     if (!partList) exit(1);
@@ -63,24 +63,24 @@ int main(int argc, char *argv[])
     free(part1.volName);
     free(part2.volName);
     if ( rc != RC_OK ) {
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf ( stderr, "adfCreateHd returned error %d\n", rc );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
     vol2 = adfMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
     if (!vol2) {
         adfUnMount(vol);
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -90,12 +90,12 @@ int main(int argc, char *argv[])
 
     adfUnMount(vol);
     adfUnMount(vol2);
-    adfUnMountDev(hd);
-    adfCloseDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
 
     /* mount the created device */
-    hd = adfOpenDev ( tmpdevname, ADF_ACCESS_MODE_READWRITE );
+    hd = adfDevOpen ( tmpdevname, ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   tmpdevname );
@@ -103,17 +103,17 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    rc = adfMountDev ( hd );
+    rc = adfDevMount ( hd );
     if ( rc != RC_OK ) {
-        adfCloseDev(hd);
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
-    adfUnMountDev(hd);
-    adfCloseDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
     return 0;

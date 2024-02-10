@@ -101,7 +101,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
             fstype_info [ tdata->fstype ], tdata->blocksize );
 #endif
 
-    struct AdfDevice * device = adfCreateDev ( "dump", tdata->adfname, 80, 2, 11 );
+    struct AdfDevice * device = adfDevCreate ( "dump", tdata->adfname, 80, 2, 11 );
     if ( ! device )
         return 1;
     adfCreateFlop ( device, "OverfillTest", tdata->fstype );
@@ -158,8 +158,8 @@ int test_floppy_overfilling ( test_data_t * const tdata )
                                  bytes_written, tdata->max_errors );
 
     adfUnMount ( vol );
-    adfUnMountDev ( device );
-    adfCloseDev ( device );
+    adfDevUnMount ( device );
+    adfDevClose ( device );
 
 #if TEST_VERBOSITY > 0
     printf (" -> %s\n", status ? "ERROR" : "OK" );

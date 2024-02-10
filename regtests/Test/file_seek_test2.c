@@ -82,7 +82,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
              test_data->filename_local );
 #endif
 
-    struct AdfDevice * const dev = adfOpenDev ( test_data->image_filename,
+    struct AdfDevice * const dev = adfDevOpen ( test_data->image_filename,
                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
@@ -91,11 +91,11 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         exit(1);
     }
 
-    RETCODE rc = adfMountDev ( dev );
+    RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
-        adfCloseDev ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 
@@ -103,8 +103,8 @@ int run_multiple_seek_tests ( test_file_t * test_data )
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
-        adfUnMountDev ( dev );
-        adfCloseDev ( dev );
+        adfDevUnMount ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 #if TEST_VERBOSITY > 0
@@ -144,8 +144,8 @@ cleanup_adffile:
 
 cleanup:
     adfUnMount ( vol );
-    adfUnMountDev ( dev );
-    adfCloseDev ( dev );
+    adfDevUnMount ( dev );
+    adfDevClose ( dev );
 
     return status;
 }

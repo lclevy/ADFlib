@@ -302,7 +302,7 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfCreateDev ( "ramdisk", "test_ramdisk", 80, 2, 11 );
+    tdata->device = adfDevCreate ( "ramdisk", "test_ramdisk", 80, 2, 11 );
     if ( tdata->device == NULL ) {
         fprintf ( stderr, "Error creating device\n");
         //return;
@@ -324,6 +324,6 @@ void setup ( test_data_t * const tdata )
 void teardown ( test_data_t * const tdata )
 {
     //adfUnMount ( tdata->vol );
-    adfUnMountDev ( tdata->device );
-    adfCloseDev ( tdata->device );
+    adfDevUnMount ( tdata->device );
+    adfDevClose ( tdata->device );
 }

@@ -35,25 +35,25 @@ int main(int argc, char *argv[])
  
     /* create and mount one device */
 puts("\ncreate dumpdevice");
-    struct AdfDevice * const hd = adfCreateDev ( "dump", "progbar-newdev", 80, 2, 11 );
+    struct AdfDevice * const hd = adfDevCreate ( "dump", "progbar-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo ( hd );
 puts("\ncreate floppy");
     if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
 		fprintf(stderr, "can't create floppy\n");
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -61,8 +61,8 @@ puts("\ncreate floppy");
     adfVolumeInfo(vol);
 
     adfUnMount(vol);
-    adfUnMountDev(hd);
-    adfCloseDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

@@ -39,25 +39,25 @@ int main(int argc, char *argv[])
     adfChgEnvProp(PR_USE_RWACCESS,&true);
  
     /* create and mount one device */
-    hd = adfCreateDev ( "dump", "dispsect-newdev", 80, 2, 11 );
+    hd = adfDevCreate ( "dump", "dispsect-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo ( hd );
 
     if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
 		fprintf(stderr, "can't create floppy\n");
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
         adfUnMount(vol);
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp();
         exit(1);
     }
@@ -124,8 +124,8 @@ int main(int argc, char *argv[])
 
 
     adfUnMount(vol);
-    adfUnMountDev(hd);
-    adfCloseDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

@@ -74,7 +74,7 @@ int main ( const int          argc,
 //	adfSetEnvFct(0,0,MyVer,0);
 
     /* mount the original image */
-    struct AdfDevice * devOrig = adfOpenDev ( adfOrig, ADF_ACCESS_MODE_READONLY );
+    struct AdfDevice * devOrig = adfDevOpen ( adfOrig, ADF_ACCESS_MODE_READONLY );
     if ( ! devOrig ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfOrig );
@@ -82,7 +82,7 @@ int main ( const int          argc,
         goto clean_up;
     }
 
-    RETCODE rc = adfMountDev ( devOrig );
+    RETCODE rc = adfDevMount ( devOrig );
     if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfOrig );
         error_status = TRUE;
@@ -99,7 +99,7 @@ int main ( const int          argc,
 
     
     /* mount the image copy (for updating) */
-    struct AdfDevice * const devUpdate = adfOpenDev ( adfUpdate,
+    struct AdfDevice * const devUpdate = adfDevOpen ( adfUpdate,
                                                       ADF_ACCESS_MODE_READWRITE );
     if ( ! devUpdate ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
@@ -108,7 +108,7 @@ int main ( const int          argc,
         goto umount_vol_orig;
     }
 
-    rc = adfMountDev ( devUpdate );
+    rc = adfDevMount ( devUpdate );
     if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfUpdate );
         error_status = TRUE;
@@ -184,16 +184,16 @@ int main ( const int          argc,
 umount_vol_updated:
     adfUnMount ( volUpdate );
 umount_dev_updated:
-    adfUnMountDev ( devUpdate );
+    adfDevUnMount ( devUpdate );
 close_dev_updated:
-    adfCloseDev ( devUpdate );
+    adfDevClose ( devUpdate );
 
 umount_vol_orig:
     adfUnMount ( volOrig );
 umount_dev_orig:
-    adfUnMountDev ( devOrig );
+    adfDevUnMount ( devOrig );
 close_dev_orig:
-    adfCloseDev ( devOrig );
+    adfDevClose ( devOrig );
 
 clean_up:
     adfEnvCleanUp();

@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    struct AdfDevice * const hd = adfCreateDev ( "dump", "rename2-newdev", 80, 2, 11 );
+    struct AdfDevice * const hd = adfDevCreate ( "dump", "rename2-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -37,20 +37,20 @@ int main(int argc, char *argv[])
 
     if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
 		fprintf(stderr, "can't create floppy\n");
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
-        adfCloseDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
     adfVolumeInfo(vol);
 
@@ -122,8 +122,8 @@ printf("[dir = %ld]\n",883L);
     adfFreeDirList(list);
 
 	    adfUnMount(vol);
-    adfUnMountDev(hd);
-    adfCloseDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

@@ -380,7 +380,7 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfCreateDev ( "dump", tdata->adfname, 80, 2, 11 );
+    tdata->device = adfDevCreate ( "dump", tdata->adfname, 80, 2, 11 );
     if ( ! tdata->device ) {       
         //return;
         exit(1);
@@ -411,8 +411,8 @@ void teardown ( test_data_t * const tdata )
     tdata->buffer = NULL;
 
     //adfUnMount ( tdata->vol );
-    adfUnMountDev ( tdata->device );
-    adfCloseDev ( tdata->device );
+    adfDevUnMount ( tdata->device );
+    adfDevClose ( tdata->device );
 
     //printf ("unlinkuing the file %s\n", tdata->adfname );
     //fflush(stdout);

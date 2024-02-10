@@ -366,7 +366,7 @@ int main ( void )
 
 void setup ( test_data_t * const tdata )
 {
-    tdata->device = adfCreateDev ( "ramdisk", tdata->adfname, 80, 2, 11 );
+    tdata->device = adfDevCreate ( "ramdisk", tdata->adfname, 80, 2, 11 );
     if ( ! tdata->device ) {       
         //return;
         exit(1);
@@ -395,7 +395,7 @@ void teardown ( test_data_t * const tdata )
     tdata->buffer = NULL;
 
     //adfUnMount ( tdata->vol );
-    adfUnMountDev ( tdata->device );
-    adfCloseDev ( tdata->device );
+    adfDevUnMount ( tdata->device );
+    adfDevClose ( tdata->device );
     //unlink ( tdata->adfname );
 }
