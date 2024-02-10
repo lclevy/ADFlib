@@ -71,6 +71,9 @@ TARGET_LINK_LIBRARIES ( rename adf )
 add_executable ( hardfile hardfile.c )
 TARGET_LINK_LIBRARIES ( hardfile adf )
 
+add_executable ( hardfile2 hardfile2.c )
+TARGET_LINK_LIBRARIES ( hardfile2 adf )
+
 add_executable ( rename2 rename2.c )
 TARGET_LINK_LIBRARIES ( rename2 adf )
 
