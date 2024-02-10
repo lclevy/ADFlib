@@ -166,7 +166,7 @@ static RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
     fclose ( ( (struct DevDumpData *) dev->drvData )->fd );
 
     if ( dev->mounted )
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
 
     free ( dev->drvData );
     free ( dev->name );

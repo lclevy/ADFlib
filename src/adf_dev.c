@@ -36,7 +36,7 @@
 #include <string.h>
 
 
-struct AdfDevice * adfCreateDev ( const char * const driverName,
+struct AdfDevice * adfDevCreate ( const char * const driverName,
                                   const char * const name,
                                   const uint32_t     cylinders,
                                   const uint32_t     heads,
@@ -49,7 +49,7 @@ struct AdfDevice * adfCreateDev ( const char * const driverName,
 }
 
 
-struct AdfDevice * adfOpenDev ( const char * const  name,
+struct AdfDevice * adfDevOpen ( const char * const  name,
                                 const AdfAccessMode mode )
 {
     const struct AdfDeviceDriver * const driver = adfGetDeviceDriverByDevName ( name );
@@ -59,7 +59,7 @@ struct AdfDevice * adfOpenDev ( const char * const  name,
 }
 
 
-struct AdfDevice * adfOpenDevWithDriver ( const char * const  driverName,
+struct AdfDevice * adfDevOpenWithDriver ( const char * const  driverName,
                                           const char * const  name,
                                           const AdfAccessMode mode )
 {
@@ -71,17 +71,17 @@ struct AdfDevice * adfOpenDevWithDriver ( const char * const  driverName,
 
 
 /*
- * adfCloseDev
+ * adfDevClose
  *
  * Closes/releases an opened device.
  */
-void adfCloseDev ( struct AdfDevice * const dev )
+void adfDevClose ( struct AdfDevice * const dev )
 {
     if ( dev == NULL )
         return;
 
     if ( dev->mounted )
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
 
     dev->drv->closeDev ( dev );
 }
@@ -112,14 +112,14 @@ int adfDevType ( const struct AdfDevice * const dev )
 
 
 /*
- * adfDeviceInfo
+ * adfDevInfo
  *
  * display information about the device and its volumes
  * for demonstration purpose only since the output is stdout !
  *
  * can be used before adfCreateVol() or adfMount()
  */
-void adfDeviceInfo ( const struct AdfDevice * const dev )
+void adfDevInfo ( const struct AdfDevice * const dev )
 {
     const char * devTypeInfo = NULL;
     switch ( dev->devType ) {
@@ -171,13 +171,13 @@ void adfDeviceInfo ( const struct AdfDevice * const dev )
 
 
 /*
- * adfMountDev
+ * adfDevMount
  *
  * mount a dump file (.adf) or a real device (uses adf_nativ.c and .h)
  *
  * adfInitDevice() must fill dev->size !
  */
-RETCODE adfMountDev ( struct AdfDevice * const dev )
+RETCODE adfDevMount ( struct AdfDevice * const dev )
 {
     if ( dev == NULL )
         return RC_ERROR;
@@ -196,7 +196,7 @@ RETCODE adfMountDev ( struct AdfDevice * const dev )
 
     case DEVTYPE_HARDDISK: {
         uint8_t buf[512];
-        rc = adfReadBlockDev ( dev, 0, 512, buf );
+        rc = adfDevReadBlock ( dev, 0, 512, buf );
 
        /* BV ...from here*/
         if( rc != RC_OK ) {
@@ -231,10 +231,10 @@ RETCODE adfMountDev ( struct AdfDevice * const dev )
 
 
 /*
- * adfUnMountDev
+ * adfDevUnMount
  *
  */
-void adfUnMountDev ( struct AdfDevice * const dev )
+void adfDevUnMount ( struct AdfDevice * const dev )
 {
     if ( ! dev->mounted )
         return;
@@ -255,7 +255,7 @@ void adfUnMountDev ( struct AdfDevice * const dev )
 }
 
 
-RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
+RETCODE adfDevReadBlock ( struct AdfDevice * const dev,
                           const uint32_t           pSect,
                           const uint32_t           size,
                           uint8_t * const          buf )
@@ -269,7 +269,7 @@ RETCODE adfReadBlockDev ( struct AdfDevice * const dev,
 }
 
 
-RETCODE adfWriteBlockDev ( struct AdfDevice * const dev,
+RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
                            const uint32_t           pSect,
                            const uint32_t           size,
                            const uint8_t * const    buf )
