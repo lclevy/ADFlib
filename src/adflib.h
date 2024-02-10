@@ -56,8 +56,9 @@ extern "C" {
 #include "adf_dev_flop.h"
 #include "adf_dev_hd.h"
 
-/* dump device */
+/* device drivers */
 #include "adf_dev_driver_dump.h"
+#include "adf_dev_driver_ramdisk.h"
 
 /* env */
 #include "adf_env.h"

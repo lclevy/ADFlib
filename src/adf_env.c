@@ -30,7 +30,7 @@
 #include "adf_blk.h"
 #include "adf_dev_drivers.h"
 #include "adf_dev_driver_dump.h"
-#include "adf_dev_ramdisk.h"
+#include "adf_dev_driver_ramdisk.h"
 #include "adf_version.h"
 #include "defendian.h"
 

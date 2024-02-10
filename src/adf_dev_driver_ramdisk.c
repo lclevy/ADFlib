@@ -1,5 +1,5 @@
 /*
- * ramdisk.c
+ * adf_dev_driver_ramdisk.c
  *
  * $Id$
  *
@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "adf_dev_ramdisk.h"
+#include "adf_dev_driver_ramdisk.h"
 #include "adf_env.h"
 
 static struct AdfDevice * ramdiskCreate ( const char * const name,
