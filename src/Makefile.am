@@ -40,6 +40,7 @@ adfinc_HEADERS = \
     adf_cache.h \
     adf_dev_driver.h \
     adf_dev_driver_dump.h \
+    adf_dev_driver_nativ.h \
     adf_dev_driver_ramdisk.h \
     adf_dev_drivers.h \
     adf_dev_flop.h \
@@ -52,7 +53,6 @@ adfinc_HEADERS = \
     adf_file.h \
     adf_file_util.h \
     adf_link.h \
-    adf_nativ.h \
     adf_raw.h \
     adf_salv.h \
     adf_str.h \
@@ -68,12 +68,12 @@ adfinc_HEADERS = \
 libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 
 if NATIVE_GENERIC
-libadf_la_SOURCES += generic/adf_nativ.c
+libadf_la_SOURCES += generic/adf_dev_driver_nativ.c
 endif
 if NATIVE_LINUX
-libadf_la_SOURCES += linux/adf_nativ.c
+libadf_la_SOURCES += linux/adf_dev_driver_nativ.c
 endif
 if NATIVE_WIN32
-libadf_la_SOURCES += win32/adf_nativ.c win32/nt4_dev.c win32/nt4_dev.h
+libadf_la_SOURCES += win32/adf_dev_driver_nativ.c win32/nt4_dev.c win32/nt4_dev.h
 AM_CFLAGS += -I$(srcdir)/win32
 endif

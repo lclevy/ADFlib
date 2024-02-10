@@ -1,4 +1,4 @@
-/* Win32/adf_nativ.c - Win32 specific drive-access routines for ADFLib
+/* Win32/adf_dev_driver_nativ.c - Win32 specific drive-access routines for ADFLib
  *
  * Modified for Win32 by Dan Sutherland <dan@chromerhino.demon.co.uk>
  *
@@ -32,8 +32,7 @@
 
 #include "adf_str.h"
 #include "adf_err.h"
-
-#include "adf_nativ.h"
+#include "adf_dev_driver_nativ.h"
 #include "adf_env.h"
 #include "nt4_dev.h"
 

@@ -11,21 +11,21 @@ if ( ADFLIB_ENABLE_NATIVE_DEV )
     if ( WIN32 OR CYGWIN OR MINGW OR MSYS OR CMAKE_C_PLATFORM_ID STREQUAL "MinGW")
         set ( ADFLIB_NATIVE_DEV_DIR win32 )
         set ( ADFLIB_NATIVE_DEV_SRC
-              win32/adf_nativ.c
+              win32/adf_dev_driver_nativ.c
               win32/nt4_dev.c
               win32/nt4_dev.h )
     else()
         if ( UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 	    set ( ADFLIB_NATIVE_DEV_DIR linux )
-            set ( ADFLIB_NATIVE_DEV_SRC linux/adf_nativ.c )
+            set ( ADFLIB_NATIVE_DEV_SRC linux/adf_dev_driver_nativ.c )
         else()
             set ( ADFLIB_NATIVE_DEV_DIR generic )
-            set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+            set ( ADFLIB_NATIVE_DEV_SRC generic/adf_dev_driver_nativ.c )
         endif()
     endif()
 else()
     set ( ADFLIB_NATIVE_DEV_DIR generic )
-    set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+    set ( ADFLIB_NATIVE_DEV_SRC generic/adf_dev_driver_nativ.c )
 endif()
 message ( STATUS "Native device directory: ${ADFLIB_NATIVE_DEV_DIR}" )
 message ( STATUS "Native device sources:   ${ADFLIB_NATIVE_DEV_SRC}" )
@@ -89,14 +89,14 @@ add_library ( adf
   defendian.h
   hd_blk.h
   prefix.h
-  adf_nativ.h
+  adf_dev_driver_nativ.h
   ${ADFLIB_NATIVE_DEV_SRC}
   ${ADFLIB_DEBUG_MODULES}
 )
 
 set_target_properties ( adf PROPERTIES
     #PUBLIC_HEADER "adflib.h"
-    PUBLIC_HEADER "adf_bitm.h;adf_blk.h;adf_cache.h;adf_dev_driver_dump.h;adf_dev_driver_ramdisk.h;adf_dev_flop.h;adf_dev.h;adf_dev_hd.h;adf_dir.h;adf_env.h;adf_err.h;adf_file_block.h;adf_file.h;adf_file_util.h;adflib.h;adf_link.h;adf_nativ.h;adf_raw.h;adf_salv.h;adf_str.h;adf_types.h;adf_util.h;adf_version.h;adf_vol.h;debug_util.h;defendian.h;hd_blk.h;prefix.h"
+    PUBLIC_HEADER "adf_bitm.h;adf_blk.h;adf_cache.h;adf_dev_driver_dump.h;adf_dev_driver_nativ.h;adf_dev_driver_ramdisk.h;adf_dev_flop.h;adf_dev.h;adf_dev_hd.h;adf_dir.h;adf_env.h;adf_err.h;adf_file_block.h;adf_file.h;adf_file_util.h;adflib.h;adf_link.h;adf_raw.h;adf_salv.h;adf_str.h;adf_types.h;adf_util.h;adf_version.h;adf_vol.h;debug_util.h;defendian.h;hd_blk.h;prefix.h"
     #PRIVATE_HEADER ...
     VERSION ${CMAKE_PROJECT_VERSION}
 #    SOVERSION ${PROJECT_VERSION_MAJOR}

@@ -1,5 +1,5 @@
 /*
- * adf_nativ.c
+ * linux/adf_dev_driver_nativ.c
  *
  * $Id$
  *
@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 #include "adf_err.h"
-#include "adf_nativ.h"
+#include "adf_dev_driver_nativ.h"
 #include "adf_env.h"
 
 
