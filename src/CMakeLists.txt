@@ -5,11 +5,10 @@ if ( ADFLIB_BUILD_DLL )
     add_compile_definitions ( _EXPORTING )
 endif ( ADFLIB_BUILD_DLL )
 
-
 if ( ADFLIB_ENABLE_NATIVE_DEV )
 # Useful info (note that CYGWIN went from WIN32 to UNIX...):
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
-    if ( WIN32 OR CYGWIN OR MINGW OR MSYS )
+    if ( WIN32 OR CYGWIN OR MINGW OR MSYS OR CMAKE_C_PLATFORM_ID STREQUAL "MinGW")
         set ( ADFLIB_NATIVE_DEV_DIR win32 )
         set ( ADFLIB_NATIVE_DEV_SRC
               win32/adf_nativ.c
@@ -128,3 +127,12 @@ install ( TARGETS adf
 #    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
     DESTINATION FALSE
 )
+
+
+# Cmake debugging - list all defined variables
+# (from: https://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script )
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
