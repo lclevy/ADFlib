@@ -30,18 +30,18 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct AdfDevice * const device = adfOpenDev ( adfname, ADF_ACCESS_MODE_READWRITE );
+    struct AdfDevice * const device = adfDevOpen ( adfname, ADF_ACCESS_MODE_READWRITE );
     if ( device == NULL ) {
         fprintf ( stderr, "Cannot open floppy disk %s - aborting...\n", adfname );
         return 1;
     }
 
-    RETCODE rc = adfMountDev ( device );
+    RETCODE rc = adfDevMount ( device );
     if ( rc == RC_OK ) {
         fprintf ( stderr, "The floppy disk %s already contains a filesystem - aborting...\n",
                   adfname );
-        adfUnMountDev ( device );
-        adfCloseDev ( device );
+        adfDevUnMount ( device );
+        adfDevClose ( device );
         return 1;
     }
 
@@ -64,18 +64,18 @@ int main ( int     argc,
     }
     device->cylinders = device->size / ( device->sectors * device->heads * 512 );
 
-    adfDeviceInfo ( device );
+    adfDevInfo ( device );
 
     printf ( "Formatting floppy (%s) disk '%s'...\n", fdtype, adfname );
     if ( adfCreateFlop ( device, label, (unsigned char) type ) != RC_OK ) {
         fprintf ( stderr, "Error formatting the disk image '%s'!", adfname );
-        adfCloseDev ( device );
+        adfDevClose ( device );
         adfEnvCleanUp();
         return 1;
     }
     printf ( "Done!\n" );
  
-    adfCloseDev ( device );
+    adfDevClose ( device );
     adfEnvCleanUp();
 
     return 0;

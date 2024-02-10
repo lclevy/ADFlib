@@ -45,7 +45,7 @@ int main ( int     argc,
     adfEnvInitDefault();
 
     printf ( "\nOpening image/device:\t'%s'\n", adfname );
-    struct AdfDevice * const dev = adfOpenDev ( adfname, ADF_ACCESS_MODE_READONLY );
+    struct AdfDevice * const dev = adfDevOpen ( adfname, ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfname );
@@ -53,7 +53,7 @@ int main ( int     argc,
         goto env_cleanup;
     }
 
-    RETCODE rc = adfMountDev ( dev );
+    RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   adfname );
@@ -81,9 +81,9 @@ int main ( int     argc,
     adfUnMount ( vol );
 
 dev_mount_cleanup:
-    adfUnMountDev ( dev );
+    adfDevUnMount ( dev );
 dev_cleanup:
-    adfCloseDev ( dev );
+    adfDevClose ( dev );
 env_cleanup:
     adfEnvCleanUp();
 
@@ -93,7 +93,7 @@ env_cleanup:
 
 static void show_device_metadata ( struct AdfDevice * const dev )
 {
-    adfDeviceInfo ( dev );
+    adfDevInfo ( dev );
 }
 
 

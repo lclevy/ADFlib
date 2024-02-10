@@ -57,18 +57,18 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct AdfDevice * device = adfCreateDev ( "dump", adfname, tracks, HEADS,
+    struct AdfDevice * device = adfDevCreate ( "dump", adfname, tracks, HEADS,
                                                sectors_per_track );
     if ( ! device ) {
         fprintf ( stderr, "Error creating floppy (%s) disk image %s.\n",
                   floppy_type, adfname );
         return 1;
     }
-    adfDeviceInfo ( device );
+    adfDevInfo ( device );
     printf ( "Done!\n" );
 
-    adfUnMountDev ( device );
-    adfCloseDev ( device );
+    adfDevUnMount ( device );
+    adfDevClose ( device );
     adfEnvCleanUp();
 
     return 0;
