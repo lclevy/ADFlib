@@ -5,4 +5,5 @@
 
 CC=i686-w64-mingw32-gcc-12 util/cmake_shared_configure \
     -DADFLIB_ENABLE_NATIVE_DEV:BOOL=ON \
+    -DADFLIB_ENABLE_TESTS:BOOL=OFF \
     $@
