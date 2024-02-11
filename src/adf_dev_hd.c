@@ -134,8 +134,6 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
     struct bRDSKblock rdsk;
     struct bPARTblock part;
-    struct bFSHDblock fshd;
-    struct bLSEGblock lseg;
     int32_t next;
     struct AdfList *vList, *listRoot;
     int i;
@@ -220,25 +218,39 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     }
     freeList(listRoot);
 
+    /* The code below seems to only check if the FSHD and LSEG blocks can be
+       read. These blocks are not required to access partitions/volumes:
+       http://lclevy.free.fr/adflib/adf_info.html#p64 */
+
+    struct bFSHDblock fshd;
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         rc = adfReadFSHDblock ( dev, next, &fshd ); 
         if ( rc != RC_OK ) {
+            /*
             for ( i = 0 ; i < dev->nVol ; i++ )
                 free ( dev->volList[i] );
-            free(dev->volList);
-            (*adfEnv.eFct)("adfMount : adfReadFSHDblock");
-            return rc;
+            free(dev->volList); */
+            adfEnv.wFct ("adfMountHd : adfReadFSHDblock error, device %s, sector %d",
+                         dev->name, next );
+            //return rc;
+            break;
         }
         next = fshd.next;
     }
 
+    struct bLSEGblock lseg;
     next = fshd.segListBlock;
     while( next!=-1 ) {
         rc = adfReadLSEGblock ( dev, next, &lseg ); 
         if ( rc != RC_OK ) {
-            (*adfEnv.wFct)("adfMount : adfReadLSEGblock");
-            // abort here ?
+            /*for ( i = 0 ; i < dev->nVol ; i++ )
+                free ( dev->volList[i] );
+            free(dev->volList); */
+            adfEnv.wFct ("adfMountHd : adfReadLSEGblock error, device %s, sector %s",
+                         dev->name, next );
+            //return rc;
+            break;
         }
         next = lseg.next;
     }
