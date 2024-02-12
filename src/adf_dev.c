@@ -153,15 +153,10 @@ void adfDevInfo ( const struct AdfDevice * const dev )
              dev->nVol );
 
     for ( int i = 0 ; i < dev->nVol ; i++ ) {
-        if ( dev->volList[i]->volName )
-            printf("    %2d    %7d      %7d    \"%s\"", i,
-                   dev->volList[i]->firstBlock,
-                   dev->volList[i]->lastBlock,
-                   dev->volList[i]->volName);
-        else
-            printf("    %2d    %7d      %7d\n", i,
-                   dev->volList[i]->firstBlock,
-                   dev->volList[i]->lastBlock);
+        printf ( "    %2d  %9d    %9d    \"%s\"", i,
+                 dev->volList[i]->firstBlock,
+                 dev->volList[i]->lastBlock,
+                 dev->volList[i]->volName ? dev->volList[i]->volName : "" );
         if ( dev->volList[i]->mounted )
             printf("    mounted");
         putchar('\n');
