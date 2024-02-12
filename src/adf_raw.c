@@ -206,6 +206,10 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
     swapEndian((uint8_t*)boot,SWBL_BOOT);
 #endif
     if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
+        if ( strncmp ( "PFS", boot->dosType, 3 ) == 0 ) {
+            adfEnv.wFct("adfReadBootBlock : PFS volume found - not supported...");
+            return RC_ERROR;
+        }
         adfEnv.wFct("adfReadBootBlock : DOS id not found");
         return RC_ERROR;
     }
