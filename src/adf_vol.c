@@ -499,20 +499,20 @@ RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
 
 
 /*
- * adfWriteBlock
+ * adfVolWriteBlock
  *
  */
-RETCODE adfWriteBlock ( struct AdfVolume * const vol,
-                        const uint32_t           nSect,
-                        const uint8_t * const    buf )
+RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
+                           const uint32_t           nSect,
+                           const uint8_t * const    buf )
 {
     if (!vol->mounted) {
-        (*adfEnv.eFct)("the volume isn't mounted, adfWriteBlock not possible");
+        adfEnv.eFct ( "the volume isn't mounted, adfVolWriteBlock not possible" );
         return RC_ERROR;
     }
 
     if (vol->readOnly) {
-        (*adfEnv.wFct)("adfWriteBlock : can't write block, read only volume");
+        adfEnv.wFct ( "adfVolWriteBlock : can't write block, read only volume" );
         return RC_ERROR;
     }
 
@@ -525,13 +525,13 @@ RETCODE adfWriteBlock ( struct AdfVolume * const vol,
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )
     {
-        adfEnv.wFct ( "adfWriteBlock : nSect %u out of range", nSect );
+        adfEnv.wFct ( "adfVolWriteBlock : nSect %u out of range", nSect );
         return RC_BLOCKOUTOFRANGE;
     }
 
     RETCODE rc = adfDevWriteBlock ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFct ( "adfWriteBlock: error writing block %d, volume '%s'",
+        adfEnv.eFct ( "adfVolWriteBlock: error writing block %d, volume '%s'",
                       nSect, vol->volName );
     }
     return rc;

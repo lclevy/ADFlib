@@ -669,7 +669,7 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 
 /*puts("adfWriteDirCBlock");*/
-    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
+    return adfVolWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 /*################################################################################*/

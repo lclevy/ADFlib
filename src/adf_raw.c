@@ -178,7 +178,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     swLong(buf+20, newSum);
 /*	*(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 /* 	dumpBlock(buf);*/
-    return adfWriteBlock ( vol, nSect, buf );
+    return adfVolWriteBlock ( vol, nSect, buf );
 }
 
 
@@ -258,11 +258,11 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
 	dumpBlock(buf+512);
 */
 
-    RETCODE rc = adfWriteBlock ( vol, 0, buf );
+    RETCODE rc = adfVolWriteBlock ( vol, 0, buf );
     if ( rc != RC_OK )
         return rc;
 
-    rc = adfWriteBlock ( vol, 1, buf + 512 );
+    rc = adfVolWriteBlock ( vol, 1, buf + 512 );
     if (rc != RC_OK )
         return rc;
 

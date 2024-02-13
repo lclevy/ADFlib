@@ -854,7 +854,7 @@ RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
 
 /*	dumpBlock((uint8_t*)buf);*/
 
-    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
+    return adfVolWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 
@@ -899,7 +899,7 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
 #endif
 
 /*	dumpBlock((uint8_t*)buf);*/
-    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
+    return adfVolWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 

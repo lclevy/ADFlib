@@ -53,7 +53,7 @@ typedef enum {
     RC_BLOCKOUTOFRANGE = 1,
     RC_BLOCKNATREAD    = 1 << 1,
 
-/* adfWriteBlock() */
+/* adfVolWriteBlock() */
 /* RC_BLOCKOUTOFRANGE */
     RC_BLOCKNATWRITE   = 1 << 1,
     RC_BLOCKREADONLY   = 1 << 2,
