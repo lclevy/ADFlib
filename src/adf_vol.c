@@ -271,12 +271,12 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
 
 
 /*
- * adfRemountReadWrite
+ * adfVolRemount
  *
  *
  */
-PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
-                            const AdfAccessMode mode )
+PREFIX RETCODE adfVolRemount ( struct AdfVolume *  vol,
+                               const AdfAccessMode mode )
 {
     if ( vol == NULL )
         return RC_ERROR;
@@ -286,7 +286,7 @@ PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
 
     if ( mode == ADF_ACCESS_MODE_READWRITE ) {
         if ( vol->dev->readOnly ) {
-            adfEnv.eFct ( "adfRemount : device read-only, cannot mount "
+            adfEnv.eFct ( "adfVolRemount : device read-only, cannot mount "
                           "volume '%s' read-write", vol->volName );
             return RC_ERROR;
         }
@@ -294,7 +294,7 @@ PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
     } else if ( mode == ADF_ACCESS_MODE_READONLY ) {
         vol->readOnly = TRUE;
     } else {
-        adfEnv.eFct ( "adfRemount : cannot remount volume %s, invalid mode %d",
+        adfEnv.eFct ( "adfVolRemount : cannot remount volume %s, invalid mode %d",
                       vol->volName, mode );
         return RC_ERROR;
     }
