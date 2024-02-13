@@ -15,6 +15,7 @@ compare_with() {
     if diff -u $expected $actual; then
         :
     else
+	echo "Test '$1' failed."
         echo failed >$status
     fi
 }
