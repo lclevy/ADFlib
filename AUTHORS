@@ -1,10 +1,9 @@
 
-The main developper is
+The ADFlib was originally developed by
  Laurent Clévy
 
-
-Current maintainer (Feb 2023-):
- Tomasz Wolak
+Current main developments (since Nov 2022):
+ Tomasz Wolak <tomas.wolak@gmail.com>
 
 
 Contributors are:
@@ -23,19 +22,23 @@ Contributors are:
    - WinNT native driver
    - bug fixes
 
- Stuart Caie
-   - utilities: unadf
+ Stuart Caie <kyzer@cabextract.org.uk>
+   - utilities: unadf (full rewrite)
+   - ramdisk device driver
    - autotools conf.
    - improvements and bug fixes
 
- Tomasz Wolak (github.com/t-w)
-   - file write support (and improvements in read support)
-   - hard- and softlinks support
-   - linux native device
-   - utilities: adf_floppy_create/format, adf_show_metadata
-   - improvements and bug fixes
-   - unit tests (ie. for file read/write support)
-   - CMake conf. with support for Linux, Windows (Visual Studio and CygWin) and MacOs
+and:
+  Andreas Fredriksson <deplinenoise@gmail.com>
+  Daniel Collin <daniel@collin.com>
+  David O'Rourke <carbon14@submarine.org.uk>
+  Kalamatee <kalamatee@gmail.com>
+  Nikos Chantziaras <realnc@gmail.com>
+  polluks <polluks@sdf.lonestar.org>
+  Ralf Hoffmann <ralf@boomerangsworld.de>
+  Roman Dobosz <gryf73@gmail.com>
+  Svenbold <nick-1@gmx.net>
+  Toni G <toni.giorgino@isib.cnr.it>
+  Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
 
-
-(See git log for detailed contributions).
+(See git log for details).
