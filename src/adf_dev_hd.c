@@ -381,7 +381,7 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
         return RC_MALLOC;
     }
     for(i=0; i<n; i++) {
-        dev->volList[i] = adfCreateVol( dev, 
+        dev->volList[i] = adfVolCreate( dev,
 					(uint32_t) partList[i]->startCyl,
 					(uint32_t) partList[i]->lenCyl,
 					partList[i]->volName, 
@@ -392,7 +392,7 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
 /* pas fini */
            }
            free(dev->volList);
-           (*adfEnv.eFct)("adfCreateHd : adfCreateVol() fails");
+           adfEnv.eFct ( "adfCreateHd : adfVolCreate() failed" );
         }
         dev->volList[i]->blockSize = 512;
     }
@@ -426,7 +426,7 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
+    dev->volList[0] = adfVolCreate( dev, 0L, dev->cylinders, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
         return RC_ERROR;

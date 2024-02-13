@@ -117,7 +117,7 @@ int adfDevType ( const struct AdfDevice * const dev )
  * display information about the device and its volumes
  * for demonstration purpose only since the output is stdout !
  *
- * can be used before adfCreateVol() or adfVolMount()
+ * can be used before adfVolCreate() or adfVolMount()
  */
 void adfDevInfo ( const struct AdfDevice * const dev )
 {

@@ -326,11 +326,11 @@ void adfVolUnMount ( struct AdfVolume * const vol )
 
 
 /*
- * adfCreateVol
+ * adfVolCreate
  *
  * 
  */
-struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
+struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const uint32_t           start,
                                   const uint32_t           len,
                                   const char * const       volName,
@@ -347,7 +347,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
 
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
-        (*adfEnv.eFct)("adfCreateVol : malloc vol");
+        adfEnv.eFct ( "adfVolCreate : malloc vol" );
         return NULL;
     }
 	
@@ -369,7 +369,7 @@ struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
                           (unsigned) strlen ( volName ) );
     vol->volName = (char*)malloc(nlen+1);
     if (!vol->volName) { 
-        (*adfEnv.eFct)("adfCreateVol : malloc");
+        adfEnv.eFct ( "adfVolCreate : malloc volName" );
         free(vol); return NULL;
     }
     memcpy(vol->volName, volName, nlen);
