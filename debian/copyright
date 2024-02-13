@@ -5,11 +5,30 @@ Source: https://github.com/lclevy/ADFlib
 
 Files: *
 Copyright: 1999-2024 Laurent Clévy (laurent.clevy@club-internet.fr)
-           2019-2023 Stuart Caie (kyzer@cabextract.org.uk)
+           2019-2024 Stuart Caie (kyzer@cabextract.org.uk)
            2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
 
+Files: src/*
+Copyright: 1999-2024 Laurent Clévy (laurent.clevy@club-internet.fr)
+           2019-2024 Stuart Caie (kyzer@cabextract.org.uk)
+           2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
+License: LGPL-2.1+ or GPL-2.0+
+
+Files: debian/* examples/*
+Copyright: 2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
+
+Files: examples/unadf*
+Copyright: 1999-2024 Laurent Clévy (laurent.clevy@club-internet.fr)
+           2019-2024 Stuart Caie (kyzer@cabextract.org.uk)
+License: GPL-2.0+
+
+License: LGPL-2.1+
+License-Reference: /usr/share/common-licenses/LGPL-2.1
+
+License: GPL-2.0+
+License-Reference: /usr/share/common-licenses/GPL-2
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
@@ -26,15 +45,3 @@ License: GPL-2.0+
  On Debian systems, the complete text of the GNU General
  Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
 
-Files: debian/* examples/adf_* tests/*
-Copyright: 2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
-License: GPL-2.0+
-
-Files: examples/unadf*
-Copyright: 1999-2019 Laurent Clévy (laurent.clevy@club-internet.fr)
-           2019-2023 Stuart Caie (kyzer@cabextract.org.uk)
-License: GPL-2.0+
-
-Files: util/bump_project_version
-Copyright: 2023 Stuart Caie (kyzer@cabextract.org.uk)
-License: GPL-2.0+
