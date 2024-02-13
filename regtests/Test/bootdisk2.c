@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
 
     adfVolumeInfo(vol);
 

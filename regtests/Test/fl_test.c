@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
     fread(bootcode, sizeof(unsigned char), 1024, boot);
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
     fclose(boot);
 
     adfVolumeInfo(vol);

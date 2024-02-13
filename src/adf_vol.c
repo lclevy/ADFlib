@@ -51,8 +51,8 @@ uint32_t bitMask[32] = {
     0x10000000, 0x20000000, 0x40000000, 0x80000000 };
 
 
-RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
-                              const uint8_t * const    code )
+RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
+                                 const uint8_t * const    code )
 {
     int i;
     struct bBootBlock boot;

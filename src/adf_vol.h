@@ -80,8 +80,8 @@ static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
 }
 
 
-PREFIX RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
-                                     const uint8_t * const    code );
+PREFIX RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
+                                        const uint8_t * const    code );
 
 PREFIX BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
                                    const SECTNUM                  nSect );
