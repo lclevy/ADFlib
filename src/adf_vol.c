@@ -458,16 +458,16 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 /*-----*/
 
 /*
- * adfReadBlock
+ * adfVolReadBlock
  *
  * read logical block
  */
-RETCODE adfReadBlock ( struct AdfVolume * const vol,
-                       const uint32_t           nSect,
-                       uint8_t * const          buf )
+RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
+                          const uint32_t           nSect,
+                          uint8_t * const          buf )
 {
     if (!vol->mounted) {
-        (*adfEnv.eFct)("the volume isn't mounted, adfReadBlock not possible");
+        adfEnv.eFct ( "the volume isn't mounted, adfVolReadBlock not possible" );
         return RC_ERROR;
     }
 
@@ -485,13 +485,13 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )
     {
-        adfEnv.wFct("adfReadBlock : nSect %u out of range", nSect );
+        adfEnv.wFct ( "adfVolReadBlock : nSect %u out of range", nSect );
         return RC_BLOCKOUTOFRANGE;
     }
 
     RETCODE rc = adfDevReadBlock ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
-        adfEnv.eFct ( "adfReadBlock: error reading block %d, volume '%s'",
+        adfEnv.eFct ( "adfVolReadBlock: error reading block %d, volume '%s'",
                       nSect, vol->volName );
     }
     return rc;

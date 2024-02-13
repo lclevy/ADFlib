@@ -623,7 +623,7 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
 {
     uint8_t buf[512];
 
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 

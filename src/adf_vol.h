@@ -103,9 +103,9 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType );
 
-PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
-                              const uint32_t           nSect,
-                              uint8_t * const          buf );
+PREFIX RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
+                                 const uint32_t           nSect,
+                                 uint8_t * const          buf );
 
 PREFIX RETCODE adfWriteBlock ( struct AdfVolume * const vol,
                                const uint32_t           nSect,

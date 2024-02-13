@@ -198,7 +198,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
     uint8_t buf[512];
     struct bOFSDataBlock *dBlock;
 
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfReadDataBlock: error reading block %d, volume '%s'",
                        nSect, vol->volName );
@@ -287,7 +287,7 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
                               struct bFileExtBlock * const fext )
 {
     uint8_t buf[sizeof(struct bFileExtBlock)];
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
                       nSect, vol->volName );

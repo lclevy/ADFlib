@@ -120,7 +120,7 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-    RETCODE rc = adfReadBlock ( vol, nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
@@ -193,11 +193,11 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
     uint8_t buf[1024];
 	
 /*puts("22");*/
-    RETCODE rc = adfReadBlock ( vol, 0, buf );
+    RETCODE rc = adfVolReadBlock ( vol, 0, buf );
     if ( rc != RC_OK )
         return rc;
 /*puts("11");*/
-    rc = adfReadBlock ( vol, 1, buf + LOGICAL_BLOCK_SIZE );
+    rc = adfVolReadBlock ( vol, 1, buf + LOGICAL_BLOCK_SIZE );
     if ( rc != RC_OK )
         return rc;
 

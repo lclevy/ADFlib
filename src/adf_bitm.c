@@ -811,7 +811,7 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 
 /*printf("bitmap %ld\n",nSect);*/
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
@@ -869,7 +869,7 @@ RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
 {
     uint8_t buf[LOGICAL_BLOCK_SIZE];
 
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
