@@ -37,7 +37,7 @@ void test_file_create ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( device );
 
     // mount the test volume
-    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     struct AdfVolume * const vol    = tdata->vol;
     ck_assert_ptr_nonnull ( vol );
 
@@ -55,7 +55,7 @@ void test_file_create ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -106,7 +106,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
     ck_assert_ptr_nonnull ( device );
 
     // mount the test volume
-    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     struct AdfVolume * const vol    = tdata->vol;
     ck_assert_ptr_nonnull ( vol );
 
@@ -124,7 +124,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( tdata->vol );
-    tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     ck_assert_int_eq ( free_blocks_before,
@@ -261,7 +261,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

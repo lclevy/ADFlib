@@ -164,34 +164,34 @@ void adfVolumeInfo ( struct AdfVolume * const vol )
 
 
 /*
- * adfMount
+ * adfVolMount
  *
  * 
  */
-PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
-                                     const int                nPart,
-                                     const AdfAccessMode      mode )
+PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
+                                        const int                nPart,
+                                        const AdfAccessMode      mode )
 {
     struct bRootBlock root;
     struct bBootBlock boot;
     struct AdfVolume * vol;
 
     if ( dev == NULL ) {
-        adfEnv.eFct ( "adfMount : invalid device (NULL)" );
+        adfEnv.eFct ( "adfVolMount : invalid device (NULL)" );
         return NULL;
     }
 
     if ( nPart < 0  ||
          nPart >= dev->nVol )
     {
-        adfEnv.eFct ( "adfMount : invalid partition %d", nPart );
+        adfEnv.eFct ( "adfVolMount : invalid partition %d", nPart );
         return NULL;
     }
 
     if ( mode != ADF_ACCESS_MODE_READONLY  &&
          mode != ADF_ACCESS_MODE_READWRITE )
     {
-        adfEnv.eFct ( "adfMount : invalid mode %d", mode );
+        adfEnv.eFct ( "adfVolMount : invalid mode %d", mode );
         return NULL;
     }
 
@@ -203,7 +203,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
  vol->lastBlock, vol->rootBlock);
 */
     if (adfReadBootBlock(vol, &boot)!=RC_OK) {
-        adfEnv.eFct ( "adfMount : invalid BootBlock" );
+        adfEnv.eFct ( "adfVolMount : invalid BootBlock" );
         vol->mounted = FALSE;
         return NULL;
     }       
@@ -220,14 +220,14 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
         vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 	   	
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
-        adfEnv.eFct ( "adfMount : invalid RootBlock, sector %u", vol->rootBlock );
+        adfEnv.eFct ( "adfVolMount : invalid RootBlock, sector %u", vol->rootBlock );
         vol->mounted = FALSE;
         return NULL;
     }
 
     RETCODE rc = adfBitmapAllocate ( vol );
     if ( rc != RC_OK ) {
-            adfEnv.eFct ( "adfMount : adfBitmapAllocate() returned error %d, "
+            adfEnv.eFct ( "adfVolMount : adfBitmapAllocate() returned error %d, "
                           "mounting volume %s failed", rc, vol->volName );
             adfUnMount ( vol );
             return NULL;
@@ -235,7 +235,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
 
     rc = adfReadBitmap ( vol, &root );
     if ( rc != RC_OK ) {
-        adfEnv.eFct ( "adfMount : adfReadBitmap() returned error %d, "
+        adfEnv.eFct ( "adfVolMount : adfReadBitmap() returned error %d, "
                       "mounting volume %s failed", rc, vol->volName );
         adfUnMount ( vol );
         return NULL;
@@ -260,7 +260,7 @@ PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
     }
     */
     if ( root.bmFlag != BM_VALID )
-        adfEnv.wFct ( "adfMount : invalid bitmap on volume '%s'", vol->volName );
+        adfEnv.wFct ( "adfVolMount : invalid bitmap on volume '%s'", vol->volName );
 
     vol->curDirPtr = vol->rootBlock;
 

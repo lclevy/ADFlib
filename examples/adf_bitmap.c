@@ -92,7 +92,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct AdfVolume * const vol = adfMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );

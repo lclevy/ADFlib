@@ -72,7 +72,8 @@ int main ( const int                  argc,
         goto dev_cleanup;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, args.vol_id, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, args.vol_id,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   args.vol_id );

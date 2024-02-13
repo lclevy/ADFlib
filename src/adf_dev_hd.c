@@ -126,7 +126,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 /*
  * adfMountHd
  *
- * normal not used directly : called by adfMount()
+ * normal not used directly : called by adfDevMount()
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */

@@ -99,7 +99,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );

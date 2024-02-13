@@ -49,7 +49,7 @@ void test_file_truncate ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -71,7 +71,7 @@ void test_file_truncate ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -117,7 +117,7 @@ void test_file_truncate ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     //ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file - 1,
@@ -174,7 +174,7 @@ void test_file_truncate ( test_data_t * const tdata )
 
     // reset volume state (remount)
     adfUnMount ( vol );
-    vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
     // check volume metadata after truncating
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
@@ -463,7 +463,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);

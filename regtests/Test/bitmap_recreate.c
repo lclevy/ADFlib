@@ -89,8 +89,8 @@ int main ( const int          argc,
         goto close_dev_orig;
     }
 
-    struct AdfVolume * const volOrig = adfMount ( devOrig, 0,
-                                                  ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const volOrig = adfVolMount ( devOrig, 0,
+                                                     ADF_ACCESS_MODE_READONLY );
     if ( volOrig == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;
@@ -115,8 +115,8 @@ int main ( const int          argc,
         goto close_dev_updated;
     }
 
-    struct AdfVolume * volUpdate = adfMount ( devUpdate, 0,
-                                              ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * volUpdate = adfVolMount ( devUpdate, 0,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;
@@ -160,8 +160,8 @@ int main ( const int          argc,
 
     adfUnMount ( volUpdate );
 
-    volUpdate = adfMount ( devUpdate, 0,
-                           ADF_ACCESS_MODE_READWRITE );
+    volUpdate = adfVolMount ( devUpdate, 0,
+                              ADF_ACCESS_MODE_READWRITE );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;

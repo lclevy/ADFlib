@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
     adfDeviceInfo(hd);
 
-    vol = adfMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);

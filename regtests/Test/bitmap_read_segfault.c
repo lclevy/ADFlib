@@ -54,7 +54,7 @@ int main ( const int          argc,
     }
 
     /*** crash happens here, on mounting the volume, in adfReadBitmap() ***/
-    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( vol == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
         error_status = TRUE;

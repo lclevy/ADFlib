@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     adfDevInfo(hd);
 
     /* mount the 2 partitions */
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );

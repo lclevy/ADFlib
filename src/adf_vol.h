@@ -86,9 +86,9 @@ PREFIX RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
 PREFIX BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
                                    const SECTNUM                  nSect );
 
-PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
-                                     const int                nPart,
-                                     const AdfAccessMode      mode );
+PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
+                                        const int                nPart,
+                                        const AdfAccessMode      mode );
 
 PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
                             const AdfAccessMode mode );

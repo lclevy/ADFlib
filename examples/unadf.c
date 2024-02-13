@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
             adf_file, vol_number, dev->nVol);
         goto error_handler;
     }
-    if (!(vol = adfMount(dev, vol_number, ADF_ACCESS_MODE_READONLY))) {
+    if (!(vol = adfVolMount(dev, vol_number, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount volume %d\n",
             adf_file, vol_number);
         goto error_handler;

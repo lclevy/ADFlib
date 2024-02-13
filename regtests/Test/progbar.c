@@ -50,7 +50,7 @@ puts("\ncreate floppy");
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );

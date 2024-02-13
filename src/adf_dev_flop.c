@@ -38,7 +38,7 @@
 /*
  * adfMountFlop
  *
- * normaly not used directly, called directly by adfMount()
+ * normaly not used directly, called directly by adfDevMount()
  *
  * use dev->devType to choose between DD and HD
  * fills geometry and the volume list with one volume

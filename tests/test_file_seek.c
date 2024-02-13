@@ -47,7 +47,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -73,7 +73,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
     // reset volume state (remount)
     adfUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
     // reopen the file
     file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
@@ -255,7 +255,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);
