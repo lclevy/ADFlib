@@ -42,7 +42,7 @@
 
 #define MAX_SWTYPE 11
 
-int swapTable[MAX_SWTYPE+1][15]={
+static const int swapTable [ MAX_SWTYPE + 1 ][ 15 ] = {
     { 4, SW_CHAR, 2, SW_LONG, 1012, SW_CHAR, 0, 1024 },     /* first bytes of boot */
     { 108, SW_LONG, 40, SW_CHAR, 10, SW_LONG, 0, 512 },        /* root */
     { 6, SW_LONG, 488, SW_CHAR, 0, 512 },                      /* data */
