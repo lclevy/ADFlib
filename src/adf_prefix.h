@@ -1,8 +1,8 @@
-#ifndef _PREFIX_H
-#define _PREFIX_H 1
+#ifndef ADF_PREFIX_H
+#define ADF_PREFIX_H 1
 
 /*
- * prefix.h
+ * adf_prefix.h
  *
  *  $Id$
  *
@@ -47,4 +47,4 @@
 #define PREFIX 
 #endif
 
-#endif /* _PREFIX_H */
+#endif /* ADF_PREFIX_H */

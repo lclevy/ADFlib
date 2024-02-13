@@ -28,8 +28,8 @@
  *
  */
 
+#include "adf_prefix.h"
 #include "adf_types.h"
-#include "prefix.h"
 
 struct AdfList {         /* generic linked tree */
     void *content;

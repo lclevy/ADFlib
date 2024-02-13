@@ -33,7 +33,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
-#include "prefix.h"
+#include "adf_prefix.h"
 
 #include "adf_types.h"
 #include "adf_version.h"

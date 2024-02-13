@@ -29,9 +29,9 @@
 
 #include "adf_blk.h"
 #include "adf_err.h"
+#include "adf_prefix.h"
 #include "adf_types.h"
 #include "adf_vol.h"
-#include "prefix.h"
 
 
 PREFIX RETCODE adfReadBitmapBlock ( struct AdfVolume * const    vol,

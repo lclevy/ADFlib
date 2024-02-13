@@ -26,10 +26,9 @@
  *
  */
 
+#include "adf_prefix.h"
 #include "adf_types.h"
 #include "adf_vol.h"
-
-#include "prefix.h"
 
 
 PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,

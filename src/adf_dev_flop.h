@@ -4,7 +4,7 @@
 
 #include "adf_dev.h"
 #include "adf_err.h"
-#include "prefix.h"
+#include "adf_prefix.h"
 
 RETCODE adfMountFlop ( struct AdfDevice * dev );
 
