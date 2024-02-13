@@ -28,13 +28,13 @@
 
 #include "adf_dev_hd.h"
 
+#include "adf_byteorder.h"
 #include "adf_dev_driver_dump.h"
 #include "adf_env.h"
 #include "adf_raw.h"
 #include "adf_util.h"
 #include "adf_vol.h"
 
-#include "defendian.h"
 #include "hd_blk.h"
 
 #include <stdlib.h>
