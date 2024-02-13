@@ -223,10 +223,10 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
         if ( dBlock->dataSize > 488 )
             adfEnv.wFct ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
                            dBlock->dataSize, dBlock->dataSize, nSect, vol->volName );
-        if ( ! isSectNumValid ( vol, dBlock->headerKey ) )
+        if ( ! adfVolIsSectNumValid ( vol, dBlock->headerKey ) )
             adfEnv.wFct ( "adfReadDataBlock : headerKey (0x%x / %u) out of range, block %d, volume '%s'",
                            dBlock->headerKey, dBlock->headerKey, nSect, vol->volName );
-        if ( ! isSectNumValid ( vol, dBlock->nextData ) )
+        if ( ! adfVolIsSectNumValid ( vol, dBlock->nextData ) )
             adfEnv.wFct ( "adfReadDataBlock : nextData out of range, block %d, volume '%s'",
                            nSect, vol->volName );
     }
@@ -308,9 +308,9 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
         (*adfEnv.wFct)("adfReadFileExtBlock : headerKey!=nSect");
     if (fext->highSeq<0 || fext->highSeq>MAX_DATABLK)
         (*adfEnv.wFct)("adfReadFileExtBlock : highSeq out of range");
-    if ( !isSectNumValid(vol, fext->parent) ) 
+    if ( ! adfVolIsSectNumValid ( vol, fext->parent ) )
         (*adfEnv.wFct)("adfReadFileExtBlock : parent out of range");
-    if ( fext->extension!=0 && !isSectNumValid(vol, fext->extension) )
+    if ( fext->extension != 0 && ! adfVolIsSectNumValid ( vol, fext->extension ) )
         (*adfEnv.wFct)("adfReadFileExtBlock : extension out of range");
 
     return rc;

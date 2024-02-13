@@ -137,7 +137,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = bmSect = root->bmPages[i];
-        if ( ! isSectNumValid ( vol, bmSect ) ) {
+        if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
             adfEnv.wFct ( "adfReadBitmap: sector %d out of range, root bm[%u]",
                           bmSect, i );
             adfFreeBitmap ( vol );
@@ -219,7 +219,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
         i=0;
         while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
             bmSect = bmExt.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmSect ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
                 adfEnv.wFct ( "adfReadBitmap : sector %d out of range, "
                               "bmext %d bmpages[%u]", bmSect, bmExtSect, i );
                 return RC_ERROR;
@@ -283,7 +283,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = bmSect = root->bmPages[i];
-        if ( ! isSectNumValid ( vol, bmSect ) ) {
+        if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
             adfEnv.wFct ( "adfReconstructBitmap: sector %d out of range, root bm[%u]",
                           bmSect, i );
             adfFreeBitmap ( vol );
@@ -366,7 +366,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
         i=0;
         while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
             SECTNUM bmBlkPtr = bmExtBlock.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReconstructBitmap : sector %d out of range, "
                               "bmext %d bmpages[%u]", bmBlkPtr, bmExtSect, i );
                 adfFreeBitmap ( vol );

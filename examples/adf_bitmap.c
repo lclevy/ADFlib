@@ -243,7 +243,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         unsigned i = 0;
         while ( i < BM_PAGES_EXT_SIZE ) {
             SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
                 adfFreeBitmap ( vol );
                 return 1;
