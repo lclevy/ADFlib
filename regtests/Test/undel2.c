@@ -66,11 +66,11 @@ int main(int argc, char *argv[])
         cell = cell->next;
     }
     adfFreeDirList(list);
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     puts("\nremove mod.and.distantcall");
     adfRemoveEntry(vol,vol->curDirPtr,"mod.and.distantcall");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
     while(cell) {
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     adfCheckEntry(vol,886,0);
     adfUndelEntry(vol,vol->curDirPtr,886);
     puts("\nundel mod.and.distantcall");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {

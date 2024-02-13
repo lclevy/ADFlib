@@ -18,7 +18,7 @@ static void show_bmpages_array ( const int32_t * const bmpages,
 
 void show_volume_metadata ( struct AdfVolume * const vol )
 {
-    adfVolumeInfo ( vol );
+    adfVolInfo ( vol );
 
     struct bBootBlock bblock;
     if ( adfReadBootBlock ( vol, &bblock ) != RC_OK ) {

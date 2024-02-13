@@ -160,7 +160,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
         return 1;
     }
 #if TEST_VERBOSITY > 0
-    adfVolumeInfo ( vol );
+    adfVolInfo ( vol );
 #endif
 
     int status = 0;

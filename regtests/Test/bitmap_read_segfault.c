@@ -61,7 +61,7 @@ int main ( const int          argc,
         goto umount_dev;
     }
 
-    //adfVolumeInfo(vol);
+    //adfVolInfo(vol);
     //putchar('\n');
 
     adfVolUnMount ( vol );

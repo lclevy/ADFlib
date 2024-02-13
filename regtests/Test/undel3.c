@@ -66,11 +66,11 @@ int main(int argc, char *argv[])
         cell = cell->next;
     }
     adfFreeDirList(list);
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     puts("\nremove MOON.GIF");
     adfRemoveEntry(vol,vol->curDirPtr,"MOON.GIF");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
     while(cell) {
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     adfCheckEntry(vol,884,0);
     adfUndelEntry(vol,vol->curDirPtr,884);
     puts("\nundel MOON.GIF");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {

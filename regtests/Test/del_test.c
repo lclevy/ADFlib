@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 	
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
     putchar('\n');
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfVolUnMount(vol);
     adfDevUnMount ( hd );

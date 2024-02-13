@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo(hd);
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);

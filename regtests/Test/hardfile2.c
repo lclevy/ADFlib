@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {

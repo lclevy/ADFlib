@@ -31,7 +31,7 @@
 
 void adfVolumeInfoWin ( HWND               hWnd,
                         struct AdfVolume * vol )
-/* Windows version of adfVolumeInfo().
+/* Windows version of adfVolInfo().
 ** Input:  Receives a handle to the window on which to display the dialogue and a pointer
 **         to a ADFLib adfVolume structure.
 ** Output: Nil. Displays a windows dialogue containing the disk file data.

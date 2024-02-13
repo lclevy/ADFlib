@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     /* the directory */
     list = adfGetDirEnt(vol,vol->curDirPtr);

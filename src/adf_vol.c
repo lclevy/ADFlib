@@ -95,10 +95,10 @@ BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
 
 
 /*
- * adfVolumeInfo
+ * adfVolInfo
  *
  */
-void adfVolumeInfo ( struct AdfVolume * const vol )
+void adfVolInfo ( struct AdfVolume * const vol )
 {
     struct bRootBlock root;
     char diskName[35];

@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {

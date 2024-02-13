@@ -58,7 +58,7 @@ puts("\ncreate floppy");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfVolUnMount(vol);
     adfDevUnMount ( hd );

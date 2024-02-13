@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfCreateDir(vol,vol->curDirPtr,"dir_5u");
 
