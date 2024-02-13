@@ -28,7 +28,9 @@
 #include "adf_env.h"
 
 #include "adf_blk.h"
-#include "adf_nativ.h"
+#include "adf_dev_drivers.h"
+#include "adf_dev_driver_dump.h"
+#include "adf_dev_driver_ramdisk.h"
 #include "adf_version.h"
 #include "defendian.h"
 
@@ -80,10 +82,8 @@ void adfEnvInitDefault(void)
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
 */
-    adfEnv.nativeFct=(struct AdfNativeFunctions*)malloc(sizeof(struct AdfNativeFunctions));
-    if (!adfEnv.nativeFct) (*adfEnv.wFct)("adfInitDefaultEnv : malloc");
-
-    adfInitNativeFct();
+    adfAddDeviceDriver ( &adfDeviceDriverDump );
+    adfAddDeviceDriver ( &adfDeviceDriverRamdisk );
 }
 
 
@@ -93,7 +93,7 @@ void adfEnvInitDefault(void)
  */
 void adfEnvCleanUp(void)
 {
-    free(adfEnv.nativeFct);
+    adfRemoveDeviceDrivers();
 }
 
 
@@ -182,7 +182,6 @@ char* adfGetVersionDate(void)
 {
 	return(ADFLIB_DATE);
 }
-
 
 /*##################################################################################*/
 

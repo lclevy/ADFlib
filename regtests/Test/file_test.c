@@ -1,5 +1,5 @@
 /*
- * dir_test.c
+ * file_test.c
  */
 
 
@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfFile *file;
     unsigned char buf[600];
@@ -38,16 +37,26 @@ int main(int argc, char *argv[])
 
 //	adfSetEnvFct(0,0,MyVer,0);
 
-    /* mount existing device : FFS */
-    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
-    if (!hd) {
+    /* open and mount existing device : FFS */
+    struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[1] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    RETCODE rc = adfDevMount ( hd );
+    if ( rc != RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -74,30 +83,43 @@ int main(int argc, char *argv[])
 
     file = adfFileOpen ( vol, "emptyfile", ADF_FILE_MODE_READ );
     if (!file) { 
-		adfUnMount(vol); adfUnMountDev(hd); 
+        adfUnMount(vol);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't open file\n");
-		exit(1); 
-	}
+        exit(1);
+    }
  
     n = adfFileRead ( file, 2, buf );
 
     adfFileClose ( file );
 
     adfUnMount(vol);
-    adfUnMountDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
 
     /* ofs */
 
-    hd = adfMountDev ( argv[2], ADF_ACCESS_MODE_READWRITE );
-    if (!hd) {
+    hd = adfDevOpen ( argv[2], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[2] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    rc = adfDevMount ( hd );
+    if ( rc != RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -123,8 +145,8 @@ int main(int argc, char *argv[])
     adfFileClose ( file );
 
     adfUnMount(vol);
-    adfUnMountDev(hd);
-
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

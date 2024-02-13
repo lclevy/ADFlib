@@ -1,15 +1,13 @@
-#ifndef ADFLIB_H
-#define ADFLIB_H 1
+#ifndef ADF_DEV_DUMP_H
+#define ADF_DEV_DUMP_H 1
 
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- * adflib.h
+ *  adf_dump.h
  *
  *  $Id$
- *
- * general include file
- *
+ *  
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify
@@ -28,57 +26,9 @@
  *
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#include "adf_dev_driver.h"
 
-/* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
-#include "prefix.h"
+extern const struct AdfDeviceDriver adfDeviceDriverDump;
 
-#include "adf_types.h"
-#include "adf_version.h"
-
-/* util */
-#include "adf_util.h"
-
-/* dir */
-#include "adf_dir.h"
-
-/* file */
-#include "adf_file.h"
-#include "adf_file_block.h"
-
-/* volume */
-#include "adf_vol.h"
-
-/* device */
-#include "adf_dev.h"
-#include "adf_dev_flop.h"
-#include "adf_dev_hd.h"
-
-/* device drivers */
-#include "adf_dev_driver_dump.h"
-#include "adf_dev_driver_ramdisk.h"
-
-/* env */
-#include "adf_env.h"
-
-/* link */
-#include "adf_link.h"
-
-/* salv */
-#include "adf_salv.h"
-
-/* middle level API */
-
-/* low level API */
-
-#include "adf_bitm.h"
-#include "adf_raw.h"
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* ADFLIB_H */
+#endif /* ADF_DUMP_H */
 /*##########################################################################*/

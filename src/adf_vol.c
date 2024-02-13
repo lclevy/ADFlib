@@ -30,8 +30,8 @@
 
 #include "adf_bitm.h"
 #include "adf_cache.h"
+#include "adf_dev.h"
 #include "adf_env.h"
-#include "adf_nativ.h"
 #include "adf_raw.h"
 #include "adf_util.h"
 
@@ -489,7 +489,7 @@ RETCODE adfReadBlock ( struct AdfVolume * const vol,
         return RC_BLOCKOUTOFRANGE;
     }
 
-    RETCODE rc = adfReadBlockDev ( vol->dev, pSect, 512, buf );
+    RETCODE rc = adfDevReadBlock ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfReadBlock: error reading block %d, volume '%s'",
                       nSect, vol->volName );
@@ -529,7 +529,7 @@ RETCODE adfWriteBlock ( struct AdfVolume * const vol,
         return RC_BLOCKOUTOFRANGE;
     }
 
-    RETCODE rc = adfWriteBlockDev ( vol->dev, pSect, 512, buf );
+    RETCODE rc = adfDevWriteBlock ( vol->dev, pSect, 512, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfWriteBlock: error writing block %d, volume '%s'",
                       nSect, vol->volName );

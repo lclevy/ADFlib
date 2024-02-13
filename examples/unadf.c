@@ -93,9 +93,15 @@ int main(int argc, char *argv[]) {
     adfEnvInitDefault();
     parse_args(argc, argv);
 
+    /* open device */
+    if (!(dev = adfDevOpen(adf_file, ADF_ACCESS_MODE_READONLY))) {
+        fprintf(stderr, "%s: can't open device\n", adf_file);
+        goto error_handler;
+    }
+
     /* mount device */
-    if (!(dev = adfMountDev(adf_file, ADF_ACCESS_MODE_READONLY))) {
-        fprintf(stderr, "%s: can't mount as device\n", adf_file);
+    if (adfDevMount(dev) != RC_OK) {
+        fprintf(stderr, "%s: can't mount device\n", adf_file);
         goto error_handler;
     }
     if (!pipe_mode) {
@@ -166,7 +172,8 @@ int main(int argc, char *argv[]) {
 
 error_handler:
     if (vol) adfUnMount(vol);
-    if (dev) adfUnMountDev(dev);
+    if (dev && dev->mounted) adfDevUnMount(dev);
+    if (dev) adfDevClose(dev);
     if (file_list) freeList(file_list);
     adfEnvCleanUp();
     return 0;

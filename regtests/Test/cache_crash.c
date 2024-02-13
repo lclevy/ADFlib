@@ -13,18 +13,21 @@ int main(int argc, char *argv[]) {
 
     if (argc <= 1) return 1;
     adfEnvInitDefault();
-    if ((dev = adfMountDev(argv[1], ADF_ACCESS_MODE_READONLY))) {
-        if ((vol = adfMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
-            /* use dir cache (enables the crash) */
-            adfChgEnvProp(PR_USEDIRC, &true);
-            /* read all directory entries (crash happens here) */
-            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
-            /* success! we didn't crash */
-            ok = TRUE;
-            if (list) adfFreeDirList(list);
-            adfUnMount(vol);
+    if ((dev = adfDevOpen(argv[1], ADF_ACCESS_MODE_READONLY))) {
+        if (adfDevMount(dev) == RC_OK) {
+            if ((vol = adfMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
+                /* use dir cache (enables the crash) */
+                adfChgEnvProp(PR_USEDIRC, &true);
+                /* read all directory entries (crash happens here) */
+                list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+                /* success! we didn't crash */
+                ok = TRUE;
+                if (list) adfFreeDirList(list);
+                adfUnMount(vol);
+            }
+            adfDevUnMount(dev);
         }
-        adfUnMountDev(dev);
+        adfDevClose(dev);
     }
     adfEnvCleanUp();
     return ok ? 0 : 1;

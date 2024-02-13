@@ -1,5 +1,5 @@
 /*
- * adf_nativ.c
+ * generic/adf_dev_driver_nativ.c
  *
  * $Id$
  *
@@ -24,7 +24,7 @@
 
 #include<stdlib.h>
 #include<string.h>
-#include"adf_nativ.h"
+#include "adf_dev_driver_nativ.h"
 #include"adf_err.h"
 #include "adf_env.h"
 
@@ -87,28 +87,30 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  * myIsDevNative
  *
  */
-BOOL myIsDevNative ( const char * const devName )
+static BOOL myIsDevNative(void)
 {
-    /* Quiet unused parameter warning */
-    (void)(devName);
-
     return FALSE;
 }
 
-/*
- * adfInitNativeFct
- *
- */
-void adfInitNativeFct( void )
-{
-    struct AdfNativeFunctions * nFct =
-        ( struct AdfNativeFunctions * ) adfEnv.nativeFct;
 
-    nFct->adfInitDevice = myInitDevice ;
-    nFct->adfNativeReadSector = myReadSector ;
-    nFct->adfNativeWriteSector = myWriteSector ;
-    nFct->adfReleaseDevice = myReleaseDevice ;
-    nFct->adfIsDevNative = myIsDevNative;
+static BOOL myIsDevice ( const char * const devName )
+{
+    (void) devName;
+    return FALSE;
 }
+
+
+const struct AdfDeviceDriver adfDeviceDriverNative = {
+    .name        = "native generic",
+    .data        = NULL,
+    .createDev   = NULL,
+    .openDev     = myInitDevice,
+    .closeDev    = myReleaseDevice,
+    .readSector  = myReadSector,
+    .writeSector = myWriteSector,
+    .isNative    = myIsDevNative,
+    .isDevice    = myIsDevice
+};
+
 
 /*##########################################################################*/

@@ -8,10 +8,10 @@ $adf_show_metadata "$basedir/arccsh.adf" >$actual
 compare_with <<EOF
 
 Opening image/device:	'$basedir/arccsh.adf'
-Mounted volume:		0
 
 ADF device info:
-  Type:		floppy dd, file (image)
+  Type:		floppy dd
+  Driver:	dump
   Geometry:
     Cylinders	80
     Heads	2
@@ -21,6 +21,14 @@ ADF device info:
    idx  first bl.     last bl.    name
      0          0         1759    "cshell"    mounted
 
+EOF
+
+
+$adf_show_metadata "$basedir/arccsh.adf" 0 >$actual
+compare_with <<EOF
+
+Opening image/device:	'$basedir/arccsh.adf'
+Mounted volume:		0
 
 ADF volume info:
   Name:		cshell                        
@@ -83,7 +91,7 @@ Bitmap block pointers (bmPages) (non-zero):
   bmpages [  0 ]:		0x371		881
 EOF
 
-$adf_show_metadata "$basedir/arccsh.adf" CSH >$actual
+$adf_show_metadata "$basedir/arccsh.adf" 0 CSH >$actual
 compare_with <<EOF
 
 Opening image/device:	'$basedir/arccsh.adf'
@@ -448,7 +456,7 @@ File extension block:
     dataBlocks [ 71 ]:  0x4d2	1234
 EOF
 
-$adf_show_metadata "$basedir/arccsh.adf" c/ >$actual
+$adf_show_metadata "$basedir/arccsh.adf" 0 c/ >$actual
 compare_with <<EOF
 
 Opening image/device:	'$basedir/arccsh.adf'
@@ -502,7 +510,7 @@ Hashtable (non-zero):
   hashtable [ 69 ]:		0xbf		191
 EOF
 
-$adf_show_metadata "$basedir/arccsh.adf" l >$actual
+$adf_show_metadata "$basedir/arccsh.adf" 0 l >$actual
 compare_with <<EOF
 
 Opening image/device:	'$basedir/arccsh.adf'

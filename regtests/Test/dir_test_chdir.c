@@ -90,11 +90,20 @@ int run_chdir_tests ( chdir_test_t * test_data )
              test_data->image );
 //#endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image,
-                                                 ADF_ACCESS_MODE_READONLY );
+    struct AdfDevice * const dev = adfDevOpen ( test_data->image,
+                                                ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  test_data->image );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    RETCODE rc = adfDevMount ( dev );
+    if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image );
+        adfDevClose ( dev );
         return 1;
     }
 
@@ -102,7 +111,8 @@ int run_chdir_tests ( chdir_test_t * test_data )
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image );
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 
@@ -122,7 +132,8 @@ int run_chdir_tests ( chdir_test_t * test_data )
 //clean_up:
     //adfToRootDir ( vol );
     adfUnMount ( vol );
-    adfUnMountDev ( dev );
+    adfDevUnMount ( dev );
+    adfDevClose ( dev );
 
     return nerrors;
 }

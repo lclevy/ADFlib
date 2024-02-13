@@ -45,6 +45,10 @@ PREFIX RETCODE adfCreateHd ( struct AdfDevice * const               dev,
                              const unsigned                         n,
                              const struct Partition * const * const partList );
 
+PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                                 const char * const       volName,
+                                 const uint8_t            volType );
+
 RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
                            struct bRDSKblock * const blk );
 

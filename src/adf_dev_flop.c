@@ -127,5 +127,7 @@ RETCODE adfCreateFlop ( struct AdfDevice * const dev,
     else
         dev->devType=DEVTYPE_FLOPHD;
 
+    dev->mounted = TRUE;
+
     return RC_OK;
 }

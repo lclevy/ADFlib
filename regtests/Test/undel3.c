@@ -23,7 +23,6 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     (void) argc;
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
     struct GenBlock *block;
@@ -36,17 +35,27 @@ int main(int argc, char *argv[])
 
     adfChgEnvProp(PR_USEDIRC,&true);
  
-    hd = adfMountDev ( argv[1], ADF_ACCESS_MODE_READWRITE );
-    if (!hd) {
+    struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[1] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    RETCODE rc = adfDevMount ( hd );
+    if ( rc != RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo ( hd );
 
     vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
@@ -103,7 +112,8 @@ int main(int argc, char *argv[])
     adfFileClose ( file );
 
     adfUnMount(vol);
-    adfUnMountDev(hd);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

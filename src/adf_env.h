@@ -65,8 +65,6 @@ struct AdfEnv {
     BOOL useProgressBar;
 
     BOOL useDirCache;
-
-    void *nativeFct;
 };
 
 

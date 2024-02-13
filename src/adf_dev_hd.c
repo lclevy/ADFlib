@@ -28,7 +28,7 @@
 
 #include "adf_dev_hd.h"
 
-#include "adf_dev_dump.h"
+#include "adf_dev_driver_dump.h"
 #include "adf_env.h"
 #include "adf_raw.h"
 #include "adf_util.h"
@@ -103,7 +103,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
     do {
-        adfReadDumpSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
+        dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
         found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
         if (!found)
             (vol->rootBlock)--;
@@ -134,8 +134,6 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
     struct bRDSKblock rdsk;
     struct bPARTblock part;
-    struct bFSHDblock fshd;
-    struct bLSEGblock lseg;
     int32_t next;
     struct AdfList *vList, *listRoot;
     int i;
@@ -220,25 +218,39 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     }
     freeList(listRoot);
 
+    /* The code below seems to only check if the FSHD and LSEG blocks can be
+       read. These blocks are not required to access partitions/volumes:
+       http://lclevy.free.fr/adflib/adf_info.html#p64 */
+
+    struct bFSHDblock fshd;
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         rc = adfReadFSHDblock ( dev, next, &fshd ); 
         if ( rc != RC_OK ) {
+            /*
             for ( i = 0 ; i < dev->nVol ; i++ )
                 free ( dev->volList[i] );
-            free(dev->volList);
-            (*adfEnv.eFct)("adfMount : adfReadFSHDblock");
-            return rc;
+            free(dev->volList); */
+            adfEnv.wFct ("adfMountHd : adfReadFSHDblock error, device %s, sector %d",
+                         dev->name, next );
+            //return rc;
+            break;
         }
         next = fshd.next;
     }
 
+    struct bLSEGblock lseg;
     next = fshd.segListBlock;
     while( next!=-1 ) {
         rc = adfReadLSEGblock ( dev, next, &lseg ); 
         if ( rc != RC_OK ) {
-            (*adfEnv.wFct)("adfMount : adfReadLSEGblock");
-            // abort here ?
+            /*for ( i = 0 ; i < dev->nVol ; i++ )
+                free ( dev->volList[i] );
+            free(dev->volList); */
+            adfEnv.wFct ("adfMountHd : adfReadLSEGblock error, device %s, sector %s",
+                         dev->name, next );
+            //return rc;
+            break;
         }
         next = lseg.next;
     }
@@ -390,7 +402,40 @@ vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
+    dev->mounted = TRUE;
+
     return adfCreateHdHeader ( dev, (int) n, partList );
+}
+
+
+/*
+ * adfCreateHdFile
+ *
+ */
+RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                          const char * const       volName,
+                          const uint8_t            volType )
+{
+    if (dev==NULL) {
+        (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
+        return RC_ERROR;
+    }
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct Volume *));
+    if ( dev->volList == NULL ) {
+        adfEnv.eFct ( "adfCreateHdFile : malloc" );
+        return RC_ERROR;
+    }
+
+    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
+    if (dev->volList[0]==NULL) {
+        free(dev->volList);
+        return RC_ERROR;
+    }
+
+    dev->nVol = 1;
+    dev->devType = DEVTYPE_HARDFILE;
+
+    return RC_OK;
 }
 
 
@@ -403,7 +448,7 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
 {
     uint8_t buf[256];
 
-    RETCODE rc = adfReadBlockDev ( dev, 0, 256, buf );
+    RETCODE rc = adfDevReadBlock ( dev, 0, 256, buf );
     if ( rc != RC_OK )
        return rc;
 
@@ -471,7 +516,7 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
     swLong(buf+8, newSum);
 
-    return adfWriteBlockDev ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -485,7 +530,7 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
 {
     uint8_t buf[ sizeof(struct bPARTblock) ];
 
-    RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
+    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
                                    sizeof(struct bPARTblock), buf );
     if ( rc != RC_OK )
        return rc;
@@ -551,7 +596,7 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfWriteBlockDev ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*
@@ -564,7 +609,7 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
 {
     uint8_t buf[sizeof(struct bFSHDblock)];
 
-    RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
+    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
@@ -619,7 +664,7 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfWriteBlockDev ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -633,7 +678,7 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
 {
     uint8_t buf[sizeof(struct bLSEGblock)];
 
-    RETCODE rc = adfReadBlockDev ( dev, (uint32_t) nSect,
+    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
                                    sizeof(struct bLSEGblock), buf );
     if ( rc != RC_OK )
         return rc;
@@ -689,7 +734,7 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
     swLong(buf+8,newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfWriteBlockDev ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*##########################################################################*/
