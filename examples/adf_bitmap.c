@@ -117,7 +117,7 @@ int main ( int     argc,
         status = show_block_allocation_bitmap ( vol );
     }
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 dev_mount_cleanup:
     adfDevUnMount ( dev );

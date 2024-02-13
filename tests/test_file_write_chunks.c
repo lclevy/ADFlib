@@ -67,7 +67,7 @@ void test_file_write ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = // tdata->vol =
         adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
@@ -178,7 +178,7 @@ void test_file_write ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = //tdata->vol =
         adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
@@ -234,7 +234,7 @@ void test_file_write ( test_data_t * const tdata )
                     "File meta-data verification failed for bufsize %u (0x%x)", bufsize, bufsize );
 
     // umount volume
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 }
 
 
@@ -394,7 +394,7 @@ void teardown ( test_data_t * const tdata )
     free ( tdata->buffer );
     tdata->buffer = NULL;
 
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     //unlink ( tdata->adfname );

@@ -192,7 +192,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     adfFileClose ( file );
 
 cleanup:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( dev );
     adfDevClose ( dev );
 

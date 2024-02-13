@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

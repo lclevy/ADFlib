@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     }
     vol2 = adfVolMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
     if (!vol2) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount( hd );
         adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
     adfVolumeInfo(vol);
     adfVolumeInfo(vol2);
 
-    adfUnMount(vol);
-    adfUnMount(vol2);
+    adfVolUnMount(vol);
+    adfVolUnMount(vol2);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

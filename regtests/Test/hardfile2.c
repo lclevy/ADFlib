@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     /* unmounts */
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     }
     freeList(list);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

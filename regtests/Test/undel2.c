@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
     }
 
 error_handler:
-    if (vol) adfUnMount(vol);
+    if (vol) adfVolUnMount(vol);
     if (dev && dev->mounted) adfDevUnMount(dev);
     if (dev) adfDevClose(dev);
     if (file_list) freeList(file_list);

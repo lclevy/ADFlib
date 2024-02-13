@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     adfVolumeInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount ( vol );
     adfUnMountDev(hd);
 
     adfEnvCleanUp();

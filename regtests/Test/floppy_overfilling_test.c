@@ -157,7 +157,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     status += verify_file_data ( vol, tdata->filename, tdata->buffer,
                                  bytes_written, tdata->max_errors );
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( device );
     adfDevClose ( device );
 

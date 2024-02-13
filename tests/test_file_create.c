@@ -54,7 +54,7 @@ void test_file_create ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( tdata->vol );
+    adfVolUnMount ( tdata->vol );
     tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
@@ -96,7 +96,7 @@ void test_file_create ( test_data_t * const tdata )
     adfFileClose ( file );
     
     // umount volume
-    adfUnMount ( tdata->vol );
+    adfVolUnMount ( tdata->vol );
 }
 
 /*
@@ -123,7 +123,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
     adfFileClose ( file );   // should not be needed (but should not fail either)
 
     // reset volume state (remount)
-    adfUnMount ( tdata->vol );
+    adfVolUnMount ( tdata->vol );
     tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
@@ -134,7 +134,7 @@ void test_file_create_with_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, adfDirCountEntries ( vol, vol->curDirPtr ) );
     
     // umount volume
-    adfUnMount ( tdata->vol );
+    adfVolUnMount ( tdata->vol );
 }
 */
 
@@ -270,7 +270,7 @@ void setup ( test_data_t * const tdata )
 
 void teardown ( test_data_t * const tdata )
 {
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     unlink ( tdata->adfname );

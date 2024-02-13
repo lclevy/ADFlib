@@ -121,7 +121,7 @@ printf("[dir = %ld]\n",883L);
     }
     adfFreeDirList(list);
 
-	    adfUnMount(vol);
+	    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
     adfVolumeInfo(vol2);
 
     /* unmounts */
-    adfUnMount(vol);
-    adfUnMount(vol2);
+    adfVolUnMount(vol);
+    adfVolUnMount(vol2);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     }
     adfVolumeInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

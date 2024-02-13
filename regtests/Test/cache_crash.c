@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
                 /* success! we didn't crash */
                 ok = TRUE;
                 if (list) adfFreeDirList(list);
-                adfUnMount(vol);
+                adfVolUnMount(vol);
             }
             adfDevUnMount(dev);
         }

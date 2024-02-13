@@ -158,7 +158,7 @@ int main ( const int          argc,
         return rc;
     }
 
-    adfUnMount ( volUpdate );
+    adfVolUnMount ( volUpdate );
 
     volUpdate = adfVolMount ( devUpdate, 0,
                               ADF_ACCESS_MODE_READWRITE );
@@ -182,14 +182,14 @@ int main ( const int          argc,
     /* cleanup */
 
 umount_vol_updated:
-    adfUnMount ( volUpdate );
+    adfVolUnMount ( volUpdate );
 umount_dev_updated:
     adfDevUnMount ( devUpdate );
 close_dev_updated:
     adfDevClose ( devUpdate );
 
 umount_vol_orig:
-    adfUnMount ( volOrig );
+    adfVolUnMount ( volOrig );
 umount_dev_orig:
     adfDevUnMount ( devOrig );
 close_dev_orig:

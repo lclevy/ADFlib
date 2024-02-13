@@ -60,7 +60,7 @@ puts("\ncreate floppy");
 
     adfVolumeInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

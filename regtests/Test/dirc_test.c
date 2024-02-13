@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     putchar('\n');
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

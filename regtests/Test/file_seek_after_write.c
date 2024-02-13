@@ -374,7 +374,7 @@ cleanup:
 cleanup_0:
     free ( buffer_0 );
 umount_volume:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 umount_device:
     adfDevUnMount ( device );
     adfDevClose ( device );

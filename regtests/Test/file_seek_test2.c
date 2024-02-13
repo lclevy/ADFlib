@@ -143,7 +143,7 @@ cleanup_adffile:
     adfFileClose ( file_adf );
 
 cleanup:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( dev );
     adfDevClose ( dev );
 

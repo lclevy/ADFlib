@@ -229,7 +229,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfVolMount : adfBitmapAllocate() returned error %d, "
                           "mounting volume %s failed", rc, vol->volName );
-            adfUnMount ( vol );
+            adfVolUnMount ( vol );
             return NULL;
     }
 
@@ -237,7 +237,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfVolMount : adfReadBitmap() returned error %d, "
                       "mounting volume %s failed", rc, vol->volName );
-        adfUnMount ( vol );
+        adfVolUnMount ( vol );
         return NULL;
     }
 
@@ -248,13 +248,13 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
             if ( rc != RC_OK ) {
                 adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
                               "mounting volume %s failed", rc, vol->volName );
-                adfUnMount ( vol );
+                adfVolUnMount ( vol );
                 return NULL;
             }
         } else {
             adfEnv.eFct ( "adfMount : block allocation bitmap marked invalid in root block, "
                           "mounting the volume %s read-write not possible", vol->volName );
-            adfUnMount ( vol );
+            adfVolUnMount ( vol );
             return NULL;
         }
     }
@@ -305,15 +305,15 @@ PREFIX RETCODE adfVolRemount ( struct AdfVolume *  vol,
 
 /*
 *
-* adfUnMount
+* adfVolUnMount
 *
 * free bitmap structures
 * free current dir
 */
-void adfUnMount ( struct AdfVolume * const vol )
+void adfVolUnMount ( struct AdfVolume * const vol )
 {
     if (!vol) {
-        (*adfEnv.eFct)("adfUnMount : vol is null");
+        adfEnv.eFct ( "adfVolUnMount : vol is null" );
         return;
     }
 

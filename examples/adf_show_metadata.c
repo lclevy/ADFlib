@@ -89,7 +89,7 @@ int main ( const int                  argc,
         show_volume_metadata ( vol );
     }
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 dev_mount_cleanup:
     adfDevUnMount ( dev );

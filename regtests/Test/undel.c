@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

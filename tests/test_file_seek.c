@@ -71,7 +71,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = // tdata->vol =
         adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
@@ -133,7 +133,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
                     vol->datablockSize );
 
     // umount volume
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 }
 
 
@@ -272,7 +272,7 @@ void teardown ( test_data_t * const tdata )
     free ( tdata->buffer );
     tdata->buffer = NULL;
 
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     if ( unlink ( tdata->adfname ) != 0 )

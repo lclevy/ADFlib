@@ -93,7 +93,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
 PREFIX RETCODE adfVolRemount ( struct AdfVolume *  vol,
                                const AdfAccessMode mode );
 
-PREFIX void adfUnMount ( struct AdfVolume * const vol );
+PREFIX void adfVolUnMount ( struct AdfVolume * const vol );
 
 PREFIX void adfVolumeInfo ( struct AdfVolume * const vol );
 

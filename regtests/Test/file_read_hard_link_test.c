@@ -176,7 +176,7 @@ int test_hlink_read ( reading_test_t * test_data )
     // clean-up
 clean_up:
     //adfToRootDir ( vol );
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( dev );
     adfDevClose ( dev );
 

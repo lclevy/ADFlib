@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     /* test getting real name from a softlink */
     status += test_softlink_realname ( vol, "slink_dir1", "dir_1" );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

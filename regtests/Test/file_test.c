@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
     file = adfFileOpen ( vol, "emptyfile", ADF_FILE_MODE_READ );
     if (!file) { 
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         fprintf(stderr, "can't open file\n");
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
