@@ -1,5 +1,6 @@
-libadf (0.8.0-1) unstable; urgency=medium
+adflib (0.8.0+ds-1) unstable; urgency=medium
 
-  * Initial packaging of version 0.8.0 for Debian.
+  * New maintainer. (Closes: 661461)
+  * New upstream version.
 
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Mon, 26 Jun 2023 20:01:05 +0100
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Thu, 25 Jan 2024 18:53:05 +0100

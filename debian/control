@@ -1,14 +1,15 @@
-Source: libadf
+Source: adflib
 Section: libs
 Priority: optional
 Maintainer: Tomasz Wolak <tomas.wolak@gmail.com>
+Uploaders: Gürkan Myczko <tar@debian.org>
 Build-Depends: dh-autoreconf,
-               debhelper (>= 9),
+               debhelper-compat (= 13),
                autotools-dev
-Standards-Version: 4.3.0
-Homepage: https://gitlab.com/lclevy/ADFlib
-Vcs-Git: https://gitlab.com/lclevy/ADFlib
-Vcs-Browser: https://gitlab.com/lclevy/ADFlib/tree/master
+Standards-Version: 4.6.2
+Homepage: https://github.com/lclevy/ADFlib
+Vcs-Git: https://salsa.debian.org/debian/unadf.git
+Vcs-Browser: https://salsa.debian.org/debian/unadf
 
 Package: libadf
 Architecture: any
@@ -16,9 +17,8 @@ Multi-Arch: same
 Section: libs
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Pre-Depends: ${misc:Pre-Depends}
 Description: ADFlib - shared library.
- ADFlib is a a free, portable and open implementation of the Amiga filesystem.
+ This is a a free, portable and open implementation of the Amiga filesystem.
  .
  This package contains the shared library.
 
@@ -31,7 +31,7 @@ Depends: libadf (= ${binary:Version}),
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Description: ADFlib - development files
- ADFlib is a a free, portable and open implementation of the Amiga filesystem.
+ This is a a free, portable and open implementation of the Amiga filesystem.
  .
  This package contains the development files.
 
@@ -42,12 +42,27 @@ Section: utils
 Depends: libadf (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
-Pre-Depends: ${misc:Pre-Depends}
 Description: Utilities for Amiga disk image files (ADF).
  Utilities for ADF disk images:
  .
- unadf - list and extract files from .ADF files (Amiga disk images)
  adf_floppy_create - create a new floppy disk image file
  adf_floppy_format - format a floppy disk (an image or a device)
  adf_show_metadata - display low-level info about a device/adf file
                      or a file/directory
+
+Package: unadf
+Architecture: any
+Multi-Arch: no
+Section: utils
+Depends: libadf (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: Extract files from an Amiga Disk File dump (.adf)
+ Tool for extracting and listing files in an Amiga Disk File.
+ .
+ Amiga Disk File aka ADF is a file format used by Amiga computers and emulators
+ to store images of disks. ADF is not really a file format but actually a
+ track-by-track dump of the disk data as read by the Amiga operating system,
+ and so the "format" is really fixed-width AmigaDOS data tracks appended one
+ after another and held in a file.
+
