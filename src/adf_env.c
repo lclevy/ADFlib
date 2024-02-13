@@ -62,7 +62,7 @@ static void checkInternals(void);
  * adfInitEnv
  *
  */
-void adfEnvInitDefault()
+void adfEnvInitDefault(void)
 {
     checkInternals();
 
@@ -73,7 +73,7 @@ void adfEnvInitDefault()
     adfEnv.notifyFct = Changed;
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
-	
+
     adfEnv.useDirCache = FALSE;
     adfEnv.useRWAccess = FALSE;
     adfEnv.useNotify = FALSE;
@@ -91,7 +91,7 @@ void adfEnvInitDefault()
  * adfEnvCleanUp
  *
  */
-void adfEnvCleanUp()
+void adfEnvCleanUp(void)
 {
     adfRemoveDeviceDrivers();
 }
@@ -168,7 +168,7 @@ void adfSetEnvFct ( const AdfLogFct    eFct,
  * adfGetVersionNumber
  *
  */
-char* adfGetVersionNumber()
+char* adfGetVersionNumber(void)
 {
 	return(ADFLIB_VERSION);
 }
@@ -178,7 +178,7 @@ char* adfGetVersionNumber()
  * adfGetVersionDate
  *
  */
-char* adfGetVersionDate()
+char* adfGetVersionDate(void)
 {
 	return(ADFLIB_DATE);
 }

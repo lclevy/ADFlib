@@ -89,8 +89,12 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  */
 static BOOL myIsDevNative(void)
 {
+    /* Quiet unused parameter warning */
+    (void)(devName);
+
     return FALSE;
 }
+
 
 static BOOL myIsDevice ( const char * const devName )
 {

@@ -53,8 +53,10 @@ int main ( int     argc,
         command = COMMAND_REBUILD;
     else if ( strcmp ( argv[1], "show" ) == 0 )
         command = COMMAND_SHOW;
-    else if ( strcmp ( argv[1], "help" ) == 0 )
+    else if ( strcmp ( argv[1], "help" ) == 0 ) {
         usage();
+        return 0;
+    }
     else {
         fprintf ( stderr, "\nUnknown command '%s'  "
                   "(use 'adf_bitmap help' for usage info)\n\n",
@@ -183,7 +185,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
     printf ( "\nBlock allocation bitmap valid:    %s\n",
              rb.bmFlag == BM_VALID ? "yes" : "No!" );
-    
+
     /* Check root bm pages  */
     unsigned nerrors = 0,
         nblocks_free = 0,
@@ -230,7 +232,6 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
     /* show bmExt blocks */
     SECTNUM bmExtBlkPtr = rb.bmExt;
-    unsigned bmExt_i = 0;
     while ( bmExtBlkPtr != 0 ) {
         struct bBitmapExtBlock bmExtBlk;
         RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
@@ -282,7 +283,6 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
 
         bmExtBlkPtr = bmExtBlk.nextBlock;
-        bmExt_i++;
     }
 
     /* show block statistics */
@@ -297,7 +297,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                 "(or bitmap ext.) blocks could not be read\n"
                 " so the numbers above are not fully accurate "
                 "(exclude data from the unchecked bitmap blocks!)\n", nerrors );
-    return ( nerrors > 0 ) ? 1 : 0;    
+    return ( nerrors > 0 ) ? 1 : 0;
 }
 
 

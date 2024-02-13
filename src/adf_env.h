@@ -7,7 +7,7 @@
  *  adf_env.h
  *
  *  $Id$
- *  
+ *
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify
@@ -68,17 +68,17 @@ struct AdfEnv {
 };
 
 
-PREFIX void adfEnvInitDefault();
+PREFIX void adfEnvInitDefault(void);
 
 PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
                            const AdfLogFct    wFct,
                            const AdfLogFct    vFct,
                            const AdfNotifyFct notifyFct );
 
-PREFIX void adfEnvCleanUp();
+PREFIX void adfEnvCleanUp(void);
 PREFIX void adfChgEnvProp(int prop, void *new);
-PREFIX char* adfGetVersionNumber();
-PREFIX char* adfGetVersionDate();
+PREFIX char* adfGetVersionNumber(void);
+PREFIX char* adfGetVersionDate(void);
 
 PREFIX extern struct AdfEnv adfEnv;
 

@@ -1,1 +1,2 @@
-debian/tmp/usr/lib/*/libadf*.so.*
+#debian/tmp/usr/lib/*/libadf*.so.*
+usr/lib/*/libadf*.so.*
