@@ -89,6 +89,9 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  */
 BOOL myIsDevNative ( const char * const devName )
 {
+    /* Quiet unused parameter warning */
+    (void)(devName);
+
     return FALSE;
 }
 
@@ -96,7 +99,7 @@ BOOL myIsDevNative ( const char * const devName )
  * adfInitNativeFct
  *
  */
-void adfInitNativeFct()
+void adfInitNativeFct( void )
 {
     struct AdfNativeFunctions * nFct =
         ( struct AdfNativeFunctions * ) adfEnv.nativeFct;

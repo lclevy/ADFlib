@@ -52,7 +52,7 @@ struct AdfNativeFunctions {
     BOOL (*adfIsDevNative)( const char * const devName );
 };
 
-void adfInitNativeFct();
+void adfInitNativeFct( void );
 
 #endif /* ADF_NATIV_H */
 

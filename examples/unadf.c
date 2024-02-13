@@ -67,7 +67,7 @@ struct AdfList *file_list = NULL;
 
 /* prototypes */
 void parse_args(int argc, char *argv[]);
-void help();
+void help(void);
 void print_device(struct AdfDevice *dev);
 void print_volume(struct AdfVolume * vol);
 void print_tree(struct AdfList *node, char *path);
@@ -180,6 +180,32 @@ void parse_args(int argc, char *argv[]) {
 
     /* parse flags */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
+
+        /* check options with arguments first */
+        char option = argv[i][1];
+        if ( option == 'v' || option == 'd' ) {
+            if ( i + 1 >= argc || argv[i][2] != '\0' ) {
+                help();
+                exit(1);
+            }
+
+            switch (option) {
+            case 'v':
+                vol_number = atoi ( argv[i + 1] );
+                break;
+            case 'd':
+                extract_dir = argv[i + 1];
+                break;
+            //default: /* unknown option - show help and exit */
+            //    help();
+            //    exit(1);
+            }
+
+            i++, j = strlen(argv[i]) - 1; /* skip to next arg */
+            continue;
+        }
+
+        /* check options without arguments (can be given together) */
         for (j = 1; argv[i][j]; j++) {
             switch (argv[i][j]) {
             case 'l': list_mode     = TRUE; break;
@@ -193,14 +219,6 @@ void parse_args(int argc, char *argv[]) {
                 fprintf(stderr, list_mode
                     ? "-p option must be used with extraction, ignored\n"
                     : "sending files to pipe\n");
-                break;
-            case 'v':
-                vol_number = atoi((i + 1) < argc ? argv[i + 1] : "0");
-                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
-                break;
-            case 'd':
-                extract_dir = (i + 1) < argc ? argv[i + 1] : NULL;
-                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
                 break;
             default: /* unknown option - show help and exit */
                 help();
@@ -227,7 +245,7 @@ void parse_args(int argc, char *argv[]) {
     }
 }
 
-void help() {
+void help(void) {
     fprintf(stderr,
         "unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
         "    -l : lists root directory contents\n"
