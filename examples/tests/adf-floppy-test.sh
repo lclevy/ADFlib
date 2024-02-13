@@ -42,13 +42,11 @@ Formatting floppy (DD) disk '$tmpdir/testflopdd1.adf'...
 Done!
 EOF
 
-$adf_show_metadata $tmpdir/testflopdd1.adf | grep -v \
-  -e Created: -e 'Last access:' -e checkSum: -e calculated -e days: \
-  -e mins: -e ticks: -e coDays: -e coMins -e coTicks >$actual
+
+$adf_show_metadata $tmpdir/testflopdd1.adf >$actual
 compare_with <<EOF
 
 Opening image/device:	'$tmpdir/testflopdd1.adf'
-Mounted volume:		0
 
 ADF device info:
   Type:		floppy dd
@@ -62,6 +60,16 @@ ADF device info:
    idx  first bl.     last bl.    name
      0          0         1759    "TestFlopDD1"    mounted
 
+EOF
+
+
+$adf_show_metadata $tmpdir/testflopdd1.adf 0 | grep -v \
+  -e Created: -e 'Last access:' -e checkSum: -e calculated -e days: \
+  -e mins: -e ticks: -e coDays: -e coMins -e coTicks >$actual
+compare_with <<EOF
+
+Opening image/device:	'$tmpdir/testflopdd1.adf'
+Mounted volume:		0
 
 ADF volume info:
   Name:		TestFlopDD1                   
@@ -103,5 +111,6 @@ Hashtable (non-zero):
 Bitmap block pointers (bmPages) (non-zero):
   bmpages [  0 ]:		0x371		881
 EOF
+
 
 read status < $status && test "x$status" = xsuccess
