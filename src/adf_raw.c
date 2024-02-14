@@ -126,7 +126,7 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
 
     memcpy(root, buf, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( (uint8_t*) root, SWBL_ROOT );
+    adfSwapEndian ( (uint8_t*) root, ADF_SWBL_ROOT );
 #endif
 
     if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
@@ -172,7 +172,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     memcpy(buf, root, LOGICAL_BLOCK_SIZE);
 
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( buf, SWBL_ROOT );
+    adfSwapEndian ( buf, ADF_SWBL_ROOT );
 #endif
     uint32_t newSum = adfNormalSum ( buf, 20, LOGICAL_BLOCK_SIZE );
     swLong(buf+20, newSum);
@@ -203,7 +203,7 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
 
     memcpy(boot, buf, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( (uint8_t *) boot, SWBL_BOOT );
+    adfSwapEndian ( (uint8_t *) boot, ADF_SWBL_BOOT );
 #endif
     if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
         if ( strncmp ( "PFS", boot->dosType, 3 ) == 0 ) {
@@ -244,7 +244,7 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
     boot->dosType[2] = 'S';
     memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( buf, SWBL_BOOT );
+    adfSwapEndian ( buf, ADF_SWBL_BOOT );
 #endif
 
     if (boot->rootBlock==880 || boot->data[0]!=0) {

@@ -818,7 +818,7 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
     memcpy ( bitm, buf, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    adfSwapEndian ( (uint8_t *) bitm, SWBL_BITMAP );
+    adfSwapEndian ( (uint8_t *) bitm, ADF_SWBL_BITMAP );
 #endif
 
     if ( bitm->checkSum != adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE ) ) {
@@ -846,7 +846,7 @@ RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
 
 #ifdef LITT_ENDIAN
     /* little to big */
-    adfSwapEndian ( buf, SWBL_BITMAP );
+    adfSwapEndian ( buf, ADF_SWBL_BITMAP );
 #endif
 
     uint32_t newSum = adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE );
@@ -875,7 +875,7 @@ RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
 
     memcpy ( bitme, buf, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( (uint8_t *) bitme, SWBL_BITMAP );
+    adfSwapEndian ( (uint8_t *) bitme, ADF_SWBL_BITMAP );
 #endif
 
     return RC_OK;
@@ -895,7 +895,7 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
     memcpy ( buf, bitme, LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* little to big */
-    adfSwapEndian ( buf, SWBL_BITMAPE );
+    adfSwapEndian ( buf, ADF_SWBL_BITMAPE );
 #endif
 
 /*	dumpBlock((uint8_t*)buf);*/

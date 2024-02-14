@@ -58,7 +58,7 @@ void show_bootblock ( const struct bBootBlock * const bblock,
 
     uint8_t bblock_copy[sizeof(struct bBootBlock)];
     memcpy ( bblock_copy, bblock, sizeof (struct bBootBlock) );
-    adfSwapEndian ( bblock_copy, SWBL_BOOT );
+    adfSwapEndian ( bblock_copy, ADF_SWBL_BOOT );
     uint32_t checksum_calculated = adfBootSum ( bblock_copy );
     printf ( "  checkSum:\t0x%x\n"
              "  - calculated:\t0x%x%s\n"
@@ -89,7 +89,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
 {
     uint8_t rblock_orig_endian[512];
     memcpy ( rblock_orig_endian, rblock, 512 );
-    adfSwapEndian ( rblock_orig_endian, SWBL_ROOT );
+    adfSwapEndian ( rblock_orig_endian, ADF_SWBL_ROOT );
     uint32_t checksum_calculated = adfNormalSum ( rblock_orig_endian, 0x14,
                                                   sizeof (struct bRootBlock ) );
     printf ( "\nRootblock:\n"

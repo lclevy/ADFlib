@@ -1120,9 +1120,9 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
          secType == ST_LDIR ||
          secType == ST_LSOFT  )
     {
-        adfSwapEndian ( (uint8_t *) ent, SWBL_LINK );
+        adfSwapEndian ( (uint8_t *) ent, ADF_SWBL_LINK );
     } else {
-        adfSwapEndian ( (uint8_t *) ent, SWBL_ENTRY );
+        adfSwapEndian ( (uint8_t *) ent, ADF_SWBL_ENTRY );
     }
 #endif
 /*printf("readentry=%d\n",nSect);*/
@@ -1167,7 +1167,7 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const         vol,
     memcpy(buf, ent, sizeof(struct bEntryBlock));
 
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( buf, SWBL_ENTRY );
+    adfSwapEndian ( buf, ADF_SWBL_ENTRY );
 #endif
     newSum = adfNormalSum(buf,20,sizeof(struct bEntryBlock));
     swLong(buf+20, newSum);
@@ -1196,7 +1196,7 @@ RETCODE adfWriteDirBlock ( struct AdfVolume * const vol,
 
     memcpy(buf, dir, sizeof(struct bDirBlock));
 #ifdef LITT_ENDIAN
-    adfSwapEndian ( buf, SWBL_DIR );
+    adfSwapEndian ( buf, ADF_SWBL_DIR );
 #endif
     newSum = adfNormalSum(buf,20,sizeof(struct bDirBlock));
     swLong(buf+20, newSum);

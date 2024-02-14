@@ -23,7 +23,7 @@ void show_directory_metadata ( struct AdfVolume * const vol,
 
     uint8_t dirblock_orig_endian[512];
     memcpy ( dirblock_orig_endian, &dir_block, 512 );
-    adfSwapEndian ( dirblock_orig_endian, SWBL_DIR );
+    adfSwapEndian ( dirblock_orig_endian, ADF_SWBL_DIR );
     uint32_t checksum_calculated = adfNormalSum ( dirblock_orig_endian, 0x14,
                                                   sizeof (struct bDirBlock ) );
     printf ( "\nDirectory block:\n"
