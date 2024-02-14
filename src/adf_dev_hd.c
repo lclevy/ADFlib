@@ -455,7 +455,7 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
     memcpy(blk, buf, 256);
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_RDSK);
+    adfSwapEndian ( (uint8_t *) blk, SWBL_RDSK );
 #endif
 
     if ( strncmp(blk->id,"RDSK",4)!=0 ) {
@@ -510,7 +510,7 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
 
     memcpy(buf, rdsk, sizeof(struct bRDSKblock));
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_RDSK);
+    adfSwapEndian ( buf, SWBL_RDSK );
 #endif
 
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
@@ -538,7 +538,7 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
     memcpy(blk, buf, sizeof(struct bPARTblock));
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_PART);
+    adfSwapEndian ( (uint8_t *) blk, SWBL_PART);
 #endif
 
     if ( strncmp(blk->id,"PART",4)!=0 ) {
@@ -589,7 +589,7 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
 
     memcpy(buf, part, sizeof(struct bPARTblock));
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_PART);
+    adfSwapEndian ( buf, SWBL_PART );
 #endif
 
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
@@ -616,7 +616,7 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
     memcpy(blk, buf, sizeof(struct bFSHDblock));
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_FSHD);
+    adfSwapEndian ( (uint8_t *) blk, SWBL_FSHD );
 #endif
 
     if ( strncmp(blk->id,"FSHD",4)!=0 ) {
@@ -657,7 +657,7 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
 
     memcpy(buf, fshd, sizeof(struct bFSHDblock));
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_FSHD);
+    adfSwapEndian ( buf, SWBL_FSHD );
 #endif
 
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
@@ -686,7 +686,7 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
     memcpy(blk, buf, sizeof(struct bLSEGblock));
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_LSEG);
+    adfSwapEndian ( (uint8_t *) blk, SWBL_LSEG );
 #endif
 
     if ( strncmp(blk->id,"LSEG",4)!=0 ) {
@@ -727,7 +727,7 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
 
     memcpy(buf, lseg, sizeof(struct bLSEGblock));
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_LSEG);
+    adfSwapEndian ( buf, SWBL_LSEG );
 #endif
 
     newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);

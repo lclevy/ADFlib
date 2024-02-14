@@ -69,8 +69,8 @@ PREFIX uint32_t adfNormalSum ( const uint8_t * const buf,
 			       const int offset,
 			       const int bufLen );
 
-PREFIX void swapEndian ( uint8_t * const buf,
-			 const int       type );
+PREFIX void adfSwapEndian ( uint8_t * const buf,
+                            const int       type );
 
 #endif /* _ADF_RAW_H */
 

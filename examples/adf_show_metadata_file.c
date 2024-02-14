@@ -31,7 +31,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
 
     uint8_t file_header_block_orig_endian[512];
     memcpy ( file_header_block_orig_endian, block, 512 );
-    swapEndian ( file_header_block_orig_endian, SWBL_FILE );
+    adfSwapEndian ( file_header_block_orig_endian, SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_header_block_orig_endian, 0x14,
                                                   sizeof (struct bFileHeaderBlock ) );
     printf ( "\nbFileHeaderBlock:\n"
@@ -152,7 +152,7 @@ void show_ext_block ( const struct bFileExtBlock * const block )
 {
     uint8_t file_ext_block_orig_endian[512];
     memcpy ( file_ext_block_orig_endian, block, 512 );
-    swapEndian ( file_ext_block_orig_endian, SWBL_FILE );
+    adfSwapEndian ( file_ext_block_orig_endian, SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_ext_block_orig_endian, 0x14,
                                                   sizeof (struct bFileExtBlock ) );
     printf ( "\nFile extension block:\n"

@@ -62,13 +62,13 @@ static const int swapTable [ MAX_SWTYPE + 1 ][ 15 ] = {
 
 
 /*
- * swapEndian
+ * adfSwapEndian
  *
  * magic :-) endian swap function (big -> little for read, little to big for write)
  */
 
-void swapEndian ( uint8_t * const buf,
-                  const int       type )
+void adfSwapEndian ( uint8_t * const buf,
+                     const int       type )
 {
     int i = 0,
         p = 0;
@@ -77,7 +77,7 @@ void swapEndian ( uint8_t * const buf,
     assert ( type <= MAX_SWTYPE );
     if ( type > MAX_SWTYPE || type < 0 ) {
         /* this should never happen */
-        adfEnv.eFct ( "SwapEndian: type %d do not exist", type );
+        adfEnv.eFct ( "adfSwapEndian: type %d do not exist", type );
         return;
     }
 
@@ -126,7 +126,7 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
 
     memcpy(root, buf, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)root, SWBL_ROOT);    
+    adfSwapEndian ( (uint8_t*) root, SWBL_ROOT );
 #endif
 
     if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
@@ -172,7 +172,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     memcpy(buf, root, LOGICAL_BLOCK_SIZE);
 
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_ROOT);
+    adfSwapEndian ( buf, SWBL_ROOT );
 #endif
     uint32_t newSum = adfNormalSum ( buf, 20, LOGICAL_BLOCK_SIZE );
     swLong(buf+20, newSum);
@@ -203,7 +203,7 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
 
     memcpy(boot, buf, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)boot,SWBL_BOOT);
+    adfSwapEndian ( (uint8_t *) boot, SWBL_BOOT );
 #endif
     if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
         if ( strncmp ( "PFS", boot->dosType, 3 ) == 0 ) {
@@ -244,7 +244,7 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
     boot->dosType[2] = 'S';
     memcpy(buf, boot, LOGICAL_BLOCK_SIZE*2);
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_BOOT);
+    adfSwapEndian ( buf, SWBL_BOOT );
 #endif
 
     if (boot->rootBlock==880 || boot->data[0]!=0) {

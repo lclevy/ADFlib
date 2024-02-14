@@ -170,7 +170,7 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
 
     memcpy(buf, fhdr, sizeof(struct bFileHeaderBlock));
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_FILE);
+    adfSwapEndian ( buf, SWBL_FILE );
 #endif
     newSum = adfNormalSum(buf,20,sizeof(struct bFileHeaderBlock));
     swLong(buf+20, newSum);
@@ -209,7 +209,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 
     if (isOFS(vol->dosType)) {
 #ifdef LITT_ENDIAN
-        swapEndian(data, SWBL_DATA);
+        adfSwapEndian ( data, SWBL_DATA );
 #endif
         dBlock = (struct bOFSDataBlock*)data;
 /*printf("adfReadDataBlock %ld\n",nSect);*/
@@ -258,7 +258,7 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
         uint8_t buf[512];
         memcpy ( buf, data, 512 );
 #ifdef LITT_ENDIAN
-        swapEndian(buf, SWBL_DATA);
+        adfSwapEndian ( buf, SWBL_DATA );
 #endif
         uint32_t newSum = adfNormalSum ( buf, 20, 512 );
         swLong(buf+20,newSum);
@@ -296,7 +296,7 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
 /*printf("read fext=%d\n",nSect);*/
     memcpy(fext,buf,sizeof(struct bFileExtBlock));
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)fext, SWBL_FEXT);
+    adfSwapEndian ( (uint8_t *) fext, SWBL_FEXT );
 #endif
     if (fext->checkSum!=adfNormalSum(buf,20,sizeof(struct bFileExtBlock)))
         (*adfEnv.wFct)("adfReadFileExtBlock : invalid checksum");
@@ -335,7 +335,7 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
 
     memcpy(buf,fext,512);
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_FEXT);
+    adfSwapEndian ( buf, SWBL_FEXT );
 #endif
     newSum = adfNormalSum(buf,20,512);
     swLong(buf+20,newSum);

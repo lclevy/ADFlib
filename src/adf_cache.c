@@ -629,7 +629,7 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
 
     memcpy(dirc,buf,512);
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)dirc,SWBL_CACHE);
+    adfSwapEndian ( (uint8_t *) dirc, SWBL_CACHE );
 #endif
     if (dirc->checkSum!=adfNormalSum(buf,20,512))
         adfEnv.wFct ( "adfReadDirCBlock : invalid checksum, volume '%s', block %u",
@@ -661,7 +661,7 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
 
     memcpy(buf, dirc, LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_CACHE);
+    adfSwapEndian ( buf, SWBL_CACHE );
 #endif
 
     newSum = adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE);
