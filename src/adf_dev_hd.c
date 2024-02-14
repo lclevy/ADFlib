@@ -35,8 +35,6 @@
 #include "adf_util.h"
 #include "adf_vol.h"
 
-#include "hd_blk.h"
-
 #include <stdlib.h>
 #include <string.h>
 

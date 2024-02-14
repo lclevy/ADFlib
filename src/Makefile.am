@@ -37,6 +37,7 @@ adfinc_HEADERS = \
     adflib.h \
     adf_bitm.h \
     adf_blk.h \
+    adf_blk_hd.h \
     adf_byteorder.h \
     adf_cache.h \
     adf_dev_driver.h \
@@ -62,8 +63,7 @@ adfinc_HEADERS = \
     adf_util.h \
     adf_version.h \
     adf_vol.h \
-    debug_util.h \
-    hd_blk.h
+    debug_util.h
 
 libadf_la_LDFLAGS = -version-info $(ADFLIB_LT_VERSION)
 

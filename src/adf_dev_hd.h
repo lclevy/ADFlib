@@ -31,7 +31,7 @@
 
 #include "adf_dev.h"
 #include "adf_err.h"
-#include "hd_blk.h"
+#include "adf_blk_hd.h"
 #include "adf_prefix.h"
 
 RETCODE adfMountHd ( struct AdfDevice * const dev );

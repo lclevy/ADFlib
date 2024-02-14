@@ -1,7 +1,7 @@
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
- *  hd_blk.h
+ *  adf_blk_hd.h
  *
  *  $Id$
  *
@@ -26,8 +26,8 @@
  */
 
 
-#ifndef _HD_BLK_H
-#define _HD_BLK_H 1
+#ifndef ADF_BLK_HD_H
+#define ADF_BLK_HD_H 1
 
 #include <stdint.h>
 
@@ -163,5 +163,5 @@ struct bFSHDblock {
 };
 
 
-#endif /* _HD_BLK_H */
+#endif /* ADF_BLK_HD_H */
 /*##########################################################################*/
