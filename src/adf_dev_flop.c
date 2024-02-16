@@ -80,6 +80,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
 	
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) {
+        free(vol->volName);
         free(vol);
         (*adfEnv.eFct)("adfMount : malloc");
         return RC_ERROR;
