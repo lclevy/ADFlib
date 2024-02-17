@@ -62,7 +62,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
         return RC_ERROR;
     }
 
-    vol->mounted = TRUE;
+    vol->mounted = FALSE;
     vol->firstBlock = 0;
     vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     vol->rootBlock = adfVolCalcRootBlk ( vol );
