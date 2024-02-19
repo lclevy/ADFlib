@@ -55,17 +55,18 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
         return RC_ERROR;
     }
 
-    vol->mounted = FALSE;
     vol->firstBlock = 0;
     vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     vol->rootBlock = adfVolCalcRootBlk ( vol );
     vol->blockSize = 512;
     vol->dev = dev;
  
+    vol->mounted = TRUE;    // must be set to read the root block
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         free ( vol );
         return RC_ERROR;
     }
+    vol->mounted = FALSE;
     memset(diskName, 0, 35);
     memcpy(diskName, root.diskName, root.nameLen);
 
