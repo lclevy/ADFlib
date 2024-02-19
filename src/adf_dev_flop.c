@@ -41,20 +41,13 @@
  * normaly not used directly, called directly by adfDevMount()
  *
  * use dev->devType to choose between DD and HD
- * fills geometry and the volume list with one volume
+ * fills the volume list with one volume
  */
 RETCODE adfMountFlop ( struct AdfDevice * const dev )
 {
     struct AdfVolume *vol;
     struct bRootBlock root;
     char diskName[35];
-	
-    dev->cylinders = 80;
-    dev->heads = 2;
-    if (dev->devType==DEVTYPE_FLOPDD)
-        dev->sectors = 11;
-    else 
-        dev->sectors = 22;
 
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 

@@ -90,10 +90,6 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 
     vol->volName=NULL;
     
-    dev->cylinders = dev->size/512;
-    dev->heads = 1;
-    dev->sectors = 1;
-
     vol->firstBlock = 0;
 
     unsigned size = dev->size + 512 - ( dev->size % 512 );
@@ -141,10 +137,6 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
     if ( rc != RC_OK )
         return rc;
-
-    dev->cylinders = rdsk.cylinders;
-    dev->heads = rdsk.heads;
-    dev->sectors = rdsk.sectors;
 
     /* PART blocks */
     listRoot = NULL;
