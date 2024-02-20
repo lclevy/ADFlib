@@ -225,7 +225,7 @@ void adfDevInfo ( const struct AdfDevice * const dev )
 
     for ( int i = 0 ; i < dev->nVol ; i++ ) {
         const struct AdfVolume * const vol = dev->volList[i];
-        const char * const fstype = ( adfVolIsDosFS ( vol ) == 0 ) ?
+        const char * const fstype = ( adfVolIsDosFS ( vol ) ) ?
             ( adfVolIsOFS ( vol ) ? "OFS" : "FFS" ) : "???";
         printf ( "    %2d  %9d    %9d    %s(%s)      \"%s\"", i,
                  vol->firstBlock,
