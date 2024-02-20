@@ -230,7 +230,8 @@ void adfDevInfo ( const struct AdfDevice * const dev )
         printf ( "    %2d  %9d    %9d    %s(%s)      \"%s\"", i,
                  vol->firstBlock,
                  vol->lastBlock,
-                 vol->fs.id, fstype,
+                 adfVolIsFsValid (vol) ? vol->fs.id : "???",
+                 fstype,
                  vol->volName ? vol->volName : "" );
         if ( vol->mounted )
             printf("    mounted");
