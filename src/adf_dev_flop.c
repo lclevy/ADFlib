@@ -71,7 +71,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
     memcpy ( vol->fs.id, boot.dosType, 3 );
     vol->fs.id[3] = '\0';
     vol->fs.type = (uint8_t) boot.dosType[3];
-    vol->datablockSize = isFFS(vol->fs.type) ? 512 : 488;
+    vol->datablockSize = isOFS ( vol->fs.type ) ? 488 : 512;
 
     vol->mounted = TRUE;    // must be set to read the root block
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {

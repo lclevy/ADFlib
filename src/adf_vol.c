@@ -208,10 +208,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     }       
     
     vol->fs.type = (uint8_t) boot.dosType[3];
-    if (isFFS(vol->fs.type))
-        vol->datablockSize = 512;
-    else
-        vol->datablockSize = 488;
+    vol->datablockSize = isOFS ( vol->fs.type ) ? 488 : 512;
 
     if (dev->readOnly /*|| isDIRCACHE(vol->fs.type)*/)
         vol->readOnly = TRUE;
