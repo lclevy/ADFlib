@@ -97,8 +97,9 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 
     /* set filesystem info (read from bootblock) */
     struct bBootBlock boot;
-    if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
-        adfEnv.eFct ( "adfMountHdFile : invalid BootBlock" );
+    if ( adfVolReadBlock ( vol, 0, &boot ) != RC_OK ) {
+        adfEnv.eFct ( "adfMountHdFile : error reading BootBlock, device %s, volume %d",
+                      dev->name, 0 );
         free ( dev->volList );
         dev->volList = NULL;
         return RC_ERROR;
@@ -182,8 +183,9 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 
         /* set filesystem info (read from bootblock) */
         struct bBootBlock boot;
-        if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
-            adfEnv.eFct ( "adfMountHd : invalid BootBlock" );
+        if ( adfVolReadBlock ( vol, 0, &boot) != RC_OK ) {
+            adfEnv.eFct ( "adfMountHd : error reading BootBlock, device %s, volume %d",
+                          dev->name, dev->nVol - 1 );
             adfFreeTmpVolList ( listRoot );
             free ( vol );
             return RC_ERROR;

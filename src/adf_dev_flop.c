@@ -63,8 +63,9 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
 
     /* set filesystem info (read from bootblock) */
     struct bBootBlock boot;
-    if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
-        adfEnv.eFct ( "adfMountFlop : invalid BootBlock" );
+    if ( adfVolReadBlock ( vol, 0, &boot ) != RC_OK ) {
+        adfEnv.eFct ( "adfMountFlop : error reading BootBlock, device %s, volume %d",
+                      dev->name, 0 );
         free ( vol );
         return RC_ERROR;
     }
