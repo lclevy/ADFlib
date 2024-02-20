@@ -47,7 +47,11 @@ struct AdfVolume {
     SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
     SECTNUM rootBlock;      /* root block (from firstBlock) */
 
-    uint8_t dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
+    struct fs {
+        char    id[4];          /* "DOS", "PFS", ... */
+        uint8_t type;           /* DOS: FFS/OFS, DIRCACHE, INTERNATIONAL;
+                                   PFS: ... */
+    } fs;
     BOOL bootCode;
     BOOL readOnly;
     unsigned datablockSize;      /* 488 or 512 */

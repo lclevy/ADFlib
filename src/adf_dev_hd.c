@@ -87,12 +87,27 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     dev->volList[0] = vol;
     dev->nVol++;      /* fixed by Dan, ... and by Gary */
 
+    vol->dev = dev;
     vol->volName=NULL;
     
     vol->firstBlock = 0;
 
     unsigned size = dev->size + 512 - ( dev->size % 512 );
 /*printf("size=%ld\n",size);*/
+
+    /* set filesystem info (read from bootblock) */
+    struct bBootBlock boot;
+    if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
+        adfEnv.eFct ( "adfMountHdFile : invalid BootBlock" );
+        free ( dev->volList );
+        dev->volList = NULL;
+        return RC_ERROR;
+    }
+    memcpy ( vol->fs.id, boot.dosType, 3 );
+    vol->fs.id[3] = '\0';
+    vol->fs.type = (uint8_t) boot.dosType[3];
+    vol->datablockSize = isFFS(vol->fs.type) ? 512 : 488;
+
     vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
     do {
@@ -156,6 +171,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
             (*adfEnv.eFct)("adfMountHd : malloc");
             return RC_MALLOC;
         }
+        vol->dev = dev;
         vol->volName=NULL;
         dev->nVol++;
 
@@ -164,6 +180,20 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         vol->rootBlock = adfVolCalcRootBlk ( vol );
         vol->blockSize = part.blockSize*4;
 
+        /* set filesystem info (read from bootblock) */
+        struct bBootBlock boot;
+        if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
+            adfEnv.eFct ( "adfMountHd : invalid BootBlock" );
+            adfFreeTmpVolList ( listRoot );
+            free ( vol );
+            return RC_ERROR;
+        }
+        memcpy ( vol->fs.id, boot.dosType, 3 );
+        vol->fs.id[3] = '\0';
+        vol->fs.type = (uint8_t) boot.dosType[3];
+        vol->datablockSize = isFFS(vol->fs.type) ? 512 : 488;
+
+        /* set volume name (from partition info) */
         len = (unsigned) min ( 31, part.nameLen );
         vol->volName = (char*)malloc(len+1);
         if ( vol->volName == NULL ) { 

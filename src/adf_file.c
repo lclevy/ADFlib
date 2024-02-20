@@ -373,7 +373,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
             }
         }
 
-        if ( isOFS ( file->volume->dosType ) ) {
+        if ( isOFS ( file->volume->fs.type ) ) {
             // for OFS - update also data block header
             struct bOFSDataBlock * const data =
                 (struct bOFSDataBlock *) file->currentData;
@@ -439,7 +439,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
          file->currentData != NULL &&
          file->curDataPtr != 0 )
     {
-        if ( isOFS ( file->volume->dosType ) ) {
+        if ( isOFS ( file->volume->fs.type ) ) {
             struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
             assert ( file->posInDataBlk <= file->volume->datablockSize );
             data->dataSize = file->posInDataBlk;
@@ -471,7 +471,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         return rc;
     }
 
-    if ( isDIRCACHE ( file->volume->dosType ) ) {
+    if ( isDIRCACHE ( file->volume->fs.type ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
         struct bEntryBlock parent;
         rc = adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );
@@ -677,14 +677,14 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
 #ifdef TEST_OFS_SEEK
     // optional code for testing only
     // (ie. to test OFS seek, which is less optimal and not used by default)
-    if ( isOFS ( file->volume->dosType ) )
+    if ( isOFS ( file->volume->fs.type ) )
         return adfFileSeekOFS_ ( file, pos );
     else
         return adfFileSeekExt_ ( file, pos );
 #endif
 
     RETCODE status = adfFileSeekExt_ ( file, pos );
-    if ( status != RC_OK && isOFS ( file->volume->dosType ) ) {
+    if ( status != RC_OK && isOFS ( file->volume->fs.type ) ) {
         adfEnv.wFct ( "adfFileSeek: seeking using ext blocks failed, fallback"
                       " to the OFS alt. way (traversing data blocks), "
                       "file '%s'", file->fileHdr->fileName );
@@ -892,7 +892,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
     if (file->pos+n > file->fileHdr->byteSize)
         n = file->fileHdr->byteSize - file->pos;
 
-    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
+    uint8_t * const dataPtr = ( isOFS ( file->volume->fs.type ) ) ?
         //(uint8_t*)(file->currentData)+24 :
         ( (struct bOFSDataBlock *) file->currentData )->data :
         file->currentData;
@@ -942,7 +942,7 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
     if (file->nDataBlock==0) {
         nSect = file->fileHdr->firstData;
     }
-    else if (isOFS(file->volume->dosType)) {
+    else if ( isOFS ( file->volume->fs.type ) ) {
         nSect = data->nextData;
     }
     else {
@@ -1002,8 +1002,11 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
         adfEnv.eFct ( "adfReadNextFileBlock : error reading data block %d / %d, file '%s'",
                        file->nDataBlock, nSect, file->fileHdr->fileName );
 
-    if (isOFS(file->volume->dosType) && data->seqNum!=file->nDataBlock+1)
+    if ( isOFS ( file->volume->fs.type ) &&
+         data->seqNum != file->nDataBlock + 1 )
+    {
         (*adfEnv.wFct)("adfReadNextFileBlock : seqnum incorrect");
+    }
 
     file->curDataPtr = nSect;
     file->nDataBlock++;
@@ -1027,7 +1030,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
 /*puts("adfWriteFile");*/
     const unsigned blockSize = file->volume->datablockSize;
 
-    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
+    uint8_t * const dataPtr = ( isOFS ( file->volume->fs.type ) ) ?
         ( (struct bOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
@@ -1188,7 +1191,7 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
     }
 
     /* builds OFS header */
-    if (isOFS(file->volume->dosType)) {
+    if ( isOFS ( file->volume->fs.type ) ) {
         /* writes previous data block and link it  */
         struct bOFSDataBlock * const data = file->currentData;
         if (file->pos>=blockSize) {

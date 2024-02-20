@@ -131,9 +131,9 @@ void adfVolInfo ( struct AdfVolume * const vol )
         printf ("Unknown devType!\n");
     }
     printf ("  Filesystem:\t%s %s %s\n",
-            isFFS(vol->dosType) ? "FFS" : "OFS",
-            isINTL(vol->dosType) ? "INTL " : "",
-            isDIRCACHE(vol->dosType) ? "DIRCACHE " : "");
+            isFFS ( vol->fs.type ) ? "FFS" : "OFS",
+            isINTL ( vol->fs.type ) ? "INTL " : "",
+            isDIRCACHE ( vol->fs.type ) ? "DIRCACHE " : "");
 
     printf("  Free blocks:\t%d\n", adfCountFreeBlocks(vol));
     printf ("  R/W:\t\t%s\n", vol->readOnly ? "Read only" : "Read/Write");
@@ -196,7 +196,6 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     }
 
     vol = dev->volList[nPart];
-    vol->dev = dev;
     vol->mounted = TRUE;
 
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
@@ -208,13 +207,13 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         return NULL;
     }       
     
-    vol->dosType = (uint8_t) boot.dosType[3];
-    if (isFFS(vol->dosType))
+    vol->fs.type = (uint8_t) boot.dosType[3];
+    if (isFFS(vol->fs.type))
         vol->datablockSize = 512;
     else
         vol->datablockSize = 488;
 
-    if (dev->readOnly /*|| isDIRCACHE(vol->dosType)*/)
+    if (dev->readOnly /*|| isDIRCACHE(vol->fs.type)*/)
         vol->readOnly = TRUE;
     else
         vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );

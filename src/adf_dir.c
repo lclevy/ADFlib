@@ -64,7 +64,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         return RC_OK;
     }
     
-    intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
+    intl = isINTL ( vol->fs.type ) || isDIRCACHE ( vol->fs.type );
     unsigned len = (unsigned) strlen ( newName );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t*) newName, len, intl );
     adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, (unsigned) strlen(oldName), intl );
@@ -185,7 +185,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         return rc;
 
     // update dircache
-    if (isDIRCACHE(vol->dosType)) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         if (pSect==nPSect) {
             rc = adfUpdateCache ( vol, &parent,
                                   (struct bEntryBlock*) &entry, TRUE );
@@ -198,7 +198,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         }
     }
 /*
-    if (isDIRCACHE(vol->dosType) && pSect!=nPSect) {
+    if (isDIRCACHE(vol->fs.type) && pSect!=nPSect) {
         adfUpdateCache(vol, &nParent, (struct bEntryBlock*)&entry,TRUE);
     }
 */
@@ -237,7 +237,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
 
     /* in parent hashTable */
     if (nSect2==0) {
-        intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
+        intl = isINTL ( vol->fs.type ) || isDIRCACHE ( vol->fs.type );
         unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
 /*printf("hashTable=%d nexthash=%d\n",parent.hashTable[hashVal],
  entry.nextSameHash);*/
@@ -268,7 +268,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     else if (entry.secType==ST_DIR) {
         adfSetBlockFree(vol, nSect);
         /* free dir cache block : the directory must be empty, so there's only one cache block */
-        if (isDIRCACHE(vol->dosType))
+        if ( isDIRCACHE ( vol->fs.type ) )
             adfSetBlockFree(vol, entry.extension);
 
         if (adfEnv.useNotify)
@@ -280,7 +280,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    if (isDIRCACHE(vol->dosType)) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         rc = adfDelFromCache ( vol, &parent, entry.headerKey );
         if ( rc != RC_OK )
             return rc;
@@ -331,7 +331,7 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
         // abort here?
     }
 
-    if (isDIRCACHE(vol->dosType))
+    if ( isDIRCACHE ( vol->fs.type ) )
         rc = adfUpdateCache ( vol, &parent, (struct bEntryBlock*) &entry, TRUE );
 
     return rc;
@@ -376,7 +376,7 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
         // abort here?
     }
 
-    if (isDIRCACHE(vol->dosType))
+    if ( isDIRCACHE ( vol->fs.type ) )
         rc = adfUpdateCache ( vol, &parent, (struct bEntryBlock*) &entry, FALSE );
 
     return rc;
@@ -435,7 +435,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
     struct bEntryBlock parent;
 
 
-    if (adfEnv.useDirCache && isDIRCACHE(vol->dosType))
+    if ( adfEnv.useDirCache && isDIRCACHE ( vol->fs.type ) )
         return (adfGetDirEntCache(vol, nSect, recurs ));
 
 
@@ -504,7 +504,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
         }
     }
 
-/*    if (parent.extension && isDIRCACHE(vol->dosType) )
+/*    if (parent.extension && isDIRCACHE(vol->fs.type) )
         adfReadDirCache(vol,parent.extension);
 */
     return head;
@@ -737,7 +737,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
     SECTNUM updSect;
     BOOL intl;
 
-    intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
+    intl = isINTL ( vol->fs.type ) || isDIRCACHE ( vol->fs.type );
     unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
     unsigned nameLen = min ( (unsigned) strlen ( name ),
                              (unsigned) MAXNAMELEN );
@@ -823,7 +823,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 
 /*puts("adfCreateEntry in");*/
 
-    intl = isINTL(vol->dosType) || isDIRCACHE(vol->dosType);
+    intl = isINTL ( vol->fs.type ) || isDIRCACHE ( vol->fs.type );
     unsigned len = min ( (unsigned) strlen(name),
                          (unsigned) MAXNAMELEN );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
@@ -1021,7 +1021,7 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
         dir.parent = parent.headerKey;
     adfTime2AmigaTime(adfGiveCurrentTime(),&(dir.days),&(dir.mins),&(dir.ticks));
 
-    if (isDIRCACHE(vol->dosType)) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         /* for adfCreateEmptyCache, will be added by adfWriteDirBlock */
         dir.secType = ST_DIR;
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) &dir );
@@ -1084,7 +1084,7 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
     if ( rc != RC_OK )
         return rc;
 
-    if ( isDIRCACHE ( vol->dosType ) ) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) fhdr );
         if ( rc != RC_OK )
             return rc;

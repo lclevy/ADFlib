@@ -218,8 +218,11 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
 
     if (!adfIsBlockFree(vol, entry->headerKey))
         return RC_ERROR;
-    if (isDIRCACHE(vol->dosType) && !adfIsBlockFree(vol,entry->extension))
+    if ( isDIRCACHE ( vol->fs.type ) &&
+         ! adfIsBlockFree ( vol, entry->extension ) )
+    {
         return RC_ERROR;
+    }
 
     rc = adfReadEntryBlock ( vol, pSect, &parent );
     if ( rc != RC_OK )
@@ -232,7 +235,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     if ( adfCreateEntry ( vol, &parent, name, entry->headerKey ) == -1 )
         return RC_ERROR;
 
-    if (isDIRCACHE(vol->dosType)) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;
@@ -298,7 +301,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 )
         return RC_ERROR;
 
-    if (isDIRCACHE(vol->dosType)) {
+    if ( isDIRCACHE ( vol->fs.type ) ) {
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;
@@ -357,7 +360,7 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
         return rc;
 
 /*printf("data %ld ext %ld\n",fileBlocks.nbData,fileBlocks.nbExtens);*/
-    if (isOFS(vol->dosType)) {
+    if ( isOFS ( vol->fs.type ) ) {
         /* checks OFS datablocks */
         for(n=0; n<fileBlocks.nbData; n++) {
 /*printf("%ld\n",fileBlocks.data[n]);*/

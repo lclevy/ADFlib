@@ -60,7 +60,19 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol->rootBlock = adfVolCalcRootBlk ( vol );
     vol->blockSize = 512;
     vol->dev = dev;
- 
+
+    /* set filesystem info (read from bootblock) */
+    struct bBootBlock boot;
+    if ( adfReadBootBlock ( vol, &boot) != RC_OK ) {
+        adfEnv.eFct ( "adfMountFlop : invalid BootBlock" );
+        free ( vol );
+        return RC_ERROR;
+    }
+    memcpy ( vol->fs.id, boot.dosType, 3 );
+    vol->fs.id[3] = '\0';
+    vol->fs.type = (uint8_t) boot.dosType[3];
+    vol->datablockSize = isFFS(vol->fs.type) ? 512 : 488;
+
     vol->mounted = TRUE;    // must be set to read the root block
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         free ( vol );
