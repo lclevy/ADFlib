@@ -120,6 +120,8 @@ static inline BOOL adfVolIsFsValid (  const struct AdfVolume * const vol )
         adfVolIsPFS ( vol ) );
 }
 
+PREFIX char * adfVolGetFsStr ( const struct AdfVolume * const vol );
+
 
 PREFIX RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
                                         const uint8_t * const    code );

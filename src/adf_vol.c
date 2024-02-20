@@ -558,5 +558,11 @@ RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
 }
 
 
+char * adfVolGetFsStr ( const struct AdfVolume * const vol )
+{
+    return ( adfVolIsOFS ( vol ) ? "OFS" :
+             adfVolIsFFS ( vol ) ? "FFS" :
+             adfVolIsPFS ( vol ) ? "PFS" : "???" );
+}
 
 /*#######################################################################################*/
