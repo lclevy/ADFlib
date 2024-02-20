@@ -70,7 +70,6 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     uint8_t buf[512];
     BOOL found;
 
-    dev->devType = DEVTYPE_HARDFILE;
     dev->nVol = 0;
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if ( dev->volList == NULL ) {

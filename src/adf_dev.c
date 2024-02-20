@@ -275,6 +275,7 @@ RETCODE adfDevMount ( struct AdfDevice * const dev )
         if ( ! dev->drv->isNative() &&
              strncmp ( "DOS", (char *) buf, 3 ) == 0 )
         {
+            dev->devType = DEVTYPE_HARDFILE;
             rc = adfMountHdFile ( dev );
             if ( rc != RC_OK )
                 return rc;
