@@ -220,16 +220,19 @@ void adfDevInfo ( const struct AdfDevice * const dev )
              "    Sectors\t%d\n\n",
              dev->cylinders, dev->heads, dev->sectors );
 
-    printf ( "  Volumes (%d):\n"
-             "   idx  first bl.     last bl.    name\n",
-             dev->nVol );
+    printf ( "  Volumes:\t%d%s\n", dev->nVol,
+             dev->nVol > 0 ? "\n   idx  first bl.     last bl.    filesystem    name" : "" );
 
     for ( int i = 0 ; i < dev->nVol ; i++ ) {
-        printf ( "    %2d  %9d    %9d    \"%s\"", i,
-                 dev->volList[i]->firstBlock,
-                 dev->volList[i]->lastBlock,
-                 dev->volList[i]->volName ? dev->volList[i]->volName : "" );
-        if ( dev->volList[i]->mounted )
+        const struct AdfVolume * const vol = dev->volList[i];
+        const char * const fstype = ( adfVolIsDosFS ( vol ) == 0 ) ?
+            ( adfVolIsOFS ( vol ) ? "OFS" : "FFS" ) : "???";
+        printf ( "    %2d  %9d    %9d    %s(%s)      \"%s\"", i,
+                 vol->firstBlock,
+                 vol->lastBlock,
+                 vol->fs.id, fstype,
+                 vol->volName ? vol->volName : "" );
+        if ( vol->mounted )
             printf("    mounted");
         putchar('\n');
     }
