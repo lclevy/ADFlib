@@ -75,7 +75,7 @@ static struct AdfDevice *
     }
 
     if ( ! adfDevIsGeometryValid_ ( dev ) ) {
-        adfEnv.eFct ( "adfDevOpen : invalid geometry: cyliders %u,"
+        adfEnv.eFct ( "adfDevOpen : invalid geometry: cyliders %u, "
                       "heads: %u, sectors: %u, size: %u, device: %s",
                       dev->cylinders, dev->heads, dev->sectors, dev->size, dev->name );
         dev->drv->closeDev ( dev );
@@ -94,17 +94,21 @@ static struct AdfDevice *
               dev->heads     != rdsk.heads     ||
               dev->sectors   != rdsk.sectors )
         {
-            adfEnv.wFct ( "adfDevOpen : using geometry from Rigid Block, different than detected/calculated(!):\n"
-                          "           detected             rdsk block\n"
-                          " cyliders: %3u                  %3u\n"
-                          " heads:    %3u                  %3u\n"
-                          " sectors:  %3u                  %3u",
-                          " size:     %ull                 %ull",
-                          dev->cylinders, rdsk.cylinders,
-                          dev->heads,     rdsk.heads,
-                          dev->sectors,   rdsk.sectors,
-                          dev->size,
-                          rdsk.cylinders * rdsk.heads * rdsk.sectors * 512 );
+            adfEnv.wFct (
+                "adfDevOpen : using geometry from Rigid Block, "
+                "different than detected/calculated(!):\n"
+                "              detected             rdsk block\n"
+                " cyliders:      %8u                  %8u\n"
+                " heads:         %8u                  %8u\n"
+                " sectors:       %8u                  %8u\n"
+                " size:        %10llu               %10llu",
+                dev->cylinders, rdsk.cylinders,
+                dev->heads,     rdsk.heads,
+                dev->sectors,   rdsk.sectors,
+                dev->size,
+                (long long unsigned) rdsk.cylinders *
+                (long long unsigned) rdsk.heads *
+                (long long unsigned) rdsk.sectors * 512LLU );
             dev->cylinders = rdsk.cylinders;
             dev->heads     = rdsk.heads;
             dev->sectors   = rdsk.sectors;
