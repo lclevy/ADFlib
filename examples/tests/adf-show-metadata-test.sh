@@ -17,9 +17,9 @@ ADF device info:
     Heads	2
     Sectors	11
 
-  Volumes (1):
-   idx  first bl.     last bl.    name
-     0          0         1759    "cshell"    mounted
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    DOS(OFS)      "cshell"
 
 EOF
 

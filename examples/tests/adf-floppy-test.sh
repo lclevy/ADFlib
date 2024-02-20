@@ -18,8 +18,7 @@ ADF device info:
     Heads	2
     Sectors	11
 
-  Volumes (0):
-   idx  first bl.     last bl.    name
+  Volumes:	0
 
 Done!
 EOF
@@ -35,8 +34,9 @@ ADF device info:
     Heads	2
     Sectors	11
 
-  Volumes (0):
-   idx  first bl.     last bl.    name
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    ???(???)      ""
 
 Formatting floppy (DD) disk '$tmpdir/testflopdd1.adf'...
 Done!
@@ -56,9 +56,9 @@ ADF device info:
     Heads	2
     Sectors	11
 
-  Volumes (1):
-   idx  first bl.     last bl.    name
-     0          0         1759    "TestFlopDD1"    mounted
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    DOS(FFS)      "TestFlopDD1"
 
 EOF
 
