@@ -91,7 +91,6 @@ BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
     return ( nSect >= 0 &&
              nSect <= (vol->lastBlock - vol->firstBlock) );
 }	
-	
 
 
 /*
@@ -393,7 +392,12 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(25);
 
+    strncpy ( vol->fs.id, "DOS", 3 );
+    vol->fs.id[3] = '\0';
+    vol->fs.type = volType;
+
     memset(&boot, 0, 1024);
+    //strncpy ( boot.dosType, "DOS", 3 ); /// done in adfWriteBootBlock
     boot.dosType[3] = (char) volType;
 /*printf("first=%d last=%d\n", vol->firstBlock, vol->lastBlock);
 printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
