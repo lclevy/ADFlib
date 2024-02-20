@@ -67,8 +67,6 @@ static void adfFreeTmpVolList ( struct AdfList * const root )
 RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 {
     struct AdfVolume * vol;
-    uint8_t buf[512];
-    BOOL found;
 
     dev->nVol = 0;
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
@@ -109,24 +107,33 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     vol->fs.type = (uint8_t) boot.dosType[3];
     vol->datablockSize = isOFS ( vol->fs.type ) ? 488 : 512;
 
-    vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
+    if ( adfVolIsDosFS ( vol ) ) {
+        vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
-    do {
-        dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
-        found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
-        if (!found)
-            (vol->rootBlock)--;
-    } while (vol->rootBlock>1 && !found);
+        uint8_t buf[512];
+        BOOL found = FALSE;
+        do {
+            dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
+            found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
+            if (!found)
+                (vol->rootBlock)--;
+        } while (vol->rootBlock>1 && !found);
 
-    if (vol->rootBlock==1) {
-        (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
-        free ( dev->volList );
-        dev->volList = NULL;
-        free ( vol );
-        dev->nVol = 0;
-        return RC_ERROR;
+        if (vol->rootBlock==1) {
+            (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
+            free ( dev->volList );
+            dev->volList = NULL;
+            free ( vol );
+            dev->nVol = 0;
+            return RC_ERROR;
+        }
+        vol->lastBlock = vol->rootBlock * 2 - 1;
+    } else { // if ( adfVolIsPFS ( vol ) ) {
+        vol->datablockSize = 0; //512;
+        vol->volName = NULL;
+        vol->rootBlock = -1;
+        vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     }
-    vol->lastBlock = vol->rootBlock*2 - 1 ;
 
     return RC_OK;
 }
@@ -178,7 +185,6 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
 
         vol->firstBlock = (int32_t) rdsk.cylBlocks * part.lowCyl;
         vol->lastBlock = ( part.highCyl + 1 ) * (int32_t) rdsk.cylBlocks - 1;
-        vol->rootBlock = adfVolCalcRootBlk ( vol );
         vol->blockSize = part.blockSize*4;
 
         /* set filesystem info (read from bootblock) */
@@ -220,6 +226,8 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
             (*adfEnv.eFct)("adfMount : newCell() malloc");
             return RC_MALLOC;
         }
+
+        vol->rootBlock = adfVolIsDosFS ( vol ) ? adfVolCalcRootBlk ( vol ) : -1;
 
         next = part.next;
     }
