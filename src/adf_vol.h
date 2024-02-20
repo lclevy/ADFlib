@@ -26,10 +26,13 @@
  *
  */
 
+#include "adf_blk.h"
 #include "adf_types.h"
 #include "adf_err.h"
 #include "adf_prefix.h"
 #include "adf_str.h"
+
+#include <string.h>
 
 /* ----- VOLUME ----- */
 
@@ -80,6 +83,41 @@ static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
 static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
 {
     return ( vol->lastBlock - vol->firstBlock + 1 ) / 2;
+}
+
+
+static inline BOOL adfVolIsDosFS ( const struct AdfVolume * const vol ) {
+    return ( strncmp ( vol->fs.id, "DOS", 3 ) == 0 );
+}
+
+static inline BOOL adfVolIsOFS ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && isOFS ( vol->fs.type );
+}
+
+static inline BOOL adfVolIsFFS ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && isFFS ( vol->fs.type );
+}
+
+static inline BOOL adfVolIsINTL ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && isINTL ( vol->fs.type );
+}
+
+static inline BOOL adfVolIsDIRCACHE ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && isDIRCACHE ( vol->fs.type );
+}
+
+static inline BOOL adfVolIsPFS ( const struct AdfVolume * const vol ) {
+    return ( strncmp ( vol->fs.id, "PFS", 3 ) == 0 );
+}
+
+static inline BOOL adfVolIsFsValid (  const struct AdfVolume * const vol )
+{
+    return (
+        ( adfVolIsOFS ( vol ) &&
+          ! adfVolIsINTL ( vol ) &&
+          ! adfVolIsDIRCACHE ( vol ) ) ||
+        adfVolIsFFS ( vol ) ||
+        adfVolIsPFS ( vol ) );
 }
 
 
