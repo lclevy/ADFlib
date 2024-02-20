@@ -415,7 +415,6 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
            free(dev->volList);
            adfEnv.eFct ( "adfCreateHd : adfVolCreate() failed" );
         }
-        dev->volList[i]->blockSize = 512;
     }
     dev->nVol = (int) n;
 /*

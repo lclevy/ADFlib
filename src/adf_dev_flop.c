@@ -129,7 +129,6 @@ RETCODE adfCreateFlop ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
     dev->nVol = 1;
-    dev->volList[0]->blockSize = 512;
     if (dev->sectors==11)
         dev->devType=DEVTYPE_FLOPDD;
     else
