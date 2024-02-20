@@ -181,6 +181,13 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         return NULL;
     }
 
+    if ( dev->nVol < 1 ) {
+        adfEnv.eFct ( "adfVolMount : volume list empty (none or not loaded), "
+                      "(requested: device %s, volume %d)",
+                      dev->name, nPart );
+        return NULL;
+    }
+
     if ( nPart < 0  ||
          nPart >= dev->nVol )
     {
@@ -196,6 +203,18 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     }
 
     vol = dev->volList[nPart];
+
+    if ( ! adfVolIsDosFS ( vol ) ) {
+        if ( adfVolIsPFS ( vol ) ) {
+            adfEnv.eFct ( "adfVolMount : a PFS volume, not supported (device %s, volume %d)",
+                          dev->name, nPart );
+            return NULL;
+        }
+        adfEnv.eFct ( "adfVolMount : filesystem not supported (device %s, volume %d)",
+                      dev->name, nPart );
+        return NULL;
+    }
+
     vol->mounted = TRUE;
 
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
