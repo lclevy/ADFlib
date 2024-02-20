@@ -97,11 +97,11 @@ static struct AdfDevice *
             adfEnv.wFct (
                 "adfDevOpen : using geometry from Rigid Block, "
                 "different than detected/calculated(!):\n"
-                "              detected             rdsk block\n"
+                "                detected                rdsk block\n"
                 " cyliders:      %8u                  %8u\n"
                 " heads:         %8u                  %8u\n"
                 " sectors:       %8u                  %8u\n"
-                " size:        %10llu               %10llu",
+                " size:        %10llu                %10llu",
                 dev->cylinders, rdsk.cylinders,
                 dev->heads,     rdsk.heads,
                 dev->sectors,   rdsk.sectors,
