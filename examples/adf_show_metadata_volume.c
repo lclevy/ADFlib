@@ -163,7 +163,7 @@ static void show_bmpages ( struct AdfVolume * const        vol,
     // show bm ext block pages
     SECTNUM nSect = rblock->bmExt;
     while ( nSect != 0 ) {
-        struct bBitmapExtBlock bmExtBlock;
+        struct AdfBitmapExtBlock bmExtBlock;
         RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
         if ( rc == RC_OK ) {
             show_bmpages_array ( (const int32_t * const) &bmExtBlock.bmPages,

@@ -315,8 +315,8 @@ static void checkInternals(void)
     assertInternal ( sizeof(struct AdfBitmapBlock) == 512,
                      "Internal error : sizeof(struct AdfBitmapBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bBitmapExtBlock) == 512,
-                     "Internal error : sizeof(struct bBitmapExtBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfBitmapExtBlock) == 512,
+                     "Internal error : sizeof(struct AdfBitmapExtBlock) != 512\n" );
 
     assertInternal ( sizeof(struct bLinkBlock) == 512,
                      "Internal error : sizeof(struct bLinkBlock) != 512\n" );

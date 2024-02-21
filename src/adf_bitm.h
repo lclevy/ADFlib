@@ -42,13 +42,13 @@ PREFIX RETCODE adfWriteBitmapBlock ( struct AdfVolume * const            vol,
                                      const SECTNUM                       nSect,
                                      const struct AdfBitmapBlock * const bitm );
 
-PREFIX RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
-                                       const SECTNUM                  nSect,
-                                       struct bBitmapExtBlock * const bitme );
+PREFIX RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const         vol,
+                                       const SECTNUM                    nSect,
+                                       struct AdfBitmapExtBlock * const bitme );
 
-PREFIX RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
-                                        const SECTNUM                        nSect,
-                                        const struct bBitmapExtBlock * const bitme );
+PREFIX RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const               vol,
+                                        const SECTNUM                          nSect,
+                                        const struct AdfBitmapExtBlock * const bitme );
 
 SECTNUM adfGet1FreeBlock ( struct AdfVolume * const vol );
 PREFIX RETCODE adfUpdateBitmap ( struct AdfVolume * const vol );

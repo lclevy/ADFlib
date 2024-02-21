@@ -287,7 +287,7 @@ struct AdfBitmapBlock {
 	};
 
 
-struct bBitmapExtBlock {
+struct AdfBitmapExtBlock {
 /*000*/	int32_t	bmPages[ADF_BM_PAGES_EXT_SIZE];
 /*1fc*/	int32_t	nextBlock;
 	};

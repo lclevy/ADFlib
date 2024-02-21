@@ -233,7 +233,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     /* show bmExt blocks */
     SECTNUM bmExtBlkPtr = rb.bmExt;
     while ( bmExtBlkPtr != 0 ) {
-        struct bBitmapExtBlock bmExtBlk;
+        struct AdfBitmapExtBlock bmExtBlk;
         RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
         if ( rc != RC_OK ) {
             adfFreeBitmap ( vol );
