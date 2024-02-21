@@ -57,7 +57,9 @@ static void show_bFileExtBlock (
     const struct bFileExtBlock * const block );
 
 #else
+#ifndef NDEBUG
 #define NDEBUG
+#endif
 #endif
 
 #include <assert.h>
