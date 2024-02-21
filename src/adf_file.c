@@ -471,7 +471,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         return rc;
     }
 
-    if ( isDIRCACHE ( file->volume->fs.type ) ) {
+    if ( adfDosFsIsDIRCACHE ( file->volume->fs.type ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
         struct bEntryBlock parent;
         rc = adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );

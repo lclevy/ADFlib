@@ -423,7 +423,7 @@ printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
 /*for(i=0; i<127; i++)
 printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 */
-    if ( isDIRCACHE(volType) )
+    if ( adfDosFsIsDIRCACHE ( volType ) )
         adfGetFreeBlocks( vol, 2, blkList );
     else
         adfGetFreeBlocks( vol, 1, blkList );
@@ -438,7 +438,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.coDays),&(root.coMins),&(root.coTicks));
 
     /* dircache block */
-    if ( isDIRCACHE(volType) ) {
+    if ( adfDosFsIsDIRCACHE ( volType ) ) {
         root.extension = 0L;
         root.secType = ST_ROOT; /* needed by adfCreateEmptyCache() */
         adfCreateEmptyCache(vol, (struct bEntryBlock*)&root, blkList[1]);

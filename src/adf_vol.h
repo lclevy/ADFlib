@@ -91,19 +91,19 @@ static inline BOOL adfVolIsDosFS ( const struct AdfVolume * const vol ) {
 }
 
 static inline BOOL adfVolIsOFS ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && isOFS ( vol->fs.type );
+    return adfVolIsDosFS ( vol ) && adfDosFsIsOFS ( vol->fs.type );
 }
 
 static inline BOOL adfVolIsFFS ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && isFFS ( vol->fs.type );
+    return adfVolIsDosFS ( vol ) && adfDosFsIsFFS ( vol->fs.type );
 }
 
 static inline BOOL adfVolIsINTL ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && isINTL ( vol->fs.type );
+    return adfVolIsDosFS ( vol ) && adfDosFsIsINTL ( vol->fs.type );
 }
 
 static inline BOOL adfVolIsDIRCACHE ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && isDIRCACHE ( vol->fs.type );
+    return adfVolIsDosFS ( vol ) && adfDosFsIsDIRCACHE ( vol->fs.type );
 }
 
 static inline BOOL adfVolIsPFS ( const struct AdfVolume * const vol ) {

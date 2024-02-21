@@ -29,7 +29,7 @@
 #ifndef ADF_BLK_H
 #define ADF_BLK_H 1
 
-#include <stdint.h>
+#include "adf_types.h"
 
 
 #define LOGICAL_BLOCK_SIZE    512
@@ -46,11 +46,21 @@
 #define ADF_DOSFS_INTL        2   /* 010 */
 #define ADF_DOSFS_DIRCACHE    4   /* 100 */
 
+static inline BOOL adfDosFsIsFFS ( const uint8_t c ) {
+    return c & ADF_DOSFS_FFS;
+}
 
-#define isFFS(c)           ((c)&ADF_DOSFS_FFS)
-#define isOFS(c)           (!((c)&ADF_DOSFS_FFS))
-#define isINTL(c)          ((c)&ADF_DOSFS_INTL)
-#define isDIRCACHE(c)      ((c)&ADF_DOSFS_DIRCACHE)
+static inline BOOL adfDosFsIsOFS ( const uint8_t c ) {
+    return ! adfDosFsIsFFS ( c );
+}
+
+static inline BOOL adfDosFsIsINTL ( const uint8_t c ) {
+    return c & ADF_DOSFS_INTL;
+}
+
+static inline BOOL adfDosFsIsDIRCACHE ( const uint8_t c ) {
+    return c & ADF_DOSFS_DIRCACHE;
+}
 
 
 /* ----- ENTRIES ----- */
