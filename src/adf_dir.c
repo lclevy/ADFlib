@@ -387,9 +387,7 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
  */
 BOOL isDirEmpty ( const struct bDirBlock * const dir )
 {
-    int i;
-	
-    for(i=0; i<HT_SIZE; i++)
+    for ( int i = 0 ; i < ADF_HT_SIZE ; i++ )
         if (dir->hashTable[i]!=0)
            return FALSE;
 
@@ -426,7 +424,6 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
 {
     struct bEntryBlock entryBlk;
     struct AdfList *cell, *head;
-    int i;
     struct AdfEntry * entry;
     SECTNUM nextSector;
     int32_t *hashTable;
@@ -442,7 +439,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
 
     hashTable = parent.hashTable;
     cell = head = NULL;
-    for(i=0; i<HT_SIZE; i++) {
+    for ( int i = 0 ; i < ADF_HT_SIZE ; i++ ) {
         if (hashTable[i]!=0) {
              entry = ( struct AdfEntry * ) malloc ( sizeof ( struct AdfEntry ) );
              if (!entry) {
@@ -744,8 +741,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
 /*printf("name=%s ht[%d]=%d upper=%s len=%d\n",name,hashVal,nSect,upperName,nameLen);
 printf("hashVal=%u\n",adfGetHashValue(upperName, intl ));
 if (!strcmp("españa.country",name)) {
-int i;
-for(i=0; i<HT_SIZE; i++) printf("ht[%d]=%d    ",i,ht[i]);
+for ( int i = 0 ; i < ADF_HT_SIZE ; i++ )  printf("ht[%d]=%d    ", i, ht[i]);
 }*/
     if (nSect==0)
         return -1;
@@ -952,7 +948,7 @@ unsigned adfGetHashValue ( const uint8_t * const name,
             upper = (uint8_t) toupper ( name[i] );
         hash = (hash * 13 + upper) & 0x7ff;
     }
-    hash = hash % HT_SIZE;
+    hash = hash % ADF_HT_SIZE;
 
     return(hash);
 }

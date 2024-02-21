@@ -129,7 +129,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              rblock->checkSum,
              checksum_calculated,
              rblock->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             HT_SIZE, //rblock->hashTable[HT_SIZE],
+             ADF_HT_SIZE, //rblock->hashTable[ADF_HT_SIZE],
              rblock->bmFlag,
              ADF_BM_PAGES_ROOT_SIZE, //rblock->bmPages[ADF_BM_PAGES_ROOT_SIZE],
              rblock->bmExt,

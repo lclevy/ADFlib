@@ -93,7 +93,7 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 #define ADF_BM_VALID	-1
 #define ADF_BM_INVALID	0
 
-#define HT_SIZE		72
+#define ADF_HT_SIZE            72
 #define ADF_BM_PAGES_ROOT_SIZE 25
 #define ADF_BM_PAGES_EXT_SIZE  127
 #define ADF_BM_MAP_SIZE        127
@@ -135,7 +135,7 @@ struct bRootBlock {
 /*00c*/	int32_t	hashTableSize;
         int32_t	firstData;
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
+/*018*/	int32_t	hashTable[ADF_HT_SIZE];		/* hash table */
 /*138*/	int32_t	bmFlag;				/* bitmap flag, -1 means VALID */
 /*13c*/	int32_t	bmPages[ADF_BM_PAGES_ROOT_SIZE];
 /*1a0*/	int32_t	bmExt;
@@ -163,7 +163,7 @@ struct bEntryBlock {
 /*004*/	int32_t	 headerKey;	/* current block number */
         int32_t	 r1[3];
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	 hashTable[HT_SIZE];
+/*018*/	int32_t	 hashTable[ADF_HT_SIZE];
         int32_t	 r2[2];
 /*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t byteSize;
@@ -244,7 +244,7 @@ struct bDirBlock {
 /*00c*/	int32_t	hashTableSize;	/* == 0 */
         int32_t	r1;		/* == 0 */
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
+/*018*/	int32_t	hashTable[ADF_HT_SIZE];		/* hash table */
         int32_t	r2[2];
 /*140*/	int32_t	access;
         int32_t	r4;		/* == 0 */

@@ -160,7 +160,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     root->type = T_HEADER;
     root->headerKey = 0L;
     root->highSeq = 0L;
-    root->hashTableSize = HT_SIZE;
+    root->hashTableSize = ADF_HT_SIZE;
     root->firstData = 0L;
     /* checkSum, hashTable */
     /* bmflag */

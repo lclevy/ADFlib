@@ -4,6 +4,6 @@
 
 #include <adflib.h>
 
-void show_hashtable ( const uint32_t hashtable[HT_SIZE] );
+void show_hashtable ( const uint32_t hashtable[ADF_HT_SIZE] );
 
 #endif
