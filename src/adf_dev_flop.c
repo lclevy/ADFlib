@@ -74,7 +74,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
         vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
 
         vol->rootBlock = adfVolCalcRootBlk ( vol );
-        struct bRootBlock root;
+        struct AdfRootBlock root;
         vol->mounted = TRUE;    // must be set to read the root block
         if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
             free ( vol );

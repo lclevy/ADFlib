@@ -128,7 +128,7 @@ struct AdfBootBlock {
 };
 
 
-struct bRootBlock {
+struct AdfRootBlock {
 /*000*/	int32_t	type;
         int32_t	headerKey;
         int32_t	highSeq;

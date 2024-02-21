@@ -99,7 +99,7 @@ BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
  */
 void adfVolInfo ( struct AdfVolume * const vol )
 {
-    struct bRootBlock root;
+    struct AdfRootBlock root;
     char diskName[35];
     int days,month,year;
 	
@@ -171,7 +171,6 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const int                nPart,
                                         const AdfAccessMode      mode )
 {
-    struct bRootBlock root;
     struct AdfBootBlock boot;
     struct AdfVolume * vol;
 
@@ -233,6 +232,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     else
         vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 	   	
+    struct AdfRootBlock root;
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         adfEnv.eFct ( "adfVolMount : invalid RootBlock, sector %u", vol->rootBlock );
         vol->mounted = FALSE;
@@ -350,8 +350,6 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType )
 {
-    struct AdfBootBlock boot;
-    struct bRootBlock root;
 /*    struct bDirCacheBlock dirc;*/
     SECTNUM blkList[2];
     struct AdfVolume* vol;
@@ -397,6 +395,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
     vol->fs.id[3] = '\0';
     vol->fs.type = volType;
 
+    struct AdfBootBlock boot;
     memset(&boot, 0, 1024);
     //strncpy ( boot.dosType, "DOS", 3 ); /// done in adfWriteBootBlock
     boot.dosType[3] = (char) volType;
@@ -431,6 +430,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 
 /*printf("[0]=%d [1]=%d\n",blkList[0],blkList[1]);*/
 
+    struct AdfRootBlock root;
     memset ( &root, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     root.nameLen = (uint8_t) strlen ( vol->volName );

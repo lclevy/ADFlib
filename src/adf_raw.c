@@ -114,9 +114,9 @@ void adfSwapEndian ( uint8_t * const buf,
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
-                           const uint32_t            nSect,
-                           struct bRootBlock * const root )
+RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
+                           const uint32_t              nSect,
+                           struct AdfRootBlock * const root )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
@@ -152,9 +152,9 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
  *
  * 
  */
-RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
-                            const uint32_t            nSect,
-                            struct bRootBlock * const root )
+RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
+                            const uint32_t              nSect,
+                            struct AdfRootBlock * const root )
 {
 /*printf("adfWriteRootBlock %ld\n",nSect);*/
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];

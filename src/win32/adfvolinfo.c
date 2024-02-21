@@ -39,7 +39,7 @@ void adfVolumeInfoWin ( HWND               hWnd,
 {
 	char	szTemp[50], szAdfInfo[500];		/* Info string. */
 	
-	struct	bRootBlock root;
+	struct	AdfRootBlock root;
 	char	diskName[35];
 	int		days,month,year;
 	

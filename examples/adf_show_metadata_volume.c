@@ -10,7 +10,7 @@
 
 
 static void show_bmpages ( struct AdfVolume * const vol,
-                           const struct bRootBlock * const rblock );
+                           const struct AdfRootBlock * const rblock );
 
 static void show_bmpages_array ( const int32_t * const bmpages,
                                  const unsigned        size );
@@ -27,10 +27,9 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     }
     show_bootblock ( &bblock, false );
 
-    struct bRootBlock rblock;
     SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
-
+    struct AdfRootBlock rblock;
     if ( adfReadRootBlock ( vol, (uint32_t)root_block_sector, &rblock ) != RC_OK ) {
         fprintf ( stderr, "Error reading rootblock at sector %u.\n", root_block_sector );
         return;
@@ -85,13 +84,13 @@ void show_bootblock_data ( const struct AdfBootBlock * const bblock )
 }
 
 
-void show_rootblock ( const struct bRootBlock * const rblock )
+void show_rootblock ( const struct AdfRootBlock * const rblock )
 {
     uint8_t rblock_orig_endian[512];
     memcpy ( rblock_orig_endian, rblock, 512 );
     adfSwapEndian ( rblock_orig_endian, ADF_SWBL_ROOT );
     uint32_t checksum_calculated = adfNormalSum ( rblock_orig_endian, 0x14,
-                                                  sizeof (struct bRootBlock ) );
+                                                  sizeof (struct AdfRootBlock ) );
     printf ( "\nRootblock:\n"
              //"  offset field\t\tvalue\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
@@ -156,7 +155,7 @@ void show_rootblock ( const struct bRootBlock * const rblock )
 
 
 static void show_bmpages ( struct AdfVolume * const        vol,
-                           const struct bRootBlock * const rblock )
+                           const struct AdfRootBlock * const rblock )
 {
     // show bmpages from the root block
     show_bmpages_array ( rblock->bmPages, ADF_BM_PAGES_ROOT_SIZE );

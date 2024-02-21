@@ -139,7 +139,7 @@ RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
         return rc;
     }
 
-    struct bRootBlock root;
+    struct AdfRootBlock root;
     //printf ("reading root block from %u\n", vol->rootBlock );
     rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
     if ( rc != RC_OK ) {
@@ -174,7 +174,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         "----------------------------------------------------------------------",
         separatorLine2[] =
         "======================================================================";
-    struct bRootBlock   rb;
+    struct AdfRootBlock rb;
     struct bBitmapBlock bm;
 
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &rb ) != RC_OK ) {

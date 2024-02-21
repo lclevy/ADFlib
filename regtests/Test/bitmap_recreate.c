@@ -133,7 +133,7 @@ int main ( const int          argc,
         goto umount_vol_updated;
     }
 
-    struct bRootBlock root;
+    struct AdfRootBlock root;
     rc = adfReadRootBlock ( volUpdate, (uint32_t) volUpdate->rootBlock, &root );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Invalid RootBlock, volume %s, sector %u - aborting...",
@@ -245,7 +245,7 @@ RETCODE copy_file ( const char * const dst_fname,
 unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
                            struct AdfVolume * const volUpdate )
 {
-    struct bRootBlock   rbOrig, rbUpdate;
+    struct AdfRootBlock   rbOrig, rbUpdate;
     struct bBitmapBlock bmOrig, bmUpdate;
 
     if ( adfReadRootBlock ( volOrig, (uint32_t) volOrig->rootBlock,

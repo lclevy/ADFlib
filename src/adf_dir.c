@@ -117,7 +117,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                         &parent.ticks );
 
     if ( parent.secType == ADF_ST_ROOT )
-        rc = adfWriteRootBlock ( vol, (uint32_t) pSect, (struct bRootBlock*) &parent );
+        rc = adfWriteRootBlock ( vol, (uint32_t) pSect, (struct AdfRootBlock*) &parent );
     else
         rc = adfWriteDirBlock ( vol, pSect, (struct bDirBlock*) &parent );
     if ( rc != RC_OK )
@@ -177,7 +177,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                         &nParent.ticks );
 
     if ( nParent.secType == ADF_ST_ROOT )
-        rc = adfWriteRootBlock ( vol, (uint32_t) nPSect, (struct bRootBlock*) &nParent );
+        rc = adfWriteRootBlock ( vol, (uint32_t) nPSect, (struct AdfRootBlock*) &nParent );
     else
         rc = adfWriteDirBlock ( vol, nPSect, (struct bDirBlock*) &nParent );
     if ( rc != RC_OK )
@@ -808,7 +808,6 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
     RETCODE rc;
     char name2[ADF_MAX_NAME_LEN+1], name3[ADF_MAX_NAME_LEN+1];
     SECTNUM nSect, newSect, newSect2;
-    struct bRootBlock* root;
 
 /*puts("adfCreateEntry in");*/
 
@@ -832,7 +831,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 
         dir->hashTable[ hashValue ] = newSect;
         if ( dir->secType == ADF_ST_ROOT ) {
-            root = (struct bRootBlock*)dir;
+            struct AdfRootBlock * const root = (struct AdfRootBlock *) dir;
             adfTime2AmigaTime(adfGiveCurrentTime(),
                 &(root->cDays),&(root->cMins),&(root->cTicks));
             rc = adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, root );
