@@ -268,7 +268,7 @@ struct AdfDirBlock {
 
 
 
-struct bOFSDataBlock{
+struct AdfOFSDataBlock {
 /*000*/	int32_t	type;		/* == 8 */
 /*004*/	int32_t	headerKey;	/* pointer to file_hdr block */
 /*008*/	uint32_t seqNum;	/* file data block number */

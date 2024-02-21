@@ -196,7 +196,6 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
     }
 
     uint8_t buf[512];
-    struct bOFSDataBlock *dBlock;
 
     RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
@@ -211,10 +210,10 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 #ifdef LITT_ENDIAN
         adfSwapEndian ( data, ADF_SWBL_DATA );
 #endif
-        dBlock = (struct bOFSDataBlock*)data;
+        struct AdfOFSDataBlock * const dBlock = (struct AdfOFSDataBlock *) data;
 /*printf("adfReadDataBlock %ld\n",nSect);*/
 
-        if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct bOFSDataBlock) ) )
+        if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct AdfOFSDataBlock) ) )
             adfEnv.wFct ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
                            nSect, vol->volName );
         if ( dBlock->type != ADF_T_DATA )
@@ -252,7 +251,7 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
 
     RETCODE rc;
     if ( adfVolIsOFS ( vol ) ) {
-        struct bOFSDataBlock * dataB = (struct bOFSDataBlock *) data;
+        struct AdfOFSDataBlock * const dataB = (struct AdfOFSDataBlock *) data;
         dataB->type = ADF_T_DATA;
 
         uint8_t buf[512];

@@ -375,8 +375,8 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
 
         if ( adfVolIsOFS ( file->volume ) ) {
             // for OFS - update also data block header
-            struct bOFSDataBlock * const data =
-                (struct bOFSDataBlock *) file->currentData;
+            struct AdfOFSDataBlock * const data =
+                (struct AdfOFSDataBlock *) file->currentData;
 
             data->dataSize =   //file->posInDataBlk;
                 ( fileSizeNew % file->volume->datablockSize == 0 ) ?
@@ -440,7 +440,8 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
          file->curDataPtr != 0 )
     {
         if ( adfVolIsOFS ( file->volume ) ) {
-            struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
+            struct AdfOFSDataBlock * const data =
+                (struct AdfOFSDataBlock *) file->currentData;
             assert ( file->posInDataBlk <= file->volume->datablockSize );
             data->dataSize = file->posInDataBlk;
         }
@@ -894,7 +895,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
 
     uint8_t * const dataPtr = ( adfVolIsOFS ( file->volume ) ) ?
         //(uint8_t*)(file->currentData)+24 :
-        ( (struct bOFSDataBlock *) file->currentData )->data :
+        ( (struct AdfOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
     uint32_t bytesRead = 0;
@@ -934,10 +935,9 @@ uint32_t adfFileRead ( struct AdfFile * const file,
 RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect;
-    struct bOFSDataBlock *data;
     RETCODE rc = RC_OK;
 
-    data =(struct bOFSDataBlock *) file->currentData;
+    struct AdfOFSDataBlock * const data = (struct AdfOFSDataBlock *) file->currentData;
 
     if (file->nDataBlock==0) {
         nSect = file->fileHdr->firstData;
@@ -1031,7 +1031,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
     const unsigned blockSize = file->volume->datablockSize;
 
     uint8_t * const dataPtr = ( adfVolIsOFS ( file->volume ) ) ?
-        ( (struct bOFSDataBlock *) file->currentData )->data :
+        ( (struct AdfOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
     uint32_t bytesWritten = 0;
@@ -1194,7 +1194,7 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
     /* builds OFS header */
     if ( adfVolIsOFS ( file->volume ) ) {
         /* writes previous data block and link it  */
-        struct bOFSDataBlock * const data = file->currentData;
+        struct AdfOFSDataBlock * const data = file->currentData;
         if (file->pos>=blockSize) {
             data->nextData = nSect;
             adfWriteDataBlock(file->volume, file->curDataPtr, file->currentData);
