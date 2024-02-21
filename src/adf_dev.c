@@ -85,7 +85,7 @@ static struct AdfDevice *
     if ( dev->devType != DEVTYPE_HARDDISK )
         return dev;
 
-    struct bRDSKblock rdsk;
+    struct AdfRSDKblock rdsk;
     RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
     if ( rc == RC_OK ) {
         /* rigid block exists -> check geometry */

@@ -149,7 +149,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
  */
 RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
-    struct bRDSKblock rdsk;
+    struct AdfRSDKblock rdsk;
     struct bPARTblock part;
     int32_t next;
     struct AdfList *vList, *listRoot;
@@ -306,7 +306,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
 {
     (void) n;
     int i;
-    struct bRDSKblock rdsk;
+    struct AdfRSDKblock rdsk;
     struct bPARTblock part;
     struct bFSHDblock fshd;
     struct bLSEGblock lseg;
@@ -315,7 +315,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
 
     /* RDSK */ 
  
-    memset((uint8_t*)&rdsk,0,sizeof(struct bRDSKblock));
+    memset ( (uint8_t *) &rdsk, 0, sizeof(struct AdfRSDKblock) );
 
     rdsk.rdbBlockLo = 0;
     rdsk.rdbBlockHi = (dev->sectors*dev->heads*2)-1;
@@ -472,8 +472,8 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
  * ReadRDSKblock
  *
  */
-RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
-                           struct bRDSKblock * const blk )
+RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
+                           struct AdfRSDKblock * const blk )
 {
     uint8_t buf[256];
 
@@ -515,8 +515,8 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
  * adfWriteRDSKblock
  *
  */
-RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
-                            struct bRDSKblock * const rdsk )
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
+                            struct AdfRSDKblock * const rdsk )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -529,7 +529,7 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
     memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( rdsk->id, "RDSK", 4 );
-    rdsk->size = sizeof(struct bRDSKblock)/sizeof(int32_t);
+    rdsk->size = sizeof(struct AdfRSDKblock) / sizeof(int32_t);
     rdsk->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     rdsk->badBlockList = -1;
 
@@ -537,7 +537,7 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
     memcpy ( rdsk->diskProduct, "harddisk.adf    ", 16 );
     memcpy ( rdsk->diskRevision, "v1.0", 4 );
 
-    memcpy(buf, rdsk, sizeof(struct bRDSKblock));
+    memcpy ( buf, rdsk, sizeof(struct AdfRSDKblock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_RDSK );
 #endif

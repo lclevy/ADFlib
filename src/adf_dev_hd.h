@@ -49,11 +49,11 @@ PREFIX RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
                                  const char * const       volName,
                                  const uint8_t            volType );
 
-RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
-                           struct bRDSKblock * const blk );
+RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
+                           struct AdfRSDKblock * const blk );
 
-RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
-                            struct bRDSKblock * const rdsk );
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
+                            struct AdfRSDKblock * const rdsk );
 
 RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
                            const int32_t             nSect,
