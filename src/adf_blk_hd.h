@@ -74,20 +74,20 @@ struct AdfRSDKblock {
 };
 
 
-struct bBADBentry {
+struct AdfBADBentry {
 /*000*/	int32_t 	badBlock;
 /*004*/	int32_t 	goodBlock;
 };
 
 
 struct bBADBblock {
-/*000*/	char              id[4];        /* BADB */
-/*004*/	uint32_t          size;         /* 128 int32_ts */
-/*008*/	uint32_t          checksum;
-/*00c*/	int32_t           hostID;       /* 7 */
-/*010*/ int32_t           next;
-/*014*/ int32_t           r1;
-/*018*/ struct bBADBentry blockPairs[61];
+/*000*/	char                id[4];        /* BADB */
+/*004*/	uint32_t            size;         /* 128 int32_ts */
+/*008*/	uint32_t            checksum;
+/*00c*/	int32_t             hostID;       /* 7 */
+/*010*/ int32_t             next;
+/*014*/ int32_t             r1;
+/*018*/ struct AdfBADBentry blockPairs[61];
 };
 
 
