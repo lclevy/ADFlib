@@ -218,7 +218,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
 
     if (!adfIsBlockFree(vol, entry->headerKey))
         return RC_ERROR;
-    if ( adfDosFsIsDIRCACHE ( vol->fs.type ) &&
+    if ( adfVolIsDIRCACHE ( vol ) &&
          ! adfIsBlockFree ( vol, entry->extension ) )
     {
         return RC_ERROR;
@@ -235,7 +235,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     if ( adfCreateEntry ( vol, &parent, name, entry->headerKey ) == -1 )
         return RC_ERROR;
 
-    if ( adfDosFsIsDIRCACHE ( vol->fs.type ) ) {
+    if ( adfVolIsDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;
@@ -301,7 +301,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 )
         return RC_ERROR;
 
-    if ( adfDosFsIsDIRCACHE ( vol->fs.type ) ) {
+    if ( adfVolIsDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;

@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 
     if (list_mode || list_all) {
         /* list files */
-        if (use_dircache && adfDosFsIsDIRCACHE(vol->fs.type)) {
+        if (use_dircache && adfVolIsDIRCACHE(vol)) {
             BOOL true = TRUE;
             adfChgEnvProp(PR_USEDIRC, &true);
             puts("Using dir cache blocks.");
