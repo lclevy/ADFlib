@@ -32,7 +32,7 @@
 #include "adf_types.h"
 
 
-#define LOGICAL_BLOCK_SIZE    512
+#define ADF_LOGICAL_BLOCK_SIZE 512
 
 /* ----- FILE SYSTEM ----- */
 

@@ -147,7 +147,8 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
     int ptr;
 
     ptr = *p;
-    if (ptr > LOGICAL_BLOCK_SIZE - 26) return RC_ERROR; /* minimum cache entry length */
+    if ( ptr > ADF_LOGICAL_BLOCK_SIZE - 26 )  /* minimum cache entry length */
+        return RC_ERROR;
 
 /*printf("p=%d\n",ptr);*/
 
@@ -174,13 +175,15 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
          return;
 */
     if (cEntry->nLen < 1 || cEntry->nLen > MAXNAMELEN) return RC_ERROR;
-    if ((ptr + 24 + cEntry->nLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
+    if ( ( ptr + 24 + cEntry->nLen ) > ADF_LOGICAL_BLOCK_SIZE )
+        return RC_ERROR;
     memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
     cEntry->name[(int)(cEntry->nLen)]='\0';
 
     cEntry->cLen = dirc->records[ptr+24+cEntry->nLen];
     if (cEntry->cLen > MAXCMMTLEN) return RC_ERROR;
-    if ((ptr+24+cEntry->nLen+1+cEntry->cLen) > LOGICAL_BLOCK_SIZE) return RC_ERROR;
+    if ( ptr + 24 + cEntry->nLen + 1 + cEntry->cLen > ADF_LOGICAL_BLOCK_SIZE )
+        return RC_ERROR;
     if (cEntry->cLen>0) {
 /*        cEntry->comm =(char*)malloc(sizeof(char)*(cEntry->cLen+1));
         if (!cEntry->comm) {
@@ -653,18 +656,18 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
                             const int32_t                 nSect,
                             struct bDirCacheBlock * const dirc )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     dirc->type = T_DIRC;
     dirc->headerKey = nSect;
 
-    memcpy(buf, dirc, LOGICAL_BLOCK_SIZE);
+    memcpy(buf, dirc, ADF_LOGICAL_BLOCK_SIZE);
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_CACHE );
 #endif
 
-    newSum = adfNormalSum(buf, 20, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum(buf, 20, ADF_LOGICAL_BLOCK_SIZE);
     swLong(buf+20,newSum);
 /*    *(int32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 

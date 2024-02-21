@@ -128,7 +128,7 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
                           const SECTNUM            nSect,
                           struct GenBlock * const  block )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     unsigned len;
     char name[MAXNAMELEN+1];
 

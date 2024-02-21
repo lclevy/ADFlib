@@ -431,7 +431,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 
 /*printf("[0]=%d [1]=%d\n",blkList[0],blkList[1]);*/
 
-    memset(&root, 0, LOGICAL_BLOCK_SIZE);
+    memset ( &root, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     root.nameLen = (uint8_t) strlen ( vol->volName );
     memcpy(root.diskName,volName,root.nameLen);

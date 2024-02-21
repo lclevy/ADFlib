@@ -808,20 +808,20 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
                              SECTNUM               nSect,
                              struct bBitmapBlock * bitm )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
 /*printf("bitmap %ld\n",nSect);*/
     RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
-    memcpy ( bitm, buf, LOGICAL_BLOCK_SIZE );
+    memcpy ( bitm, buf, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
     adfSwapEndian ( (uint8_t *) bitm, ADF_SWBL_BITMAP );
 #endif
 
-    if ( bitm->checkSum != adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE ) ) {
+    if ( bitm->checkSum != adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE ) ) {
         adfEnv.wFct ( "adfReadBitmapBlock : invalid checksum, volume '%s', block %u",
                       vol->volName, nSect );
         // return error here?
@@ -840,16 +840,16 @@ RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
                               const SECTNUM                     nSect,
                               const struct bBitmapBlock * const bitm )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
-    memcpy ( buf, bitm, LOGICAL_BLOCK_SIZE );
+    memcpy ( buf, bitm, ADF_LOGICAL_BLOCK_SIZE );
 
 #ifdef LITT_ENDIAN
     /* little to big */
     adfSwapEndian ( buf, ADF_SWBL_BITMAP );
 #endif
 
-    uint32_t newSum = adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE );
+    uint32_t newSum = adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
     swLong ( buf, newSum );
 
 /*	dumpBlock((uint8_t*)buf);*/
@@ -867,13 +867,13 @@ RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
                                 const SECTNUM                  nSect,
                                 struct bBitmapExtBlock * const bitme )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
     RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
-    memcpy ( bitme, buf, LOGICAL_BLOCK_SIZE );
+    memcpy ( bitme, buf, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( (uint8_t *) bitme, ADF_SWBL_BITMAP );
 #endif
@@ -890,9 +890,9 @@ RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
                                  const SECTNUM                        nSect,
                                  const struct bBitmapExtBlock * const bitme )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 	
-    memcpy ( buf, bitme, LOGICAL_BLOCK_SIZE );
+    memcpy ( buf, bitme, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* little to big */
     adfSwapEndian ( buf, ADF_SWBL_BITMAPE );

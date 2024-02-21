@@ -517,7 +517,7 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
 RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
                             struct bRDSKblock * const rdsk )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -525,11 +525,11 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( rdsk->id, "RDSK", 4 );
     rdsk->size = sizeof(struct bRDSKblock)/sizeof(int32_t);
-    rdsk->blockSize = LOGICAL_BLOCK_SIZE;
+    rdsk->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     rdsk->badBlockList = -1;
 
     memcpy ( rdsk->diskVendor, "ADFlib  ", 8 );
@@ -541,10 +541,10 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
     adfSwapEndian ( buf, ADF_SWBL_RDSK );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 
-    return adfDevWriteBlock ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, 0, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -597,7 +597,7 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
                             const int32_t             nSect,
                             struct bPARTblock * const part )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 	
     if (dev->readOnly) {
@@ -605,11 +605,11 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( part->id, "PART", 4 );
     part->size = sizeof(struct bPARTblock)/sizeof(int32_t);
-    part->blockSize = LOGICAL_BLOCK_SIZE;
+    part->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     part->vectorSize = 16;
     part->blockSize = 128;
     part->sectorsPerBlock = 1;
@@ -620,11 +620,11 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
     adfSwapEndian ( buf, ADF_SWBL_PART );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*
@@ -670,7 +670,7 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
                             const int32_t             nSect,
                             struct bFSHDblock * const fshd )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -678,7 +678,7 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( fshd->id, "FSHD", 4 );
     fshd->size = sizeof(struct bFSHDblock)/sizeof(int32_t);
@@ -688,11 +688,11 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
     adfSwapEndian ( buf, ADF_SWBL_FSHD );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -740,7 +740,7 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
                             const int32_t             nSect,
                             struct bLSEGblock * const lseg )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -748,7 +748,7 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( lseg->id, "LSEG", 4 );
     lseg->size = sizeof(struct bLSEGblock)/sizeof(int32_t);
@@ -758,11 +758,11 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
     adfSwapEndian ( buf, ADF_SWBL_LSEG );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8,newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*##########################################################################*/
