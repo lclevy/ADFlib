@@ -105,7 +105,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     memcpy ( vol->fs.id, boot.dosType, 3 );
     vol->fs.id[3] = '\0';
     vol->fs.type = (uint8_t) boot.dosType[3];
-    vol->datablockSize = isOFS ( vol->fs.type ) ? 488 : 512;
+    vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
 
     if ( adfVolIsDosFS ( vol ) ) {
         vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
@@ -199,7 +199,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         memcpy ( vol->fs.id, boot.dosType, 3 );
         vol->fs.id[3] = '\0';
         vol->fs.type = (uint8_t) boot.dosType[3];
-        vol->datablockSize = isOFS ( vol->fs.type ) ? 488 : 512;
+        vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
 
         /* set volume name (from partition info) */
         len = (unsigned) min ( 31, part.nameLen );

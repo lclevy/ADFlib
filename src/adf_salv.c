@@ -360,7 +360,7 @@ RETCODE adfCheckFile ( struct AdfVolume * const              vol,
         return rc;
 
 /*printf("data %ld ext %ld\n",fileBlocks.nbData,fileBlocks.nbExtens);*/
-    if ( isOFS ( vol->fs.type ) ) {
+    if ( adfVolIsOFS ( vol ) ) {
         /* checks OFS datablocks */
         for(n=0; n<fileBlocks.nbData; n++) {
 /*printf("%ld\n",fileBlocks.data[n]);*/

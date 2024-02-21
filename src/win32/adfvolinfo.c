@@ -72,7 +72,7 @@ void adfVolumeInfoWin ( HWND               hWnd,
 			strcat(szAdfInfo, "Unknown devType!\n");
 	}
 	strcat(szAdfInfo, "Filesystem : ");
-	sprintf(szTemp, "%s ",isFFS(vol->dosType) ? "FFS" : "OFS");
+	sprintf ( szTemp, "%s ", adfVolIsFFS ( vol ) ? "FFS" : "OFS" );
 	strcat(szAdfInfo, szTemp);
 	if (isINTL(vol->dosType))
 		strcat(szAdfInfo, "INTL ");

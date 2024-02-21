@@ -253,7 +253,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
         goto umount_device;
     }
     const unsigned blocksize =
-        //( isOFS ( vol->dosType ) ? 488u : 512u );
+        //( adfVolIsOFS ( vol ) ? 488u : 512u );
         (unsigned) vol->datablockSize;
     assert ( (unsigned) vol->datablockSize == test_data->dblocksize );
     

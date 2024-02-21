@@ -207,7 +207,7 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
 
     memcpy(data,buf,512);
 
-    if ( isOFS ( vol->fs.type ) ) {
+    if ( adfVolIsOFS ( vol ) ) {
 #ifdef LITT_ENDIAN
         adfSwapEndian ( data, ADF_SWBL_DATA );
 #endif
@@ -251,7 +251,7 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
     }
 
     RETCODE rc;
-    if ( isOFS ( vol->fs.type ) ) {
+    if ( adfVolIsOFS ( vol ) ) {
         struct bOFSDataBlock * dataB = (struct bOFSDataBlock *) data;
         dataB->type = T_DATA;
 

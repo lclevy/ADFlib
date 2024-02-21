@@ -306,9 +306,9 @@ void print_volume(struct AdfVolume *vol)
     printf(" between sectors [%d-%d]. %s%s%s. Filled at %2.1f%%.\n",
         vol->firstBlock,
         vol->lastBlock,
-        isFFS(vol->fs.type) ? "FFS" : "OFS",
-        isINTL(vol->fs.type) ? " INTL" : "",
-        isDIRCACHE(vol->fs.type) ? " DIRCACHE" : "",
+        adfVolIsFFS(vol) ? "FFS" : "OFS",
+        adfVolIsINTL(vol) ? " INTL" : "",
+        adfVolIsDIRCACHE(vol) ? " DIRCACHE" : "",
         100.0 - ((adfCountFreeBlocks(vol) * 100.0) / num_blocks));
 }
 
