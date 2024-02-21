@@ -47,7 +47,7 @@ RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                 char **            name,
                                 int32_t *          size )
 {
-    struct bEntryBlock entryBlk;
+    struct AdfEntryBlock entryBlk;
     struct AdfEntry entry;
 
     if (*name==0) {

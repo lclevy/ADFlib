@@ -206,7 +206,6 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
 {
     (void) nSect;
     RETCODE rc;
-    struct bEntryBlock parent;
     char name[ ADF_MAX_NAME_LEN + 1 ];
 
     /* check if the given parent sector pointer seems OK */
@@ -227,6 +226,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
         return RC_ERROR;
     }
 
+    struct AdfEntryBlock parent;
     rc = adfReadEntryBlock ( vol, pSect, &parent );
     if ( rc != RC_OK )
         return rc;
@@ -239,7 +239,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
         return RC_ERROR;
 
     if ( adfVolHasDIRCACHE ( vol ) ) {
-        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
+        rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;
 
@@ -262,7 +262,6 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     (void) nSect;
     int32_t i;
     char name[ ADF_MAX_NAME_LEN + 1 ];
-    struct bEntryBlock parent;
     RETCODE rc;
     struct AdfFileBlocks fileBlocks;
 
@@ -294,6 +293,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
     free(fileBlocks.data);
     free(fileBlocks.extens);
 
+    struct AdfEntryBlock parent;
     rc = adfReadEntryBlock ( vol, pSect, &parent );
     if ( rc != RC_OK )
         return rc;
@@ -305,7 +305,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
         return RC_ERROR;
 
     if ( adfVolHasDIRCACHE ( vol ) ) {
-        rc = adfAddInCache ( vol, &parent, (struct bEntryBlock *) entry );
+        rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) entry );
         if ( rc != RC_OK )
             return rc;
     }
@@ -322,7 +322,7 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
                         const SECTNUM            parent,
                         const SECTNUM            nSect )
 {
-    struct bEntryBlock entry;
+    struct AdfEntryBlock entry;
 
     RETCODE rc = adfReadEntryBlock ( vol, nSect, &entry );
     if ( rc != RC_OK )
@@ -437,7 +437,7 @@ RETCODE adfCheckEntry ( struct AdfVolume * const vol,
                         const SECTNUM            nSect,
                         const int                level )
 {
-    struct bEntryBlock entry;
+    struct AdfEntryBlock entry;
 
     RETCODE rc = adfReadEntryBlock ( vol, nSect, &entry );
     if ( rc != RC_OK )

@@ -291,8 +291,8 @@ static void checkInternals(void)
     assertInternal ( sizeof(int32_t) == 4,
                      "Compilation error : sizeof(int32_t) != 4\n" );
 
-    assertInternal ( sizeof(struct bEntryBlock) == 512,
-                     "Internal error : sizeof(struct bEntryBlock) != 512\n");
+    assertInternal ( sizeof(struct AdfEntryBlock) == 512,
+                     "Internal error : sizeof(struct AdfEntryBlock) != 512\n");
 
     assertInternal ( sizeof(struct AdfRootBlock) == 512,
                      "Internal error : sizeof(struct AdfRootBlock) != 512\n");

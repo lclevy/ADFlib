@@ -173,7 +173,7 @@ int test_softlink_realname ( struct AdfVolume * vol,
 
     struct bLinkBlock entry;
     SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
-                                          (struct bEntryBlock *) &entry );
+                                          (struct AdfEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }

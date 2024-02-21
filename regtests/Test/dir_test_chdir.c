@@ -163,7 +163,7 @@ int test_chdir ( struct AdfVolume * vol,
         }
 
         // add checking the name of the current dir. pointer block
-/*        struct bEntryBlock ...
+/*        struct AdfEntryBlock ...
         if ( strcmp ( dir, ) != 0 ) {
             fprintf ( stderr, "Cannot chdir to %s\n", dir );
             adfToRootDir ( vol );

@@ -166,7 +166,7 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
     }
 
     // get entry
-    struct bEntryBlock entry;
+    struct AdfEntryBlock entry;
     SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr,
                                           entry_name, &entry );
     if ( sectNum == -1 ) {

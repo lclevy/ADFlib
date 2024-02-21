@@ -61,22 +61,22 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                                      const SECTNUM            dir,
                                      const BOOL               recurs );
 
-RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
-                              struct bEntryBlock * const parent,
-                              const SECTNUM              nSect );
+RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
+                              struct AdfEntryBlock * const parent,
+                              const SECTNUM                nSect );
 
-RETCODE adfAddInCache ( struct AdfVolume * const  vol,
-                        const struct bEntryBlock * const parent,
-                        const struct bEntryBlock * const entry );
+RETCODE adfAddInCache ( struct AdfVolume * const           vol,
+                        const struct AdfEntryBlock * const parent,
+                        const struct AdfEntryBlock * const entry );
 
-RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
-                         const struct bEntryBlock * const parent,
-                         const struct bEntryBlock * const entry,
-                         const BOOL                 entryLenChg );
+RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
+                         const struct AdfEntryBlock * const parent,
+                         const struct AdfEntryBlock * const entry,
+                         const BOOL                         entryLenChg );
 
-RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
-                          const struct bEntryBlock * const parent,
-                          const SECTNUM                    headerKey );
+RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
+                          const struct AdfEntryBlock * const parent,
+                          const SECTNUM                      headerKey );
 
 RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
                            const SECTNUM                 nSect,

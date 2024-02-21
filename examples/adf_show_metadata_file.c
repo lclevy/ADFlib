@@ -14,7 +14,7 @@ void show_file_metadata ( struct AdfVolume * const vol,
     struct bFileHeaderBlock fheader_block;
 
     if ( adfReadEntryBlock ( vol, fheader_sector,
-                             ( struct bEntryBlock * ) &fheader_block ) != RC_OK )
+                             ( struct AdfEntryBlock * ) &fheader_block ) != RC_OK )
     {
         fprintf ( stderr, "Error reading file header block (sector: %d).\n",
                   fheader_sector );

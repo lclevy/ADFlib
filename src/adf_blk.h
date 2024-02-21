@@ -158,7 +158,7 @@ struct AdfRootBlock {
 };
 
 
-struct bEntryBlock {
+struct AdfEntryBlock {
 /*000*/	int32_t	 type;		/* ADF_T_HEADER == 2 */
 /*004*/	int32_t	 headerKey;	/* current block number */
         int32_t	 r1[3];

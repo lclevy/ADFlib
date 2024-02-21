@@ -424,10 +424,10 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const          vol,
 
     // traverse all files and directories
 
-    struct bDirBlock //bEntryBlock
+    struct bDirBlock //AdfEntryBlock
         rootDirBlock;
     rc = adfReadEntryBlock ( vol, vol->rootBlock,
-                             ( struct bEntryBlock * ) &rootDirBlock );
+                             ( struct AdfEntryBlock * ) &rootDirBlock );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Error reading directory entry block (%d)\n",
                       vol->rootBlock );
@@ -473,7 +473,7 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         if ( entry->type == ADF_ST_FILE ) {
             struct bFileHeaderBlock fhBlock;
             RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
-                                              (struct bEntryBlock *) &fhBlock );
+                                              (struct AdfEntryBlock *) &fhBlock );
             if ( rc2 != RC_OK ) {
                 //showerror ?
                 rc = rc2;
@@ -492,7 +492,7 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         else if ( entry->type == ADF_ST_DIR ) {
             struct bDirBlock dirBlock;
             RETCODE rc = adfReadEntryBlock ( vol, entry->sector,
-                                             (struct bEntryBlock *) &dirBlock );
+                                             (struct AdfEntryBlock *) &dirBlock );
             if ( rc != RC_OK )
                 return rc;
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );

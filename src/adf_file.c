@@ -473,7 +473,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
 
     if ( adfVolHasDIRCACHE ( file->volume ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
-        struct bEntryBlock parent;
+        struct AdfEntryBlock parent;
         rc = adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );
         if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error reading entry block %d",
@@ -482,7 +482,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         }
 
         rc = adfUpdateCache ( file->volume, &parent,
-                              (struct bEntryBlock*) file->fileHdr, FALSE );
+                              (struct AdfEntryBlock *) file->fileHdr, FALSE );
         if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error updating cache" );
             return rc;
@@ -724,7 +724,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    struct bEntryBlock entry, parent;
+    struct AdfEntryBlock entry, parent;
     if ( adfReadEntryBlock(vol, vol->curDirPtr, &parent) != RC_OK )
         return NULL;
 
