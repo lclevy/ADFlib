@@ -526,7 +526,7 @@ static RETCODE adfBitmapFileBlocksSetUsed (
     //const int nExtBlocks = (int) adfFileSize2Extblocks ( fhBlock->byteSize,
     //                                                     vol->datablockSize );
     SECTNUM extBlockPtr = fhBlock->extension;
-    struct bFileExtBlock fext;
+    struct AdfFileExtBlock fext;
     while ( extBlockPtr != 0 ) {
         adfSetBlockUsed ( vol, extBlockPtr );
         if ( adfReadFileExtBlock ( vol, extBlockPtr, &fext ) != RC_OK ) {

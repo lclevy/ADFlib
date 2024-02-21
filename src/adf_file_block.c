@@ -48,7 +48,6 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
 {
     int32_t n, m;
     SECTNUM nSect;
-    struct bFileExtBlock extBlock;
     int32_t i;
 
     fileBlocks->header = entry->headerKey;
@@ -76,6 +75,7 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
 
     /* in file extension blocks */
     nSect = entry->extension;
+    struct AdfFileExtBlock extBlock;
     while(nSect!=0) {
         fileBlocks->extens[m++] = nSect;
         adfReadFileExtBlock(vol, nSect, &extBlock);
@@ -282,11 +282,11 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
  * adfReadFileExtBlock
  *
  */
-RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
-                              const SECTNUM                nSect,
-                              struct bFileExtBlock * const fext )
+RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
+                              const SECTNUM                  nSect,
+                              struct AdfFileExtBlock * const fext )
 {
-    uint8_t buf[sizeof(struct bFileExtBlock)];
+    uint8_t buf[ sizeof(struct AdfFileExtBlock) ];
     RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "adfReadFileExtBlock: error reading block %d, volume '%s'",
@@ -294,11 +294,11 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
         //return RC_ERROR;
     }
 /*printf("read fext=%d\n",nSect);*/
-    memcpy(fext,buf,sizeof(struct bFileExtBlock));
+    memcpy ( fext, buf, sizeof(struct AdfFileExtBlock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( (uint8_t *) fext, ADF_SWBL_FEXT );
 #endif
-    if (fext->checkSum!=adfNormalSum(buf,20,sizeof(struct bFileExtBlock)))
+    if ( fext->checkSum != adfNormalSum ( buf, 20, sizeof(struct AdfFileExtBlock) ) )
         (*adfEnv.wFct)("adfReadFileExtBlock : invalid checksum");
     if ( fext->type != ADF_T_LIST )
         adfEnv.wFct ( "adfReadFileExtBlock : type ADF_T_LIST not found" );
@@ -324,9 +324,9 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
  * adfWriteFileExtBlock
  *
  */
-RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
-                               const SECTNUM                nSect,
-                               struct bFileExtBlock * const fext )
+RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
+                               const SECTNUM                  nSect,
+                               struct AdfFileExtBlock * const fext )
 {
     uint8_t buf[512];
     uint32_t newSum;

@@ -231,7 +231,7 @@ void test_file_truncate ( test_data_t * const tdata )
     int32_t * const dataBlocks = ( nExtBlocks < 1 ) ? file->fileHdr->dataBlocks :
                                                       file->currentExt->dataBlocks;
     */
-    struct bFileExtBlock * fext = NULL;
+    struct AdfFileExtBlock * fext = NULL;
     int32_t * dataBlocks = NULL;
     if ( nExtBlocks < 1 ) {
         dataBlocks = file->fileHdr->dataBlocks;
@@ -242,7 +242,7 @@ void test_file_truncate ( test_data_t * const tdata )
             dataBlocks = file->currentExt->dataBlocks;
         } else {
             // for OFS - we must read the current ext.(!)
-            fext =  malloc ( sizeof (struct bFileExtBlock) );
+            fext = (struct AdfFileExtBlock *) malloc ( sizeof (struct AdfFileExtBlock) );
             ck_assert_ptr_nonnull ( fext );
             ck_assert_int_eq ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ),
                                RC_OK );

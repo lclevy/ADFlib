@@ -65,11 +65,11 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
                             const SECTNUM            nSect,
                             void * const             data );
 
-PREFIX RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
-                                     const SECTNUM                nSect,
-                                     struct bFileExtBlock * const fext );
+PREFIX RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
+                                     const SECTNUM                  nSect,
+                                     struct AdfFileExtBlock * const fext );
 
-PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
-                                      const SECTNUM                nSect,
-                                      struct bFileExtBlock * const fext );
+PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
+                                      const SECTNUM                  nSect,
+                                      struct AdfFileExtBlock * const fext );
 #endif

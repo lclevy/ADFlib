@@ -36,8 +36,8 @@ struct AdfFile {
     struct AdfVolume *        volume;
 
     struct AdfFileHeaderBlock * fileHdr;
-    void *                    currentData;
-    struct bFileExtBlock *    currentExt;
+    void *                      currentData;
+    struct AdfFileExtBlock *    currentExt;
 
     unsigned nDataBlock;  /* current data block number */
     SECTNUM  curDataPtr;  /* sector number of current data block;
@@ -121,9 +121,9 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
-PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
-                                      const int32_t                extBlock,
-                                      struct bFileExtBlock * const fext );
+PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const   file,
+                                      const int32_t                  extBlock,
+                                      struct AdfFileExtBlock * const fext );
 
 PREFIX RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                                                   const uint32_t               fileSizeNew,

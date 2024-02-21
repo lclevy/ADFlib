@@ -53,8 +53,8 @@ static void show_File ( const struct AdfFile * const file );
 static void showAdfFileHeaderBlock (
     const struct AdfFileHeaderBlock * const block );
 
-static void show_bFileExtBlock (
-    const struct bFileExtBlock * const block );
+static void showAdfFileExtBlock (
+    const struct AdfFileExtBlock * const block );
 
 #else
 #define NDEBUG
@@ -131,7 +131,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
     } else {
         // the file to truncate has at least one ext. block
 
-        struct bFileExtBlock * const extBlock = malloc ( sizeof ( struct bFileExtBlock ) );
+        struct AdfFileExtBlock * const extBlock = malloc ( sizeof ( struct AdfFileExtBlock ) );
         if ( extBlock == NULL ) {
             free ( blocksToRemove->sectors );
             return RC_MALLOC;
@@ -599,8 +599,8 @@ static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
             ADF_MAX_DATABLK - 1 - file->nDataBlock ];
     } else {
         if ( ! file->currentExt ) {
-            file->currentExt = ( struct bFileExtBlock * )
-                malloc ( sizeof ( struct bFileExtBlock ) );
+            file->currentExt = ( struct AdfFileExtBlock * )
+                malloc ( sizeof ( struct AdfFileExtBlock ) );
             if ( ! file->currentExt ) {
                 (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
                 file->curDataPtr = 0;  // invalidate data ptr
@@ -952,8 +952,8 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
             if ( file->nDataBlock == ADF_MAX_DATABLK ) {
 
                 if ( file->currentExt == NULL ) {
-                    file->currentExt = (struct bFileExtBlock *)
-                        malloc ( sizeof(struct bFileExtBlock) );
+                    file->currentExt = (struct AdfFileExtBlock *)
+                        malloc ( sizeof(struct AdfFileExtBlock) );
                     if ( file->currentExt == NULL ) {
                         adfEnv.eFct ("adfReadNextFileBlock : malloc");
                         return RC_MALLOC;
@@ -1152,7 +1152,8 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
 
             /* the future block is the first file extension block */
             if ( file->nDataBlock == ADF_MAX_DATABLK ) {
-                file->currentExt=(struct bFileExtBlock*)malloc(sizeof(struct bFileExtBlock));
+                file->currentExt = (struct AdfFileExtBlock *)
+                    malloc ( sizeof(struct AdfFileExtBlock) );
                 if (!file->currentExt) {
                     adfSetBlockFree(file->volume, extSect);
                     (*adfEnv.eFct)("adfCreateNextFileBlock : malloc");
@@ -1262,9 +1263,9 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
-                               const int32_t                extBlock,
-                               struct bFileExtBlock * const fext )
+RETCODE adfFileReadExtBlockN ( const struct AdfFile * const   file,
+                               const int32_t                  extBlock,
+                               struct AdfFileExtBlock * const fext )
 {
     // check if the given extBlock index is valid
     const int nExtBlocks = (int) adfFileSize2Extblocks ( file->fileHdr->byteSize,
@@ -1288,7 +1289,7 @@ RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
             return RC_BLOCKREAD;
         }
 #ifdef DEBUG_ADF_FILE
-        //show_bFileExtBlock ( fext );
+        //showAdfFileExtBlock ( fext );
 #endif
         nSect = fext->extension;
         i++;
@@ -1312,7 +1313,7 @@ static void show_File ( const struct AdfFile * const file )
              //"volume:\t0x%x
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              "  nDataBlock:\t0x%x\t\t%u\n"
              "  curDataPtr:\t0x%x\t\t%u\n"
              "  pos:\t\t0x%x\t\t%u\n"
@@ -1322,7 +1323,7 @@ static void show_File ( const struct AdfFile * const file )
              //volume;
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              file->nDataBlock,
              file->nDataBlock,
              file->curDataPtr,
@@ -1397,10 +1398,10 @@ static void showAdfFileHeaderBlock (
              block->secType );	/* == -3 */
 }
 
-static void show_bFileExtBlock (
-    const struct bFileExtBlock * const block )
+static void showAdfFileExtBlock (
+    const struct AdfFileExtBlock * const block )
 {
-    printf ( "\nbFileExtBlock:\n"
+    printf ( "\nAdfFileExtBlock:\n"
              "  type:\t\t0x%x\t\t%u\n"
              "  headerKey:\t0x%x\t\t%u\n"
              "  highSeq:\t0x%x\t\t%u\n"

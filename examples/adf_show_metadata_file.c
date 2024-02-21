@@ -132,7 +132,7 @@ void show_file_ext_blocks ( struct AdfVolume * const                vol,
         return;
     }
     
-    struct bFileExtBlock extblock;
+    struct AdfFileExtBlock extblock;
     extblock.extension = fheader_block->extension; // copy initial extension pointer (sector)
     while ( extblock.extension ) {
         int32_t extblock_sector = extblock.extension;
@@ -146,13 +146,13 @@ void show_file_ext_blocks ( struct AdfVolume * const                vol,
 }
 
 
-void show_ext_block ( const struct bFileExtBlock * const block )
+void show_ext_block ( const struct AdfFileExtBlock * const block )
 {
     uint8_t file_ext_block_orig_endian[512];
     memcpy ( file_ext_block_orig_endian, block, 512 );
     adfSwapEndian ( file_ext_block_orig_endian, ADF_SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_ext_block_orig_endian, 0x14,
-                                                  sizeof (struct bFileExtBlock ) );
+                                                  sizeof (struct AdfFileExtBlock ) );
     printf ( "\nFile extension block:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
@@ -206,7 +206,7 @@ static void show_File ( const struct File * const file )
              //"volume:\t0x%x
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              "  nDataBlock:\t0x%x\t\t%u\n"
              "  curDataPtr:\t0x%x\t\t%u\n"
              "  pos:\t\t0x%x\t\t%u\n"
@@ -217,7 +217,7 @@ static void show_File ( const struct File * const file )
              //volume;
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              file->nDataBlock,
              file->nDataBlock,
              file->curDataPtr,

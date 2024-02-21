@@ -353,7 +353,6 @@ RETCODE adfCheckFile ( struct AdfVolume * const                vol,
                        const int                               level )
 {
     (void) nSect, (void) level;
-    struct bFileExtBlock extBlock;
     struct bOFSDataBlock dataBlock;
     struct AdfFileBlocks fileBlocks;
     int n;
@@ -388,6 +387,7 @@ RETCODE adfCheckFile ( struct AdfVolume * const                vol,
         }
     }
 
+    struct AdfFileExtBlock extBlock;
     for(n=0; n<fileBlocks.nbExtens; n++) {
         rc = adfReadFileExtBlock ( vol, fileBlocks.extens[n], &extBlock );
         if ( rc != RC_OK )

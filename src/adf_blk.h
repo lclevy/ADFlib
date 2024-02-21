@@ -219,7 +219,7 @@ struct AdfFileHeaderBlock {
 
 /*--- file header extension block structure ---*/
 
-struct bFileExtBlock {
+struct AdfFileExtBlock {
 /*000*/	int32_t	type;		/* == 0x10 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	highSeq;
