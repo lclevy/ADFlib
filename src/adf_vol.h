@@ -98,12 +98,12 @@ static inline BOOL adfVolIsFFS ( const struct AdfVolume * const vol ) {
     return adfVolIsDosFS ( vol ) && adfDosFsIsFFS ( vol->fs.type );
 }
 
-static inline BOOL adfVolIsINTL ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && adfDosFsIsINTL ( vol->fs.type );
+static inline BOOL adfVolHasINTL ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsHasINTL ( vol->fs.type );
 }
 
-static inline BOOL adfVolIsDIRCACHE ( const struct AdfVolume * const vol ) {
-    return adfVolIsDosFS ( vol ) && adfDosFsIsDIRCACHE ( vol->fs.type );
+static inline BOOL adfVolHasDIRCACHE ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsHasDIRCACHE ( vol->fs.type );
 }
 
 static inline BOOL adfVolIsPFS ( const struct AdfVolume * const vol ) {
@@ -114,8 +114,8 @@ static inline BOOL adfVolIsFsValid (  const struct AdfVolume * const vol )
 {
     return (
         ( adfVolIsOFS ( vol ) &&
-          ! adfVolIsINTL ( vol ) &&
-          ! adfVolIsDIRCACHE ( vol ) ) ||
+          ! adfVolHasINTL ( vol ) &&
+          ! adfVolHasDIRCACHE ( vol ) ) ||
         adfVolIsFFS ( vol ) ||
         adfVolIsPFS ( vol ) );
 }

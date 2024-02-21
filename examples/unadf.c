@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 
     if (list_mode || list_all) {
         /* list files */
-        if (use_dircache && adfVolIsDIRCACHE(vol)) {
+        if (use_dircache && adfVolHasDIRCACHE(vol)) {
             BOOL true = TRUE;
             adfChgEnvProp(PR_USEDIRC, &true);
             puts("Using dir cache blocks.");
@@ -307,8 +307,8 @@ void print_volume(struct AdfVolume *vol)
         vol->firstBlock,
         vol->lastBlock,
         adfVolIsFFS(vol) ? "FFS" : "OFS",
-        adfVolIsINTL(vol) ? " INTL" : "",
-        adfVolIsDIRCACHE(vol) ? " DIRCACHE" : "",
+        adfVolHasINTL(vol) ? " INTL" : "",
+        adfVolHasDIRCACHE(vol) ? " DIRCACHE" : "",
         100.0 - ((adfCountFreeBlocks(vol) * 100.0) / num_blocks));
 }
 

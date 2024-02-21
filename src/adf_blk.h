@@ -54,11 +54,11 @@ static inline BOOL adfDosFsIsOFS ( const uint8_t c ) {
     return ! adfDosFsIsFFS ( c );
 }
 
-static inline BOOL adfDosFsIsINTL ( const uint8_t c ) {
+static inline BOOL adfDosFsHasINTL ( const uint8_t c ) {
     return c & ADF_DOSFS_INTL;
 }
 
-static inline BOOL adfDosFsIsDIRCACHE ( const uint8_t c ) {
+static inline BOOL adfDosFsHasDIRCACHE ( const uint8_t c ) {
     return c & ADF_DOSFS_DIRCACHE;
 }
 

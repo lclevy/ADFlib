@@ -131,8 +131,8 @@ void adfVolInfo ( struct AdfVolume * const vol )
     }
     printf ("  Filesystem:\t%s %s %s\n",
             adfVolIsFFS ( vol ) ? "FFS" : "OFS",
-            adfVolIsINTL ( vol ) ? "INTL " : "",
-            adfVolIsDIRCACHE ( vol ) ? "DIRCACHE " : "");
+            adfVolHasINTL ( vol ) ? "INTL " : "",
+            adfVolHasDIRCACHE ( vol ) ? "DIRCACHE " : "");
 
     printf("  Free blocks:\t%d\n", adfCountFreeBlocks(vol));
     printf ("  R/W:\t\t%s\n", vol->readOnly ? "Read only" : "Read/Write");
@@ -423,7 +423,7 @@ printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
 /*for(i=0; i<127; i++)
 printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 */
-    if ( adfDosFsIsDIRCACHE ( volType ) )
+    if ( adfDosFsHasDIRCACHE ( volType ) )
         adfGetFreeBlocks( vol, 2, blkList );
     else
         adfGetFreeBlocks( vol, 1, blkList );
@@ -438,7 +438,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.coDays),&(root.coMins),&(root.coTicks));
 
     /* dircache block */
-    if ( adfDosFsIsDIRCACHE ( volType ) ) {
+    if ( adfDosFsHasDIRCACHE ( volType ) ) {
         root.extension = 0L;
         root.secType = ST_ROOT; /* needed by adfCreateEmptyCache() */
         adfCreateEmptyCache(vol, (struct bEntryBlock*)&root, blkList[1]);
