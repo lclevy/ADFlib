@@ -293,7 +293,7 @@ struct AdfBitmapExtBlock {
 	};
 
 
-struct bLinkBlock {
+struct AdfLinkBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* self pointer */
         int32_t	r1[3];

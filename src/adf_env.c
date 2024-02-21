@@ -318,8 +318,8 @@ static void checkInternals(void)
     assertInternal ( sizeof(struct AdfBitmapExtBlock) == 512,
                      "Internal error : sizeof(struct AdfBitmapExtBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bLinkBlock) == 512,
-                     "Internal error : sizeof(struct bLinkBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfLinkBlock) == 512,
+                     "Internal error : sizeof(struct AdfLinkBlock) != 512\n" );
 
     val.l = 1L;
 /* if LITT_ENDIAN not defined : must be BIG endian */
