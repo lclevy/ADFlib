@@ -345,7 +345,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
         else
             part.next = -1;
 
-        len = min ( (unsigned) MAXNAMELEN,
+        len = min ( (unsigned) ADF_MAX_NAME_LEN,
                     (unsigned) strlen ( partList[i]->volName ) );
         part.nameLen = (char) len;
         strncpy(part.name, partList[i]->volName, len);

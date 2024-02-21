@@ -43,8 +43,8 @@ struct AdfCacheEntry {
     signed char type;
     uint8_t nLen,
             cLen;
-    char name[MAXNAMELEN+1],
-         comm[MAXCMMTLEN+1];
+    char name[ ADF_MAX_NAME_LEN + 1 ],
+         comm[ ADF_MAX_COMMENT_LEN + 1 ];
 /*    char *name, *comm;*/
 };
 

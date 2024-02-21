@@ -174,14 +174,15 @@ RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
     if (!cEntry->name)
          return;
 */
-    if (cEntry->nLen < 1 || cEntry->nLen > MAXNAMELEN) return RC_ERROR;
+    if (cEntry->nLen < 1 || cEntry->nLen > ADF_MAX_NAME_LEN) return RC_ERROR;
     if ( ( ptr + 24 + cEntry->nLen ) > ADF_LOGICAL_BLOCK_SIZE )
         return RC_ERROR;
     memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
     cEntry->name[(int)(cEntry->nLen)]='\0';
 
     cEntry->cLen = dirc->records[ptr+24+cEntry->nLen];
-    if (cEntry->cLen > MAXCMMTLEN) return RC_ERROR;
+    if ( cEntry->cLen > ADF_MAX_COMMENT_LEN )
+        return RC_ERROR;
     if ( ptr + 24 + cEntry->nLen + 1 + cEntry->cLen > ADF_LOGICAL_BLOCK_SIZE )
         return RC_ERROR;
     if (cEntry->cLen>0) {

@@ -380,7 +380,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 
     vol->mounted = TRUE;
 
-    unsigned nlen = min ( (unsigned) MAXNAMELEN,
+    unsigned nlen = min ( (unsigned) ADF_MAX_NAME_LEN,
                           (unsigned) strlen ( volName ) );
     vol->volName = (char*)malloc(nlen+1);
     if (!vol->volName) { 

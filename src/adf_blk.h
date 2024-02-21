@@ -99,8 +99,8 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 #define ADF_BM_MAP_SIZE        127
 #define ADF_MAX_DATABLK        72
 
-#define MAXNAMELEN	30
-#define MAXCMMTLEN	79
+#define ADF_MAX_NAME_LEN	30
+#define ADF_MAX_COMMENT_LEN	79
 
 
 /* block primary and secondary types */
@@ -143,7 +143,7 @@ struct bRootBlock {
 /*1a8*/	int32_t	cMins;
 /*1ac*/	int32_t	cTicks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	diskName[MAXNAMELEN+1];
+/*1b1*/	char 	diskName[ ADF_MAX_NAME_LEN + 1 ];
         char	r2[8];
 /*1d8*/	int32_t	days;		/* last access : days after 1 jan 1978 */
 /*1dc*/	int32_t	mins;		/* hours and minutes in minutes */
@@ -168,13 +168,13 @@ struct bEntryBlock {
 /*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t byteSize;
 /*148*/	uint8_t	 commLen;
-/*149*/	char	 comment[MAXCMMTLEN + 1];
-        char	 r3[91 - ( MAXCMMTLEN + 1 )];
+/*149*/	char	 comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	 r3[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	 days;
 /*1a8*/	int32_t	 mins;
 /*1ac*/	int32_t	 ticks;
 /*1b0*/	uint8_t	 nameLen;
-/*1b1*/	char	 name[MAXNAMELEN + 1];
+/*1b1*/	char	 name[ ADF_MAX_NAME_LEN + 1 ];
         int32_t	 r4;
 /*1d4*/	int32_t	 realEntry;
 /*1d8*/	int32_t	 nextLink;
@@ -199,13 +199,13 @@ struct bFileHeaderBlock {
 /*140*/	int32_t	access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t	byteSize;
 /*148*/	uint8_t	commLen;
-/*149*/	char	comment[MAXCMMTLEN+1];
-        char	r3[91-(MAXCMMTLEN+1)];
+/*149*/	char	comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	r3[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	days;
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char	fileName[MAXNAMELEN+1];
+/*1b1*/	char	fileName[ADF_MAX_NAME_LEN+1];
         int32_t	r4;
 /*1d4*/	int32_t	real;		/* unused == 0 */
 /*1d8*/	int32_t	nextLink;	/* link chain */
@@ -249,13 +249,13 @@ struct bDirBlock {
 /*140*/	int32_t	access;
         int32_t	r4;		/* == 0 */
 /*148*/	uint8_t	commLen;
-/*149*/	char	comment[MAXCMMTLEN+1];
-        char	r5[91-(MAXCMMTLEN+1)];
+/*149*/	char	comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	r5[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	dirName[MAXNAMELEN+1];
+/*1b1*/	char 	dirName[ADF_MAX_NAME_LEN+1];
         int32_t	r6;
 /*1d4*/	int32_t	real;		/* ==0 */
 /*1d8*/	int32_t	nextLink;	/* link list */
@@ -304,7 +304,7 @@ struct bLinkBlock {
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	name[MAXNAMELEN+1];
+/*1b1*/	char 	name[ADF_MAX_NAME_LEN+1];
         int32_t	r3;
 /*1d4*/	int32_t	realEntry;
 /*1d8*/	int32_t	nextLink;

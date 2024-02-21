@@ -130,7 +130,7 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     unsigned len;
-    char name[MAXNAMELEN+1];
+    char name[ ADF_MAX_NAME_LEN + 1 ];
 
     RETCODE rc = adfVolReadBlock ( vol, (unsigned) nSect, buf );
     if ( rc != RC_OK )
@@ -147,7 +147,7 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
         case ST_DIR:
         case ST_LFILE:
         case ST_LDIR:
-            len = min( (unsigned) MAXNAMELEN, buf [ vol->blockSize - 80 ] );
+            len = min( (unsigned) ADF_MAX_NAME_LEN, buf [ vol->blockSize - 80 ] );
             strncpy(name, (char*)buf+vol->blockSize-79, len);
             name[len] = '\0';
             block->name = strdup(name);
@@ -204,7 +204,7 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
     (void) nSect;
     RETCODE rc;
     struct bEntryBlock parent;
-    char name[MAXNAMELEN+1];
+    char name[ ADF_MAX_NAME_LEN + 1 ];
 
     /* check if the given parent sector pointer seems OK */
     rc = adfCheckParent ( vol, pSect );
@@ -258,7 +258,7 @@ RETCODE adfUndelFile ( struct AdfVolume *        vol,
 {
     (void) nSect;
     int32_t i;
-    char name[MAXNAMELEN+1];
+    char name[ ADF_MAX_NAME_LEN + 1 ];
     struct bEntryBlock parent;
     RETCODE rc;
     struct AdfFileBlocks fileBlocks;

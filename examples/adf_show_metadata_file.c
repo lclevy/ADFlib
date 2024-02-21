@@ -77,8 +77,8 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
              block->access, block->access,
              block->byteSize, block->byteSize,
              block->commLen, block->commLen,
-             MAXCMMTLEN + 1, block->comment,
-             91 - ( MAXCMMTLEN + 1 ), block->r3,
+             ADF_MAX_COMMENT_LEN + 1, block->comment,
+             91 - ( ADF_MAX_COMMENT_LEN + 1 ), block->r3,
              block->days,
              block->mins,
              block->ticks,
@@ -103,7 +103,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
                      } */
 
     printf ( "\n  r3 (non-zero):" );
-    for ( unsigned i = 0 ; i < 91 - ( MAXCMMTLEN + 1 ) ; ++i ) {
+    for ( unsigned i = 0 ; i < 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ; ++i ) {
         char r3_i = block->r3[i];
         if ( r3_i )
             printf ( "\n    r3[ %d ]:  0x%x (%d)",

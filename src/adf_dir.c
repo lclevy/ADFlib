@@ -54,8 +54,8 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 {
     struct bEntryBlock parent, previous, entry, nParent;
     SECTNUM nSect2, nSect, prevSect, tmpSect;
-    char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
-
+    char name2[ ADF_MAX_NAME_LEN + 1 ],
+         name3[ ADF_MAX_NAME_LEN + 1 ];
 
     if ( pSect == nPSect  &&
          strcmp ( oldName, newName ) == 0 )
@@ -311,7 +311,7 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
 
-    entry.commLen = (uint8_t) min ( (unsigned) MAXCMMTLEN, strlen ( newCmt ) );
+    entry.commLen = (uint8_t) min ( (unsigned) ADF_MAX_COMMENT_LEN, strlen ( newCmt ) );
     memcpy(entry.comment, newCmt, entry.commLen);
 
     if ( entry.secType == ST_DIR ) {
@@ -629,12 +629,12 @@ SECTNUM adfParentDir ( struct AdfVolume * const vol )
 RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
                             struct AdfEntry * const          entry )
 {
-    char buf[MAXCMMTLEN+1];
+    char buf[ ADF_MAX_COMMENT_LEN + 1 ];
 
     entry->type   = entryBlk->secType;
     entry->parent = entryBlk->parent;
 
-    unsigned len = min ( entryBlk->nameLen, (unsigned) MAXNAMELEN );
+    unsigned len = min ( entryBlk->nameLen, (unsigned) ADF_MAX_NAME_LEN );
     strncpy(buf, entryBlk->name, len);
     buf[len] = '\0';
     entry->name = strdup(buf);
@@ -655,7 +655,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
         break;
     case ST_DIR:
         entry->access = entryBlk->access;
-        len = min ( entryBlk->commLen, (unsigned) MAXCMMTLEN );
+        len = min ( entryBlk->commLen, (unsigned) ADF_MAX_COMMENT_LEN );
         strncpy(buf, entryBlk->comment, len);
         buf[len] = '\0';
         entry->comment = strdup(buf);
@@ -668,7 +668,7 @@ RETCODE adfEntBlock2Entry ( const struct bEntryBlock * const entryBlk,
     case ST_FILE:
         entry->access = entryBlk->access;
         entry->size = entryBlk->byteSize;
-        len = min ( entryBlk->commLen, (unsigned) MAXCMMTLEN );
+        len = min ( entryBlk->commLen, (unsigned) ADF_MAX_COMMENT_LEN );
         strncpy(buf, entryBlk->comment, len);
         buf[len] = '\0';
         entry->comment = strdup(buf);
@@ -725,8 +725,8 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
                             struct bEntryBlock * const entry,
                             SECTNUM * const            nUpdSect )
 {
-    uint8_t upperName[MAXNAMELEN+1];
-    uint8_t upperName2[MAXNAMELEN+1];
+    uint8_t upperName[ ADF_MAX_NAME_LEN + 1 ];
+    uint8_t upperName2[ ADF_MAX_NAME_LEN + 1 ];
     SECTNUM nSect;
     BOOL found;
     SECTNUM updSect;
@@ -734,7 +734,7 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const   vol,
     BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
     unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
     unsigned nameLen = min ( (unsigned) strlen ( name ),
-                             (unsigned) MAXNAMELEN );
+                             (unsigned) ADF_MAX_NAME_LEN );
     adfStrToUpper ( upperName, (uint8_t *) name, nameLen, intl );
 
     nSect = ht[hashVal];
@@ -804,7 +804,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 {
     struct bEntryBlock updEntry;
     RETCODE rc;
-    char name2[MAXNAMELEN+1], name3[MAXNAMELEN+1];
+    char name2[ADF_MAX_NAME_LEN+1], name3[ADF_MAX_NAME_LEN+1];
     SECTNUM nSect, newSect, newSect2;
     struct bRootBlock* root;
 
@@ -812,7 +812,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const   vol,
 
     BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
     unsigned len = min ( (unsigned) strlen(name),
-                         (unsigned) MAXNAMELEN );
+                         (unsigned) ADF_MAX_NAME_LEN );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
     unsigned hashValue = adfGetHashValue ( (uint8_t *) name, intl );
     nSect = dir->hashTable[ hashValue ];
@@ -1001,7 +1001,7 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
         return RC_ERROR;
     }
     memset(&dir, 0, sizeof(struct bDirBlock));
-    dir.nameLen = (uint8_t) min ( (unsigned) MAXNAMELEN, (unsigned) strlen ( name ) );
+    dir.nameLen = (uint8_t) min ( (unsigned) ADF_MAX_NAME_LEN, (unsigned) strlen ( name ) );
     memcpy(dir.dirName,name,dir.nameLen);
     dir.headerKey = nSect;
 
@@ -1058,7 +1058,7 @@ RETCODE adfCreateFile ( struct AdfVolume * const        vol,
     if (nSect==-1) return RC_ERROR;
 /*printf("new fhdr=%d\n",nSect);*/
     memset(fhdr,0,512);
-    fhdr->nameLen = (uint8_t) min ( (unsigned) MAXNAMELEN, (unsigned) strlen ( name ) );
+    fhdr->nameLen = (uint8_t) min ( (unsigned) ADF_MAX_NAME_LEN, (unsigned) strlen ( name ) );
     memcpy(fhdr->fileName,name,fhdr->nameLen);
     fhdr->headerKey = nSect;
     if (parent.secType==ST_ROOT)
@@ -1126,13 +1126,13 @@ RETCODE adfReadEntryBlock ( struct AdfVolume * const   vol,
                       vol->volName, nSect );
         return RC_ERROR;
     }
-    if ( ent->nameLen > MAXNAMELEN ) {
+    if ( ent->nameLen > ADF_MAX_NAME_LEN ) {
         adfEnv.wFct ( "adfReadEntryBlock : nameLen (%d) incorrect, volume '%s', block %u, entry %s",
                       ent->nameLen, vol->volName, nSect, ent->name );
         //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
         //    ent->nameLen,ent->commLen,ent->name, ent->headerKey);
     }
-    if ( ent->commLen > MAXCMMTLEN ) {
+    if ( ent->commLen > ADF_MAX_COMMENT_LEN ) {
         adfEnv.wFct ( "adfReadEntryBlock : commLen (%d) incorrect, volume '%s', block %u, entry %s",
                       ent->commLen, vol->volName, nSect, ent->name);
         //printf("nameLen=%d, commLen=%d, name=%s sector%d\n",
