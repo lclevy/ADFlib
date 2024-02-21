@@ -20,7 +20,7 @@ void show_volume_metadata ( struct AdfVolume * const vol )
 {
     adfVolInfo ( vol );
 
-    struct bBootBlock bblock;
+    struct AdfBootBlock bblock;
     if ( adfReadBootBlock ( vol, &bblock ) != RC_OK ) {
         fprintf ( stderr, "Error reading rootblock\n");
         return;
@@ -48,16 +48,16 @@ static inline char printable ( char c )
 }
 
 
-void show_bootblock ( const struct bBootBlock * const bblock,
-                      bool                            show_data )
+void show_bootblock ( const struct AdfBootBlock * const bblock,
+                      bool                              show_data )
 {
     printf ("\nBootblock:\n  dosType:\t");
     for ( unsigned i = 0 ; i < 3 ; i++ )
         putchar ( printable ( bblock->dosType[i] ) );
     printf ( "%c (0x%x)\n", printable ( bblock->dosType[3] ), bblock->dosType[3] );
 
-    uint8_t bblock_copy[sizeof(struct bBootBlock)];
-    memcpy ( bblock_copy, bblock, sizeof (struct bBootBlock) );
+    uint8_t bblock_copy[sizeof(struct AdfBootBlock)];
+    memcpy ( bblock_copy, bblock, sizeof (struct AdfBootBlock) );
     adfSwapEndian ( bblock_copy, ADF_SWBL_BOOT );
     uint32_t checksum_calculated = adfBootSum ( bblock_copy );
     printf ( "  checkSum:\t0x%x\n"
@@ -73,7 +73,7 @@ void show_bootblock ( const struct bBootBlock * const bblock,
 }
 
 
-void show_bootblock_data ( const struct bBootBlock * const bblock )
+void show_bootblock_data ( const struct AdfBootBlock * const bblock )
 {
     puts ( "\nbootblock data / code (non-zero bytes):\n" );
     for ( unsigned i = 0 ; i < 500 + 512 ; ++i ) {

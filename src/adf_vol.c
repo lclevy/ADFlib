@@ -55,7 +55,7 @@ RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
                                  const uint8_t * const    code )
 {
     int i;
-    struct bBootBlock boot;
+    struct AdfBootBlock boot;
 
     if ( vol->dev->devType != DEVTYPE_FLOPDD &&
          vol->dev->devType != DEVTYPE_FLOPHD )
@@ -172,7 +172,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const AdfAccessMode      mode )
 {
     struct bRootBlock root;
-    struct bBootBlock boot;
+    struct AdfBootBlock boot;
     struct AdfVolume * vol;
 
     if ( dev == NULL ) {
@@ -350,7 +350,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType )
 {
-    struct bBootBlock boot;
+    struct AdfBootBlock boot;
     struct bRootBlock root;
 /*    struct bDirCacheBlock dirc;*/
     SECTNUM blkList[2];

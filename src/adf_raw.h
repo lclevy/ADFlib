@@ -57,11 +57,11 @@ PREFIX RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
                                    const uint32_t            nSect,
                                    struct bRootBlock * const root );
 
-PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const  vol,
-                                  struct bBootBlock * const boot );
+PREFIX RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
+                                  struct AdfBootBlock * const boot );
 
-PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const  vol,
-                                   struct bBootBlock * const boot );
+PREFIX RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
+                                   struct AdfBootBlock * const boot );
 
 PREFIX uint32_t adfBootSum ( const uint8_t * const buf );
 

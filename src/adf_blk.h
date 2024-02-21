@@ -120,7 +120,7 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 /*--- blocks structures --- */
 
 
-struct bBootBlock {
+struct AdfBootBlock {
 /*000*/	char	dosType[4];
 /*004*/	uint32_t checkSum;
 /*008*/	int32_t	rootBlock;

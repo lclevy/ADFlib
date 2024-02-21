@@ -300,8 +300,8 @@ static void checkInternals(void)
     assertInternal ( sizeof(struct bDirBlock) == 512,
                      "Internal error : sizeof(struct bDirBlock) != 512\n");
 
-    assertInternal ( sizeof(struct bBootBlock) == 1024,
-                     "Internal error : sizeof(struct bBootBlock) != 1024\n" );
+    assertInternal ( sizeof(struct AdfBootBlock) == 1024,
+                     "Internal error : sizeof(struct AdfBootBlock) != 1024\n" );
 
     assertInternal ( sizeof(struct bFileHeaderBlock) == 512,
                      "Internal error : sizeof(struct bFileHeaderBlock) != 512\n" );
