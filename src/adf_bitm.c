@@ -804,9 +804,9 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
-                             SECTNUM               nSect,
-                             struct bBitmapBlock * bitm )
+RETCODE adfReadBitmapBlock ( struct AdfVolume *      vol,
+                             SECTNUM                 nSect,
+                             struct AdfBitmapBlock * bitm )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
@@ -836,9 +836,9 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
  *
  * OK
  */
-RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
-                              const SECTNUM                     nSect,
-                              const struct bBitmapBlock * const bitm )
+RETCODE adfWriteBitmapBlock ( struct AdfVolume * const            vol,
+                              const SECTNUM                       nSect,
+                              const struct AdfBitmapBlock * const bitm )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
@@ -936,8 +936,8 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     vol->bitmap.size = nBlock2bitmapSize (
         adfVolGetBlockNumWithoutBootblock ( vol ) );
 
-    vol->bitmap.table = (struct bBitmapBlock**)
-        malloc ( sizeof(struct bBitmapBlock *) * vol->bitmap.size );
+    vol->bitmap.table = (struct AdfBitmapBlock**)
+        malloc ( sizeof(struct AdfBitmapBlock *) * vol->bitmap.size );
     if ( vol->bitmap.table == NULL ) {
         adfEnv.eFct("adfBitmapAllocate : malloc, vol->bitmapTable");
         return RC_MALLOC;
@@ -962,8 +962,8 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     }
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.table[i] = (struct bBitmapBlock *)
-            malloc ( sizeof(struct bBitmapBlock) );
+        vol->bitmap.table[i] = (struct AdfBitmapBlock *)
+            malloc ( sizeof(struct AdfBitmapBlock) );
 
         if ( vol->bitmap.table[i] == NULL) {
             free ( vol->bitmap.blocksChg );

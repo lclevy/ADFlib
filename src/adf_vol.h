@@ -37,10 +37,10 @@
 /* ----- VOLUME ----- */
 
 struct AdfBitmap {
-    uint32_t               size;         /* in blocks */
-    SECTNUM *              blocks;       /* bitmap blocks pointers */
-    struct bBitmapBlock ** table;
-    BOOL *                 blocksChg;
+    uint32_t                 size;         /* in blocks */
+    SECTNUM *                blocks;       /* bitmap blocks pointers */
+    struct AdfBitmapBlock ** table;
+    BOOL *                   blocksChg;
 };
 
 struct AdfVolume {

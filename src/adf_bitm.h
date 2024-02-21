@@ -34,13 +34,13 @@
 #include "adf_vol.h"
 
 
-PREFIX RETCODE adfReadBitmapBlock ( struct AdfVolume * const    vol,
-                                    const SECTNUM               nSect,
-                                    struct bBitmapBlock * const bitm );
+PREFIX RETCODE adfReadBitmapBlock ( struct AdfVolume * const      vol,
+                                    const SECTNUM                 nSect,
+                                    struct AdfBitmapBlock * const bitm );
 
-PREFIX RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
-                                     const SECTNUM                     nSect,
-                                     const struct bBitmapBlock * const bitm );
+PREFIX RETCODE adfWriteBitmapBlock ( struct AdfVolume * const            vol,
+                                     const SECTNUM                       nSect,
+                                     const struct AdfBitmapBlock * const bitm );
 
 PREFIX RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
                                        const SECTNUM                  nSect,

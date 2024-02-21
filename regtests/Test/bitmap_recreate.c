@@ -246,7 +246,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
                            struct AdfVolume * const volUpdate )
 {
     struct AdfRootBlock   rbOrig, rbUpdate;
-    struct bBitmapBlock bmOrig, bmUpdate;
+    struct AdfBitmapBlock bmOrig, bmUpdate;
 
     if ( adfReadRootBlock ( volOrig, (uint32_t) volOrig->rootBlock,
                             &rbOrig ) != RC_OK )

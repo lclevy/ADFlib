@@ -281,7 +281,7 @@ struct AdfOFSDataBlock {
 
 /* --- bitmap --- */
 
-struct bBitmapBlock {
+struct AdfBitmapBlock {
 /*000*/	uint32_t checkSum;
 /*004*/	uint32_t map[ADF_BM_MAP_SIZE];
 	};

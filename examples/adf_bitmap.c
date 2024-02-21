@@ -174,8 +174,8 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         "----------------------------------------------------------------------",
         separatorLine2[] =
         "======================================================================";
-    struct AdfRootBlock rb;
-    struct bBitmapBlock bm;
+    struct AdfRootBlock   rb;
+    struct AdfBitmapBlock bm;
 
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &rb ) != RC_OK ) {
         fprintf ( stderr, "invalid RootBlock on orig. volume, sector %u\n",
