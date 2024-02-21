@@ -780,22 +780,17 @@ for(i=0; i<HT_SIZE; i++) printf("ht[%d]=%d    ",i,ht[i]);
  * Access2String
  *
  */
-    char* 
-adfAccess2String(int32_t acc)
+void adfAccess2String ( int32_t acc, char accStr[ 8 + 1 ] )
 {
-    static char ret[8+1];
-
-    strcpy(ret,"----rwed");
-    if ( adfAccHasD ( acc ) )  ret[7] = '-';
-    if ( adfAccHasE ( acc ) )  ret[6] = '-';
-    if ( adfAccHasW ( acc ) )  ret[5] = '-';
-    if ( adfAccHasR ( acc ) )  ret[4] = '-';
-    if ( adfAccHasA ( acc ) )  ret[3] = 'a';
-    if ( adfAccHasP ( acc ) )  ret[2] = 'p';
-    if ( adfAccHasS ( acc ) )  ret[1] = 's';
-    if ( adfAccHasH ( acc ) )  ret[0] = 'h';
-
-    return(ret);
+    strcpy ( accStr, "----rwed" );
+    if ( adfAccHasD ( acc ) )  accStr[7] = '-';
+    if ( adfAccHasE ( acc ) )  accStr[6] = '-';
+    if ( adfAccHasW ( acc ) )  accStr[5] = '-';
+    if ( adfAccHasR ( acc ) )  accStr[4] = '-';
+    if ( adfAccHasA ( acc ) )  accStr[3] = 'a';
+    if ( adfAccHasP ( acc ) )  accStr[2] = 'p';
+    if ( adfAccHasS ( acc ) )  accStr[1] = 's';
+    if ( adfAccHasH ( acc ) )  accStr[0] = 'h';
 }
 
 
@@ -976,8 +971,11 @@ void adfEntryPrint ( const struct AdfEntry * const entry )
         printf("%8d ",entry->size);
     else
         printf("         ");
-    if (entry->type==ST_FILE || entry->type==ST_DIR)
-        printf("%-s ",adfAccess2String(entry->access));
+    if (entry->type==ST_FILE || entry->type==ST_DIR) {
+        char accessStr[ 8 + 1 ];
+        adfAccess2String ( entry->access, accessStr );
+        printf ( "%-s ", accessStr );
+    }
     if (entry->comment!=NULL)
         printf("%s ",entry->comment);
     putchar('\n');
