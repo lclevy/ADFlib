@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-static void show_data_blocks_array ( const int32_t datablocks [ MAX_DATABLK ] );
+static void show_data_blocks_array ( const int32_t datablocks [ ADF_MAX_DATABLK ] );
 
 
 void show_file_metadata ( struct AdfVolume * const vol,
@@ -71,7 +71,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
              block->checkSum,
              checksum_calculated,
              block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             MAX_DATABLK, //dataBlocks[MAX_DATABLK],
+             ADF_MAX_DATABLK, //dataBlocks[ADF_MAX_DATABLK],
              block->r1,
              block->r2,
              block->access, block->access,
@@ -95,7 +95,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
 
     show_data_blocks_array ( block->dataBlocks );
     /*puts ( "\ndatablocks (non-zero):" );
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         uint32_t dblock_sector = block->dataBlocks[i];
         if ( dblock_sector )
             printf ( "  dataBlocks[ %d ]:  0x%x (%d)\n",
@@ -178,7 +178,7 @@ void show_ext_block ( const struct bFileExtBlock * const block )
              block->checkSum,
              checksum_calculated,
              block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             MAX_DATABLK, //block->dataBlocks[MAX_DATABLK],
+             ADF_MAX_DATABLK, //block->dataBlocks[ADF_MAX_DATABLK],
              //r[45]
              block->info, block->info,
              block->nextSameHash, block->nextSameHash,
@@ -189,10 +189,10 @@ void show_ext_block ( const struct bFileExtBlock * const block )
     show_data_blocks_array ( block->dataBlocks );
 }
 
-static void show_data_blocks_array ( const int32_t datablocks [ MAX_DATABLK ] )
+static void show_data_blocks_array ( const int32_t datablocks [ ADF_MAX_DATABLK ] )
 {
     printf ( "\n  data blocks (non-zero):\n" );
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         int32_t dblock_i = datablocks [ i ];
         if ( dblock_i )
             printf ( "    dataBlocks [ %2d ]:  0x%x\t%d\n",

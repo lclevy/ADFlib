@@ -97,7 +97,7 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 #define ADF_BM_PAGES_ROOT_SIZE 25
 #define ADF_BM_PAGES_EXT_SIZE  127
 #define ADF_BM_MAP_SIZE        127
-#define MAX_DATABLK	72
+#define ADF_MAX_DATABLK        72
 
 #define MAXNAMELEN	30
 #define MAXCMMTLEN	79
@@ -193,7 +193,7 @@ struct bFileHeaderBlock {
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	dataBlocks[MAX_DATABLK];
+/*018*/	int32_t	dataBlocks[ADF_MAX_DATABLK];
 /*138*/	int32_t	r1;
 /*13c*/	int32_t	r2;
 /*140*/	int32_t	access;	/* bit0=del, 1=modif, 2=write, 3=read */
@@ -226,7 +226,7 @@ struct bFileExtBlock {
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;	/* == 0 */
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	dataBlocks[MAX_DATABLK];
+/*018*/	int32_t	dataBlocks[ADF_MAX_DATABLK];
         int32_t	r[45];
         int32_t	info;		/* == 0 */
         int32_t	nextSameHash;	/* == 0 */

@@ -13,6 +13,6 @@ void show_file_ext_blocks ( struct AdfVolume * const              vol,
                             const struct bFileHeaderBlock * const fheader_block );
 
 void show_ext_block ( const struct bFileExtBlock * const extblock );
-void show_file_data_blocks_array ( const int32_t datablocks[MAX_DATABLK] );
+void show_file_data_blocks_array ( const int32_t datablocks[ADF_MAX_DATABLK] );
 
 #endif

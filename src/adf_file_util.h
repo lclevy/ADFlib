@@ -24,10 +24,10 @@ static inline unsigned adfFileSize2Datablocks ( unsigned fsize,
 
 static inline unsigned adfFileDatablocks2Extblocks ( unsigned ndatablocks )
 {
-    //return max ( ( ndata_blocks - 1 ) / MAX_DATABLK, 0 );
+    //return max ( ( ndata_blocks - 1 ) / ADF_MAX_DATABLK, 0 );
     if ( ndatablocks < 1 )
         return 0;
-    return ( ndatablocks - 1 ) / ( MAX_DATABLK );
+    return ( ndatablocks - 1 ) / ( ADF_MAX_DATABLK );
 }
 
 static inline unsigned adfFileSize2Extblocks ( unsigned fsize,

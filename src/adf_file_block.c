@@ -72,7 +72,7 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
     n = m = 0;	
     /* in file header block */
     for(i=0; i<entry->highSeq; i++)
-        fileBlocks->data[n++] = entry->dataBlocks[MAX_DATABLK-1-i];
+        fileBlocks->data[ n++ ] = entry->dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
 
     /* in file extension blocks */
     nSect = entry->extension;
@@ -80,7 +80,7 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
         fileBlocks->extens[m++] = nSect;
         adfReadFileExtBlock(vol, nSect, &extBlock);
         for(i=0; i<extBlock.highSeq; i++)
-            fileBlocks->data[n++] = extBlock.dataBlocks[MAX_DATABLK-1-i];
+            fileBlocks->data[n++] = extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
         nSect = extBlock.extension;
     }
     if ( (fileBlocks->nbExtens+fileBlocks->nbData) != (n+m) )
@@ -138,9 +138,9 @@ uint32_t adfFileRealSize ( const uint32_t  size,
 
     /*--- number of header extension blocks ---*/
     ext = 0;
-    if (data>MAX_DATABLK) {
-        ext = (data-MAX_DATABLK) / MAX_DATABLK;
-        if ( (data-MAX_DATABLK) % MAX_DATABLK )
+    if ( data > ADF_MAX_DATABLK ) {
+        ext = ( data - ADF_MAX_DATABLK ) / ADF_MAX_DATABLK;
+        if ( ( data - ADF_MAX_DATABLK ) % ADF_MAX_DATABLK )
             ext++;
     }
 
@@ -306,8 +306,11 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
         (*adfEnv.wFct)("adfReadFileExtBlock : stype  ST_FILE not found");
     if (fext->headerKey!=nSect)
         (*adfEnv.wFct)("adfReadFileExtBlock : headerKey!=nSect");
-    if (fext->highSeq<0 || fext->highSeq>MAX_DATABLK)
+    if ( fext->highSeq < 0 ||
+         fext->highSeq > ADF_MAX_DATABLK )
+    {
         (*adfEnv.wFct)("adfReadFileExtBlock : highSeq out of range");
+    }
     if ( ! adfVolIsSectNumValid ( vol, fext->parent ) )
         (*adfEnv.wFct)("adfReadFileExtBlock : parent out of range");
     if ( fext->extension != 0 && ! adfVolIsSectNumValid ( vol, fext->extension ) )

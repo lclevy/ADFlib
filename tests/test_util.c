@@ -108,7 +108,7 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
 
     // check the number of non-zero blocks in the array of the last metadata block (header or ext)
     unsigned nonZeroCount = 0;
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         if ( dataBlocks[i] != 0 )
             nonZeroCount++;
     }
@@ -119,9 +119,9 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
         if ( nonZeroCount != 0 )
             return 5;
     } else {
-        unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
-                                     nDataBlocks % MAX_DATABLK :
-                                     MAX_DATABLK );
+        unsigned nonZeroExpected = ( nDataBlocks % ADF_MAX_DATABLK != 0 ?
+                                     nDataBlocks % ADF_MAX_DATABLK :
+                                     ADF_MAX_DATABLK );
         //ck_assert_uint_eq ( nonZeroCount, nonZeroExpected );
         if ( nonZeroCount != nonZeroExpected ) {
             printf ("Incorrect number of non-zero blocks in the last metadata block:"
@@ -188,10 +188,10 @@ unsigned filesize2datablocks ( unsigned fsize,
 
 unsigned datablocks2extblocks ( unsigned data_blocks )
 {
-    //return max ( ( data_blocks - 1 ) / MAX_DATABLK, 0 );
+    //return max ( ( data_blocks - 1 ) / ADF_MAX_DATABLK, 0 );
     if ( data_blocks < 1 )
         return 0;
-    return ( data_blocks - 1 ) / ( MAX_DATABLK );
+    return ( data_blocks - 1 ) / ( ADF_MAX_DATABLK );
 }
 
 
@@ -209,11 +209,11 @@ unsigned filesize2blocks ( unsigned fsize,
 // datablock index ( 0, ...  , nblocks - 1 ) to block's position in ExtBlock
 unsigned datablock2posInExtBlk ( unsigned datablock_idx )
 {
-    //return max ( ( datablock_idx - MAX_DATABLK ) % ( MAX_DATABLK + 1 ), 0 );
+    //return max ( ( datablock_idx - ADF_MAX_DATABLK ) % ( ADF_MAX_DATABLK + 1 ), 0 );
 
-    if ( datablock_idx < MAX_DATABLK )
+    if ( datablock_idx < ADF_MAX_DATABLK )
         // block pointer in file header (not in an ext. block)
         //return -1;
         return 0;
-    return ( datablock_idx - MAX_DATABLK ) % ( MAX_DATABLK );
+    return ( datablock_idx - ADF_MAX_DATABLK ) % ( ADF_MAX_DATABLK );
 }

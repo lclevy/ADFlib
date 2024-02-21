@@ -516,7 +516,7 @@ static RETCODE adfBitmapFileBlocksSetUsed (
     const struct bFileHeaderBlock * const fhBlock )
 {
     // mark blocks from the header
-    for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+    for ( uint32_t block = 0 ; block < ADF_MAX_DATABLK ; block++ ) {
         if ( fhBlock->dataBlocks[block] > 1 )
             adfSetBlockUsed ( vol, fhBlock->dataBlocks[block] );
     }
@@ -535,7 +535,7 @@ static RETCODE adfBitmapFileBlocksSetUsed (
                           extBlockPtr, fhBlock->fileName );
             return RC_BLOCKREAD;
         }
-        for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+        for ( uint32_t block = 0 ; block < ADF_MAX_DATABLK ; block++ ) {
             if ( fext.dataBlocks[block] > 1 )
                 adfSetBlockUsed ( vol, fext.dataBlocks[block] );
         }

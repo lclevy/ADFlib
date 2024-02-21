@@ -252,7 +252,7 @@ void test_file_truncate ( test_data_t * const tdata )
 
     // check the number of non-zero blocks in the array of the last metadata block (header or ext)
     unsigned nonZeroCount = 0;
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         if ( dataBlocks[i] != 0 ) {
             //printf ("A non-zero block %u: %d\n", i, dataBlocks[i] );
             nonZeroCount++;
@@ -263,9 +263,9 @@ void test_file_truncate ( test_data_t * const tdata )
     if ( file->fileHdr->byteSize == 0 )
         ck_assert_uint_eq ( nonZeroCount, 0 );
     else {
-        unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
-                                     nDataBlocks % MAX_DATABLK :
-                                     MAX_DATABLK );
+        unsigned nonZeroExpected = ( nDataBlocks % ADF_MAX_DATABLK != 0 ?
+                                     nDataBlocks % ADF_MAX_DATABLK :
+                                     ADF_MAX_DATABLK );
         //ck_assert_uint_eq ( nonZeroCount, nonZeroExpected );
         ck_assert_msg ( nonZeroCount == nonZeroExpected,
                         "Incorrect number of non-zero blocks in the last metadata block:"
