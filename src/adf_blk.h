@@ -186,7 +186,7 @@ struct AdfEntryBlock {
 };
 
 
-struct bFileHeaderBlock {
+struct AdfFileHeaderBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* current block number */
 /*008*/	int32_t	highSeq;	/* number of data block in this hdr block */

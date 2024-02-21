@@ -50,8 +50,8 @@
 
 static void show_File ( const struct AdfFile * const file );
 
-static void show_bFileHeaderBlock (
-    const struct bFileHeaderBlock * const block );
+static void showAdfFileHeaderBlock (
+    const struct AdfFileHeaderBlock * const block );
 
 static void show_bFileExtBlock (
     const struct bFileExtBlock * const block );
@@ -778,8 +778,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    file->fileHdr = (struct bFileHeaderBlock *)
-        malloc ( sizeof(struct bFileHeaderBlock) );
+    file->fileHdr = (struct AdfFileHeaderBlock *)
+        malloc ( sizeof(struct AdfFileHeaderBlock) );
     if ( file->fileHdr == NULL ) {
         adfEnv.eFct ( "adfFileOpen : malloc" );
         free ( file );
@@ -807,7 +807,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
 
     if ( ! modeWrite ) {
         /* read-only mode */
-        memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+        memcpy ( file->fileHdr, &entry, sizeof ( struct AdfFileHeaderBlock ) );
         if ( adfFileSeek ( file, 0 ) != RC_OK ) {
             adfEnv.eFct ( "adfFileOpen : error seeking pos. %d, file: %s",
                           0, file->fileHdr->fileName );
@@ -817,7 +817,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     else {
         /* write or read-write mode */
         if ( fileAlreadyExists ) {
-            memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+            memcpy ( file->fileHdr, &entry, sizeof ( struct AdfFileHeaderBlock ) );
             unsigned seekpos = 0; //( mode_append ? file->fileHdr->byteSize : 0 );
             if ( adfFileSeek ( file, seekpos ) != RC_OK ) {
                 adfEnv.eFct ( "adfFileOpen : error seeking pos. %d, file: %s",
@@ -1337,10 +1337,10 @@ static void show_File ( const struct AdfFile * const file )
              file->writeMode );
 }
 
-static void show_bFileHeaderBlock (
-    const struct bFileHeaderBlock * const block )
+static void showAdfFileHeaderBlock (
+    const struct AdfFileHeaderBlock * const block )
 {
-    printf ( "\nbFileHeaderBlock:\n"
+    printf ( "\nAdfFileHeaderBlock:\n"
              "  type:\t\t%d\n"
              "  headerKey:\t%d\n"
              "  highSeq:\t%d\n"

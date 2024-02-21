@@ -35,7 +35,7 @@
 struct AdfFile {
     struct AdfVolume *        volume;
 
-    struct bFileHeaderBlock * fileHdr;
+    struct AdfFileHeaderBlock * fileHdr;
     void *                    currentData;
     struct bFileExtBlock *    currentExt;
 

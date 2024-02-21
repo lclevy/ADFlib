@@ -160,8 +160,8 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
             rc=adfWriteDirBlock(vol, previous.headerKey, 
 			       (struct bDirBlock*)&previous);
         else if ( previous.secType == ADF_ST_FILE )
-            rc=adfWriteFileHdrBlock(vol, previous.headerKey, 
-                   (struct bFileHeaderBlock*)&previous);
+            rc = adfWriteFileHdrBlock ( vol, previous.headerKey,
+                                        (struct AdfFileHeaderBlock *) &previous );
         else {
             (*adfEnv.wFct)("adfRenameEntry : unknown entry type");
             rc = RC_ERROR;
@@ -258,7 +258,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     }
 
     if ( entry.secType == ADF_ST_FILE ) {
-        rc = adfFreeFileBlocks ( vol, (struct bFileHeaderBlock*) &entry );
+        rc = adfFreeFileBlocks ( vol, (struct AdfFileHeaderBlock*) &entry );
         if ( rc != RC_OK )
             return rc;
     	adfSetBlockFree(vol, nSect); //marks the FileHeaderBlock as free in BitmapBlock
@@ -322,7 +322,7 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
             return rc;
     }
     else if ( entry.secType == ADF_ST_FILE ) {
-        rc = adfWriteFileHdrBlock ( vol, nSect, (struct bFileHeaderBlock*) &entry );
+        rc = adfWriteFileHdrBlock ( vol, nSect, (struct AdfFileHeaderBlock *) &entry );
         if ( rc != RC_OK )
             return rc;
     }
@@ -367,7 +367,7 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
             return rc;
     }
     else if ( entry.secType == ADF_ST_FILE) {
-        adfWriteFileHdrBlock(vol, nSect, (struct bFileHeaderBlock*)&entry);
+        adfWriteFileHdrBlock ( vol, nSect, (struct AdfFileHeaderBlock *) &entry );
         if ( rc != RC_OK )
             return rc;
     }
@@ -875,8 +875,8 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
     if ( updEntry.secType == ADF_ST_DIR )
         rc=adfWriteDirBlock(vol, updEntry.headerKey, (struct bDirBlock*)&updEntry);
     else if ( updEntry.secType == ADF_ST_FILE )
-        rc=adfWriteFileHdrBlock(vol, updEntry.headerKey, 
-		    (struct bFileHeaderBlock*)&updEntry);
+        rc = adfWriteFileHdrBlock ( vol, updEntry.headerKey,
+                                    (struct AdfFileHeaderBlock *) &updEntry );
     else
         (*adfEnv.wFct)("adfCreateEntry : unknown entry type");
 
@@ -1039,10 +1039,10 @@ RETCODE adfCreateDir ( struct AdfVolume * const vol,
  * adfCreateFile
  *
  */
-RETCODE adfCreateFile ( struct AdfVolume * const        vol,
-                        const SECTNUM                   nParent,
-                        const char * const              name,
-                        struct bFileHeaderBlock * const fhdr )
+RETCODE adfCreateFile ( struct AdfVolume * const          vol,
+                        const SECTNUM                     nParent,
+                        const char * const                name,
+                        struct AdfFileHeaderBlock * const fhdr )
 {
     SECTNUM nSect;
     struct AdfEntryBlock parent;

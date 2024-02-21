@@ -42,9 +42,9 @@
  * adfGetFileBlocks
  *
  */
-RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
-                           const struct bFileHeaderBlock * const entry,
-                           struct AdfFileBlocks * const    fileBlocks )
+RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
+                           const struct AdfFileHeaderBlock * const entry,
+                           struct AdfFileBlocks * const            fileBlocks )
 {
     int32_t n, m;
     SECTNUM nSect;
@@ -93,8 +93,8 @@ RETCODE adfGetFileBlocks ( struct AdfVolume * const        vol,
  * adfFreeFileBlocks
  *
  */
-RETCODE adfFreeFileBlocks ( struct AdfVolume * const        vol,
-                            struct bFileHeaderBlock * const entry )
+RETCODE adfFreeFileBlocks ( struct AdfVolume * const          vol,
+                            struct AdfFileHeaderBlock * const entry )
 {
     int i;
     struct AdfFileBlocks fileBlocks;
@@ -157,9 +157,9 @@ uint32_t adfFileRealSize ( const uint32_t  size,
  * adfWriteFileHdrBlock
  *
  */
-RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
-                               const SECTNUM                   nSect,
-                               struct bFileHeaderBlock * const fhdr )
+RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const          vol,
+                               const SECTNUM                     nSect,
+                               struct AdfFileHeaderBlock * const fhdr )
 {
     uint8_t buf[512];
     uint32_t newSum;
@@ -168,11 +168,11 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
     fhdr->dataSize = 0;
     fhdr->secType = ADF_ST_FILE;
 
-    memcpy(buf, fhdr, sizeof(struct bFileHeaderBlock));
+    memcpy ( buf, fhdr, sizeof(struct AdfFileHeaderBlock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_FILE );
 #endif
-    newSum = adfNormalSum(buf,20,sizeof(struct bFileHeaderBlock));
+    newSum = adfNormalSum ( buf, 20, sizeof(struct AdfFileHeaderBlock) );
     swLong(buf+20, newSum);
 /*    *(uint32_t*)(buf+20) = swapLong((uint8_t*)&newSum);*/
 

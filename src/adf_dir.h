@@ -72,10 +72,10 @@ RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
 
 PREFIX void adfFreeEntry (struct AdfEntry * const entry );
 
-RETCODE adfCreateFile ( struct AdfVolume * const        vol,
-                        const SECTNUM                   parent,
-                        const char * const              name,
-                        struct bFileHeaderBlock * const fhdr );
+RETCODE adfCreateFile ( struct AdfVolume * const          vol,
+                        const SECTNUM                     parent,
+                        const char * const                name,
+                        struct AdfFileHeaderBlock * const fhdr );
 
 PREFIX RETCODE adfCreateDir ( struct AdfVolume * const vol,
                               const SECTNUM            parent,

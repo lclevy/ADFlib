@@ -254,10 +254,10 @@ RETCODE adfUndelDir ( struct AdfVolume * vol,
  * adfUndelFile
  *
  */
-RETCODE adfUndelFile ( struct AdfVolume *        vol,
-                       SECTNUM                   pSect,
-                       SECTNUM                   nSect,
-                       struct bFileHeaderBlock * entry )
+RETCODE adfUndelFile ( struct AdfVolume *          vol,
+                       SECTNUM                     pSect,
+                       SECTNUM                     nSect,
+                       struct AdfFileHeaderBlock * entry )
 {
     (void) nSect;
     int32_t i;
@@ -330,7 +330,7 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
 
     switch(entry.secType) {
     case ADF_ST_FILE:
-        rc = adfUndelFile ( vol, parent, nSect, (struct bFileHeaderBlock*) &entry );
+        rc = adfUndelFile ( vol, parent, nSect, (struct AdfFileHeaderBlock *) &entry );
         break;
     case ADF_ST_DIR:
         rc = adfUndelDir ( vol, parent, nSect, (struct bDirBlock*) &entry );
@@ -347,10 +347,10 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
  * adfCheckFile
  *
  */
-RETCODE adfCheckFile ( struct AdfVolume * const              vol,
-                       const SECTNUM                         nSect,
-                       const struct bFileHeaderBlock * const file,
-                       const int                             level )
+RETCODE adfCheckFile ( struct AdfVolume * const                vol,
+                       const SECTNUM                           nSect,
+                       const struct AdfFileHeaderBlock * const file,
+                       const int                               level )
 {
     (void) nSect, (void) level;
     struct bFileExtBlock extBlock;
@@ -445,7 +445,7 @@ RETCODE adfCheckEntry ( struct AdfVolume * const vol,
 
     switch(entry.secType) {
     case ADF_ST_FILE:
-        rc = adfCheckFile(vol, nSect, (struct bFileHeaderBlock*)&entry, level);
+        rc = adfCheckFile ( vol, nSect, (struct AdfFileHeaderBlock *) &entry, level );
         break;
     case ADF_ST_DIR:
         rc = adfCheckDir(vol, nSect, (struct bDirBlock*)&entry, level);
