@@ -150,7 +150,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
     struct AdfRSDKblock rdsk;
-    struct bPARTblock part;
+    struct AdfPARTblock part;
     int32_t next;
     struct AdfList *vList, *listRoot;
     int i;
@@ -307,7 +307,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     (void) n;
     int i;
     struct AdfRSDKblock rdsk;
-    struct bPARTblock part;
+    struct AdfPARTblock part;
     struct bFSHDblock fshd;
     struct bLSEGblock lseg;
     SECTNUM j;
@@ -339,7 +339,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
 
     j=1;
     for(i=0; i<dev->nVol; i++) {
-        memset(&part, 0, sizeof(struct bPARTblock));
+        memset ( &part, 0, sizeof(struct AdfPARTblock) );
 
         if (i<dev->nVol-1)
             part.next = j+1;
@@ -553,18 +553,18 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
  * ReadPARTblock
  *
  */
-RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bPARTblock * const blk )
+RETCODE adfReadPARTblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfPARTblock * const blk )
 {
-    uint8_t buf[ sizeof(struct bPARTblock) ];
+    uint8_t buf[ sizeof(struct AdfPARTblock) ];
 
     RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct bPARTblock), buf );
+                                   sizeof(struct AdfPARTblock), buf );
     if ( rc != RC_OK )
        return rc;
 
-    memcpy(blk, buf, sizeof(struct bPARTblock));
+    memcpy ( blk, buf, sizeof(struct AdfPARTblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
     adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_PART);
@@ -594,9 +594,9 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
  * adfWritePARTblock
  *
  */
-RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bPARTblock * const part )
+RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfPARTblock * const part )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -609,14 +609,14 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
     memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( part->id, "PART", 4 );
-    part->size = sizeof(struct bPARTblock)/sizeof(int32_t);
+    part->size = sizeof(struct AdfPARTblock) / sizeof(int32_t);
     part->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     part->vectorSize = 16;
     part->blockSize = 128;
     part->sectorsPerBlock = 1;
     part->dosReserved = 2;
 
-    memcpy(buf, part, sizeof(struct bPARTblock));
+    memcpy ( buf, part, sizeof(struct AdfPARTblock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_PART );
 #endif

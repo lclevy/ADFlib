@@ -92,7 +92,7 @@ struct AdfBADBblock {
 
 
 
-struct bPARTblock {
+struct AdfPARTblock {
 /*000*/	char     id[4];           /* PART */
 /*004*/	uint32_t size;            /* 64 int32_ts */
 /*008*/	uint32_t checksum;
