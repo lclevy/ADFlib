@@ -67,23 +67,23 @@ static inline BOOL adfDosFsHasDIRCACHE ( const uint8_t c ) {
 
 /* access constants */
 
-#define ACCMASK_D	(1<<0)
-#define ACCMASK_E	(1<<1)
-#define ACCMASK_W	(1<<2)
-#define ACCMASK_R	(1<<3)
-#define ACCMASK_A	(1<<4)
-#define ACCMASK_P	(1<<5)
-#define ACCMASK_S	(1<<6)
-#define ACCMASK_H	(1<<7)
+#define ADF_ACCMASK_D	(1<<0)
+#define ADF_ACCMASK_E	(1<<1)
+#define ADF_ACCMASK_W	(1<<2)
+#define ADF_ACCMASK_R	(1<<3)
+#define ADF_ACCMASK_A	(1<<4)
+#define ADF_ACCMASK_P	(1<<5)
+#define ADF_ACCMASK_S	(1<<6)
+#define ADF_ACCMASK_H	(1<<7)
 
-#define hasD(c)    ((c)&ACCMASK_D)
-#define hasE(c)    ((c)&ACCMASK_E)
-#define hasW(c)    ((c)&ACCMASK_W)
-#define hasR(c)    ((c)&ACCMASK_R)
-#define hasA(c)    ((c)&ACCMASK_A)
-#define hasP(c)	   ((c)&ACCMASK_P)
-#define hasS(c)    ((c)&ACCMASK_S)
-#define hasH(c)    ((c)&ACCMASK_H)
+static inline BOOL adfAccHasD ( const int32_t c )  { return c & ADF_ACCMASK_D; }
+static inline BOOL adfAccHasE ( const int32_t c )  { return c & ADF_ACCMASK_E; }
+static inline BOOL adfAccHasW ( const int32_t c )  { return c & ADF_ACCMASK_W; }
+static inline BOOL adfAccHasR ( const int32_t c )  { return c & ADF_ACCMASK_R; }
+static inline BOOL adfAccHasA ( const int32_t c )  { return c & ADF_ACCMASK_A; }
+static inline BOOL adfAccHasP ( const int32_t c )  { return c & ADF_ACCMASK_P; }
+static inline BOOL adfAccHasS ( const int32_t c )  { return c & ADF_ACCMASK_S; }
+static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 
 
 /* ----- BLOCKS ----- */

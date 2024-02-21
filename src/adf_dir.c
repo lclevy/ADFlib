@@ -786,14 +786,14 @@ adfAccess2String(int32_t acc)
     static char ret[8+1];
 
     strcpy(ret,"----rwed");
-    if (hasD(acc)) ret[7]='-';
-    if (hasE(acc)) ret[6]='-';
-    if (hasW(acc)) ret[5]='-';
-    if (hasR(acc)) ret[4]='-';
-    if (hasA(acc)) ret[3]='a';
-    if (hasP(acc)) ret[2]='p';
-    if (hasS(acc)) ret[1]='s';
-    if (hasH(acc)) ret[0]='h';
+    if ( adfAccHasD ( acc ) )  ret[7] = '-';
+    if ( adfAccHasE ( acc ) )  ret[6] = '-';
+    if ( adfAccHasW ( acc ) )  ret[5] = '-';
+    if ( adfAccHasR ( acc ) )  ret[4] = '-';
+    if ( adfAccHasA ( acc ) )  ret[3] = 'a';
+    if ( adfAccHasP ( acc ) )  ret[2] = 'p';
+    if ( adfAccHasS ( acc ) )  ret[1] = 's';
+    if ( adfAccHasH ( acc ) )  ret[0] = 'h';
 
     return(ret);
 }

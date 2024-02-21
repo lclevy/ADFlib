@@ -79,8 +79,10 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    adfSetEntryAccess(vol, vol->curDirPtr, "dir_5u", 0|ACCMASK_A|ACCMASK_E);
-    adfSetEntryAccess(vol, vol->curDirPtr, "file_1a", 0|ACCMASK_P|ACCMASK_W);
+    adfSetEntryAccess ( vol, vol->curDirPtr, "dir_5u",
+                        0 | ADF_ACCMASK_A | ADF_ACCMASK_E );
+    adfSetEntryAccess ( vol, vol->curDirPtr, "file_1a",
+                        0 | ADF_ACCMASK_P | ADF_ACCMASK_W );
 
     putchar('\n');
 
@@ -91,8 +93,10 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    adfSetEntryAccess(vol, vol->curDirPtr, "dir_5u", 0x12 & !ACCMASK_A & !ACCMASK_E);
-    adfSetEntryAccess(vol, vol->curDirPtr, "file_1a", 0x24 & !ACCMASK_P & !ACCMASK_W );
+    adfSetEntryAccess ( vol, vol->curDirPtr, "dir_5u",
+                        0x12 & ! ADF_ACCMASK_A & ! ADF_ACCMASK_E );
+    adfSetEntryAccess ( vol, vol->curDirPtr, "file_1a",
+                        0x24 & ! ADF_ACCMASK_P & ! ADF_ACCMASK_W );
 
     putchar('\n');
 
