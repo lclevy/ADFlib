@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfCreateHdFile( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
-
+    adfCreateHdFile ( hd, "empty", ADF_DOSFS_FFS |
+                                   ADF_DOSFS_DIRCACHE );
     adfDevInfo ( hd );
 
     vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );

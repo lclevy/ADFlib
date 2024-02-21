@@ -40,7 +40,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
+    adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                 ADF_DOSFS_DIRCACHE );
 
     vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {

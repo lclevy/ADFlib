@@ -36,14 +36,21 @@
 
 /* ----- FILE SYSTEM ----- */
 
-#define FSMASK_FFS         1
-#define FSMASK_INTL        2
-#define FSMASK_DIRCACHE    4
+/*
+ * Filesystem type, defined in volume's bootblock as "DOSn"
+ * where bitmasked n has the meaning as below.
+ * ( see also: http://lclevy.free.fr/adflib/adf_info.html#p41 )
+ */
+#define ADF_DOSFS_OFS         0   /* 000 */
+#define ADF_DOSFS_FFS         1   /* 001 */
+#define ADF_DOSFS_INTL        2   /* 010 */
+#define ADF_DOSFS_DIRCACHE    4   /* 100 */
 
-#define isFFS(c)           ((c)&FSMASK_FFS)
-#define isOFS(c)           (!((c)&FSMASK_FFS))
-#define isINTL(c)          ((c)&FSMASK_INTL)
-#define isDIRCACHE(c)      ((c)&FSMASK_DIRCACHE)
+
+#define isFFS(c)           ((c)&ADF_DOSFS_FFS)
+#define isOFS(c)           (!((c)&ADF_DOSFS_FFS))
+#define isINTL(c)          ((c)&ADF_DOSFS_INTL)
+#define isDIRCACHE(c)      ((c)&ADF_DOSFS_DIRCACHE)
 
 
 /* ----- ENTRIES ----- */

@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     part1.startCyl = 2;
 	part1.lenCyl = 2889;
 	part1.volName = strdup("zip");
-    part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
+    part1.volType = ADF_DOSFS_FFS | ADF_DOSFS_DIRCACHE;
 
     partList[0] = &part1;
     RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );

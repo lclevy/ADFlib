@@ -41,7 +41,9 @@ int main(int argc, char *argv[])
 
     adfDevInfo ( hd );
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );

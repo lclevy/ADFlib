@@ -48,12 +48,12 @@ int main(int argc, char *argv[])
     part1.startCyl =2;
 	part1.lenCyl = 100;
 	part1.volName = strdup("b");
-    part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
+    part1.volType = ADF_DOSFS_FFS | ADF_DOSFS_DIRCACHE;
 	
     part2.startCyl =101;
 	part2.lenCyl = 878;
 	part2.volName = strdup("h");
-    part2.volType = FSMASK_FFS;
+    part2.volType = ADF_DOSFS_FFS;
 
     partList[0] = &part1;
     partList[1] = &part2;
