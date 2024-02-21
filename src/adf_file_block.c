@@ -164,9 +164,9 @@ RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const        vol,
     uint8_t buf[512];
     uint32_t newSum;
 /*printf("adfWriteFileHdrBlock %ld\n",nSect);*/
-    fhdr->type = T_HEADER;
+    fhdr->type = ADF_T_HEADER;
     fhdr->dataSize = 0;
-    fhdr->secType = ST_FILE;
+    fhdr->secType = ADF_ST_FILE;
 
     memcpy(buf, fhdr, sizeof(struct bFileHeaderBlock));
 #ifdef LITT_ENDIAN
@@ -217,8 +217,8 @@ RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
         if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct bOFSDataBlock) ) )
             adfEnv.wFct ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
                            nSect, vol->volName );
-        if ( dBlock->type != T_DATA )
-            adfEnv.wFct ( "adfReadDataBlock : id T_DATA not found, block %d, volume '%s'",
+        if ( dBlock->type != ADF_T_DATA )
+            adfEnv.wFct ( "adfReadDataBlock : id ADF_T_DATA not found, block %d, volume '%s'",
                            nSect, vol->volName );
         if ( dBlock->dataSize > 488 )
             adfEnv.wFct ( "adfReadDataBlock : dataSize (0x%x / %u) incorrect, block %d, volume '%s'",
@@ -253,7 +253,7 @@ RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
     RETCODE rc;
     if ( adfVolIsOFS ( vol ) ) {
         struct bOFSDataBlock * dataB = (struct bOFSDataBlock *) data;
-        dataB->type = T_DATA;
+        dataB->type = ADF_T_DATA;
 
         uint8_t buf[512];
         memcpy ( buf, data, 512 );
@@ -300,10 +300,10 @@ RETCODE adfReadFileExtBlock ( struct AdfVolume * const     vol,
 #endif
     if (fext->checkSum!=adfNormalSum(buf,20,sizeof(struct bFileExtBlock)))
         (*adfEnv.wFct)("adfReadFileExtBlock : invalid checksum");
-    if (fext->type!=T_LIST)
-        (*adfEnv.wFct)("adfReadFileExtBlock : type T_LIST not found");
-    if (fext->secType!=ST_FILE)
-        (*adfEnv.wFct)("adfReadFileExtBlock : stype  ST_FILE not found");
+    if ( fext->type != ADF_T_LIST )
+        adfEnv.wFct ( "adfReadFileExtBlock : type ADF_T_LIST not found" );
+    if ( fext->secType != ADF_ST_FILE )
+        adfEnv.wFct ( "adfReadFileExtBlock : sectype ADF_ST_FILE not found" );
     if (fext->headerKey!=nSect)
         (*adfEnv.wFct)("adfReadFileExtBlock : headerKey!=nSect");
     if ( fext->highSeq < 0 ||
@@ -331,8 +331,8 @@ RETCODE adfWriteFileExtBlock ( struct AdfVolume * const     vol,
     uint8_t buf[512];
     uint32_t newSum;
 
-    fext->type = T_LIST;
-    fext->secType = ST_FILE;
+    fext->type = ADF_T_LIST;
+    fext->secType = ADF_ST_FILE;
     fext->dataSize = 0L;
     fext->firstData = 0L;
 

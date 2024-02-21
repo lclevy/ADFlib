@@ -129,7 +129,9 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const  vol,
     adfSwapEndian ( (uint8_t*) root, ADF_SWBL_ROOT );
 #endif
 
-    if (root->type!=T_HEADER || root->secType!=ST_ROOT) {
+    if ( root->type != ADF_T_HEADER ||
+         root->secType != ADF_ST_ROOT )
+    {
         (*adfEnv.wFct)("adfReadRootBlock : id not found");
         return RC_BLOCKTYPE;
     }
@@ -157,7 +159,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
 /*printf("adfWriteRootBlock %ld\n",nSect);*/
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
-    root->type = T_HEADER;
+    root->type = ADF_T_HEADER;
     root->headerKey = 0L;
     root->highSeq = 0L;
     root->hashTableSize = ADF_HT_SIZE;
@@ -167,7 +169,7 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const  vol,
     /* bmPages, bmExt */
     root->nextSameHash = 0L;
     root->parent = 0L;
-    root->secType = ST_ROOT;
+    root->secType = ADF_ST_ROOT;
 
     memcpy(buf, root, ADF_LOGICAL_BLOCK_SIZE);
 

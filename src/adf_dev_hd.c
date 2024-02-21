@@ -114,7 +114,8 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
         BOOL found = FALSE;
         do {
             dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
-            found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
+            found = swapLong(buf) == ADF_T_HEADER &&
+                    swapLong(buf + 508) == ADF_ST_ROOT;
             if (!found)
                 (vol->rootBlock)--;
         } while (vol->rootBlock>1 && !found);

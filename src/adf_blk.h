@@ -105,16 +105,16 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 
 /* block primary and secondary types */
 
-#define T_HEADER	2
-#define ST_ROOT		1
-#define ST_DIR		2
-#define ST_FILE		-3
-#define ST_LFILE	-4
-#define ST_LDIR		4
-#define ST_LSOFT	3
-#define T_LIST		16
-#define T_DATA		8
-#define T_DIRC		33
+#define ADF_T_HEADER    2
+#define ADF_ST_ROOT     1
+#define ADF_ST_DIR      2
+#define ADF_ST_FILE    -3
+#define ADF_ST_LFILE   -4
+#define ADF_ST_LDIR     4
+#define ADF_ST_LSOFT    3
+#define ADF_T_LIST     16
+#define ADF_T_DATA      8
+#define ADF_T_DIRC     33
 
 
 /*--- blocks structures --- */
@@ -159,7 +159,7 @@ struct bRootBlock {
 
 
 struct bEntryBlock {
-/*000*/	int32_t	 type;		/* T_HEADER == 2 */
+/*000*/	int32_t	 type;		/* ADF_T_HEADER == 2 */
 /*004*/	int32_t	 headerKey;	/* current block number */
         int32_t	 r1[3];
 /*014*/	uint32_t checkSum;

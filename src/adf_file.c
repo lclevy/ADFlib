@@ -748,8 +748,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     }
 
     if ( fileAlreadyExists &&
-         entry.secType != ST_FILE &&
-         entry.secType != ST_LFILE )
+         entry.secType != ADF_ST_FILE &&
+         entry.secType != ADF_ST_LFILE )
     {
         adfEnv.wFct ( "adfFileOpen : '%s' is not a file (or a hardlink to a file)",
                       name );

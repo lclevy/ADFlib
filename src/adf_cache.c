@@ -121,7 +121,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                 return NULL;
             }
 
-            if (recurs && entry->type==ST_DIR)
+            if ( recurs && entry->type == ADF_ST_DIR )
                  cell->subdir = adfGetDirEntCache(vol,entry->sector,recurs);
 
             n++;
@@ -267,7 +267,7 @@ int adfEntry2CacheEntry ( const struct bEntryBlock * const entry,
 
     /* new entry */
     newEntry->header = (uint32_t) entry->headerKey;
-    if (entry->secType==ST_FILE)
+    if ( entry->secType == ADF_ST_FILE )
         newEntry->size = entry->byteSize;
     else
         newEntry->size = 0L;
@@ -454,9 +454,9 @@ RETCODE adfAddInCache ( struct AdfVolume * const  vol,
 
         /* create a new dircache block */
         memset(&newDirc,0,512);
-        if (parent->secType==ST_ROOT)
+        if ( parent->secType == ADF_ST_ROOT )
             newDirc.parent = vol->rootBlock;
-        else if (parent->secType==ST_DIR)
+        else if ( parent->secType == ADF_ST_DIR )
             newDirc.parent = parent->headerKey;
         else
             (*adfEnv.wFct)("adfAddInCache : unknown secType");
@@ -601,9 +601,9 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
 
     memset(&dirc,0, sizeof(struct bDirCacheBlock));
 
-    if (parent->secType==ST_ROOT)
+    if ( parent->secType == ADF_ST_ROOT )
         dirc.parent = vol->rootBlock;
-    else if (parent->secType==ST_DIR)
+    else if ( parent->secType == ADF_ST_DIR )
         dirc.parent = parent->headerKey;
     else {
         (*adfEnv.wFct)("adfCreateEmptyCache : unknown secType");
@@ -638,8 +638,8 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
     if (dirc->checkSum!=adfNormalSum(buf,20,512))
         adfEnv.wFct ( "adfReadDirCBlock : invalid checksum, volume '%s', block %u",
                       vol->volName, nSect );
-    if (dirc->type!=T_DIRC)
-        adfEnv.wFct ( "adfReadDirCBlock : T_DIRC not found, volume '%s', block %u",
+    if ( dirc->type != ADF_T_DIRC )
+        adfEnv.wFct ( "adfReadDirCBlock : ADF_T_DIRC not found, volume '%s', block %u",
                       vol->volName, nSect );
     if (dirc->headerKey!=nSect)
         adfEnv.wFct ( "adfReadDirCBlock : headerKey (%u) != nSect (%u), volume '%s', block %u",
@@ -660,7 +660,7 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
-    dirc->type = T_DIRC;
+    dirc->type = ADF_T_DIRC;
     dirc->headerKey = nSect;
 
     memcpy(buf, dirc, ADF_LOGICAL_BLOCK_SIZE);

@@ -178,7 +178,7 @@ int test_softlink_realname ( struct AdfVolume * vol,
         return 1;
     }
 
-    if ( entry.secType != ST_LSOFT ) {
+    if ( entry.secType != ADF_ST_LSOFT ) {
         return 1;
     }
 

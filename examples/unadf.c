@@ -328,11 +328,11 @@ void print_tree(struct AdfList *node, char *path)
 
 /* prints one line of information about a directory/file entry */
 void print_entry(struct AdfEntry *e, char *path) {
-    BOOL is_dir = e->type == ST_DIR;
+    BOOL is_dir = e->type == ADF_ST_DIR;
     BOOL print_comment = show_comments && e->comment && *e->comment;
 
     /* do not print the links entries, ADFlib do not support them yet properly */
-    if (e->type == ST_LFILE || e->type == ST_LDIR || e->type == ST_LSOFT) {
+    if (e->type == ADF_ST_LFILE || e->type == ADF_ST_LDIR || e->type == ADF_ST_LSOFT) {
         return;
     }
 
@@ -360,13 +360,13 @@ void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
 
         /* extract file or create directory */
         char *out = output_name(path, e->name);
-        if (e->type == ST_DIR) {
+        if (e->type == ADF_ST_DIR) {
             if (!pipe_mode) {
                 printf("x - %s/\n", out);
                 mkdir_if_needed(out, permissions(e));
             }
         }
-        else if (e->type == ST_FILE) {
+        else if (e->type == ADF_ST_FILE) {
             extract_file(vol, e->name, out, permissions(e));
         }
         if (!pipe_mode) {
@@ -602,7 +602,7 @@ void mkdir_if_needed(char *path, mode_t perms) {
 mode_t permissions(struct AdfEntry *e) {
     return (mode_t)
         (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
-        (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
+        (e->type == ADF_ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */
         ((e->access >> 5) & 0070); /* rwx for group */
 }

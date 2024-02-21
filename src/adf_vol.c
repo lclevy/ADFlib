@@ -440,7 +440,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     /* dircache block */
     if ( adfDosFsHasDIRCACHE ( volType ) ) {
         root.extension = 0L;
-        root.secType = ST_ROOT; /* needed by adfCreateEmptyCache() */
+        root.secType = ADF_ST_ROOT; /* needed by adfCreateEmptyCache() */
         adfCreateEmptyCache(vol, (struct bEntryBlock*)&root, blkList[1]);
     }
 

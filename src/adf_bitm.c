@@ -470,7 +470,7 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         adfSetBlockUsed ( vol, entry->sector );
 
         // mark file blocks
-        if ( entry->type == ST_FILE ) {
+        if ( entry->type == ADF_ST_FILE ) {
             struct bFileHeaderBlock fhBlock;
             RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
                                               (struct bEntryBlock *) &fhBlock );
@@ -489,7 +489,7 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         }
 
         // mark directory and directory cache blocks
-        else if ( entry->type == ST_DIR ) {
+        else if ( entry->type == ADF_ST_DIR ) {
             struct bDirBlock dirBlock;
             RETCODE rc = adfReadEntryBlock ( vol, entry->sector,
                                              (struct bEntryBlock *) &dirBlock );

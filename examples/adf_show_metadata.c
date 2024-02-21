@@ -175,22 +175,22 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
     }
 
     switch ( entry.secType ) {
-    case ST_ROOT:
+    case ADF_ST_ROOT:
         fprintf ( stderr, "Querying root directory?\n" );
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         show_directory_metadata ( vol, sectNum );
         break;
-    case ST_FILE:
+    case ADF_ST_FILE:
         show_file_metadata ( vol, sectNum );
         break;
-    case ST_LFILE:
+    case ADF_ST_LFILE:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LDIR:
+    case ADF_ST_LDIR:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LSOFT:
+    case ADF_ST_LSOFT:
         break;
     default:
         fprintf ( stderr, "unknown entry type %d\n", entry.secType );

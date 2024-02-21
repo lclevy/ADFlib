@@ -55,7 +55,7 @@ RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
         *size = entryBlk.byteSize;
 return RC_OK;
         adfEntBlock2Entry(&entryBlk, &entry);	/*error*/
-/*        if (entryBlk.secType!=ST_ROOT && entry.parent!=lPar)
+/*        if (entryBlk.secType!=ADF_ST_ROOT && entry.parent!=lPar)
             printf("path=%s\n",path(vol,entry.parent));
 */
        *name = strdup("");

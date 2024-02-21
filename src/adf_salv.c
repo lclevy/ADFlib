@@ -100,8 +100,9 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
                 return NULL;
             }
 
-            delEnt = (block->type==T_HEADER 
-                && (block->secType==ST_DIR || block->secType==ST_FILE) );
+            delEnt = block->type == ADF_T_HEADER &&
+                     ( block->secType == ADF_ST_DIR ||
+                       block->secType == ADF_ST_FILE );
 
             if (delEnt) {
                 if (head==NULL)
@@ -141,19 +142,19 @@ RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
     block->sect = nSect;
     block->name = NULL;
 
-    if (block->type==T_HEADER) {
+    if ( block->type == ADF_T_HEADER ) {
         switch(block->secType) {
-        case ST_FILE:
-        case ST_DIR:
-        case ST_LFILE:
-        case ST_LDIR:
+        case ADF_ST_FILE:
+        case ADF_ST_DIR:
+        case ADF_ST_LFILE:
+        case ADF_ST_LDIR:
             len = min( (unsigned) ADF_MAX_NAME_LEN, buf [ vol->blockSize - 80 ] );
             strncpy(name, (char*)buf+vol->blockSize-79, len);
             name[len] = '\0';
             block->name = strdup(name);
             block->parent = (int32_t) swapLong ( buf + vol->blockSize - 12 );
             break;
-        case ST_ROOT:
+        case ADF_ST_ROOT:
             break;
         default: 
             ;
@@ -182,8 +183,10 @@ RETCODE adfCheckParent ( struct AdfVolume * vol,
     if ( rc != RC_OK )
         return rc;
 
-    if ( block.type!=T_HEADER 
-        || (block.secType!=ST_DIR && block.secType!=ST_ROOT) ) {
+    if ( block.type != ADF_T_HEADER ||
+         ( block.secType != ADF_ST_DIR &&
+           block.secType != ADF_ST_ROOT ) )
+    {
         (*adfEnv.wFct)("adfCheckParent : parent secType is incorrect");
         return RC_ERROR;
     }
@@ -326,10 +329,10 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
         return rc;
 
     switch(entry.secType) {
-    case ST_FILE:
+    case ADF_ST_FILE:
         rc = adfUndelFile ( vol, parent, nSect, (struct bFileHeaderBlock*) &entry );
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         rc = adfUndelDir ( vol, parent, nSect, (struct bDirBlock*) &entry );
         break;
     default:
@@ -441,10 +444,10 @@ RETCODE adfCheckEntry ( struct AdfVolume * const vol,
         return rc;    
 
     switch(entry.secType) {
-    case ST_FILE:
+    case ADF_ST_FILE:
         rc = adfCheckFile(vol, nSect, (struct bFileHeaderBlock*)&entry, level);
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         rc = adfCheckDir(vol, nSect, (struct bDirBlock*)&entry, level);
         break;
     default:

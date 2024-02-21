@@ -250,13 +250,13 @@ static void Changed(SECTNUM nSect, int changedType)
 {
     (void) nSect, (void) changedType;
 /*    switch(changedType) {
-    case ST_FILE:
+    case ADF_ST_FILE:
         fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         fprintf(stderr,"Notification : sector %ld (DIR)\n",nSect);
         break;
-    case ST_ROOT:
+    case ADF_ST_ROOT:
         fprintf(stderr,"Notification : sector %ld (ROOT)\n",nSect);
         break;
     default:
