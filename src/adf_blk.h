@@ -94,9 +94,9 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 #define ADF_BM_INVALID	0
 
 #define HT_SIZE		72
-#define BM_PAGES_ROOT_SIZE 25
-#define BM_PAGES_EXT_SIZE  127
-#define BM_MAP_SIZE        127
+#define ADF_BM_PAGES_ROOT_SIZE 25
+#define ADF_BM_PAGES_EXT_SIZE  127
+#define ADF_BM_MAP_SIZE        127
 #define MAX_DATABLK	72
 
 #define MAXNAMELEN	30
@@ -137,7 +137,7 @@ struct bRootBlock {
 /*014*/	uint32_t checkSum;
 /*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
 /*138*/	int32_t	bmFlag;				/* bitmap flag, -1 means VALID */
-/*13c*/	int32_t	bmPages[BM_PAGES_ROOT_SIZE];
+/*13c*/	int32_t	bmPages[ADF_BM_PAGES_ROOT_SIZE];
 /*1a0*/	int32_t	bmExt;
 /*1a4*/	int32_t	cDays; 	/* creation date FFS and OFS */
 /*1a8*/	int32_t	cMins;
@@ -283,12 +283,12 @@ struct bOFSDataBlock{
 
 struct bBitmapBlock {
 /*000*/	uint32_t checkSum;
-/*004*/	uint32_t map[BM_MAP_SIZE];
+/*004*/	uint32_t map[ADF_BM_MAP_SIZE];
 	};
 
 
 struct bBitmapExtBlock {
-/*000*/	int32_t	bmPages[BM_PAGES_EXT_SIZE];
+/*000*/	int32_t	bmPages[ADF_BM_PAGES_EXT_SIZE];
 /*1fc*/	int32_t	nextBlock;
 	};
 

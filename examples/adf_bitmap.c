@@ -108,7 +108,7 @@ int main ( int     argc,
              "\nBlock allocation bitmap blocks:   %u\n",
              vol_id, vol->volName,
              volSizeBlocks, volSizeBlocks - 2,
-             1 + ( volSizeBlocks - 2 ) / ( BM_MAP_SIZE * 4 * 8 ) );
+             1 + ( volSizeBlocks - 2 ) / ( ADF_BM_MAP_SIZE * 4 * 8 ) );
 
     if ( command == COMMAND_REBUILD ) {
         RETCODE rc = rebuild_bitmap ( vol );
@@ -195,7 +195,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     unsigned last_uint32_bits_unused =
         filesystem_blocks_num % 32 == 0 ? 0 : 32 - filesystem_blocks_num % 32;
 
-    for ( unsigned i = 0 ; i < BM_PAGES_ROOT_SIZE ; i++ ) {
+    for ( unsigned i = 0 ; i < ADF_BM_PAGES_ROOT_SIZE ; i++ ) {
         SECTNUM bmPage = rb.bmPages[i];
 
         if ( bmPage == 0 )
@@ -213,9 +213,9 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                  "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
                  separatorLine2, i, bmPage, separatorLine1 );
 
-        for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+        for ( unsigned j = 0 ; j < ADF_BM_MAP_SIZE ; j++ ) {
             uint32_t val = bm.map[j];
-            unsigned blockNum = ( i * BM_MAP_SIZE + j ) * 32;
+            unsigned blockNum = ( i * ADF_BM_MAP_SIZE + j ) * 32;
             printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
                      j, blockNum, blockNum,
                      val,  num32_to_bit_str ( val, bitStr ) );
@@ -241,7 +241,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
 
         unsigned i = 0;
-        while ( i < BM_PAGES_EXT_SIZE ) {
+        while ( i < ADF_BM_PAGES_EXT_SIZE ) {
             SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
             if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
@@ -262,10 +262,10 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                      "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
                      separatorLine2, bmExtBlkPtr, i, bmBlkPtr, separatorLine1 );
 
-            for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+            for ( unsigned j = 0 ; j < ADF_BM_MAP_SIZE ; j++ ) {
                 uint32_t val = bm.map[j];
-                unsigned blockNum = ( BM_PAGES_ROOT_SIZE * BM_MAP_SIZE +
-                                      i * BM_MAP_SIZE + j ) * 32;
+                unsigned blockNum = ( ADF_BM_PAGES_ROOT_SIZE * ADF_BM_MAP_SIZE +
+                                      i * ADF_BM_MAP_SIZE + j ) * 32;
                 printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
                          j, blockNum, blockNum,
                          val,  num32_to_bit_str ( val, bitStr ) );

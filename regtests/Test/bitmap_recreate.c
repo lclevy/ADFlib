@@ -268,7 +268,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
     
     /* Check root bm pages  */
     unsigned nerrors = 0;
-    for ( unsigned i = 0 ; i < BM_PAGES_ROOT_SIZE ; i++ ) {
+    for ( unsigned i = 0 ; i < ADF_BM_PAGES_ROOT_SIZE ; i++ ) {
         SECTNUM bmPageOrig   = rbOrig.bmPages[i],
                 bmPageUpdate = rbUpdate.bmPages[i];
 
@@ -309,7 +309,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
 
         char bitStrOrig[33];
         char bitStrUpdate[33];
-        for ( unsigned i = 0 ; i < BM_MAP_SIZE ; i++ ) {
+        for ( unsigned i = 0 ; i < ADF_BM_MAP_SIZE ; i++ ) {
             if ( bmOrig.map[i] != bmUpdate.map[i] ) {
                 uint32_t
                     valOrig   = bmOrig.map[i],
