@@ -90,8 +90,8 @@ static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 
 /* block constants */
 
-#define BM_VALID	-1
-#define BM_INVALID	0
+#define ADF_BM_VALID	-1
+#define ADF_BM_INVALID	0
 
 #define HT_SIZE		72
 #define BM_PAGES_ROOT_SIZE 25

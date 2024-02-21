@@ -184,7 +184,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     }
 
     printf ( "\nBlock allocation bitmap valid:    %s\n",
-             rb.bmFlag == BM_VALID ? "yes" : "No!" );
+             rb.bmFlag == ADF_BM_VALID ? "yes" : "No!" );
 
     /* Check root bm pages  */
     unsigned nerrors = 0,

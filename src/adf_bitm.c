@@ -77,7 +77,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
     if ( rc != RC_OK )
         return rc;
 
-    root.bmFlag = BM_INVALID;
+    root.bmFlag = ADF_BM_INVALID;
 
     rc = adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
     if ( rc != RC_OK )
@@ -92,7 +92,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
             vol->bitmap.blocksChg[i] = FALSE;
     }
 
-    root.bmFlag = BM_VALID;
+    root.bmFlag = ADF_BM_VALID;
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.days),&(root.mins),&(root.ticks));
     return adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
 }

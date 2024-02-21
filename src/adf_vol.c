@@ -256,7 +256,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     }
 
     /*
-    if ( root.bmFlag != BM_VALID ) {
+    if ( root.bmFlag != ADF_BM_VALID ) {
         if ( vol->readOnly == TRUE ) {
             rc = adfReconstructBitmap ( vol, &root );
             if ( rc != RC_OK ) {
@@ -273,7 +273,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         }
     }
     */
-    if ( root.bmFlag != BM_VALID )
+    if ( root.bmFlag != ADF_BM_VALID )
         adfEnv.wFct ( "adfVolMount : invalid bitmap on volume '%s'", vol->volName );
 
     vol->curDirPtr = vol->rootBlock;
