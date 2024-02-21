@@ -237,7 +237,7 @@ struct AdfFileExtBlock {
 
 
 
-struct bDirBlock {
+struct AdfDirBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	highSeq;	/* == 0 */

@@ -297,8 +297,8 @@ static void checkInternals(void)
     assertInternal ( sizeof(struct AdfRootBlock) == 512,
                      "Internal error : sizeof(struct AdfRootBlock) != 512\n");
 
-    assertInternal ( sizeof(struct bDirBlock) == 512,
-                     "Internal error : sizeof(struct bDirBlock) != 512\n");
+    assertInternal ( sizeof(struct AdfDirBlock) == 512,
+                     "Internal error : sizeof(struct AdfDirBlock) != 512\n");
 
     assertInternal ( sizeof(struct AdfBootBlock) == 1024,
                      "Internal error : sizeof(struct AdfBootBlock) != 1024\n" );

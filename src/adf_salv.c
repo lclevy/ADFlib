@@ -199,10 +199,10 @@ RETCODE adfCheckParent ( struct AdfVolume * vol,
  * adfUndelDir
  *
  */
-RETCODE adfUndelDir ( struct AdfVolume * vol,
-                      SECTNUM            pSect,
-                      SECTNUM            nSect,
-                      struct bDirBlock * entry )
+RETCODE adfUndelDir ( struct AdfVolume *   vol,
+                      SECTNUM              pSect,
+                      SECTNUM              nSect,
+                      struct AdfDirBlock * entry )
 {
     (void) nSect;
     RETCODE rc;
@@ -333,7 +333,7 @@ RETCODE adfUndelEntry ( struct AdfVolume * const vol,
         rc = adfUndelFile ( vol, parent, nSect, (struct AdfFileHeaderBlock *) &entry );
         break;
     case ADF_ST_DIR:
-        rc = adfUndelDir ( vol, parent, nSect, (struct bDirBlock*) &entry );
+        rc = adfUndelDir ( vol, parent, nSect, (struct AdfDirBlock *) &entry );
         break;
     default:
         ;
@@ -416,10 +416,10 @@ adfCheckFile_free:
  * adfCheckDir
  *
  */
-RETCODE adfCheckDir ( const struct AdfVolume * const vol,
-                      const SECTNUM                  nSect,
-                      const struct bDirBlock * const dir,
-                      const int                      level )
+RETCODE adfCheckDir ( const struct AdfVolume * const   vol,
+                      const SECTNUM                    nSect,
+                      const struct AdfDirBlock * const dir,
+                      const int                        level )
 {
     // function to implement???
     // for now - suppressing warnings about unused parameters
@@ -448,7 +448,7 @@ RETCODE adfCheckEntry ( struct AdfVolume * const vol,
         rc = adfCheckFile ( vol, nSect, (struct AdfFileHeaderBlock *) &entry, level );
         break;
     case ADF_ST_DIR:
-        rc = adfCheckDir(vol, nSect, (struct bDirBlock*)&entry, level);
+        rc = adfCheckDir ( vol, nSect, (struct AdfDirBlock *) &entry, level );
         break;
     default:
 /*        printf("adfCheckEntry : not supported\n");*/					/* BV */

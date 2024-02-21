@@ -11,7 +11,7 @@
 void show_directory_metadata ( struct AdfVolume * const vol,
                                SECTNUM                  dir_sector )
 {
-    struct bDirBlock //AdfEntryBlock
+    struct AdfDirBlock //AdfEntryBlock
         dir_block;
     if ( adfReadEntryBlock ( vol, dir_sector,
                              ( struct AdfEntryBlock * ) &dir_block ) != RC_OK )
@@ -25,7 +25,7 @@ void show_directory_metadata ( struct AdfVolume * const vol,
     memcpy ( dirblock_orig_endian, &dir_block, 512 );
     adfSwapEndian ( dirblock_orig_endian, ADF_SWBL_DIR );
     uint32_t checksum_calculated = adfNormalSum ( dirblock_orig_endian, 0x14,
-                                                  sizeof (struct bDirBlock ) );
+                                                  sizeof (struct AdfDirBlock ) );
     printf ( "\nDirectory block:\n"
              //"  Offset  field\t\tvalue\n"
              "  0x000  type\t\t0x%x\t\t%u\n"

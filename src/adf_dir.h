@@ -49,7 +49,7 @@ struct AdfEntry {
 
 
 PREFIX RETCODE adfToRootDir ( struct AdfVolume * const vol );
-BOOL isDirEmpty ( const struct bDirBlock * const dir );
+BOOL isDirEmpty ( const struct AdfDirBlock * const dir );
 
 PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
                                 const SECTNUM            pSect,
@@ -96,9 +96,9 @@ PREFIX RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
                                    const SECTNUM                nSect,
                                    struct AdfEntryBlock * const ent );
 
-RETCODE adfWriteDirBlock ( struct AdfVolume * const vol,
-                           const SECTNUM            nSect,
-                           struct bDirBlock * const dir );
+RETCODE adfWriteDirBlock ( struct AdfVolume * const   vol,
+                           const SECTNUM              nSect,
+                           struct AdfDirBlock * const dir );
 
 RETCODE adfWriteEntryBlock ( struct AdfVolume * const           vol,
                              const SECTNUM                      nSect,
