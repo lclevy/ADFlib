@@ -269,7 +269,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         next = fshd.next;
     }
 
-    struct bLSEGblock lseg;
+    struct AdfLSEGblock lseg;
     next = fshd.segListBlock;
     while( next!=-1 ) {
         rc = adfReadLSEGblock ( dev, next, &lseg ); 
@@ -309,7 +309,6 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     struct AdfRSDKblock rdsk;
     struct AdfPARTblock part;
     struct bFSHDblock fshd;
-    struct bLSEGblock lseg;
     SECTNUM j;
     unsigned len;
 
@@ -377,6 +376,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     j++;
 	
     /* LSEG */
+    struct AdfLSEGblock lseg;
     lseg.next = -1;
 
     return adfWriteLSEGblock ( dev, j, &lseg );
@@ -701,18 +701,18 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
  * ReadLSEGblock
  *
  */
-RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bLSEGblock * const blk )
+RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfLSEGblock * const blk )
 {
-    uint8_t buf[sizeof(struct bLSEGblock)];
+    uint8_t buf[ sizeof(struct AdfLSEGblock) ];
 
     RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct bLSEGblock), buf );
+                                   sizeof(struct AdfLSEGblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
-    memcpy(blk, buf, sizeof(struct bLSEGblock));
+    memcpy ( blk, buf, sizeof(struct AdfLSEGblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
     adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_LSEG );
@@ -723,7 +723,7 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    if ( blk->checksum != adfNormalSum(buf,8,sizeof(struct bLSEGblock)) )
+    if ( blk->checksum != adfNormalSum ( buf, 8, sizeof(struct AdfLSEGblock) ) )
         (*adfEnv.wFct)("ReadLSEGBlock : incorrect checksum");
 
     if ( blk->next!=-1 && blk->size != 128 )
@@ -737,9 +737,9 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
  * adfWriteLSEGblock
  *
  */
-RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bLSEGblock * const lseg )
+RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfLSEGblock * const lseg )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -752,9 +752,9 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
     memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( lseg->id, "LSEG", 4 );
-    lseg->size = sizeof(struct bLSEGblock)/sizeof(int32_t);
+    lseg->size = sizeof(struct AdfLSEGblock) / sizeof(int32_t);
 
-    memcpy(buf, lseg, sizeof(struct bLSEGblock));
+    memcpy ( buf, lseg, sizeof(struct AdfLSEGblock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_LSEG );
 #endif

@@ -126,7 +126,7 @@ struct AdfPARTblock {
 };
 
 
-struct bLSEGblock {
+struct AdfLSEGblock {
 /*000*/	char     id[4];                 /* LSEG */
 /*004*/	uint32_t size;                  /* 128 int32_ts */
 /*008*/	uint32_t checksum;

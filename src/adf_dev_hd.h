@@ -71,13 +71,13 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
                             const int32_t             nSect,
                             struct bFSHDblock * const fshd );
 
-RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bLSEGblock * const blk );
+RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfLSEGblock * const blk );
 
-RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bLSEGblock * const lseg );
+RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfLSEGblock * const lseg );
 #endif /* _ADF_HD_H */
 
 /*##########################################################################*/
