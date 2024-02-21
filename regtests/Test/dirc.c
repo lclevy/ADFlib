@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
     struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
-    BOOL boolPr;
  
     adfEnvInitDefault();
 
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 
     /* cd dir_2 */
 
-    boolPr = TRUE;
+    bool boolPr = true;
 	adfChgEnvProp(PR_USEDIRC, (void*)&boolPr);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);

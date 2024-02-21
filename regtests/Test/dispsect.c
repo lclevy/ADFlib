@@ -29,14 +29,14 @@ int main(int argc, char *argv[])
     unsigned char buf[1];
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
 
     /* display or not the physical / logical blocks and W or R */
-    adfChgEnvProp(PR_USE_RWACCESS,&true);
+    adfChgEnvProp ( PR_USE_RWACCESS, &truevar );
  
     /* create and mount one device */
     hd = adfDevCreate ( "dump", "dispsect-newdev", 80, 2, 11 );

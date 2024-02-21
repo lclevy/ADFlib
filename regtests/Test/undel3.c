@@ -26,14 +26,14 @@ int main(int argc, char *argv[])
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    BOOL true = TRUE;
     struct AdfFile *file;
     unsigned char buf[600];
     FILE *out;
   
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
  
     struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {

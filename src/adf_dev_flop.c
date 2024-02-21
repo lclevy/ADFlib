@@ -75,12 +75,12 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
 
         vol->rootBlock = adfVolCalcRootBlk ( vol );
         struct AdfRootBlock root;
-        vol->mounted = TRUE;    // must be set to read the root block
+        vol->mounted = true;    // must be set to read the root block
         if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
             free ( vol );
             return RC_ERROR;
         }
-        vol->mounted = FALSE;
+        vol->mounted = false;
 
         char diskName[35];
         memset(diskName, 0, 35);
@@ -142,7 +142,7 @@ RETCODE adfCreateFlop ( struct AdfDevice * const dev,
     else
         dev->devType=DEVTYPE_FLOPHD;
 
-    dev->mounted = TRUE;
+    dev->mounted = true;
 
     return RC_OK;
 }

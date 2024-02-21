@@ -46,19 +46,19 @@
 #define ADF_DOSFS_INTL        2   /* 010 */
 #define ADF_DOSFS_DIRCACHE    4   /* 100 */
 
-static inline BOOL adfDosFsIsFFS ( const uint8_t c ) {
+static inline bool adfDosFsIsFFS ( const uint8_t c ) {
     return c & ADF_DOSFS_FFS;
 }
 
-static inline BOOL adfDosFsIsOFS ( const uint8_t c ) {
+static inline bool adfDosFsIsOFS ( const uint8_t c ) {
     return ! adfDosFsIsFFS ( c );
 }
 
-static inline BOOL adfDosFsHasINTL ( const uint8_t c ) {
+static inline bool adfDosFsHasINTL ( const uint8_t c ) {
     return c & ADF_DOSFS_INTL;
 }
 
-static inline BOOL adfDosFsHasDIRCACHE ( const uint8_t c ) {
+static inline bool adfDosFsHasDIRCACHE ( const uint8_t c ) {
     return c & ADF_DOSFS_DIRCACHE;
 }
 
@@ -76,14 +76,14 @@ static inline BOOL adfDosFsHasDIRCACHE ( const uint8_t c ) {
 #define ADF_ACCMASK_S	(1<<6)
 #define ADF_ACCMASK_H	(1<<7)
 
-static inline BOOL adfAccHasD ( const int32_t c )  { return c & ADF_ACCMASK_D; }
-static inline BOOL adfAccHasE ( const int32_t c )  { return c & ADF_ACCMASK_E; }
-static inline BOOL adfAccHasW ( const int32_t c )  { return c & ADF_ACCMASK_W; }
-static inline BOOL adfAccHasR ( const int32_t c )  { return c & ADF_ACCMASK_R; }
-static inline BOOL adfAccHasA ( const int32_t c )  { return c & ADF_ACCMASK_A; }
-static inline BOOL adfAccHasP ( const int32_t c )  { return c & ADF_ACCMASK_P; }
-static inline BOOL adfAccHasS ( const int32_t c )  { return c & ADF_ACCMASK_S; }
-static inline BOOL adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
+static inline bool adfAccHasD ( const int32_t c )  { return c & ADF_ACCMASK_D; }
+static inline bool adfAccHasE ( const int32_t c )  { return c & ADF_ACCMASK_E; }
+static inline bool adfAccHasW ( const int32_t c )  { return c & ADF_ACCMASK_W; }
+static inline bool adfAccHasR ( const int32_t c )  { return c & ADF_ACCMASK_R; }
+static inline bool adfAccHasA ( const int32_t c )  { return c & ADF_ACCMASK_A; }
+static inline bool adfAccHasP ( const int32_t c )  { return c & ADF_ACCMASK_P; }
+static inline bool adfAccHasS ( const int32_t c )  { return c & ADF_ACCMASK_S; }
+static inline bool adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 
 
 /* ----- BLOCKS ----- */

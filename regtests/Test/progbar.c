@@ -24,14 +24,14 @@ int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
     struct AdfVolume *vol;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
 
     /* use or not the progress bar callback */
-    adfChgEnvProp(PR_USE_PROGBAR,&true);
+    adfChgEnvProp ( PR_USE_PROGBAR, &truevar );
  
     /* create and mount one device */
 puts("\ncreate dumpdevice");

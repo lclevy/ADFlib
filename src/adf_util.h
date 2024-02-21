@@ -105,7 +105,7 @@ PREFIX void adfDays2Date( int32_t       days,
                           int * const   mm,
                           int * const   dd );
 
-BOOL adfIsLeap ( const int y );
+bool adfIsLeap ( const int y );
 
 void adfTime2AmigaTime ( struct DateTime dt,
                          int32_t * const day,

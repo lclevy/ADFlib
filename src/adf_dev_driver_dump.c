@@ -73,7 +73,7 @@ static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
         /* force read only */
         if ( *fd == NULL && ( errno == EACCES || errno == EROFS ) ) {
             *fd = fopen ( name, "rb" );
-            dev->readOnly = TRUE;
+            dev->readOnly = true;
             if ( *fd != NULL )
                 adfEnv.wFct("adfDevDumpOpen : fopen, read-only mode forced");
         }
@@ -98,7 +98,7 @@ static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
 
     dev->nVol    = 0;
     dev->volList = NULL;
-    dev->mounted = FALSE;
+    dev->mounted = false;
 
     dev->drv = &adfDeviceDriverDump;
 
@@ -261,8 +261,8 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
         dev->devType = DEVTYPE_HARDDISK;
 		
     dev->nVol = 0;
-    dev->readOnly = FALSE;
-    dev->mounted = FALSE;
+    dev->readOnly = false;
+    dev->mounted = false;
 
     dev->drv = &adfDeviceDriverDump;
 
@@ -271,9 +271,9 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
     return(dev);
 }
 
-static BOOL adfDevDumpIsNativeDevice ( void )
+static bool adfDevDumpIsNativeDevice ( void )
 {
-    return FALSE;
+    return false;
 }
 
 const struct AdfDeviceDriver adfDeviceDriverDump = {

@@ -75,7 +75,7 @@ RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
     if ( rc != RC_OK )
         return rc;
 
-    vol->bootCode = TRUE;
+    vol->bootCode = true;
 
     return RC_OK;
 }
@@ -85,7 +85,7 @@ RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
  * adfVolIsSectNumValid
  *
  */
-BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
+bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
                             const SECTNUM                  nSect )
 {
     return ( nSect >= 0 &&
@@ -213,14 +213,14 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         return NULL;
     }
 
-    vol->mounted = TRUE;
+    vol->mounted = true;
 
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
     if (adfReadBootBlock(vol, &boot)!=RC_OK) {
         adfEnv.eFct ( "adfVolMount : invalid BootBlock" );
-        vol->mounted = FALSE;
+        vol->mounted = false;
         return NULL;
     }       
     
@@ -228,14 +228,14 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
 
     if (dev->readOnly /*|| isDIRCACHE(vol->fs.type)*/)
-        vol->readOnly = TRUE;
+        vol->readOnly = true;
     else
         vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 	   	
     struct AdfRootBlock root;
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
         adfEnv.eFct ( "adfVolMount : invalid RootBlock, sector %u", vol->rootBlock );
-        vol->mounted = FALSE;
+        vol->mounted = false;
         return NULL;
     }
 
@@ -257,7 +257,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
 
     /*
     if ( root.bmFlag != ADF_BM_VALID ) {
-        if ( vol->readOnly == TRUE ) {
+        if ( vol->readOnly == true ) {
             rc = adfReconstructBitmap ( vol, &root );
             if ( rc != RC_OK ) {
                 adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
@@ -304,9 +304,9 @@ PREFIX RETCODE adfVolRemount ( struct AdfVolume *  vol,
                           "volume '%s' read-write", vol->volName );
             return RC_ERROR;
         }
-        vol->readOnly = FALSE;
+        vol->readOnly = false;
     } else if ( mode == ADF_ACCESS_MODE_READONLY ) {
-        vol->readOnly = TRUE;
+        vol->readOnly = true;
     } else {
         adfEnv.eFct ( "adfVolRemount : cannot remount volume %s, invalid mode %d",
                       vol->volName, mode );
@@ -333,8 +333,7 @@ void adfVolUnMount ( struct AdfVolume * const vol )
 
     adfFreeBitmap(vol);
 
-    vol->mounted = FALSE;
-	
+    vol->mounted = false;
 }
 
 
@@ -376,7 +375,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 
     vol->readOnly = dev->readOnly;
 
-    vol->mounted = TRUE;
+    vol->mounted = true;
 
     unsigned nlen = min ( (unsigned) ADF_MAX_NAME_LEN,
                           (unsigned) strlen ( volName ) );
@@ -469,7 +468,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     /* will be managed by adfMount() later */
     adfFreeBitmap(vol);
 
-    vol->mounted = FALSE;
+    vol->mounted = false;
 
     return(vol);
 }
@@ -495,7 +494,7 @@ RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
     unsigned pSect = nSect + (unsigned) vol->firstBlock;
 
     if (adfEnv.useRWAccess)
-        (*adfEnv.rwhAccess)( (SECTNUM) pSect, (SECTNUM) nSect, FALSE );
+        (*adfEnv.rwhAccess)( (SECTNUM) pSect, (SECTNUM) nSect, false );
 
 /*  char strBuf[80];
     printf("psect=%ld nsect=%ld\n",pSect,nSect);
@@ -540,7 +539,7 @@ RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
 /*printf("write nsect=%ld psect=%ld\n",nSect,pSect);*/
 
     if (adfEnv.useRWAccess)
-        adfEnv.rwhAccess ( (SECTNUM) pSect, (SECTNUM) nSect, TRUE );
+        adfEnv.rwhAccess ( (SECTNUM) pSect, (SECTNUM) nSect, true );
  
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )

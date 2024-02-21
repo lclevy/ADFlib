@@ -89,7 +89,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
                                        vol->bitmap.table[i] );
             if ( rc != RC_OK )
                 return rc;
-            vol->bitmap.blocksChg[i] = FALSE;
+            vol->bitmap.blocksChg[i] = false;
     }
 
     root.bmFlag = ADF_BM_VALID;
@@ -125,7 +125,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const          vol,
     RETCODE rc = RC_OK;
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.blocksChg[i] = FALSE;
+        vol->bitmap.blocksChg[i] = false;
     }
 
     uint32_t j = 0,
@@ -271,7 +271,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const          vol,
 
     // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.blocksChg[i] = TRUE;
+        vol->bitmap.blocksChg[i] = true;
     }
 
     uint32_t i = 0,
@@ -437,7 +437,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const          vol,
     if ( ! isDirEmpty ( (const struct AdfDirBlock * const) &rootDirBlock) ) {
         // note: for a large volume (a hard disk) getting all entries can become big
         // - it may need to be optimized
-        struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, TRUE );
+        struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, true );
         if ( entries == NULL ) {
             return RC_ERROR;
         }
@@ -568,7 +568,7 @@ static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
  * adfIsBlockFree
  *
  */
-BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
+bool adfIsBlockFree ( const struct AdfVolume * const vol,
                       const SECTNUM nSect )
 {
     assert ( nSect >= 2 );
@@ -612,7 +612,7 @@ printf("bit=%d,  ",sectOfMap%32);
 	    = oldValue | bitMask[ sectOfMap%32 ];
 /*printf("new=%x,  ",vol->bitmapTable[ block ]->map[ indexInMap ]);*/
 
-    vol->bitmap.blocksChg[ block ] = TRUE;
+    vol->bitmap.blocksChg[ block ] = true;
 }
 
 
@@ -635,7 +635,7 @@ void adfSetBlockUsed ( struct AdfVolume * const vol,
 
     vol->bitmap.table[ block ]->map[ indexInMap ]
 	    = oldValue & (~bitMask[ sectOfMap%32 ]);
-    vol->bitmap.blocksChg[ block ] = TRUE;
+    vol->bitmap.blocksChg[ block ] = true;
 }
 
 
@@ -656,16 +656,15 @@ SECTNUM adfGet1FreeBlock ( struct AdfVolume * const vol )
  * adfGetFreeBlocks
  *
  */
-BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
+bool adfGetFreeBlocks ( struct AdfVolume * const vol,
                         const int                nbSect,
                         SECTNUM * const          sectList )
 {
     int i, j;
-    BOOL diskFull;
     int32_t block = vol->rootBlock;
 
     i = 0;
-    diskFull = FALSE;
+    bool diskFull = false;
 /*printf("lastblock=%ld\n",vol->lastBlock);*/
     while ( i < nbSect && !diskFull ) {
         if ( adfIsBlockFree(vol, block) ) {
@@ -679,11 +678,11 @@ BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
         } else {
             block++;
             if ( block == vol->rootBlock )
-                diskFull = TRUE;
+                diskFull = true;
         }
     }
 
-    BOOL gotAllBlocks = ( i == nbSect );
+    bool gotAllBlocks = ( i == nbSect );
     if ( gotAllBlocks )
         for(j=0; j<nbSect; j++)
             adfSetBlockUsed( vol, sectList[j] );
@@ -951,7 +950,7 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
         return RC_MALLOC;
     }
 
-    vol->bitmap.blocksChg = (BOOL*) malloc ( sizeof(BOOL) * vol->bitmap.size );
+    vol->bitmap.blocksChg = (bool *) malloc ( sizeof(bool) * vol->bitmap.size );
     if ( vol->bitmap.blocksChg == NULL ) {
         free ( vol->bitmap.table );
         vol->bitmap.table = NULL;

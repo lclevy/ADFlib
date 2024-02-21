@@ -37,7 +37,7 @@
 
 
 static RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev );
-static BOOL adfDevIsGeometryValid_ ( const struct AdfDevice * const dev );
+static bool adfDevIsGeometryValid_ ( const struct AdfDevice * const dev );
 
 
 struct AdfDevice * adfDevCreate ( const char * const driverName,
@@ -297,7 +297,7 @@ RETCODE adfDevMount ( struct AdfDevice * const dev )
         return RC_ERROR;								/* BV */
     }
 
-    dev->mounted = TRUE;
+    dev->mounted = true;
     return RC_OK;
 }
 
@@ -323,7 +323,7 @@ void adfDevUnMount ( struct AdfDevice * const dev )
     }
 
     dev->volList = NULL;
-    dev->mounted = FALSE;
+    dev->mounted = false;
 }
 
 
@@ -393,7 +393,7 @@ static RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
 }
 
 
-static BOOL adfDevIsGeometryValid_ ( const struct AdfDevice * const dev )
+static bool adfDevIsGeometryValid_ ( const struct AdfDevice * const dev )
 {
     return ( dev->cylinders > 0 &&
              dev->heads > 0    &&

@@ -63,7 +63,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         return RC_OK;
     }
     
-    BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
+    bool intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
     unsigned len = (unsigned) strlen ( newName );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t*) newName, len, intl );
     adfStrToUpper ( (uint8_t *) name3, (uint8_t*) oldName, (unsigned) strlen(oldName), intl );
@@ -187,7 +187,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if ( adfVolHasDIRCACHE ( vol ) ) {
         if (pSect==nPSect) {
             rc = adfUpdateCache ( vol, &parent,
-                                  (struct AdfEntryBlock *) &entry, TRUE );
+                                  (struct AdfEntryBlock *) &entry, true );
         }
         else {
             rc = adfDelFromCache ( vol, &parent, entry.headerKey );
@@ -198,7 +198,7 @@ RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     }
 /*
     if (isDIRCACHE(vol->fs.type) && pSect!=nPSect) {
-        adfUpdateCache ( vol, &nParent, (struct AdfEntryBlock *) &entry, TRUE );
+        adfUpdateCache ( vol, &nParent, (struct AdfEntryBlock *) &entry, true );
     }
 */
     return rc;
@@ -237,7 +237,7 @@ RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
 
     /* in parent hashTable */
     if (nSect2==0) {
-        BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
+        bool intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
         unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
 /*printf("hashTable=%d nexthash=%d\n",parent.hashTable[hashVal],
  entry.nextSameHash);*/
@@ -332,7 +332,7 @@ RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
     }
 
     if ( adfVolHasDIRCACHE ( vol ) )
-        rc = adfUpdateCache ( vol, &parent, (struct AdfEntryBlock *) &entry, TRUE );
+        rc = adfUpdateCache ( vol, &parent, (struct AdfEntryBlock *) &entry, true );
 
     return rc;
 }
@@ -377,7 +377,7 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
     }
 
     if ( adfVolHasDIRCACHE ( vol ) )
-        rc = adfUpdateCache ( vol, &parent, (struct AdfEntryBlock *) &entry, FALSE );
+        rc = adfUpdateCache ( vol, &parent, (struct AdfEntryBlock *) &entry, false );
 
     return rc;
 }
@@ -387,13 +387,12 @@ RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
  * isDirEmpty
  *
  */
-BOOL isDirEmpty ( const struct AdfDirBlock * const dir )
+bool isDirEmpty ( const struct AdfDirBlock * const dir )
 {
     for ( int i = 0 ; i < ADF_HT_SIZE ; i++ )
         if (dir->hashTable[i]!=0)
-           return FALSE;
-
-    return TRUE;
+           return false;
+    return true;
 }
 
 
@@ -422,7 +421,7 @@ void adfFreeDirList ( struct AdfList * const list )
  */
 struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
                                  const SECTNUM            nSect,
-                                 const BOOL               recurs )
+                                 const bool               recurs )
 {
     struct AdfList *cell, *head;
     struct AdfEntry * entry;
@@ -512,7 +511,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
 struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
                                 const SECTNUM            nSect )
 {
-    return adfGetRDirEnt(vol, nSect, FALSE);
+    return adfGetRDirEnt ( vol, nSect, false );
 }
 
 
@@ -726,10 +725,9 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const     vol,
     uint8_t upperName[ ADF_MAX_NAME_LEN + 1 ];
     uint8_t upperName2[ ADF_MAX_NAME_LEN + 1 ];
     SECTNUM nSect;
-    BOOL found;
     SECTNUM updSect;
 
-    BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
+    bool intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
     unsigned hashVal = adfGetHashValue ( (uint8_t *) name, intl );
     unsigned nameLen = min ( (unsigned) strlen ( name ),
                              (unsigned) ADF_MAX_NAME_LEN );
@@ -745,7 +743,7 @@ for ( int i = 0 ; i < ADF_HT_SIZE ; i++ )  printf("ht[%d]=%d    ", i, ht[i]);
         return -1;
 
     updSect = 0;
-    found = FALSE;
+    bool found = false;
     do {
         if (adfReadEntryBlock(vol, nSect, entry)!=RC_OK)
 			return -1;
@@ -807,7 +805,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
 
 /*puts("adfCreateEntry in");*/
 
-    BOOL intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
+    bool intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
     unsigned len = min ( (unsigned) strlen(name),
                          (unsigned) ADF_MAX_NAME_LEN );
     adfStrToUpper ( (uint8_t *) name2, (uint8_t *) name, len, intl );
@@ -915,7 +913,7 @@ uint8_t adfToUpper ( const uint8_t c )
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,
                      const unsigned        nlen,
-                     const BOOL            intl )
+                     const bool            intl )
 {
     if (intl)
         for ( unsigned i = 0 ; i < nlen ; i++ )
@@ -932,7 +930,7 @@ void adfStrToUpper ( uint8_t * const       nstr,
  * 
  */
 unsigned adfGetHashValue ( const uint8_t * const name,
-                           const BOOL            intl )
+                           const bool            intl )
 {
     uint32_t hash, len;
     unsigned int i;

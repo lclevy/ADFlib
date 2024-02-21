@@ -38,7 +38,7 @@ int main ( const int          argc,
     adfEnvInitDefault();
 
 //	adfSetEnvFct(0,0,MyVer,0);
-    BOOL error_status = FALSE;
+    bool error_status = false;
     struct AdfDevice * const dev = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
@@ -49,7 +49,7 @@ int main ( const int          argc,
     RETCODE rc = adfDevMount ( dev );
     if ( dev == NULL ) {
         log_error ( stderr, "can't mount device %s\n", argv[1] );
-        error_status = TRUE;
+        error_status = true;
         goto close_dev;
     }
 
@@ -57,7 +57,7 @@ int main ( const int          argc,
     struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( vol == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_dev;
     }
 

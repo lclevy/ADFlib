@@ -61,11 +61,11 @@ int main ( const int          argc,
     strcat ( adfUpdate, adfOrig );
     strcat ( adfUpdate, "-bitmap_updated.adf" );
 
-    BOOL error_status = FALSE;
+    bool error_status = false;
 
     /* make a copy for updating */
     if ( copy_file ( adfUpdate, adfOrig ) != RC_OK ) {
-        error_status = TRUE;
+        error_status = true;
         goto delete_adf_copy;
     }
 
@@ -78,14 +78,14 @@ int main ( const int          argc,
     if ( ! devOrig ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfOrig );
-        error_status = TRUE;
+        error_status = true;
         goto clean_up;
     }
 
     RETCODE rc = adfDevMount ( devOrig );
     if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfOrig );
-        error_status = TRUE;
+        error_status = true;
         goto close_dev_orig;
     }
 
@@ -93,7 +93,7 @@ int main ( const int          argc,
                                                      ADF_ACCESS_MODE_READONLY );
     if ( volOrig == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_dev_orig;
     }
 
@@ -104,14 +104,14 @@ int main ( const int          argc,
     if ( ! devUpdate ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfUpdate );
-        error_status = TRUE;
+        error_status = true;
         goto umount_vol_orig;
     }
 
     rc = adfDevMount ( devUpdate );
     if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfUpdate );
-        error_status = TRUE;
+        error_status = true;
         goto close_dev_updated;
     }
 
@@ -119,7 +119,7 @@ int main ( const int          argc,
                                                  ADF_ACCESS_MODE_READONLY );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_dev_updated;
     }
 
@@ -129,7 +129,7 @@ int main ( const int          argc,
     if ( rc != RC_OK ) {
         log_error (
             stderr, "error remounting read-write, volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_vol_updated;
     }
 
@@ -138,7 +138,7 @@ int main ( const int          argc,
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Invalid RootBlock, volume %s, sector %u - aborting...",
                       volUpdate->volName, volUpdate->rootBlock );
-        error_status = TRUE;
+        error_status = true;
         goto umount_vol_updated;
     }
 
@@ -146,7 +146,7 @@ int main ( const int          argc,
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Error rebuilding the bitmap (%d), volume %s",
                       rc, volUpdate->volName );
-        error_status = TRUE;
+        error_status = true;
         goto umount_vol_updated;
     }
 
@@ -164,7 +164,7 @@ int main ( const int          argc,
                               ADF_ACCESS_MODE_READWRITE );
     if ( volUpdate == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_dev_updated;
     }
     */
@@ -174,7 +174,7 @@ int main ( const int          argc,
     if ( nerrors != 0 )
         log_error ( stderr, "Bitmap update of %s: %u errors\n", adfOrig, nerrors );
     
-    error_status = ( nerrors != 0 ? TRUE : FALSE );
+    error_status = ( nerrors != 0 );
     
     //adfVolInfo(vol);
     //putchar('\n');
@@ -202,7 +202,7 @@ delete_adf_copy:
     log_info ( stdout, "Removing %s\n", adfUpdate );
     unlink ( adfUpdate );
     
-    return ( error_status == TRUE ? 1 : 0 );
+    return ( error_status ? 1 : 0 );
 }
 
 

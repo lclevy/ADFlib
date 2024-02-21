@@ -40,7 +40,7 @@ struct AdfBitmap {
     uint32_t                 size;         /* in blocks */
     SECTNUM *                blocks;       /* bitmap blocks pointers */
     struct AdfBitmapBlock ** table;
-    BOOL *                   blocksChg;
+    bool *                   blocksChg;
 };
 
 struct AdfVolume {
@@ -55,14 +55,14 @@ struct AdfVolume {
         uint8_t type;           /* DOS: FFS/OFS, DIRCACHE, INTERNATIONAL;
                                    PFS: ... */
     } fs;
-    BOOL bootCode;
-    BOOL readOnly;
+    bool bootCode;
+    bool readOnly;
     unsigned datablockSize;      /* 488 or 512 */
     unsigned blockSize;			/* 512 */
 
     char *volName;
 
-    BOOL mounted;
+    bool mounted;
 
     struct AdfBitmap bitmap;
 
@@ -86,31 +86,31 @@ static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
 }
 
 
-static inline BOOL adfVolIsDosFS ( const struct AdfVolume * const vol ) {
+static inline bool adfVolIsDosFS ( const struct AdfVolume * const vol ) {
     return ( strncmp ( vol->fs.id, "DOS", 3 ) == 0 );
 }
 
-static inline BOOL adfVolIsOFS ( const struct AdfVolume * const vol ) {
+static inline bool adfVolIsOFS ( const struct AdfVolume * const vol ) {
     return adfVolIsDosFS ( vol ) && adfDosFsIsOFS ( vol->fs.type );
 }
 
-static inline BOOL adfVolIsFFS ( const struct AdfVolume * const vol ) {
+static inline bool adfVolIsFFS ( const struct AdfVolume * const vol ) {
     return adfVolIsDosFS ( vol ) && adfDosFsIsFFS ( vol->fs.type );
 }
 
-static inline BOOL adfVolHasINTL ( const struct AdfVolume * const vol ) {
+static inline bool adfVolHasINTL ( const struct AdfVolume * const vol ) {
     return adfVolIsDosFS ( vol ) && adfDosFsHasINTL ( vol->fs.type );
 }
 
-static inline BOOL adfVolHasDIRCACHE ( const struct AdfVolume * const vol ) {
+static inline bool adfVolHasDIRCACHE ( const struct AdfVolume * const vol ) {
     return adfVolIsDosFS ( vol ) && adfDosFsHasDIRCACHE ( vol->fs.type );
 }
 
-static inline BOOL adfVolIsPFS ( const struct AdfVolume * const vol ) {
+static inline bool adfVolIsPFS ( const struct AdfVolume * const vol ) {
     return ( strncmp ( vol->fs.id, "PFS", 3 ) == 0 );
 }
 
-static inline BOOL adfVolIsFsValid (  const struct AdfVolume * const vol )
+static inline bool adfVolIsFsValid (  const struct AdfVolume * const vol )
 {
     return (
         ( adfVolIsOFS ( vol ) &&
@@ -126,7 +126,7 @@ PREFIX char * adfVolGetFsStr ( const struct AdfVolume * const vol );
 PREFIX RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
                                         const uint8_t * const    code );
 
-PREFIX BOOL adfVolIsSectNumValid ( const struct AdfVolume * const vol,
+PREFIX bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
                                    const SECTNUM                  nSect );
 
 PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,

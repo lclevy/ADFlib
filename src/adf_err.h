@@ -81,7 +81,7 @@ typedef enum {
 } RETCODE;
 
 //#define hasRC(rc,c) ((rc)&(c))
-static inline BOOL adfHasRC ( RETCODE mask, RETCODE code ) {
+static inline bool adfHasRC ( RETCODE mask, RETCODE code ) {
     return ( mask & code );
 }
 #endif /* ADF_ERR_H */

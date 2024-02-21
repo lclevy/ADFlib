@@ -70,7 +70,7 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
     unsigned fsize = file->fileHdr->byteSize;
 
     RETCODE rc = adfFileSeek ( file, fsize + 1 );
-    if ( rc != RC_OK || adfEndOfFile ( file ) != TRUE) {
+    if ( rc != RC_OK || ! adfEndOfFile ( file ) ) {
         return 1;
     }
     //unsigned nerrors = 0;

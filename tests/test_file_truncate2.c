@@ -88,7 +88,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // the same when open for appending
@@ -98,7 +98,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 */
     // the same when open for writing
@@ -108,7 +108,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
@@ -124,7 +124,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     // write data buffer to the file
     const unsigned bufsize = tdata->bufsize;
@@ -148,7 +148,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
                     file->posInExtBlk, expected_posInExtBlk, tdata->bufsize );
     //ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( ( ( bufsize - 1 ) / vol->datablockSize ) + 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 

@@ -58,9 +58,9 @@ typedef uint32_t mode_t;
 #define EXTRACT_BUFFER_SIZE 8192
 
 /* command-line arguments */
-BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
-     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE,
-     win32_mangle = FALSE;
+bool list_mode = false, list_all = false, use_dircache = false,
+     show_sectors = false, show_comments = false, pipe_mode = false,
+     win32_mangle = false;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
 struct AdfList *file_list = NULL;
@@ -131,13 +131,13 @@ int main(int argc, char *argv[]) {
     if (list_mode || list_all) {
         /* list files */
         if (use_dircache && adfVolHasDIRCACHE(vol)) {
-            BOOL true = TRUE;
-            adfChgEnvProp(PR_USEDIRC, &true);
+            bool truevar = true;
+            adfChgEnvProp(PR_USEDIRC, &truevar);
             puts("Using dir cache blocks.");
         }
         if (list_all) {
             /* list all files recursively */
-            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            list = adfGetRDirEnt(vol, vol->curDirPtr, true);
             print_tree(list, "");
         }
         else {
@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) {
         }
         else {
             /* extract all files */
-            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            list = adfGetRDirEnt(vol, vol->curDirPtr, true);
             extract_tree(vol, list, "");
             adfFreeDirList(list);
         }
@@ -215,14 +215,14 @@ void parse_args(int argc, char *argv[]) {
         /* check options without arguments (can be given together) */
         for (j = 1; argv[i][j]; j++) {
             switch (argv[i][j]) {
-            case 'l': list_mode     = TRUE; break;
-            case 'r': list_all      = TRUE; break;
-            case 'c': use_dircache  = TRUE; break;
-            case 's': show_sectors  = TRUE; break;
-            case 'm': show_comments = TRUE; break;
-            case 'w': win32_mangle  = TRUE; break;
+            case 'l': list_mode     = true; break;
+            case 'r': list_all      = true; break;
+            case 'c': use_dircache  = true; break;
+            case 's': show_sectors  = true; break;
+            case 'm': show_comments = true; break;
+            case 'w': win32_mangle  = true; break;
             case 'p':
-                pipe_mode = TRUE;
+                pipe_mode = true;
                 fprintf(stderr, list_mode
                     ? "-p option must be used with extraction, ignored\n"
                     : "sending files to pipe\n");
@@ -328,8 +328,8 @@ void print_tree(struct AdfList *node, char *path)
 
 /* prints one line of information about a directory/file entry */
 void print_entry(struct AdfEntry *e, char *path) {
-    BOOL is_dir = e->type == ADF_ST_DIR;
-    BOOL print_comment = show_comments && e->comment && *e->comment;
+    bool is_dir = e->type == ADF_ST_DIR;
+    bool print_comment = show_comments && e->comment && *e->comment;
 
     /* do not print the links entries, ADFlib do not support them yet properly */
     if (e->type == ADF_ST_LFILE || e->type == ADF_ST_LDIR || e->type == ADF_ST_LSOFT) {

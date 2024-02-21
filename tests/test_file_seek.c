@@ -123,7 +123,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // verify file data
-    const BOOL data_valid =
+    const bool data_valid =
         ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0 );
     ck_assert_msg ( data_valid,
                     "Data verification failed: "

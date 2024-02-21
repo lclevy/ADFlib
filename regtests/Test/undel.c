@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
     unsigned char buf[1];
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
  
     /* create and mount one device */
     struct AdfDevice * const hd = adfDevCreate ( "dump", "undel-newdev", 80, 2, 11 );

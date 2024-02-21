@@ -51,7 +51,7 @@ static void Changed ( SECTNUM nSect,
 
 static void rwHeadAccess ( SECTNUM physical,
                            SECTNUM logical,
-                           BOOL    write );
+                           bool    write );
 
 static void progressBar ( int perCentDone );
 
@@ -74,10 +74,10 @@ void adfEnvInitDefault(void)
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
 
-    adfEnv.useDirCache = FALSE;
-    adfEnv.useRWAccess = FALSE;
-    adfEnv.useNotify = FALSE;
-    adfEnv.useProgressBar = FALSE;
+    adfEnv.useDirCache    = false;
+    adfEnv.useRWAccess    = false;
+    adfEnv.useNotify      = false;
+    adfEnv.useProgressBar = false;
 
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
@@ -103,7 +103,7 @@ void adfEnvCleanUp(void)
  */
 void adfChgEnvProp(int prop, void *newval)
 {
-    BOOL *newBool;
+    bool *newBool;
 /*    int *newInt;*/
 
     switch(prop) {
@@ -120,25 +120,25 @@ void adfChgEnvProp(int prop, void *newval)
         adfEnv.notifyFct = (AdfNotifyFct) newval;
         break;
     case PR_USE_NOTFCT:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useNotify = *newBool;
         break;
     case PR_PROGBAR:
         adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
     case PR_USE_PROGBAR:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useProgressBar = *newBool;
         break;
     case PR_USE_RWACCESS:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useRWAccess = *newBool;
         break;
     case PR_RWACCESS:
         adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
         break;
     case PR_USEDIRC:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useDirCache = *newBool;
         break;
     }
@@ -187,7 +187,7 @@ char* adfGetVersionDate(void)
 
 static void rwHeadAccess ( SECTNUM physical,
                            SECTNUM logical,
-                           BOOL    write )
+                           bool    write )
 {
     /* display the physical sector, the logical block, and if the access is read or write */
     fprintf(stderr, "phy %d / log %d : %c\n", physical, logical, write ? 'W' : 'R');
@@ -270,7 +270,7 @@ union u {
     char    c[4];
 };
 
-static void assertInternal ( BOOL cnd, const char * const msg )
+static void assertInternal ( bool cnd, const char * const msg )
 {
     if ( ! cnd ) {
         fputs ( msg, stderr );

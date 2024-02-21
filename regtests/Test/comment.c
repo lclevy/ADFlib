@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     struct AdfFile *fic;
     unsigned char buf[1];
     struct AdfList *list, *cell;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
@@ -97,7 +96,8 @@ int main(int argc, char *argv[])
 
     putchar('\n');
 
-    adfChgEnvProp(PR_USEDIRC, &true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {

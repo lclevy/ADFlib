@@ -87,16 +87,16 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  * myIsDevNative
  *
  */
-static BOOL myIsDevNative(void)
+static bool myIsDevNative(void)
 {
-    return FALSE;
+    return false;
 }
 
 
-static BOOL myIsDevice ( const char * const devName )
+static bool myIsDevice ( const char * const devName )
 {
     (void) devName;
-    return FALSE;
+    return false;
 }
 
 

@@ -55,7 +55,7 @@ freeEntCache(struct AdfCacheEntry *cEntry)
  */
 struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                                      const SECTNUM            dir,
-                                     const BOOL               recurs )
+                                     const bool               recurs )
 {
     struct AdfEntryBlock parent;
     struct AdfDirCacheBlock dirc;
@@ -307,14 +307,13 @@ RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
     SECTNUM nSect, prevSect;
     struct AdfCacheEntry caEntry;
     int offset, oldOffset, n;
-    BOOL found;
     int entryLen;
     int i;
     RETCODE rc = RC_OK;
 
     prevSect = -1;
 	nSect = parent->extension;
-    found = FALSE;
+    bool found = false;
     do {
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
         if ( rc != RC_OK )
@@ -488,13 +487,12 @@ dumpBlock(&dirc);
 RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
                          const struct AdfEntryBlock * const parent,
                          const struct AdfEntryBlock * const entry,
-                         const BOOL                         entryLenChg )
+                         const bool                         entryLenChg )
 {
     struct AdfDirCacheBlock dirc;
     SECTNUM nSect;
     struct AdfCacheEntry caEntry, newEntry;
     int offset, oldOffset, n;
-    BOOL found;
     int i, oLen, nLen;
     int sLen; /* shift length */
     RETCODE rc = RC_OK;
@@ -502,7 +500,7 @@ RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
     nLen = adfEntry2CacheEntry(entry, &newEntry);
 
     nSect = parent->extension;
-    found = FALSE;
+    bool found = false;
     do {
 /*printf("dirc=%ld\n",nSect);*/
         rc = adfReadDirCBlock ( vol, nSect, &dirc );

@@ -86,7 +86,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // the same when open for writing
@@ -96,7 +96,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
@@ -112,7 +112,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     RETCODE rc = adfFileSeek ( file, adfFileGetSize ( file ) );
     ck_assert_int_eq ( rc, RC_OK );
@@ -122,7 +122,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     // write 1 byte to the file
     unsigned char wbuf[256];
@@ -134,7 +134,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // reset volume state (remount)
@@ -156,7 +156,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), false );
 
     // read the written byte and verify (data and metadata)
     unsigned char rbuf[256];

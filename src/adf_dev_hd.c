@@ -111,7 +111,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
         vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
 /*printf("root=%ld\n",vol->rootBlock);*/
         uint8_t buf[512];
-        BOOL found = FALSE;
+        bool found = false;
         do {
             dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
             found = swapLong(buf) == ADF_T_HEADER &&
@@ -214,7 +214,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         memcpy(vol->volName,part.name,len);
         vol->volName[len] = '\0';
 
-        vol->mounted = FALSE;
+        vol->mounted = false;
 
         /* stores temporaly the volumes in a linked list */
         if (listRoot==NULL)
@@ -430,7 +430,7 @@ vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
-    dev->mounted = TRUE;
+    dev->mounted = true;
 
     return adfCreateHdHeader ( dev, (int) n, partList );
 }

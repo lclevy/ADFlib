@@ -28,7 +28,7 @@ struct Partition {
 struct AdfDevice {
     char * name;
     int devType;               /* see below */
-    BOOL readOnly;
+    bool readOnly;
     uint32_t size;                /* in bytes */
 
     uint32_t cylinders;            /* geometry */
@@ -38,7 +38,7 @@ struct AdfDevice {
     const struct AdfDeviceDriver * drv;
     void *                   drvData;   /* driver-specific device data,
                                            (private, use only in the driver code!) */
-    BOOL mounted;
+    bool mounted;
 
     // stuff available when mounted
     int nVol;                  /* partitions */

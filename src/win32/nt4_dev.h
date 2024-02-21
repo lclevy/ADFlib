@@ -32,21 +32,21 @@ typedef struct NT4DriveGeometry_s {
 
 HANDLE NT4OpenDrive ( const char * const strDrive );
 
-BOOL NT4CloseDrive ( const HANDLE hDrv );
+bool NT4CloseDrive ( const HANDLE hDrv );
 
-BOOL NT4ReadSector ( const HANDLE hDrv,
+bool NT4ReadSector ( const HANDLE hDrv,
                      const long   iSect,
                      const size_t iSize,
                      void * const lpvoidBuf );
 
-BOOL NT4WriteSector ( const HANDLE hDrv,
+bool NT4WriteSector ( const HANDLE hDrv,
                       const long   iSect,
                       const size_t iSize,
                       const void * const lpvoidBuf );
 
 ULONG NT4GetDriveSize ( const HANDLE hDrv );
 
-BOOL NT4GetDriveGeometry ( const HANDLE               hDrv,
+bool NT4GetDriveGeometry ( const HANDLE               hDrv,
                            NT4DriveGeometry_t * const geometry );
 
 #endif

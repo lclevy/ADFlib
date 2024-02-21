@@ -91,10 +91,10 @@ void test_file_seek_after_write ( test_data_t * const tdata )
     const unsigned nchunks = bufsize / chunksize +
         ( bufsize % chunksize > 0 ? 1 : 0 );
     ck_assert_uint_gt ( nchunks, 0 );
-    BOOL * const chunks = malloc ( nchunks * sizeof(BOOL) );
+    bool * const chunks = malloc ( nchunks * sizeof(bool) );
     ck_assert_ptr_nonnull ( chunks );
     for ( unsigned i = 0 ; i < nchunks ; ++i )
-        chunks[i] = FALSE;
+        chunks[i] = false;
 
     // write the first half of file data chunks in a random order
     //const unsigned nrandom_chunks = nchunks / 2;
@@ -130,7 +130,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
         ck_assert_int_eq ( rc, RC_OK );
         bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
-        chunks[ chunk_i ] = TRUE;
+        chunks[ chunk_i ] = true;
     }
 
     // write the second half of file data chunks in order (just to speed-up)
@@ -147,7 +147,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
             ck_assert_int_eq ( rc, RC_OK );
             bytes_written = (unsigned) adfFileWrite ( file, (int) wsize, chunk );
             ck_assert_uint_eq ( wsize, bytes_written );
-            //chunks[ i ] = TRUE;   // not necessary
+            //chunks[ i ] = true;   // not necessary
         }
         }
 */
@@ -156,7 +156,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // verify written data
-    const BOOL data_valid =
+    const bool data_valid =
         ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0 );
     if ( ! data_valid ) {
         fprintf ( stderr,

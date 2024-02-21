@@ -85,7 +85,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // the same when open for appending
@@ -95,7 +95,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 */
     // the same when open for writing
@@ -105,7 +105,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
@@ -121,7 +121,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     // write 1 byte to the file
     unsigned char wbuf[] = "ABC";
@@ -133,7 +133,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // reset volume state (remount)
@@ -156,7 +156,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), false );
 
     unsigned char rbuf [ sizeof ( wbuf ) ];
     unsigned bytes_read = adfFileRead ( file, 1, rbuf );
@@ -166,7 +166,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // reset volume state (remount) 
@@ -189,7 +189,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), false );
 
     // overwrite the 1 byte of data with another value
     bytes_written = adfFileWrite ( file, 1, &wbuf[1] );
@@ -200,7 +200,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // reset volume state (remount)
@@ -216,7 +216,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), false );
 
     // verify file data (and metadata)
     bytes_read = adfFileRead ( file, 1, rbuf );
@@ -226,7 +226,7 @@ void test_file_write ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
     
     // umount volume

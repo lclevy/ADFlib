@@ -79,11 +79,10 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
     struct GenBlock *block;
     int32_t i;
     struct AdfList *list, *head;
-    BOOL delEnt;
 
     list = head = NULL;
     block = NULL;
-    delEnt = TRUE;
+    bool delEnt = true;
     for(i=vol->firstBlock + 2 ; i<=vol->lastBlock; i++) {
         if (adfIsBlockFree(vol, i)) {
             if (delEnt) {

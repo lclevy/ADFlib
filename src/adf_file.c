@@ -306,7 +306,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         RETCODE rc = adfFileSeek ( file, fileSizeOld );
         if ( rc != RC_OK )
             return rc;
-        assert ( adfEndOfFile ( file ) == TRUE );
+        assert ( adfEndOfFile ( file ) == true );
         const unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
             return RC_ERROR;
@@ -384,9 +384,9 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
                 fileSizeNew % file->volume->datablockSize;
 
             data->nextData = 0;
-            //file->currentDataBlockChanged = TRUE;
+            //file->currentDataBlockChanged = true;
         }
-        file->currentDataBlockChanged = TRUE; // could be done only for OFS - but
+        file->currentDataBlockChanged = true; // could be done only for OFS - but
                                               // here it will force saving also the ext.
                                               // (required for now at least)
                                               // to improve (?)
@@ -483,7 +483,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         }
 
         rc = adfUpdateCache ( file->volume, &parent,
-                              (struct AdfEntryBlock *) file->fileHdr, FALSE );
+                              (struct AdfEntryBlock *) file->fileHdr, false );
         if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error updating cache" );
             return rc;
@@ -669,7 +669,7 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
 
     if ( file->modeWrite && file->currentDataBlockChanged ) {
         adfFileFlush ( file );
-        file->currentDataBlockChanged = FALSE;
+        file->currentDataBlockChanged = false;
     }
 
     if ( pos == 0 )
@@ -713,8 +713,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    const BOOL modeRead  = ( mode & ADF_FILE_MODE_READ );
-    const BOOL modeWrite = ( mode & ADF_FILE_MODE_WRITE );
+    const bool modeRead  = ( mode & ADF_FILE_MODE_READ );
+    const bool modeWrite = ( mode & ADF_FILE_MODE_WRITE );
     if ( ! ( modeRead || modeWrite ) ) {
         adfEnv.eFct ( "adfFileOpen : Incorrect mode '0x%0x' (%d)", mode, mode );
         return NULL;
@@ -729,7 +729,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     if ( adfReadEntryBlock(vol, vol->curDirPtr, &parent) != RC_OK )
         return NULL;
 
-    BOOL fileAlreadyExists =
+    bool fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
     if ( modeRead && ( ! modeWrite ) && ( ! fileAlreadyExists ) ) {
@@ -802,7 +802,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
-    file->currentDataBlockChanged = FALSE;
+    file->currentDataBlockChanged = false;
     file->modeRead  = modeRead;
     file->modeWrite = modeWrite;
 
@@ -913,7 +913,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
                 return bytesRead;
             }
             file->posInDataBlk = 0;
-            file->currentDataBlockChanged = FALSE;
+            file->currentDataBlockChanged = false;
         }
 
         unsigned size = min ( n - bytesRead, blockSize - file->posInDataBlk );
@@ -1043,7 +1043,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
             if ( file->pos == file->fileHdr->byteSize ) {   // at EOF ?
                 // ...  create a new block
                 RETCODE rc = adfFileCreateNextBlock ( file );
-                file->currentDataBlockChanged = FALSE;
+                file->currentDataBlockChanged = false;
                 if ( rc != RC_OK ) {
                     /* bug found by Rikard */
                     adfEnv.wFct ( "adfWritefile : no more free sectors available" );
@@ -1057,7 +1057,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                 // write the block stored currently in the memory
                 if ( file->currentDataBlockChanged ) {
                     adfFileFlush ( file ); // to optimize (?)
-                    file->currentDataBlockChanged = FALSE;
+                    file->currentDataBlockChanged = false;
                 }
 
                 // - and read the next block
@@ -1080,7 +1080,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
         file->pos += size;
         bytesWritten += size;
         file->posInDataBlk += size;
-        file->currentDataBlockChanged = TRUE;
+        file->currentDataBlockChanged = true;
 
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,

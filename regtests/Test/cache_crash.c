@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     struct AdfDevice *dev;
     struct AdfVolume *vol;
     struct AdfList *list;
-    BOOL ok = FALSE, true = TRUE;
+    bool ok = false, truevar = true;
 
     if (argc <= 1) return 1;
     adfEnvInitDefault();
@@ -17,11 +17,11 @@ int main(int argc, char *argv[]) {
         if (adfDevMount(dev) == RC_OK) {
             if ((vol = adfVolMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
                 /* use dir cache (enables the crash) */
-                adfChgEnvProp(PR_USEDIRC, &true);
+                adfChgEnvProp(PR_USEDIRC, &truevar);
                 /* read all directory entries (crash happens here) */
-                list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+                list = adfGetRDirEnt(vol, vol->curDirPtr, true);
                 /* success! we didn't crash */
-                ok = TRUE;
+                ok = true;
                 if (list) adfFreeDirList(list);
                 adfVolUnMount(vol);
             }

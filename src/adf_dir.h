@@ -49,7 +49,7 @@ struct AdfEntry {
 
 
 PREFIX RETCODE adfToRootDir ( struct AdfVolume * const vol );
-BOOL isDirEmpty ( const struct AdfDirBlock * const dir );
+bool isDirEmpty ( const struct AdfDirBlock * const dir );
 
 PREFIX RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
                                 const SECTNUM            pSect,
@@ -60,7 +60,7 @@ PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
 
 PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
                                         const SECTNUM            nSect,
-                                        const BOOL               recurs );
+                                        const bool               recurs );
 
 PREFIX void adfFreeDirList ( struct AdfList * const list );
 
@@ -107,12 +107,12 @@ RETCODE adfWriteEntryBlock ( struct AdfVolume * const           vol,
 void adfAccess2String ( int32_t acc, char accStr[ 8 + 1 ] );
 uint8_t adfIntlToUpper ( const uint8_t c );
 unsigned adfGetHashValue( const uint8_t * const name,
-                          const BOOL            intl );
+                          const bool            intl );
 
 void adfStrToUpper ( uint8_t * const       nstr,
                      const uint8_t * const ostr,
                      const unsigned        nlen,
-                     const BOOL            intl );
+                     const bool            intl );
 
 PREFIX RETCODE adfChangeDir ( struct AdfVolume * const vol,
                               const char * const       name );
