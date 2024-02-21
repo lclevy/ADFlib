@@ -319,7 +319,7 @@ struct AdfLinkBlock {
 
 /*--- directory cache block structure ---*/
 
-struct bDirCacheBlock {
+struct AdfDirCacheBlock {
 /*000*/	int32_t	type;		/* == 33 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	parent;

@@ -49,13 +49,13 @@ struct AdfCacheEntry {
 };
 
 
-RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
-                          int * const                   p,
-                          struct AdfCacheEntry * const  cEntry );
+RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
+                           int * const                           p,
+                           struct AdfCacheEntry * const          cEntry );
 
-int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
-                       const int * const                   p,
-                       const struct AdfCacheEntry * const  cEntry );
+int adfPutCacheEntry ( struct AdfDirCacheBlock * const    dirc,
+                       const int * const                  p,
+                       const struct AdfCacheEntry * const cEntry );
 
 struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                                      const SECTNUM            dir,
@@ -78,13 +78,13 @@ RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
                           const struct AdfEntryBlock * const parent,
                           const SECTNUM                      headerKey );
 
-RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
-                           const SECTNUM                 nSect,
-                           struct bDirCacheBlock * const dirc );
+RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
+                           const SECTNUM                   nSect,
+                           struct AdfDirCacheBlock * const dirc );
 
-RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
-                            const int32_t                 nSect,
-                            struct bDirCacheBlock * const dirc );
+RETCODE adfWriteDirCBlock ( struct AdfVolume * const        vol,
+                            const int32_t                   nSect,
+                            struct AdfDirCacheBlock * const dirc );
 
 #endif /* _ADF_CACHE_H */
 

@@ -350,7 +350,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const char * const       volName,
                                   const uint8_t            volType )
 {
-/*    struct bDirCacheBlock dirc;*/
+/*    struct AdfDirCacheBlock dirc;*/
     SECTNUM blkList[2];
     struct AdfVolume* vol;
 
