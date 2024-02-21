@@ -252,7 +252,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
        read. These blocks are not required to access partitions/volumes:
        http://lclevy.free.fr/adflib/adf_info.html#p64 */
 
-    struct bFSHDblock fshd;
+    struct AdfFSHDblock fshd;
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         rc = adfReadFSHDblock ( dev, next, &fshd ); 
@@ -308,7 +308,6 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     int i;
     struct AdfRSDKblock rdsk;
     struct AdfPARTblock part;
-    struct bFSHDblock fshd;
     SECTNUM j;
     unsigned len;
 
@@ -365,7 +364,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     }
 
     /* FSHD */
-
+    struct AdfFSHDblock fshd;
     memcpy ( fshd.dosType, "DOS", 3 );
     fshd.dosType[3] = (char) partList[0]->volType;
     fshd.next = -1;
@@ -632,17 +631,18 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
  * ReadFSHDblock
  *
  */
-RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bFSHDblock * const blk )
+RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfFSHDblock * const blk )
 {
-    uint8_t buf[sizeof(struct bFSHDblock)];
+    uint8_t buf[ sizeof(struct AdfFSHDblock) ];
 
-    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
+    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
+                                   sizeof(struct AdfFSHDblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
-    memcpy(blk, buf, sizeof(struct bFSHDblock));
+    memcpy ( blk, buf, sizeof(struct AdfFSHDblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
     adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_FSHD );
@@ -667,9 +667,9 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
  *  adfWriteFSHDblock
  *
  */
-RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bFSHDblock * const fshd )
+RETCODE adfWriteFSHDblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfFSHDblock * const fshd )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -682,9 +682,9 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
     memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( fshd->id, "FSHD", 4 );
-    fshd->size = sizeof(struct bFSHDblock)/sizeof(int32_t);
+    fshd->size = sizeof(struct AdfFSHDblock) / sizeof(int32_t);
 
-    memcpy(buf, fshd, sizeof(struct bFSHDblock));
+    memcpy ( buf, fshd, sizeof(struct AdfFSHDblock) );
 #ifdef LITT_ENDIAN
     adfSwapEndian ( buf, ADF_SWBL_FSHD );
 #endif

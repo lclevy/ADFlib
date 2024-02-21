@@ -136,7 +136,7 @@ struct AdfLSEGblock {
 };
 
 
-struct bFSHDblock {
+struct AdfFSHDblock {
 /*000*/	char     id[4];                 /* FSHD */
 /*004*/	uint32_t size; 	                /* 64 */
 /*008*/	uint32_t checksum;
