@@ -1,6 +1,3 @@
-#ifndef ADF_FILE_BLOCK_H
-#define ADF_FILE_BLOCK_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -27,6 +24,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_FILE_BLOCK_H
+#define ADF_FILE_BLOCK_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -72,4 +72,4 @@ PREFIX RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
 PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
                                       const SECTNUM                  nSect,
                                       struct AdfFileExtBlock * const fext );
-#endif
+#endif  /* ADF_FILE_BLOCK_H */

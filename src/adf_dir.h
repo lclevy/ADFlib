@@ -1,6 +1,3 @@
-#ifndef ADF_DIR_H
-#define ADF_DIR_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_DIR_H
+#define ADF_DIR_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -141,5 +141,4 @@ SECTNUM adfNameToEntryBlk ( struct AdfVolume * const     vol,
 
 PREFIX void adfEntryPrint ( const struct AdfEntry * const entry );
 
-#endif /* ADF_DIR_H */
-
+#endif  /* ADF_DIR_H */

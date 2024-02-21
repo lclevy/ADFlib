@@ -1,6 +1,3 @@
-#ifndef ADFLIB_H
-#define ADFLIB_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -27,6 +24,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADFLIB_H
+#define ADFLIB_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,5 +79,4 @@ extern "C" {
 }
 #endif
 
-#endif /* ADFLIB_H */
-/*##########################################################################*/
+#endif  /* ADFLIB_H */

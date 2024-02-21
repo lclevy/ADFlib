@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef _ADF_RAW_H
-#define _ADF_RAW_H 1
+#ifndef ADF_RAW_H
+#define ADF_RAW_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -72,6 +72,4 @@ PREFIX uint32_t adfNormalSum ( const uint8_t * const buf,
 PREFIX void adfSwapEndian ( uint8_t * const buf,
                             const int       type );
 
-#endif /* _ADF_RAW_H */
-
-/*##########################################################################*/
+#endif  /* ADF_RAW_H */

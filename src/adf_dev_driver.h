@@ -66,6 +66,4 @@ struct AdfDeviceDriver {
     bool (*isDevice)( const char * const name );
 };
 
-#endif /* ADF_DEV_DRIVER_H */
-
-/*#######################################################################################*/
+#endif  /* ADF_DEV_DRIVER_H */

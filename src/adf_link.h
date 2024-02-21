@@ -1,6 +1,3 @@
-#ifndef ADF_LINK_H
-#define ADF_LINK_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,6 +23,9 @@
  *
  */
 
+#ifndef ADF_LINK_H
+#define ADF_LINK_H
+
 #include "adf_prefix.h"
 #include "adf_types.h"
 #include "adf_vol.h"
@@ -37,5 +37,4 @@ PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                        char **            name,
                                        int32_t *          size );
 
-#endif /* ADF_LINK_H */
-/*##########################################################################*/
+#endif  /* ADF_LINK_H */

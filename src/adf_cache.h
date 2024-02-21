@@ -1,5 +1,3 @@
-#ifndef _ADF_CACHE_H
-#define _ADF_CACHE_H 1
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -27,6 +25,8 @@
  *
  */
 
+#ifndef ADF_CACHE_H
+#define ADF_CACHE_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -86,6 +86,4 @@ RETCODE adfWriteDirCBlock ( struct AdfVolume * const        vol,
                             const int32_t                   nSect,
                             struct AdfDirCacheBlock * const dirc );
 
-#endif /* _ADF_CACHE_H */
-
-/*##########################################################################*/
+#endif  /* ADF_CACHE_H */

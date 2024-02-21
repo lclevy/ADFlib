@@ -1,6 +1,6 @@
 
-#ifndef __ADF_DEV_FLOP_H__
-#define __ADF_DEV_FLOP_H__
+#ifndef ADF_DEV_FLOP_H
+#define ADF_DEV_FLOP_H
 
 #include "adf_dev.h"
 #include "adf_err.h"
@@ -11,4 +11,4 @@ RETCODE adfMountFlop ( struct AdfDevice * dev );
 PREFIX RETCODE adfCreateFlop ( struct AdfDevice * const dev,
                                const char * const       volName,
                                const uint8_t            volType );
-#endif
+#endif  /* ADF_DEV_FLOP_H */

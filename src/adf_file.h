@@ -1,6 +1,3 @@
-#ifndef ADF_FILE_H
-#define ADF_FILE_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_FILE_H
+#define ADF_FILE_H
 
 #include "adf_blk.h"
 #include "adf_vol.h"
@@ -128,5 +128,4 @@ PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const   file,
 PREFIX RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                                                   const uint32_t               fileSizeNew,
                                                   AdfVectorSectors * const     blocksToRemove );
-#endif /* ADF_FILE_H */
-
+#endif  /* ADF_FILE_H */

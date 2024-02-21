@@ -1,6 +1,3 @@
-#ifndef _ADF_UTIL_H
-#define _ADF_UTIL_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_UTIL_H
+#define ADF_UTIL_H
 
 #include "adf_prefix.h"
 #include "adf_types.h"
@@ -116,6 +116,4 @@ struct DateTime adfGiveCurrentTime ( void );
 
 void dumpBlock ( const uint8_t * const buf );
 
-/*##########################################################################*/
-#endif /* _ADF_UTIL_H */
-
+#endif  /* ADF_UTIL_H */

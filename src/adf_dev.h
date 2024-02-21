@@ -1,6 +1,6 @@
 
-#ifndef __ADF_DEV_H__
-#define __ADF_DEV_H__
+#ifndef ADF_DEV_H
+#define ADF_DEV_H
 
 #include "adf_types.h"
 #include "adf_err.h"
@@ -98,4 +98,4 @@ RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
                            const uint32_t           pSect,
                            const uint32_t           size,
                            const uint8_t * const    buf );
-#endif
+#endif  /* ADF_DEV_H */

@@ -25,9 +25,8 @@
  *
  */
 
-
 #ifndef ADF_BLK_H
-#define ADF_BLK_H 1
+#define ADF_BLK_H
 
 #include "adf_types.h"
 
@@ -330,5 +329,4 @@ struct AdfDirCacheBlock {
 	};
 
 
-#endif /* ADF_BLK_H */
-/*##########################################################################*/
+#endif  /* ADF_BLK_H */

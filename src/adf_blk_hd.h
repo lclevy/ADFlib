@@ -25,9 +25,8 @@
  *
  */
 
-
 #ifndef ADF_BLK_HD_H
-#define ADF_BLK_HD_H 1
+#define ADF_BLK_HD_H
 
 #include <stdint.h>
 
@@ -162,5 +161,4 @@ struct AdfFSHDblock {
 };
 
 
-#endif /* ADF_BLK_HD_H */
-/*##########################################################################*/
+#endif  /* ADF_BLK_HD_H */

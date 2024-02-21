@@ -1,6 +1,3 @@
-#ifndef _ADF_VOL_H
-#define _ADF_VOL_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_VOL_H
+#define ADF_VOL_H
 
 #include "adf_blk.h"
 #include "adf_types.h"
@@ -154,6 +154,4 @@ PREFIX RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
                                   const uint32_t           nSect,
                                   const uint8_t * const    buf );
 
-#endif /* _ADF_VOL_H */
-
-/*##########################################################################*/
+#endif  /* ADF_VOL_H */

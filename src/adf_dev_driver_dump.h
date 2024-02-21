@@ -1,6 +1,3 @@
-#ifndef ADF_DEV_DUMP_H
-#define ADF_DEV_DUMP_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,9 +23,11 @@
  *
  */
 
+#ifndef ADF_DEV_DRIVER_DUMP_H
+#define ADF_DEV_DRIVER_DUMP_H
+
 #include "adf_dev_driver.h"
 
 extern const struct AdfDeviceDriver adfDeviceDriverDump;
 
-#endif /* ADF_DUMP_H */
-/*##########################################################################*/
+#endif  /* ADF_DEV_DRIVER_DUMP_H */

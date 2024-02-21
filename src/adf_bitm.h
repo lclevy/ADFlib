@@ -1,5 +1,3 @@
-#ifndef ADF_BITM_H
-#define ADF_BITM_H
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,6 +24,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_BITM_H
+#define ADF_BITM_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -79,6 +80,4 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol );
 RETCODE adfBitmapAllocate ( struct AdfVolume * const vol );
 PREFIX void adfFreeBitmap ( struct AdfVolume * const vol );
 
-#endif /* ADF_BITM_H */
-
-/*#######################################################################################*/
+#endif  /* ADF_BITM_H */

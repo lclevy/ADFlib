@@ -1,6 +1,3 @@
-#ifndef _ADF_DEV_HD_H
-#define _ADF_DEV_HD_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -28,6 +25,8 @@
  *
  */
 
+#ifndef ADF_DEV_HD_H
+#define ADF_DEV_HD_H
 
 #include "adf_dev.h"
 #include "adf_err.h"
@@ -78,6 +77,4 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
 RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
                             const int32_t               nSect,
                             struct AdfLSEGblock * const lseg );
-#endif /* _ADF_HD_H */
-
-/*##########################################################################*/
+#endif /* ADF_DEV_HD_H */

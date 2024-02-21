@@ -1,3 +1,4 @@
+
 #ifndef ADF_BYTEORDER_H
 #define ADF_BYTEORDER_H
 
@@ -12,4 +13,4 @@
  #endif
 #endif
 
-#endif
+#endif /* ADF_BYTEORDER_H */

@@ -24,9 +24,8 @@
  *
  */
 
-
-#ifndef _ADF_VERSION_H
-#define _ADF_VERSION_H 1
+#ifndef ADF_VERSION_H
+#define ADF_VERSION_H
 
 //#include "config.h"
 /* autotools defines this */
@@ -36,5 +35,4 @@
 #define ADFLIB_VERSION "0.8.0"
 #define ADFLIB_DATE "2023-06-26"
 
-#endif /* _ADF_VERSION_H */
-/*##########################################################################*/
+#endif /* ADF_VERSION_H */

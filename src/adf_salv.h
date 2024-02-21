@@ -1,6 +1,3 @@
-#ifndef _ADF_SALV_H
-#define _ADF_SALV_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_SALV_H
+#define ADF_SALV_H
 
 #include "adf_types.h"
 #include "adf_err.h"
@@ -55,7 +55,4 @@ PREFIX RETCODE adfUndelEntry ( struct AdfVolume * const vol,
 PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
 PREFIX void adfFreeDelList ( struct AdfList * const list );
 
-
-/*##########################################################################*/
-#endif /* _ADF_SALV_H */
-
+#endif  /* ADF_SALV_H */

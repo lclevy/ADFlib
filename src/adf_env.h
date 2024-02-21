@@ -1,6 +1,3 @@
-#ifndef ADF_ENV_H
-#define ADF_ENV_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_ENV_H
+#define ADF_ENV_H
 
 #include "adf_prefix.h"
 #include "adf_types.h"
@@ -82,5 +82,4 @@ PREFIX char* adfGetVersionDate(void);
 
 PREFIX extern struct AdfEnv adfEnv;
 
-#endif /* ADF_ENV_H */
-/*##########################################################################*/
+#endif  /* ADF_ENV_H */

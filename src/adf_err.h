@@ -1,6 +1,3 @@
-#ifndef ADF_ERR_H
-#define ADF_ERR_H
-
 /*
  * adf_err.h
  *
@@ -25,6 +22,9 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_ERR_H
+#define ADF_ERR_H
 
 #include "adf_types.h"
 
@@ -84,6 +84,5 @@ typedef enum {
 static inline bool adfHasRC ( RETCODE mask, RETCODE code ) {
     return ( mask & code );
 }
-#endif /* ADF_ERR_H */
 
-/*############################################################################*/
+#endif  /* ADF_ERR_H */

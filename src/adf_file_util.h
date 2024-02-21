@@ -1,6 +1,6 @@
 
-#ifndef __ADF_FILE_UTIL__
-#define __ADF_FILE_UTIL__
+#ifndef ADF_FILE_UTIL_H
+#define ADF_FILE_UTIL_H
 
 #include "adf_blk.h"
 
@@ -47,4 +47,4 @@ static inline unsigned adfFileSize2Blocks ( unsigned fsize,
     return data_blocks + ext_blocks + 1;   // +1 for the file header block
 }
 
-#endif
+#endif  /* ADF_FILE_UTIL_H */
