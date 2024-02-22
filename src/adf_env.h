@@ -1,6 +1,3 @@
-#ifndef ADF_ENV_H
-#define ADF_ENV_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,8 +23,11 @@
  *
  */
 
+#ifndef ADF_ENV_H
+#define ADF_ENV_H
+
+#include "adf_prefix.h"
 #include "adf_types.h"
-#include "prefix.h"
 
 /* ----- ENVIRONMENT ----- */
 
@@ -47,7 +47,7 @@ typedef void (*AdfLogFct)(const char * const format, ...);
 //typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
 typedef void (*AdfNotifyFct)(SECTNUM, int);
-typedef void (*AdfRwhAccessFct)(SECTNUM,SECTNUM,BOOL);
+typedef void (*AdfRwhAccessFct)(SECTNUM, SECTNUM, bool);
 typedef void (*AdfProgressBarFct)(int);
 
 struct AdfEnv {
@@ -56,15 +56,15 @@ struct AdfEnv {
     AdfLogFct eFct;       /* error callback function */
 
     AdfNotifyFct notifyFct;
-    BOOL useNotify;
+    bool useNotify;
 
     AdfRwhAccessFct rwhAccess;
-    BOOL useRWAccess;
+    bool useRWAccess;
 
     AdfProgressBarFct progressBar;
-    BOOL useProgressBar;
+    bool useProgressBar;
 
-    BOOL useDirCache;
+    bool useDirCache;
 };
 
 
@@ -82,5 +82,4 @@ PREFIX char* adfGetVersionDate(void);
 
 PREFIX extern struct AdfEnv adfEnv;
 
-#endif /* ADF_ENV_H */
-/*##########################################################################*/
+#endif  /* ADF_ENV_H */

@@ -1,6 +1,3 @@
-#ifndef ADF_ERR_H
-#define ADF_ERR_H
-
 /*
  * adf_err.h
  *
@@ -26,6 +23,9 @@
  *
  */
 
+#ifndef ADF_ERR_H
+#define ADF_ERR_H
+
 #include "adf_types.h"
 
 typedef enum {
@@ -49,11 +49,11 @@ typedef enum {
 /* adfWrite*Block */
     RC_BLOCKWRITE      = 1 << 4,
 
-/* adfReadBlock() */
+/* adfVolReadBlock() */
     RC_BLOCKOUTOFRANGE = 1,
     RC_BLOCKNATREAD    = 1 << 1,
 
-/* adfWriteBlock() */
+/* adfVolWriteBlock() */
 /* RC_BLOCKOUTOFRANGE */
     RC_BLOCKNATWRITE   = 1 << 1,
     RC_BLOCKREADONLY   = 1 << 2,
@@ -81,9 +81,8 @@ typedef enum {
 } RETCODE;
 
 //#define hasRC(rc,c) ((rc)&(c))
-static inline BOOL adfHasRC ( RETCODE mask, RETCODE code ) {
+static inline bool adfHasRC ( RETCODE mask, RETCODE code ) {
     return ( mask & code );
 }
-#endif /* ADF_ERR_H */
 
-/*############################################################################*/
+#endif  /* ADF_ERR_H */

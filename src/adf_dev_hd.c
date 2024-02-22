@@ -28,14 +28,12 @@
 
 #include "adf_dev_hd.h"
 
+#include "adf_byteorder.h"
 #include "adf_dev_driver_dump.h"
 #include "adf_env.h"
 #include "adf_raw.h"
 #include "adf_util.h"
 #include "adf_vol.h"
-
-#include "defendian.h"
-#include "hd_blk.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -69,10 +67,7 @@ static void adfFreeTmpVolList ( struct AdfList * const root )
 RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 {
     struct AdfVolume * vol;
-    uint8_t buf[512];
-    BOOL found;
 
-    dev->devType = DEVTYPE_HARDFILE;
     dev->nVol = 0;
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if ( dev->volList == NULL ) {
@@ -90,34 +85,56 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
     dev->volList[0] = vol;
     dev->nVol++;      /* fixed by Dan, ... and by Gary */
 
+    vol->dev = dev;
     vol->volName=NULL;
     
-    dev->cylinders = dev->size/512;
-    dev->heads = 1;
-    dev->sectors = 1;
-
     vol->firstBlock = 0;
 
     unsigned size = dev->size + 512 - ( dev->size % 512 );
 /*printf("size=%ld\n",size);*/
-    vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
-/*printf("root=%ld\n",vol->rootBlock);*/
-    do {
-        dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
-        found = swapLong(buf)==T_HEADER && swapLong(buf+508)==ST_ROOT;
-        if (!found)
-            (vol->rootBlock)--;
-    } while (vol->rootBlock>1 && !found);
 
-    if (vol->rootBlock==1) {
-        (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
+    /* set filesystem info (read from bootblock) */
+    struct AdfBootBlock boot;
+    if ( adfDevReadBlock ( dev, vol->firstBlock, 512, &boot ) != RC_OK ) {
+        adfEnv.eFct ( "adfMountHdFile : error reading BootBlock, device %s, volume %d",
+                      dev->name, 0 );
         free ( dev->volList );
         dev->volList = NULL;
-        free ( vol );
-        dev->nVol = 0;
         return RC_ERROR;
     }
-    vol->lastBlock = vol->rootBlock*2 - 1 ;
+    memcpy ( vol->fs.id, boot.dosType, 3 );
+    vol->fs.id[3] = '\0';
+    vol->fs.type = (uint8_t) boot.dosType[3];
+    vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
+
+    if ( adfVolIsDosFS ( vol ) ) {
+        vol->rootBlock = (int32_t) ( ( size / 512 ) / 2 );
+/*printf("root=%ld\n",vol->rootBlock);*/
+        uint8_t buf[512];
+        bool found = false;
+        do {
+            dev->drv->readSector ( dev, (uint32_t) vol->rootBlock, 512, buf );
+            found = swapLong(buf) == ADF_T_HEADER &&
+                    swapLong(buf + 508) == ADF_ST_ROOT;
+            if (!found)
+                (vol->rootBlock)--;
+        } while (vol->rootBlock>1 && !found);
+
+        if (vol->rootBlock==1) {
+            (*adfEnv.eFct)("adfMountHdFile : rootblock not found");
+            free ( dev->volList );
+            dev->volList = NULL;
+            free ( vol );
+            dev->nVol = 0;
+            return RC_ERROR;
+        }
+        vol->lastBlock = vol->rootBlock * 2 - 1;
+    } else { // if ( adfVolIsPFS ( vol ) ) {
+        vol->datablockSize = 0; //512;
+        vol->volName = NULL;
+        vol->rootBlock = -1;
+        vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
+    }
 
     return RC_OK;
 }
@@ -126,14 +143,14 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 /*
  * adfMountHd
  *
- * normal not used directly : called by adfMount()
+ * normal not used directly : called by adfDevMount()
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */
 RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
-    struct bRDSKblock rdsk;
-    struct bPARTblock part;
+    struct AdfRSDKblock rdsk;
+    struct AdfPARTblock part;
     int32_t next;
     struct AdfList *vList, *listRoot;
     int i;
@@ -143,10 +160,6 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
     if ( rc != RC_OK )
         return rc;
-
-    dev->cylinders = rdsk.cylinders;
-    dev->heads = rdsk.heads;
-    dev->sectors = rdsk.sectors;
 
     /* PART blocks */
     listRoot = NULL;
@@ -167,14 +180,29 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
             (*adfEnv.eFct)("adfMountHd : malloc");
             return RC_MALLOC;
         }
+        vol->dev = dev;
         vol->volName=NULL;
         dev->nVol++;
 
         vol->firstBlock = (int32_t) rdsk.cylBlocks * part.lowCyl;
         vol->lastBlock = ( part.highCyl + 1 ) * (int32_t) rdsk.cylBlocks - 1;
-        vol->rootBlock = adfVolCalcRootBlk ( vol );
         vol->blockSize = part.blockSize*4;
 
+        /* set filesystem info (read from bootblock) */
+        struct AdfBootBlock boot;
+        if ( adfDevReadBlock ( dev, vol->firstBlock, 512, &boot ) != RC_OK ) {
+            adfEnv.eFct ( "adfMountHd : error reading BootBlock, device %s, volume %d",
+                          dev->name, dev->nVol - 1 );
+            adfFreeTmpVolList ( listRoot );
+            free ( vol );
+            return RC_ERROR;
+        }
+        memcpy ( vol->fs.id, boot.dosType, 3 );
+        vol->fs.id[3] = '\0';
+        vol->fs.type = (uint8_t) boot.dosType[3];
+        vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
+
+        /* set volume name (from partition info) */
         len = (unsigned) min ( 31, part.nameLen );
         vol->volName = (char*)malloc(len+1);
         if ( vol->volName == NULL ) { 
@@ -186,7 +214,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         memcpy(vol->volName,part.name,len);
         vol->volName[len] = '\0';
 
-        vol->mounted = FALSE;
+        vol->mounted = false;
 
         /* stores temporaly the volumes in a linked list */
         if (listRoot==NULL)
@@ -199,6 +227,8 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
             (*adfEnv.eFct)("adfMount : newCell() malloc");
             return RC_MALLOC;
         }
+
+        vol->rootBlock = adfVolIsDosFS ( vol ) ? adfVolCalcRootBlk ( vol ) : -1;
 
         next = part.next;
     }
@@ -222,7 +252,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
        read. These blocks are not required to access partitions/volumes:
        http://lclevy.free.fr/adflib/adf_info.html#p64 */
 
-    struct bFSHDblock fshd;
+    struct AdfFSHDblock fshd;
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         rc = adfReadFSHDblock ( dev, next, &fshd ); 
@@ -239,7 +269,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
         next = fshd.next;
     }
 
-    struct bLSEGblock lseg;
+    struct AdfLSEGblock lseg;
     next = fshd.segListBlock;
     while( next!=-1 ) {
         rc = adfReadLSEGblock ( dev, next, &lseg ); 
@@ -276,16 +306,14 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
 {
     (void) n;
     int i;
-    struct bRDSKblock rdsk;
-    struct bPARTblock part;
-    struct bFSHDblock fshd;
-    struct bLSEGblock lseg;
+    struct AdfRSDKblock rdsk;
+    struct AdfPARTblock part;
     SECTNUM j;
     unsigned len;
 
     /* RDSK */ 
  
-    memset((uint8_t*)&rdsk,0,sizeof(struct bRDSKblock));
+    memset ( (uint8_t *) &rdsk, 0, sizeof(struct AdfRSDKblock) );
 
     rdsk.rdbBlockLo = 0;
     rdsk.rdbBlockHi = (dev->sectors*dev->heads*2)-1;
@@ -309,14 +337,14 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
 
     j=1;
     for(i=0; i<dev->nVol; i++) {
-        memset(&part, 0, sizeof(struct bPARTblock));
+        memset ( &part, 0, sizeof(struct AdfPARTblock) );
 
         if (i<dev->nVol-1)
             part.next = j+1;
         else
             part.next = -1;
 
-        len = min ( (unsigned) MAXNAMELEN,
+        len = min ( (unsigned) ADF_MAX_NAME_LEN,
                     (unsigned) strlen ( partList[i]->volName ) );
         part.nameLen = (char) len;
         strncpy(part.name, partList[i]->volName, len);
@@ -336,7 +364,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     }
 
     /* FSHD */
-
+    struct AdfFSHDblock fshd;
     memcpy ( fshd.dosType, "DOS", 3 );
     fshd.dosType[3] = (char) partList[0]->volType;
     fshd.next = -1;
@@ -347,6 +375,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     j++;
 	
     /* LSEG */
+    struct AdfLSEGblock lseg;
     lseg.next = -1;
 
     return adfWriteLSEGblock ( dev, j, &lseg );
@@ -381,7 +410,7 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
         return RC_MALLOC;
     }
     for(i=0; i<n; i++) {
-        dev->volList[i] = adfCreateVol( dev, 
+        dev->volList[i] = adfVolCreate( dev,
 					(uint32_t) partList[i]->startCyl,
 					(uint32_t) partList[i]->lenCyl,
 					partList[i]->volName, 
@@ -392,9 +421,8 @@ RETCODE adfCreateHd ( struct AdfDevice * const               dev,
 /* pas fini */
            }
            free(dev->volList);
-           (*adfEnv.eFct)("adfCreateHd : adfCreateVol() fails");
+           adfEnv.eFct ( "adfCreateHd : adfVolCreate() failed" );
         }
-        dev->volList[i]->blockSize = 512;
     }
     dev->nVol = (int) n;
 /*
@@ -402,7 +430,7 @@ vol=dev->volList[0];
 printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
-    dev->mounted = TRUE;
+    dev->mounted = true;
 
     return adfCreateHdHeader ( dev, (int) n, partList );
 }
@@ -426,7 +454,7 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
         return RC_ERROR;
     }
 
-    dev->volList[0] = adfCreateVol( dev, 0L, dev->cylinders, volName, volType );
+    dev->volList[0] = adfVolCreate( dev, 0L, dev->cylinders, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
         return RC_ERROR;
@@ -443,8 +471,8 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
  * ReadRDSKblock
  *
  */
-RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
-                           struct bRDSKblock * const blk )
+RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
+                           struct AdfRSDKblock * const blk )
 {
     uint8_t buf[256];
 
@@ -455,7 +483,7 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
     memcpy(blk, buf, 256);
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_RDSK);
+    adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_RDSK );
 #endif
 
     if ( strncmp(blk->id,"RDSK",4)!=0 ) {
@@ -486,10 +514,10 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const  dev,
  * adfWriteRDSKblock
  *
  */
-RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
-                            struct bRDSKblock * const rdsk )
+RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
+                            struct AdfRSDKblock * const rdsk )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -497,26 +525,26 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( rdsk->id, "RDSK", 4 );
-    rdsk->size = sizeof(struct bRDSKblock)/sizeof(int32_t);
-    rdsk->blockSize = LOGICAL_BLOCK_SIZE;
+    rdsk->size = sizeof(struct AdfRSDKblock) / sizeof(int32_t);
+    rdsk->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     rdsk->badBlockList = -1;
 
     memcpy ( rdsk->diskVendor, "ADFlib  ", 8 );
     memcpy ( rdsk->diskProduct, "harddisk.adf    ", 16 );
     memcpy ( rdsk->diskRevision, "v1.0", 4 );
 
-    memcpy(buf, rdsk, sizeof(struct bRDSKblock));
+    memcpy ( buf, rdsk, sizeof(struct AdfRSDKblock) );
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_RDSK);
+    adfSwapEndian ( buf, ADF_SWBL_RDSK );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 
-    return adfDevWriteBlock ( dev, 0, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, 0, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -524,21 +552,21 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const  dev,
  * ReadPARTblock
  *
  */
-RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bPARTblock * const blk )
+RETCODE adfReadPARTblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfPARTblock * const blk )
 {
-    uint8_t buf[ sizeof(struct bPARTblock) ];
+    uint8_t buf[ sizeof(struct AdfPARTblock) ];
 
     RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct bPARTblock), buf );
+                                   sizeof(struct AdfPARTblock), buf );
     if ( rc != RC_OK )
        return rc;
 
-    memcpy(blk, buf, sizeof(struct bPARTblock));
+    memcpy ( blk, buf, sizeof(struct AdfPARTblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_PART);
+    adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_PART);
 #endif
 
     if ( strncmp(blk->id,"PART",4)!=0 ) {
@@ -565,11 +593,11 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const  dev,
  * adfWritePARTblock
  *
  */
-RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bPARTblock * const part )
+RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfPARTblock * const part )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 	
     if (dev->readOnly) {
@@ -577,46 +605,47 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( part->id, "PART", 4 );
-    part->size = sizeof(struct bPARTblock)/sizeof(int32_t);
-    part->blockSize = LOGICAL_BLOCK_SIZE;
+    part->size = sizeof(struct AdfPARTblock) / sizeof(int32_t);
+    part->blockSize = ADF_LOGICAL_BLOCK_SIZE;
     part->vectorSize = 16;
     part->blockSize = 128;
     part->sectorsPerBlock = 1;
     part->dosReserved = 2;
 
-    memcpy(buf, part, sizeof(struct bPARTblock));
+    memcpy ( buf, part, sizeof(struct AdfPARTblock) );
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_PART);
+    adfSwapEndian ( buf, ADF_SWBL_PART );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*
  * ReadFSHDblock
  *
  */
-RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bFSHDblock * const blk )
+RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfFSHDblock * const blk )
 {
-    uint8_t buf[sizeof(struct bFSHDblock)];
+    uint8_t buf[ sizeof(struct AdfFSHDblock) ];
 
-    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect, sizeof(struct bFSHDblock), buf );
+    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
+                                   sizeof(struct AdfFSHDblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
-    memcpy(blk, buf, sizeof(struct bFSHDblock));
+    memcpy ( blk, buf, sizeof(struct AdfFSHDblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_FSHD);
+    adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_FSHD );
 #endif
 
     if ( strncmp(blk->id,"FSHD",4)!=0 ) {
@@ -638,11 +667,11 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const  dev,
  *  adfWriteFSHDblock
  *
  */
-RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bFSHDblock * const fshd )
+RETCODE adfWriteFSHDblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfFSHDblock * const fshd )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -650,21 +679,21 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( fshd->id, "FSHD", 4 );
-    fshd->size = sizeof(struct bFSHDblock)/sizeof(int32_t);
+    fshd->size = sizeof(struct AdfFSHDblock) / sizeof(int32_t);
 
-    memcpy(buf, fshd, sizeof(struct bFSHDblock));
+    memcpy ( buf, fshd, sizeof(struct AdfFSHDblock) );
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_FSHD);
+    adfSwapEndian ( buf, ADF_SWBL_FSHD );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8, newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 
@@ -672,21 +701,21 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const  dev,
  * ReadLSEGblock
  *
  */
-RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
-                           const int32_t             nSect,
-                           struct bLSEGblock * const blk )
+RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
+                           const int32_t               nSect,
+                           struct AdfLSEGblock * const blk )
 {
-    uint8_t buf[sizeof(struct bLSEGblock)];
+    uint8_t buf[ sizeof(struct AdfLSEGblock) ];
 
     RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct bLSEGblock), buf );
+                                   sizeof(struct AdfLSEGblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
-    memcpy(blk, buf, sizeof(struct bLSEGblock));
+    memcpy ( blk, buf, sizeof(struct AdfLSEGblock) );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)blk, SWBL_LSEG);
+    adfSwapEndian ( (uint8_t *) blk, ADF_SWBL_LSEG );
 #endif
 
     if ( strncmp(blk->id,"LSEG",4)!=0 ) {
@@ -694,7 +723,7 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    if ( blk->checksum != adfNormalSum(buf,8,sizeof(struct bLSEGblock)) )
+    if ( blk->checksum != adfNormalSum ( buf, 8, sizeof(struct AdfLSEGblock) ) )
         (*adfEnv.wFct)("ReadLSEGBlock : incorrect checksum");
 
     if ( blk->next!=-1 && blk->size != 128 )
@@ -708,11 +737,11 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const  dev,
  * adfWriteLSEGblock
  *
  */
-RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
-                            const int32_t             nSect,
-                            struct bLSEGblock * const lseg )
+RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
+                            const int32_t               nSect,
+                            struct AdfLSEGblock * const lseg )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
 
     if (dev->readOnly) {
@@ -720,21 +749,21 @@ RETCODE adfWriteLSEGblock ( struct AdfDevice * const  dev,
         return RC_ERROR;
     }
 
-    memset(buf,0,LOGICAL_BLOCK_SIZE);
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
 
     memcpy ( lseg->id, "LSEG", 4 );
-    lseg->size = sizeof(struct bLSEGblock)/sizeof(int32_t);
+    lseg->size = sizeof(struct AdfLSEGblock) / sizeof(int32_t);
 
-    memcpy(buf, lseg, sizeof(struct bLSEGblock));
+    memcpy ( buf, lseg, sizeof(struct AdfLSEGblock) );
 #ifdef LITT_ENDIAN
-    swapEndian(buf, SWBL_LSEG);
+    adfSwapEndian ( buf, ADF_SWBL_LSEG );
 #endif
 
-    newSum = adfNormalSum(buf, 8, LOGICAL_BLOCK_SIZE);
+    newSum = adfNormalSum ( buf, 8, ADF_LOGICAL_BLOCK_SIZE );
     swLong(buf+8,newSum);
 /*    *(int32_t*)(buf+8) = swapLong((uint8_t*)&newSum);*/
 
-    return adfDevWriteBlock ( dev, (uint32_t) nSect, LOGICAL_BLOCK_SIZE, buf );
+    return adfDevWriteBlock ( dev, (uint32_t) nSect, ADF_LOGICAL_BLOCK_SIZE, buf );
 }
 
 /*##########################################################################*/

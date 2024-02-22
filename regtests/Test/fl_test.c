@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -55,9 +55,9 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -72,9 +72,10 @@ int main(int argc, char *argv[])
 	
     adfDevInfo(hd);
 	
-    adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
+    adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                 ADF_DOSFS_DIRCACHE );
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -90,12 +91,12 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
     fread(bootcode, sizeof(unsigned char), 1024, boot);
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
     fclose(boot);
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

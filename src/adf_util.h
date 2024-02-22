@@ -1,6 +1,3 @@
-#ifndef _ADF_UTIL_H
-#define _ADF_UTIL_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,8 +23,11 @@
  *
  */
 
+#ifndef ADF_UTIL_H
+#define ADF_UTIL_H
+
+#include "adf_prefix.h"
 #include "adf_types.h"
-#include "prefix.h"
 
 #include <stdlib.h>   // for min(), max() on Windows/MSVC
 
@@ -105,7 +105,7 @@ PREFIX void adfDays2Date( int32_t       days,
                           int * const   mm,
                           int * const   dd );
 
-BOOL adfIsLeap ( const int y );
+bool adfIsLeap ( const int y );
 
 void adfTime2AmigaTime ( struct DateTime dt,
                          int32_t * const day,
@@ -116,6 +116,4 @@ struct DateTime adfGiveCurrentTime ( void );
 
 void dumpBlock ( const uint8_t * const buf );
 
-/*##########################################################################*/
-#endif /* _ADF_UTIL_H */
-
+#endif  /* ADF_UTIL_H */

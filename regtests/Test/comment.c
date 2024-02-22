@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     struct AdfFile *fic;
     unsigned char buf[1];
     struct AdfList *list, *cell;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
@@ -41,14 +40,16 @@ int main(int argc, char *argv[])
 
     adfDevInfo ( hd );
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfCreateDir(vol,vol->curDirPtr,"dir_5u");
 
@@ -95,7 +96,8 @@ int main(int argc, char *argv[])
 
     putchar('\n');
 
-    adfChgEnvProp(PR_USEDIRC, &true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -104,7 +106,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

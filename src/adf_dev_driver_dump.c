@@ -73,7 +73,7 @@ static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
         /* force read only */
         if ( *fd == NULL && ( errno == EACCES || errno == EROFS ) ) {
             *fd = fopen ( name, "rb" );
-            dev->readOnly = TRUE;
+            dev->readOnly = true;
             if ( *fd != NULL )
                 adfEnv.wFct("adfDevDumpOpen : fopen, read-only mode forced");
         }
@@ -98,7 +98,7 @@ static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
 
     dev->nVol    = 0;
     dev->volList = NULL;
-    dev->mounted = FALSE;
+    dev->mounted = false;
 
     dev->drv = &adfDeviceDriverDump;
 
@@ -187,7 +187,7 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
                                                 const uint32_t     heads,
                                                 const uint32_t     sectors )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 /*    int32_t i;*/
     int r;
 	
@@ -219,7 +219,7 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
         fwrite(buf, sizeof(uint8_t), 512 , nDev->fd);
 */
     long lastBlockOffset = ( ( cylinders * heads * sectors ) - 1 ) *
-        LOGICAL_BLOCK_SIZE;
+        ADF_LOGICAL_BLOCK_SIZE;
     r = fseek ( *fd, lastBlockOffset, SEEK_SET );
     if (r==-1) {
         fclose ( *fd );
@@ -229,8 +229,8 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
         return NULL;
     }
 
-    memset ( buf, 0, LOGICAL_BLOCK_SIZE );
-    size_t blocksWritten = fwrite ( buf, LOGICAL_BLOCK_SIZE, 1, *fd );
+    memset ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
+    size_t blocksWritten = fwrite ( buf, ADF_LOGICAL_BLOCK_SIZE, 1, *fd );
     if ( blocksWritten != 1 ) {
         fclose ( *fd );
         free ( dev->drvData );
@@ -251,18 +251,18 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
     dev->cylinders = cylinders;
     dev->heads = heads;
     dev->sectors = sectors;
-    dev->size = cylinders*heads*sectors* LOGICAL_BLOCK_SIZE;	
+    dev->size = cylinders * heads * sectors * ADF_LOGICAL_BLOCK_SIZE;
 
-    if (dev->size==80*11*2*LOGICAL_BLOCK_SIZE)
+    if ( dev->size == 80 * 11 * 2 * ADF_LOGICAL_BLOCK_SIZE )
         dev->devType = DEVTYPE_FLOPDD;
-    else if (dev->size==80*22*2*LOGICAL_BLOCK_SIZE)
+    else if ( dev->size == 80 * 22 * 2 * ADF_LOGICAL_BLOCK_SIZE )
         dev->devType = DEVTYPE_FLOPHD;
 	else 	
         dev->devType = DEVTYPE_HARDDISK;
 		
     dev->nVol = 0;
-    dev->readOnly = FALSE;
-    dev->mounted = FALSE;
+    dev->readOnly = false;
+    dev->mounted = false;
 
     dev->drv = &adfDeviceDriverDump;
 
@@ -271,9 +271,9 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
     return(dev);
 }
 
-static BOOL adfDevDumpIsNativeDevice ( void )
+static bool adfDevDumpIsNativeDevice ( void )
 {
-    return FALSE;
+    return false;
 }
 
 const struct AdfDeviceDriver adfDeviceDriverDump = {

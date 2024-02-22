@@ -35,18 +35,18 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfCreateHdFile( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
-
+    adfCreateHdFile ( hd, "empty", ADF_DOSFS_FFS |
+                                   ADF_DOSFS_DIRCACHE );
     adfDevInfo ( hd );
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     /* unmounts */
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

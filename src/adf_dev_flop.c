@@ -38,23 +38,14 @@
 /*
  * adfMountFlop
  *
- * normaly not used directly, called directly by adfMount()
+ * normaly not used directly, called directly by adfDevMount()
  *
  * use dev->devType to choose between DD and HD
- * fills geometry and the volume list with one volume
+ * fills the volume list with one volume
  */
 RETCODE adfMountFlop ( struct AdfDevice * const dev )
 {
     struct AdfVolume *vol;
-    struct bRootBlock root;
-    char diskName[35];
-	
-    dev->cylinders = 80;
-    dev->heads = 2;
-    if (dev->devType==DEVTYPE_FLOPDD)
-        dev->sectors = 11;
-    else 
-        dev->sectors = 22;
 
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
@@ -62,24 +53,49 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
         return RC_ERROR;
     }
 
-    vol->mounted = TRUE;
     vol->firstBlock = 0;
     vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
-    vol->rootBlock = adfVolCalcRootBlk ( vol );
     vol->blockSize = 512;
     vol->dev = dev;
- 
-    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
+
+    /* set filesystem info (read from bootblock) */
+    struct AdfBootBlock boot;
+    if ( adfDevReadBlock ( dev, vol->firstBlock, 512, &boot ) != RC_OK ) {
+        adfEnv.eFct ( "adfMountFlop : error reading BootBlock, device %s, volume %d",
+                      dev->name, 0 );
         free ( vol );
         return RC_ERROR;
     }
-    memset(diskName, 0, 35);
-    memcpy(diskName, root.diskName, root.nameLen);
+    memcpy ( vol->fs.id, boot.dosType, 3 );
+    vol->fs.id[3] = '\0';
+    vol->fs.type = (uint8_t) boot.dosType[3];
 
-    vol->volName = strdup(diskName);
-	
+    if ( adfVolIsDosFS ( vol ) ) {
+        vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
+
+        vol->rootBlock = adfVolCalcRootBlk ( vol );
+        struct AdfRootBlock root;
+        vol->mounted = true;    // must be set to read the root block
+        if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
+            free ( vol );
+            return RC_ERROR;
+        }
+        vol->mounted = false;
+
+        char diskName[35];
+        memset(diskName, 0, 35);
+        memcpy(diskName, root.diskName, root.nameLen);
+
+        vol->volName = strdup(diskName);
+    } else { // if ( adfVolIsPFS ( vol ) ) {
+        vol->datablockSize = 0; //512;
+        vol->volName = NULL;
+        vol->rootBlock = -1;
+    }
+
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) {
+        free(vol->volName);
         free(vol);
         (*adfEnv.eFct)("adfMount : malloc");
         return RC_ERROR;
@@ -115,19 +131,18 @@ RETCODE adfCreateFlop ( struct AdfDevice * const dev,
         (*adfEnv.eFct)("adfCreateFlop : malloc");
         return RC_ERROR;
     }
-    dev->volList[0] = adfCreateVol( dev, 0L, 80L, volName, volType );
+    dev->volList[0] = adfVolCreate ( dev, 0L, 80L, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
         return RC_ERROR;
     }
     dev->nVol = 1;
-    dev->volList[0]->blockSize = 512;
     if (dev->sectors==11)
         dev->devType=DEVTYPE_FLOPDD;
     else
         dev->devType=DEVTYPE_FLOPHD;
 
-    dev->mounted = TRUE;
+    dev->mounted = true;
 
     return RC_OK;
 }

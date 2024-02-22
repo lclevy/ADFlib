@@ -1,6 +1,3 @@
-#ifndef ADF_FILE_H
-#define ADF_FILE_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -26,6 +23,9 @@
  *
  */
 
+#ifndef ADF_FILE_H
+#define ADF_FILE_H
+
 #include "adf_blk.h"
 #include "adf_vol.h"
 
@@ -35,9 +35,9 @@
 struct AdfFile {
     struct AdfVolume *        volume;
 
-    struct bFileHeaderBlock * fileHdr;
-    void *                    currentData;
-    struct bFileExtBlock *    currentExt;
+    struct AdfFileHeaderBlock * fileHdr;
+    void *                      currentData;
+    struct AdfFileExtBlock *    currentExt;
 
     unsigned nDataBlock;  /* current data block number */
     SECTNUM  curDataPtr;  /* sector number of current data block;
@@ -48,10 +48,10 @@ struct AdfFile {
     unsigned posInDataBlk;
     unsigned posInExtBlk;
 
-    BOOL     modeRead,
+    bool     modeRead,
              modeWrite;
 
-    BOOL     currentDataBlockChanged;
+    bool     currentDataBlockChanged;
 };
 
 
@@ -70,7 +70,7 @@ static inline uint32_t adfFileGetSize ( const struct AdfFile * const file ) {
     return file->fileHdr->byteSize;
 }
 
-static inline BOOL adfEndOfFile ( const struct AdfFile * const file ) {
+static inline bool adfEndOfFile ( const struct AdfFile * const file ) {
     return ( file->pos == file->fileHdr->byteSize );
 }
 
@@ -121,12 +121,11 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file );
 
 PREFIX RETCODE adfFileFlush ( struct AdfFile * const file );
 
-PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
-                                      const int32_t                extBlock,
-                                      struct bFileExtBlock * const fext );
+PREFIX RETCODE adfFileReadExtBlockN ( const struct AdfFile * const   file,
+                                      const int32_t                  extBlock,
+                                      struct AdfFileExtBlock * const fext );
 
 PREFIX RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                                                   const uint32_t               fileSizeNew,
                                                   AdfVectorSectors * const     blocksToRemove );
-#endif /* ADF_FILE_H */
-
+#endif  /* ADF_FILE_H */

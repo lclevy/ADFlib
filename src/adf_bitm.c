@@ -28,12 +28,12 @@
 #include "adf_bitm.h"
 
 #include "adf_cache.h"
+#include "adf_byteorder.h"
 #include "adf_dir.h"
 #include "adf_env.h"
 #include "adf_file_block.h"
 #include "adf_raw.h"
 #include "adf_util.h"
-#include "defendian.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -48,8 +48,8 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
                                       const struct AdfList * const list );
 
 static RETCODE adfBitmapFileBlocksSetUsed (
-    struct AdfVolume * const              vol,
-    const struct bFileHeaderBlock * const fhBlock );
+    struct AdfVolume * const                vol,
+    const struct AdfFileHeaderBlock * const fhBlock );
 
 static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
                                           SECTNUM                  dCacheBlockNum );
@@ -57,8 +57,8 @@ static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
 
 static uint32_t nBlock2bitmapSize ( uint32_t nBlock )
 {
-    uint32_t mapSize = (uint32_t) nBlock / ( BM_MAP_SIZE * 32 );
-    if ( ( nBlock % ( BM_MAP_SIZE * 32 ) ) != 0 )
+    uint32_t mapSize = (uint32_t) nBlock / ( ADF_BM_MAP_SIZE * 32 );
+    if ( ( nBlock % ( ADF_BM_MAP_SIZE * 32 ) ) != 0 )
         mapSize++;
     return mapSize;
 }
@@ -69,7 +69,7 @@ static uint32_t nBlock2bitmapSize ( uint32_t nBlock )
  */
 RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
 {
-    struct bRootBlock root;
+    struct AdfRootBlock root;
 
 /*printf("adfUpdateBitmap\n");*/
 
@@ -77,7 +77,7 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
     if ( rc != RC_OK )
         return rc;
 
-    root.bmFlag = BM_INVALID;
+    root.bmFlag = ADF_BM_INVALID;
 
     rc = adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
     if ( rc != RC_OK )
@@ -89,10 +89,10 @@ RETCODE adfUpdateBitmap ( struct AdfVolume * const vol )
                                        vol->bitmap.table[i] );
             if ( rc != RC_OK )
                 return rc;
-            vol->bitmap.blocksChg[i] = FALSE;
+            vol->bitmap.blocksChg[i] = false;
     }
 
-    root.bmFlag = BM_VALID;
+    root.bmFlag = ADF_BM_VALID;
     adfTime2AmigaTime(adfGiveCurrentTime(),&(root.days),&(root.mins),&(root.ticks));
     return adfWriteRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
 }
@@ -119,13 +119,13 @@ uint32_t adfCountFreeBlocks ( const struct AdfVolume * const vol )
  * adfReadBitmap
  *
  */
-RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
-                        const struct bRootBlock * const root )
+RETCODE adfReadBitmap ( struct AdfVolume * const          vol,
+                        const struct AdfRootBlock * const root )
 {
     RETCODE rc = RC_OK;
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.blocksChg[i] = FALSE;
+        vol->bitmap.blocksChg[i] = false;
     }
 
     uint32_t j = 0,
@@ -133,11 +133,11 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM bmSect;
     while ( i < vol->bitmap.size &&
-            i < BM_PAGES_ROOT_SIZE &&
+            i < ADF_BM_PAGES_ROOT_SIZE &&
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = bmSect = root->bmPages[i];
-        if ( ! isSectNumValid ( vol, bmSect ) ) {
+        if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
             adfEnv.wFct ( "adfReadBitmap: sector %d out of range, root bm[%u]",
                           bmSect, i );
             adfFreeBitmap ( vol );
@@ -154,7 +154,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     }
 
     /* state validity checks */
-    assert ( i <= BM_PAGES_ROOT_SIZE );
+    assert ( i <= ADF_BM_PAGES_ROOT_SIZE );
 
     assert ( ( i < vol->bitmap.size &&
                root->bmPages[i] != 0 ) ||
@@ -183,7 +183,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     if ( i < vol->bitmap.size  &&  root->bmExt == 0 ) {
         adfEnv.eFct ( "adfReadBitmap: read %u of %u from root bm sectors of "
                       "%u total to read, but root->bmExt is 0",
-                      i, BM_PAGES_ROOT_SIZE, vol->bitmap.size );
+                      i, ADF_BM_PAGES_ROOT_SIZE, vol->bitmap.size );
         adfFreeBitmap ( vol );
         return RC_ERROR;
     }
@@ -191,7 +191,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
 #if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
-    for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
+    for ( uint32_t i2 = i ; i2 < ADF_BM_PAGES_ROOT_SIZE ; i2++ ) {
         if ( root->bmPages[i2] != 0 )
             adfEnv.wFct ( "adfReadBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
                           "bmpage[%u] in a volume with bmpage size %d",
@@ -204,7 +204,7 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
     if ( root->bmExt == 0 )
         return rc;
 
-    struct bBitmapExtBlock bmExt;
+    struct AdfBitmapExtBlock bmExt;
     SECTNUM bmExtSect = root->bmExt;
 #if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
     unsigned bmExt_i = 0;
@@ -217,9 +217,9 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
             return rc;
         }
         i=0;
-        while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
+        while ( i < ADF_BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
             bmSect = bmExt.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmSect ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
                 adfEnv.wFct ( "adfReadBitmap : sector %d out of range, "
                               "bmext %d bmpages[%u]", bmSect, bmExtSect, i );
                 return RC_ERROR;
@@ -264,14 +264,14 @@ RETCODE adfReadBitmap ( struct AdfVolume * const        vol,
  * adfRecreateBitmap
  *
  */
-RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
-                               const struct bRootBlock * const root )
+RETCODE adfReconstructBitmap ( struct AdfVolume * const          vol,
+                               const struct AdfRootBlock * const root )
 {
     RETCODE rc = RC_OK;
 
     // all bitmap blocks are to update (to improve/optimize, ie. compare with existing)
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.blocksChg[i] = TRUE;
+        vol->bitmap.blocksChg[i] = true;
     }
 
     uint32_t i = 0,
@@ -279,11 +279,11 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     /* bitmap pointers in rootblock : 0 <= i < BM_PAGES_ROOT_SIZE */
     SECTNUM bmSect;
     while ( i < vol->bitmap.size &&
-            i < BM_PAGES_ROOT_SIZE &&
+            i < ADF_BM_PAGES_ROOT_SIZE &&
             root->bmPages[i] != 0 )
     {
         vol->bitmap.blocks[j] = bmSect = root->bmPages[i];
-        if ( ! isSectNumValid ( vol, bmSect ) ) {
+        if ( ! adfVolIsSectNumValid ( vol, bmSect ) ) {
             adfEnv.wFct ( "adfReconstructBitmap: sector %d out of range, root bm[%u]",
                           bmSect, i );
             adfFreeBitmap ( vol );
@@ -300,7 +300,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     }
 
     /* state validity checks */
-    assert ( i <= BM_PAGES_ROOT_SIZE );
+    assert ( i <= ADF_BM_PAGES_ROOT_SIZE );
 
     assert ( ( i < vol->bitmap.size &&
                root->bmPages[i] != 0 ) ||
@@ -329,7 +329,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     if ( i < vol->bitmap.size  &&  root->bmExt == 0 ) {
         adfEnv.eFct ( "adfReconstructBitmap: read %u of %u from root bm sectors of "
                       "%u total to read, but root->bmExt is 0",
-                      i, BM_PAGES_ROOT_SIZE, vol->bitmap.size );
+                      i, ADF_BM_PAGES_ROOT_SIZE, vol->bitmap.size );
         adfFreeBitmap ( vol );
         return RC_ERROR;
     }
@@ -337,7 +337,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     /* check for erratic (?) (non-zero) entries in bmpages beyond the expected size,
        more info:  https://github.com/lclevy/ADFlib/issues/63 */
 #if CHECK_NONZERO_BMPAGES_BEYOND_BMSIZE == 1
-    for ( uint32_t i2 = i ; i2 < BM_PAGES_ROOT_SIZE ; i2++ ) {
+    for ( uint32_t i2 = i ; i2 < ADF_BM_PAGES_ROOT_SIZE ; i2++ ) {
         if ( root->bmPages[i2] != 0 )
             adfEnv.wFct ( "adfReconstructBitmap: a non-zero (%u, 0x%02x) entry in rootblock "
                           "bmpage[%u] in a volume with bmpage size %d",
@@ -355,7 +355,7 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
     unsigned bmExt_i = 0;
 #endif
     while ( bmExtSect != 0 ) {
-        struct bBitmapExtBlock bmExtBlock;
+        struct AdfBitmapExtBlock bmExtBlock;
 
         /* bitmap pointers in bitmapExtBlock, j <= mapSize */
         rc = adfReadBitmapExtBlock ( vol, bmExtSect, &bmExtBlock );
@@ -364,9 +364,9 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
             return rc;
         }
         i=0;
-        while ( i < BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
+        while ( i < ADF_BM_PAGES_EXT_SIZE && j < vol->bitmap.size ) {
             SECTNUM bmBlkPtr = bmExtBlock.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReconstructBitmap : sector %d out of range, "
                               "bmext %d bmpages[%u]", bmBlkPtr, bmExtSect, i );
                 adfFreeBitmap ( vol );
@@ -424,20 +424,20 @@ RETCODE adfReconstructBitmap ( struct AdfVolume * const        vol,
 
     // traverse all files and directories
 
-    struct bDirBlock //bEntryBlock
+    struct AdfDirBlock //AdfEntryBlock
         rootDirBlock;
     rc = adfReadEntryBlock ( vol, vol->rootBlock,
-                             ( struct bEntryBlock * ) &rootDirBlock );
+                             ( struct AdfEntryBlock * ) &rootDirBlock );
     if ( rc != RC_OK ) {
         adfEnv.eFct ( "Error reading directory entry block (%d)\n",
                       vol->rootBlock );
         return rc;
     }
 
-    if ( ! isDirEmpty ( (const struct bDirBlock * const) &rootDirBlock) ) {
+    if ( ! isDirEmpty ( (const struct AdfDirBlock * const) &rootDirBlock) ) {
         // note: for a large volume (a hard disk) getting all entries can become big
         // - it may need to be optimized
-        struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, TRUE );
+        struct AdfList * const entries = adfGetRDirEnt ( vol, vol->rootBlock, true );
         if ( entries == NULL ) {
             return RC_ERROR;
         }
@@ -470,10 +470,10 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         adfSetBlockUsed ( vol, entry->sector );
 
         // mark file blocks
-        if ( entry->type == ST_FILE ) {
-            struct bFileHeaderBlock fhBlock;
+        if ( entry->type == ADF_ST_FILE ) {
+            struct AdfFileHeaderBlock fhBlock;
             RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
-                                              (struct bEntryBlock *) &fhBlock );
+                                              (struct AdfEntryBlock *) &fhBlock );
             if ( rc2 != RC_OK ) {
                 //showerror ?
                 rc = rc2;
@@ -489,10 +489,10 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         }
 
         // mark directory and directory cache blocks
-        else if ( entry->type == ST_DIR ) {
-            struct bDirBlock dirBlock;
+        else if ( entry->type == ADF_ST_DIR ) {
+            struct AdfDirBlock dirBlock;
             RETCODE rc = adfReadEntryBlock ( vol, entry->sector,
-                                             (struct bEntryBlock *) &dirBlock );
+                                             (struct AdfEntryBlock *) &dirBlock );
             if ( rc != RC_OK )
                 return rc;
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );
@@ -512,11 +512,11 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
 
 
 static RETCODE adfBitmapFileBlocksSetUsed (
-    struct AdfVolume * const              vol,
-    const struct bFileHeaderBlock * const fhBlock )
+    struct AdfVolume * const                vol,
+    const struct AdfFileHeaderBlock * const fhBlock )
 {
     // mark blocks from the header
-    for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+    for ( uint32_t block = 0 ; block < ADF_MAX_DATABLK ; block++ ) {
         if ( fhBlock->dataBlocks[block] > 1 )
             adfSetBlockUsed ( vol, fhBlock->dataBlocks[block] );
     }
@@ -526,7 +526,7 @@ static RETCODE adfBitmapFileBlocksSetUsed (
     //const int nExtBlocks = (int) adfFileSize2Extblocks ( fhBlock->byteSize,
     //                                                     vol->datablockSize );
     SECTNUM extBlockPtr = fhBlock->extension;
-    struct bFileExtBlock fext;
+    struct AdfFileExtBlock fext;
     while ( extBlockPtr != 0 ) {
         adfSetBlockUsed ( vol, extBlockPtr );
         if ( adfReadFileExtBlock ( vol, extBlockPtr, &fext ) != RC_OK ) {
@@ -535,7 +535,7 @@ static RETCODE adfBitmapFileBlocksSetUsed (
                           extBlockPtr, fhBlock->fileName );
             return RC_BLOCKREAD;
         }
-        for ( uint32_t block = 0 ; block < MAX_DATABLK ; block++ ) {
+        for ( uint32_t block = 0 ; block < ADF_MAX_DATABLK ; block++ ) {
             if ( fext.dataBlocks[block] > 1 )
                 adfSetBlockUsed ( vol, fext.dataBlocks[block] );
         }
@@ -552,7 +552,7 @@ static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
     while ( dCacheBlockNum != 0 ) {
         adfSetBlockUsed ( vol, dCacheBlockNum );
 
-        struct bDirCacheBlock dirCacheBlock;
+        struct AdfDirCacheBlock dirCacheBlock;
         rc = adfReadDirCBlock ( vol, dCacheBlockNum, &dirCacheBlock );
         if ( rc != RC_OK )
             break;
@@ -568,13 +568,13 @@ static RETCODE adfBitmapDirCacheSetUsed ( struct AdfVolume * const vol,
  * adfIsBlockFree
  *
  */
-BOOL adfIsBlockFree ( const struct AdfVolume * const vol,
+bool adfIsBlockFree ( const struct AdfVolume * const vol,
                       const SECTNUM nSect )
 {
     assert ( nSect >= 2 );
     int sectOfMap = nSect-2;
-    int block      = sectOfMap / ( BM_MAP_SIZE * 32 );
-    int indexInMap = ( sectOfMap / 32 ) % BM_MAP_SIZE;
+    int block      = sectOfMap / ( ADF_BM_MAP_SIZE * 32 );
+    int indexInMap = ( sectOfMap / 32 ) % ADF_BM_MAP_SIZE;
 
 /*printf("sect=%d block=%d ind=%d,  ",sectOfMap,block,indexInMap);
 printf("bit=%d,  ",sectOfMap%32);
@@ -599,8 +599,8 @@ void adfSetBlockFree ( struct AdfVolume * const vol,
 
     uint32_t oldValue;
     int sectOfMap = nSect-2;
-    int block      = sectOfMap / ( BM_MAP_SIZE * 32 );
-    int indexInMap = ( sectOfMap / 32 ) % BM_MAP_SIZE;
+    int block      = sectOfMap / ( ADF_BM_MAP_SIZE * 32 );
+    int indexInMap = ( sectOfMap / 32 ) % ADF_BM_MAP_SIZE;
 
 /*printf("sect=%d block=%d ind=%d,  ",sectOfMap,block,indexInMap);
 printf("bit=%d,  ",sectOfMap%32);
@@ -612,7 +612,7 @@ printf("bit=%d,  ",sectOfMap%32);
 	    = oldValue | bitMask[ sectOfMap%32 ];
 /*printf("new=%x,  ",vol->bitmapTable[ block ]->map[ indexInMap ]);*/
 
-    vol->bitmap.blocksChg[ block ] = TRUE;
+    vol->bitmap.blocksChg[ block ] = true;
 }
 
 
@@ -628,14 +628,14 @@ void adfSetBlockUsed ( struct AdfVolume * const vol,
 
     uint32_t oldValue;
     int sectOfMap = nSect-2;
-    int block      = sectOfMap / ( BM_MAP_SIZE * 32 );
-    int indexInMap = ( sectOfMap / 32 ) % BM_MAP_SIZE;
+    int block      = sectOfMap / ( ADF_BM_MAP_SIZE * 32 );
+    int indexInMap = ( sectOfMap / 32 ) % ADF_BM_MAP_SIZE;
 
     oldValue = vol->bitmap.table[ block ]->map[ indexInMap ];
 
     vol->bitmap.table[ block ]->map[ indexInMap ]
 	    = oldValue & (~bitMask[ sectOfMap%32 ]);
-    vol->bitmap.blocksChg[ block ] = TRUE;
+    vol->bitmap.blocksChg[ block ] = true;
 }
 
 
@@ -656,16 +656,15 @@ SECTNUM adfGet1FreeBlock ( struct AdfVolume * const vol )
  * adfGetFreeBlocks
  *
  */
-BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
+bool adfGetFreeBlocks ( struct AdfVolume * const vol,
                         const int                nbSect,
                         SECTNUM * const          sectList )
 {
     int i, j;
-    BOOL diskFull;
     int32_t block = vol->rootBlock;
 
     i = 0;
-    diskFull = FALSE;
+    bool diskFull = false;
 /*printf("lastblock=%ld\n",vol->lastBlock);*/
     while ( i < nbSect && !diskFull ) {
         if ( adfIsBlockFree(vol, block) ) {
@@ -679,11 +678,11 @@ BOOL adfGetFreeBlocks ( struct AdfVolume * const vol,
         } else {
             block++;
             if ( block == vol->rootBlock )
-                diskFull = TRUE;
+                diskFull = true;
         }
     }
 
-    BOOL gotAllBlocks = ( i == nbSect );
+    bool gotAllBlocks = ( i == nbSect );
     if ( gotAllBlocks )
         for(j=0; j<nbSect; j++)
             adfSetBlockUsed( vol, sectList[j] );
@@ -722,10 +721,8 @@ RETCODE adfCreateBitmap ( struct AdfVolume * const vol )
  */
 RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 {
-    struct bBitmapExtBlock bitme;
     SECTNUM *bitExtBlock;
     SECTNUM *sectList;
-    struct bRootBlock root;
 
     sectList = (SECTNUM *) malloc ( sizeof(SECTNUM) * (unsigned) vol->bitmap.size );
     if (!sectList) {
@@ -738,23 +735,24 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
         return RC_VOLFULL;
     }
 
+    struct AdfRootBlock root;
     RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
     if ( rc != RC_OK ) {
         free(sectList);
         return rc;
     }
 
-    unsigned n = min( vol->bitmap.size, (uint32_t) BM_PAGES_ROOT_SIZE );
+    unsigned n = min( vol->bitmap.size, (uint32_t) ADF_BM_PAGES_ROOT_SIZE );
     for ( unsigned i = 0 ; i < n ; i++ ) {
         root.bmPages[i] = vol->bitmap.blocks[i] = sectList[i];
     }
     unsigned nBlock = n;
 
     /* for devices with more than 25 * BM_MAP_SIZE(127) blocks == hards disks */
-    if ( vol->bitmap.size > BM_PAGES_ROOT_SIZE ) {
+    if ( vol->bitmap.size > ADF_BM_PAGES_ROOT_SIZE ) {
 
-        unsigned nExtBlock = (vol->bitmap.size - BM_PAGES_ROOT_SIZE ) / BM_MAP_SIZE;
-        if ( ( vol->bitmap.size - BM_PAGES_ROOT_SIZE ) % BM_MAP_SIZE )
+        unsigned nExtBlock = (vol->bitmap.size - ADF_BM_PAGES_ROOT_SIZE ) / ADF_BM_MAP_SIZE;
+        if ( ( vol->bitmap.size - ADF_BM_PAGES_ROOT_SIZE ) % ADF_BM_MAP_SIZE )
             nExtBlock++;
 
         bitExtBlock = (SECTNUM *) malloc ( sizeof(SECTNUM) * (unsigned) nExtBlock );
@@ -771,9 +769,10 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 
         unsigned k = 0;
         root.bmExt = bitExtBlock[ k ];
+        struct AdfBitmapExtBlock bitme;
         while( nBlock<vol->bitmap.size ) {
             int i = 0;
-            while( i < BM_PAGES_EXT_SIZE && nBlock < vol->bitmap.size ) {
+            while( i < ADF_BM_PAGES_EXT_SIZE && nBlock < vol->bitmap.size ) {
                 bitme.bmPages[i] = vol->bitmap.blocks[nBlock] = sectList[i];
                 i++;
                 nBlock++;
@@ -804,24 +803,24 @@ RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
-                             SECTNUM               nSect,
-                             struct bBitmapBlock * bitm )
+RETCODE adfReadBitmapBlock ( struct AdfVolume *      vol,
+                             SECTNUM                 nSect,
+                             struct AdfBitmapBlock * bitm )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
 /*printf("bitmap %ld\n",nSect);*/
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
-    memcpy ( bitm, buf, LOGICAL_BLOCK_SIZE );
+    memcpy ( bitm, buf, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* big to little = 68000 to x86 */
-    swapEndian((uint8_t*)bitm, SWBL_BITMAP);
+    adfSwapEndian ( (uint8_t *) bitm, ADF_SWBL_BITMAP );
 #endif
 
-    if ( bitm->checkSum != adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE ) ) {
+    if ( bitm->checkSum != adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE ) ) {
         adfEnv.wFct ( "adfReadBitmapBlock : invalid checksum, volume '%s', block %u",
                       vol->volName, nSect );
         // return error here?
@@ -836,25 +835,25 @@ RETCODE adfReadBitmapBlock ( struct AdfVolume *    vol,
  *
  * OK
  */
-RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
-                              const SECTNUM                     nSect,
-                              const struct bBitmapBlock * const bitm )
+RETCODE adfWriteBitmapBlock ( struct AdfVolume * const            vol,
+                              const SECTNUM                       nSect,
+                              const struct AdfBitmapBlock * const bitm )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
-    memcpy ( buf, bitm, LOGICAL_BLOCK_SIZE );
+    memcpy ( buf, bitm, ADF_LOGICAL_BLOCK_SIZE );
 
 #ifdef LITT_ENDIAN
     /* little to big */
-    swapEndian ( buf, SWBL_BITMAP );
+    adfSwapEndian ( buf, ADF_SWBL_BITMAP );
 #endif
 
-    uint32_t newSum = adfNormalSum ( buf, 0, LOGICAL_BLOCK_SIZE );
+    uint32_t newSum = adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
     swLong ( buf, newSum );
 
 /*	dumpBlock((uint8_t*)buf);*/
 
-    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
+    return adfVolWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 
@@ -863,19 +862,19 @@ RETCODE adfWriteBitmapBlock ( struct AdfVolume * const          vol,
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
-                                const SECTNUM                  nSect,
-                                struct bBitmapExtBlock * const bitme )
+RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const         vol,
+                                const SECTNUM                    nSect,
+                                struct AdfBitmapExtBlock * const bitme )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
-    RETCODE rc = adfReadBlock ( vol, (uint32_t) nSect, buf );
+    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
-    memcpy ( bitme, buf, LOGICAL_BLOCK_SIZE );
+    memcpy ( bitme, buf, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
-    swapEndian((uint8_t*)bitme, SWBL_BITMAP);
+    adfSwapEndian ( (uint8_t *) bitme, ADF_SWBL_BITMAP );
 #endif
 
     return RC_OK;
@@ -886,20 +885,20 @@ RETCODE adfReadBitmapExtBlock ( struct AdfVolume * const       vol,
  * adfWriteBitmapExtBlock
  *
  */
-RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const             vol,
-                                 const SECTNUM                        nSect,
-                                 const struct bBitmapExtBlock * const bitme )
+RETCODE adfWriteBitmapExtBlock ( struct AdfVolume * const               vol,
+                                 const SECTNUM                          nSect,
+                                 const struct AdfBitmapExtBlock * const bitme )
 {
-    uint8_t buf[LOGICAL_BLOCK_SIZE];
+    uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 	
-    memcpy ( buf, bitme, LOGICAL_BLOCK_SIZE );
+    memcpy ( buf, bitme, ADF_LOGICAL_BLOCK_SIZE );
 #ifdef LITT_ENDIAN
     /* little to big */
-    swapEndian(buf, SWBL_BITMAPE);
+    adfSwapEndian ( buf, ADF_SWBL_BITMAPE );
 #endif
 
 /*	dumpBlock((uint8_t*)buf);*/
-    return adfWriteBlock ( vol, (uint32_t) nSect, buf );
+    return adfVolWriteBlock ( vol, (uint32_t) nSect, buf );
 }
 
 
@@ -936,8 +935,8 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     vol->bitmap.size = nBlock2bitmapSize (
         adfVolGetBlockNumWithoutBootblock ( vol ) );
 
-    vol->bitmap.table = (struct bBitmapBlock**)
-        malloc ( sizeof(struct bBitmapBlock *) * vol->bitmap.size );
+    vol->bitmap.table = (struct AdfBitmapBlock**)
+        malloc ( sizeof(struct AdfBitmapBlock *) * vol->bitmap.size );
     if ( vol->bitmap.table == NULL ) {
         adfEnv.eFct("adfBitmapAllocate : malloc, vol->bitmapTable");
         return RC_MALLOC;
@@ -951,7 +950,7 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
         return RC_MALLOC;
     }
 
-    vol->bitmap.blocksChg = (BOOL*) malloc ( sizeof(BOOL) * vol->bitmap.size );
+    vol->bitmap.blocksChg = (bool *) malloc ( sizeof(bool) * vol->bitmap.size );
     if ( vol->bitmap.blocksChg == NULL ) {
         free ( vol->bitmap.table );
         vol->bitmap.table = NULL;
@@ -962,8 +961,8 @@ RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
     }
 
     for ( unsigned i = 0 ; i < vol->bitmap.size ; i++ ) {
-        vol->bitmap.table[i] = (struct bBitmapBlock *)
-            malloc ( sizeof(struct bBitmapBlock) );
+        vol->bitmap.table[i] = (struct AdfBitmapBlock *)
+            malloc ( sizeof(struct AdfBitmapBlock) );
 
         if ( vol->bitmap.table[i] == NULL) {
             free ( vol->bitmap.blocksChg );

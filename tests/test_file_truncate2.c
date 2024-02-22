@@ -49,7 +49,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -69,9 +69,9 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -88,7 +88,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
     // the same when open for appending
@@ -98,7 +98,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 */
     // the same when open for writing
@@ -108,7 +108,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
@@ -124,7 +124,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     // write data buffer to the file
     const unsigned bufsize = tdata->bufsize;
@@ -148,14 +148,14 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
                     file->posInExtBlk, expected_posInExtBlk, tdata->bufsize );
     //ck_assert_int_eq ( 1, file->posInDataBlk );
     ck_assert_int_eq ( ( ( bufsize - 1 ) / vol->datablockSize ) + 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
     ck_assert_ptr_nonnull ( file );
@@ -189,7 +189,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     free ( blocks_to_remove.sectors );
 
     // umount volume
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 }
 
 static const unsigned buflen[] = {
@@ -340,7 +340,7 @@ void setup ( test_data_t * const tdata )
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);
@@ -357,7 +357,7 @@ void teardown ( test_data_t * const tdata )
     free ( tdata->buffer );
     tdata->buffer = NULL;
 
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     //if ( unlink ( tdata->adfname ) != 0 )

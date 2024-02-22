@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     /* test getting real name from a softlink */
     status += test_softlink_realname ( vol, "slink_dir1", "dir_1" );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -171,14 +171,14 @@ int test_softlink_realname ( struct AdfVolume * vol,
 
     printf ("*** Test getting destination name for soft link %s\n", slink );
 
-    struct bLinkBlock entry;
+    struct AdfLinkBlock entry;
     SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
-                                          (struct bEntryBlock *) &entry );
+                                          (struct AdfEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }
 
-    if ( entry.secType != ST_LSOFT ) {
+    if ( entry.secType != ADF_ST_LSOFT ) {
         return 1;
     }
 

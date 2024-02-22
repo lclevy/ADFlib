@@ -1,12 +1,12 @@
 
-#ifndef __ADF_DEV_H__
-#define __ADF_DEV_H__
+#ifndef ADF_DEV_H
+#define ADF_DEV_H
 
 #include "adf_types.h"
 #include "adf_err.h"
 #include "adf_dev_driver.h"
+#include "adf_prefix.h"
 #include "adf_vol.h"
-#include "prefix.h"
 
 
 #include <stdio.h>
@@ -28,7 +28,7 @@ struct Partition {
 struct AdfDevice {
     char * name;
     int devType;               /* see below */
-    BOOL readOnly;
+    bool readOnly;
     uint32_t size;                /* in bytes */
 
     uint32_t cylinders;            /* geometry */
@@ -38,7 +38,7 @@ struct AdfDevice {
     const struct AdfDeviceDriver * drv;
     void *                   drvData;   /* driver-specific device data,
                                            (private, use only in the driver code!) */
-    BOOL mounted;
+    bool mounted;
 
     // stuff available when mounted
     int nVol;                  /* partitions */
@@ -98,4 +98,4 @@ RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
                            const uint32_t           pSect,
                            const uint32_t           size,
                            const uint8_t * const    buf );
-#endif
+#endif  /* ADF_DEV_H */

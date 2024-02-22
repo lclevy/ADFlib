@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
     unsigned char buf[1];
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
  
     /* create and mount one device */
     struct AdfDevice * const hd = adfDevCreate ( "dump", "undel-newdev", 80, 2, 11 );
@@ -42,14 +42,16 @@ int main(int argc, char *argv[])
 
     adfDevInfo ( hd );
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -69,11 +71,11 @@ int main(int argc, char *argv[])
     adfFileClose ( fic );
 
     puts("\ncreate file_1a");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfCreateDir(vol,vol->curDirPtr,"dir_5u");
     puts("\ncreate dir_5u");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
@@ -84,11 +86,11 @@ int main(int argc, char *argv[])
 
     puts("\nremove file_1a");
     adfRemoveEntry(vol,vol->curDirPtr,"file_1a");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfRemoveEntry(vol,vol->curDirPtr,"dir_5u");
     puts("\nremove dir_5u");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
     while(cell) {
@@ -104,11 +106,11 @@ int main(int argc, char *argv[])
 
     adfUndelEntry(vol,vol->curDirPtr,883); // file_1a
     puts("\nundel file_1a");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     adfUndelEntry(vol,vol->curDirPtr,885); // dir_5u
     puts("\nundel dir_5u");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
@@ -118,7 +120,7 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

@@ -1,6 +1,6 @@
 
-#ifndef __ADF_FILE_UTIL__
-#define __ADF_FILE_UTIL__
+#ifndef ADF_FILE_UTIL_H
+#define ADF_FILE_UTIL_H
 
 #include "adf_blk.h"
 
@@ -24,10 +24,10 @@ static inline unsigned adfFileSize2Datablocks ( unsigned fsize,
 
 static inline unsigned adfFileDatablocks2Extblocks ( unsigned ndatablocks )
 {
-    //return max ( ( ndata_blocks - 1 ) / MAX_DATABLK, 0 );
+    //return max ( ( ndata_blocks - 1 ) / ADF_MAX_DATABLK, 0 );
     if ( ndatablocks < 1 )
         return 0;
-    return ( ndatablocks - 1 ) / ( MAX_DATABLK );
+    return ( ndatablocks - 1 ) / ( ADF_MAX_DATABLK );
 }
 
 static inline unsigned adfFileSize2Extblocks ( unsigned fsize,
@@ -47,4 +47,4 @@ static inline unsigned adfFileSize2Blocks ( unsigned fsize,
     return data_blocks + ext_blocks + 1;   // +1 for the file header block
 }
 
-#endif
+#endif  /* ADF_FILE_UTIL_H */

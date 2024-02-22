@@ -24,14 +24,14 @@ int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
     struct AdfVolume *vol;
-    BOOL true = TRUE;
  
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
 
     /* use or not the progress bar callback */
-    adfChgEnvProp(PR_USE_PROGBAR,&true);
+    adfChgEnvProp ( PR_USE_PROGBAR, &truevar );
  
     /* create and mount one device */
 puts("\ncreate dumpdevice");
@@ -43,14 +43,16 @@ puts("\ncreate dumpdevice");
 
     adfDevInfo ( hd );
 puts("\ncreate floppy");
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -58,9 +60,9 @@ puts("\ncreate floppy");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

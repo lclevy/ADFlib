@@ -40,9 +40,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
+    adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                 ADF_DOSFS_DIRCACHE );
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     /* the directory */
     list = adfGetDirEnt(vol,vol->curDirPtr);
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
 
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

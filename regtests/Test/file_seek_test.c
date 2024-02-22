@@ -151,7 +151,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
@@ -160,7 +160,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
         return 1;
     }
 #if TEST_VERBOSITY > 0
-    adfVolumeInfo ( vol );
+    adfVolInfo ( vol );
 #endif
 
     int status = 0;
@@ -192,7 +192,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
     adfFileClose ( file );
 
 cleanup:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( dev );
     adfDevClose ( dev );
 

@@ -38,6 +38,4 @@ void adfRemoveDeviceDrivers ( void );
 const struct AdfDeviceDriver * adfGetDeviceDriverByName ( const char * const driverName );
 const struct AdfDeviceDriver * adfGetDeviceDriverByDevName ( const char * const deviceName );
 
-#endif /* ADF_DEV_DRIVERS_H */
-
-/*#######################################################################################*/
+#endif  /* ADF_DEV_DRIVERS_H */

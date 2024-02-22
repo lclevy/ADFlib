@@ -35,14 +35,16 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo(hd);
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
@@ -121,7 +123,7 @@ printf("[dir = %ld]\n",883L);
     }
     adfFreeDirList(list);
 
-	    adfUnMount(vol);
+	    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

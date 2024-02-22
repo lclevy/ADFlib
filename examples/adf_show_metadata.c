@@ -72,7 +72,8 @@ int main ( const int                  argc,
         goto dev_cleanup;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, args.vol_id, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, args.vol_id,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   args.vol_id );
@@ -88,7 +89,7 @@ int main ( const int                  argc,
         show_volume_metadata ( vol );
     }
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 dev_mount_cleanup:
     adfDevUnMount ( dev );
@@ -165,7 +166,7 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
     }
 
     // get entry
-    struct bEntryBlock entry;
+    struct AdfEntryBlock entry;
     SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr,
                                           entry_name, &entry );
     if ( sectNum == -1 ) {
@@ -174,22 +175,22 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
     }
 
     switch ( entry.secType ) {
-    case ST_ROOT:
+    case ADF_ST_ROOT:
         fprintf ( stderr, "Querying root directory?\n" );
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         show_directory_metadata ( vol, sectNum );
         break;
-    case ST_FILE:
+    case ADF_ST_FILE:
         show_file_metadata ( vol, sectNum );
         break;
-    case ST_LFILE:
+    case ADF_ST_LFILE:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LDIR:
+    case ADF_ST_LDIR:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LSOFT:
+    case ADF_ST_LSOFT:
         break;
     default:
         fprintf ( stderr, "unknown entry type %d\n", entry.secType );

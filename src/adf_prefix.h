@@ -1,8 +1,5 @@
-#ifndef _PREFIX_H
-#define _PREFIX_H 1
-
 /*
- * prefix.h
+ * adf_prefix.h
  *
  *  $Id$
  *
@@ -27,6 +24,9 @@
  *
  */ 
 
+#ifndef ADF_PREFIX_H
+#define ADF_PREFIX_H
+
 //#ifdef WIN32DLL
 //#ifdef _WIN32
 #ifdef BUILD_DLL
@@ -47,4 +47,4 @@
 #define PREFIX 
 #endif
 
-#endif /* _PREFIX_H */
+#endif  /* ADF_PREFIX_H */

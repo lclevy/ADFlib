@@ -26,14 +26,14 @@ int main(int argc, char *argv[])
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    BOOL true = TRUE;
     struct AdfFile *file;
     unsigned char buf[600];
     FILE *out;
   
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    bool truevar = true;
+    adfChgEnvProp ( PR_USEDIRC, &truevar );
  
     struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo ( hd );
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -66,11 +66,11 @@ int main(int argc, char *argv[])
         cell = cell->next;
     }
     adfFreeDirList(list);
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     puts("\nremove MOON.GIF");
     adfRemoveEntry(vol,vol->curDirPtr,"MOON.GIF");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
     while(cell) {
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     adfCheckEntry(vol,884,0);
     adfUndelEntry(vol,vol->curDirPtr,884);
     puts("\nundel MOON.GIF");
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
     adfFileClose ( file );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

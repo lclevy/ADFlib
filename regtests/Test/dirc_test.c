@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     putchar('\n');
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

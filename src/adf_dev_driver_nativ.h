@@ -21,11 +21,11 @@
  *
  */
 
-#ifndef ADF_NATIV_H
-#define ADF_NATIV_H
+#ifndef ADF_DEV_DRIVER_NATIV_H
+#define ADF_DEV_DRIVER_NATIV_H
 
 #include "adf_dev_driver.h"
 
 extern const struct AdfDeviceDriver adfDeviceDriverNative;
 
-#endif
+#endif  /* ADF_DEV_DRIVER_NATIV_H */

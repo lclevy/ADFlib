@@ -1,6 +1,3 @@
-#ifndef ADFLIB_H
-#define ADFLIB_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -28,12 +25,15 @@
  *
  */
 
+#ifndef ADFLIB_H
+#define ADFLIB_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 /* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
-#include "prefix.h"
+#include "adf_prefix.h"
 
 #include "adf_types.h"
 #include "adf_version.h"
@@ -57,8 +57,7 @@ extern "C" {
 #include "adf_dev_hd.h"
 
 /* device drivers */
-#include "adf_dev_driver_dump.h"
-#include "adf_dev_driver_ramdisk.h"
+#include "adf_dev_drivers.h"
 
 /* env */
 #include "adf_env.h"
@@ -80,5 +79,4 @@ extern "C" {
 }
 #endif
 
-#endif /* ADFLIB_H */
-/*##########################################################################*/
+#endif  /* ADFLIB_H */

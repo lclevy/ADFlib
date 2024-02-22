@@ -110,9 +110,9 @@ void adfDays2Date ( int32_t       days,
  *
  * true if a year (y) is leap
  */
-BOOL adfIsLeap ( const int y )
+bool adfIsLeap ( const int y )
 {
-    return( (BOOL) ( !(y%100) ? !(y%400) : !(y%4) ) );
+    return( (bool) ( !(y%100) ? !(y%400) : !(y%4) ) );
 }
 
 

@@ -17,9 +17,9 @@ ADF device info:
     Heads	2
     Sectors	11
 
-  Volumes (1):
-   idx  first bl.     last bl.    name
-     0          0         1759    "cshell"    mounted
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    DOS(OFS)      "cshell"
 
 EOF
 
@@ -99,7 +99,7 @@ Mounted volume:		0
 
 Path:		CSH
 
-bFileHeaderBlock:
+File Header Block:
   0x000  type:		0x2		2
   0x004  headerKey:	0x3f6		1014
   0x008  highSeq:	0x48		72

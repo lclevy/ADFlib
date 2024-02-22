@@ -41,7 +41,7 @@ struct AdfNativeDevice {
        void *hDrv;
 };
 
-static BOOL Win32IsDevice ( const char * const devName );
+static bool Win32IsDevice ( const char * const devName );
 static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
 
 
@@ -116,7 +116,7 @@ static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
 	dev->devType = adfDevType ( dev );
 	dev->nVol    = 0;
 	dev->volList = NULL;
-	dev->mounted = FALSE;
+	dev->mounted = false;
 	dev->name    = strdup ( lpstrName );
 	dev->drv     = &adfDeviceDriverNative;
 
@@ -169,13 +169,13 @@ static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 	return RC_OK;
 }
 
-static BOOL Win32IsDevNative ( void )
+static bool Win32IsDevNative ( void )
 {
-    return TRUE;
+    return true;
 }
 
 
-static BOOL Win32IsDevice ( const char * const devName )
+static bool Win32IsDevice ( const char * const devName )
 {
         return devName[0] == '|';
 }

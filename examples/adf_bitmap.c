@@ -92,7 +92,7 @@ int main ( int     argc,
     }
 
     int vol_id = 0;
-    struct AdfVolume * const vol = adfMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, vol_id, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   vol_id );
@@ -108,7 +108,7 @@ int main ( int     argc,
              "\nBlock allocation bitmap blocks:   %u\n",
              vol_id, vol->volName,
              volSizeBlocks, volSizeBlocks - 2,
-             1 + ( volSizeBlocks - 2 ) / ( BM_MAP_SIZE * 4 * 8 ) );
+             1 + ( volSizeBlocks - 2 ) / ( ADF_BM_MAP_SIZE * 4 * 8 ) );
 
     if ( command == COMMAND_REBUILD ) {
         RETCODE rc = rebuild_bitmap ( vol );
@@ -117,7 +117,7 @@ int main ( int     argc,
         status = show_block_allocation_bitmap ( vol );
     }
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 dev_mount_cleanup:
     adfDevUnMount ( dev );
@@ -132,14 +132,14 @@ env_cleanup:
 
 RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
 {
-    RETCODE rc = adfRemount ( vol, ADF_ACCESS_MODE_READWRITE );
+    RETCODE rc = adfVolRemount ( vol, ADF_ACCESS_MODE_READWRITE );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Remounting the volume read-write has failed -"
                   " aborting...\n" );
         return rc;
     }
 
-    struct bRootBlock root;
+    struct AdfRootBlock root;
     //printf ("reading root block from %u\n", vol->rootBlock );
     rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
     if ( rc != RC_OK ) {
@@ -174,8 +174,8 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         "----------------------------------------------------------------------",
         separatorLine2[] =
         "======================================================================";
-    struct bRootBlock   rb;
-    struct bBitmapBlock bm;
+    struct AdfRootBlock   rb;
+    struct AdfBitmapBlock bm;
 
     if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &rb ) != RC_OK ) {
         fprintf ( stderr, "invalid RootBlock on orig. volume, sector %u\n",
@@ -184,7 +184,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     }
 
     printf ( "\nBlock allocation bitmap valid:    %s\n",
-             rb.bmFlag == BM_VALID ? "yes" : "No!" );
+             rb.bmFlag == ADF_BM_VALID ? "yes" : "No!" );
 
     /* Check root bm pages  */
     unsigned nerrors = 0,
@@ -195,7 +195,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     unsigned last_uint32_bits_unused =
         filesystem_blocks_num % 32 == 0 ? 0 : 32 - filesystem_blocks_num % 32;
 
-    for ( unsigned i = 0 ; i < BM_PAGES_ROOT_SIZE ; i++ ) {
+    for ( unsigned i = 0 ; i < ADF_BM_PAGES_ROOT_SIZE ; i++ ) {
         SECTNUM bmPage = rb.bmPages[i];
 
         if ( bmPage == 0 )
@@ -213,9 +213,9 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                  "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
                  separatorLine2, i, bmPage, separatorLine1 );
 
-        for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+        for ( unsigned j = 0 ; j < ADF_BM_MAP_SIZE ; j++ ) {
             uint32_t val = bm.map[j];
-            unsigned blockNum = ( i * BM_MAP_SIZE + j ) * 32;
+            unsigned blockNum = ( i * ADF_BM_MAP_SIZE + j ) * 32;
             printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
                      j, blockNum, blockNum,
                      val,  num32_to_bit_str ( val, bitStr ) );
@@ -233,7 +233,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     /* show bmExt blocks */
     SECTNUM bmExtBlkPtr = rb.bmExt;
     while ( bmExtBlkPtr != 0 ) {
-        struct bBitmapExtBlock bmExtBlk;
+        struct AdfBitmapExtBlock bmExtBlk;
         RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
         if ( rc != RC_OK ) {
             adfFreeBitmap ( vol );
@@ -241,9 +241,9 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         }
 
         unsigned i = 0;
-        while ( i < BM_PAGES_EXT_SIZE ) {
+        while ( i < ADF_BM_PAGES_EXT_SIZE ) {
             SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
-            if ( ! isSectNumValid ( vol, bmBlkPtr ) ) {
+            if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
                 adfFreeBitmap ( vol );
                 return 1;
@@ -262,10 +262,10 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
                      "index  block  -> hex       value     bitmap ('.' = free, 'o' = used)\n%s\n",
                      separatorLine2, bmExtBlkPtr, i, bmBlkPtr, separatorLine1 );
 
-            for ( unsigned j = 0 ; j < BM_MAP_SIZE ; j++ ) {
+            for ( unsigned j = 0 ; j < ADF_BM_MAP_SIZE ; j++ ) {
                 uint32_t val = bm.map[j];
-                unsigned blockNum = ( BM_PAGES_ROOT_SIZE * BM_MAP_SIZE +
-                                      i * BM_MAP_SIZE + j ) * 32;
+                unsigned blockNum = ( ADF_BM_PAGES_ROOT_SIZE * ADF_BM_MAP_SIZE +
+                                      i * ADF_BM_MAP_SIZE + j ) * 32;
                 printf ( "%5u  %5u  0x%04x  0x%08x   %s\n",
                          j, blockNum, blockNum,
                          val,  num32_to_bit_str ( val, bitStr ) );

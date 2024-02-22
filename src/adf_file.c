@@ -50,11 +50,11 @@
 
 static void show_File ( const struct AdfFile * const file );
 
-static void show_bFileHeaderBlock (
-    const struct bFileHeaderBlock * const block );
+static void showAdfFileHeaderBlock (
+    const struct AdfFileHeaderBlock * const block );
 
-static void show_bFileExtBlock (
-    const struct bFileExtBlock * const block );
+static void showAdfFileExtBlock (
+    const struct AdfFileExtBlock * const block );
 
 #else
 #define NDEBUG
@@ -123,7 +123,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
         int32_t * const dataBlocks = file->fileHdr->dataBlocks;
         for ( unsigned i = nDBlocksNew + 1 ; i <= nDBlocksOld ; ++i ) {
             assert ( blocksCount < nBlocksToRemove );
-            blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+            blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ ADF_MAX_DATABLK - i ];
 #ifdef DEBUG_ADF_FILE
             dataBlocksCount++;
 #endif
@@ -131,7 +131,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
     } else {
         // the file to truncate has at least one ext. block
 
-        struct bFileExtBlock * const extBlock = malloc ( sizeof ( struct bFileExtBlock ) );
+        struct AdfFileExtBlock * const extBlock = malloc ( sizeof ( struct AdfFileExtBlock ) );
         if ( extBlock == NULL ) {
             free ( blocksToRemove->sectors );
             return RC_MALLOC;
@@ -143,9 +143,9 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
             int32_t * const dataBlocks = file->fileHdr->dataBlocks;
 
             // here for sure all blocks to the end of the array will be removed
-            for ( unsigned i = nDBlocksNew + 1 ; i <= MAX_DATABLK ; ++i ) {
+            for ( unsigned i = nDBlocksNew + 1 ; i <= ADF_MAX_DATABLK ; ++i ) {
                 assert ( blocksCount < nBlocksToRemove );
-                blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+                blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ ADF_MAX_DATABLK - i ];
 #ifdef DEBUG_ADF_FILE
                 dataBlocksCount++;
 #endif
@@ -162,25 +162,25 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 return rc;
             }
 
-            if ( nDBlocksNew / MAX_DATABLK > 0  &&   // min. one ext
-                 nDBlocksNew % MAX_DATABLK != 0 )    // the last ext. is not full
+            if ( nDBlocksNew / ADF_MAX_DATABLK > 0  &&   // min. one ext
+                 nDBlocksNew % ADF_MAX_DATABLK != 0 )    // the last ext. is not full
             {
                 const unsigned firstDBlockToRemove =
-                    ( ( nDBlocksNew - MAX_DATABLK * nExtBlocksNew == MAX_DATABLK ) ?
-                      MAX_DATABLK :
-                      nDBlocksNew % MAX_DATABLK + 1 );
+                    ( ( nDBlocksNew - ADF_MAX_DATABLK * nExtBlocksNew == ADF_MAX_DATABLK ) ?
+                      ADF_MAX_DATABLK :
+                      nDBlocksNew % ADF_MAX_DATABLK + 1 );
 
                 const unsigned lastDBlockToRemove =
                     ( nExtBlocksNew == nExtBlocksOld ) ?
 
                     // already in the last ext. - removing data blocks only here
                     // (and no ext. to remove)
-                    ( ( nDBlocksOld - MAX_DATABLK * nExtBlocksNew == MAX_DATABLK ) ?
-                      MAX_DATABLK :                    // the last ext block is full (MAX_DATABLK)
-                      nDBlocksOld % MAX_DATABLK ) :    // the last ext block has < MAX_DATABLK
+                    ( ( nDBlocksOld - ADF_MAX_DATABLK * nExtBlocksNew == ADF_MAX_DATABLK ) ?
+                      ADF_MAX_DATABLK :                    // the last ext block is full (ADF_MAX_DATABLK)
+                      nDBlocksOld % ADF_MAX_DATABLK ) :    // the last ext block has < ADF_MAX_DATABLK
 
                     // not the last ext. -> dblocks from the whole list to remove
-                    MAX_DATABLK;
+                    ADF_MAX_DATABLK;
 
                 //printf ( "firstDBlockToRemove %u, lastDBlockToRemove %u\n" ,
                 //         firstDBlockToRemove, lastDBlockToRemove );
@@ -188,7 +188,7 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 int32_t * const dataBlocks = extBlock->dataBlocks;
                 for ( unsigned i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i ) {
                     assert ( blocksCount < nBlocksToRemove );
-                    blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+                    blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ ADF_MAX_DATABLK - i ];
 #ifdef DEBUG_ADF_FILE
                     dataBlocksCount++;
 #endif
@@ -213,16 +213,16 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 ( (unsigned) ( extBlock_i + 1 ) == nExtBlocksOld ) ?
 
                 // the last ext block
-                ( ( nDBlocksOld - MAX_DATABLK * ( extBlock_i + 1 ) == MAX_DATABLK ) ?
-                  MAX_DATABLK :                    // the last ext block is full (MAX_DATABLK)
-                  nDBlocksOld % MAX_DATABLK ) :    // the last ext block has < MAX_DATABLK
+                ( ( nDBlocksOld - ADF_MAX_DATABLK * ( extBlock_i + 1 ) == ADF_MAX_DATABLK ) ?
+                  ADF_MAX_DATABLK :                    // the last ext block is full (ADF_MAX_DATABLK)
+                  nDBlocksOld % ADF_MAX_DATABLK ) :    // the last ext block has < ADF_MAX_DATABLK
 
                 // not the last ext - all data blocks to remove
-                MAX_DATABLK;
+                ADF_MAX_DATABLK;
 
             int32_t * const dataBlocks = extBlock->dataBlocks;
-            /*for ( unsigned i = 1 ; i <= MAX_DATABLK ; ++i ) {
-                SECTNUM dblock = dataBlocks [ MAX_DATABLK - i ];
+            /*for ( unsigned i = 1 ; i <= ADF_MAX_DATABLK ; ++i ) {
+                SECTNUM dblock = dataBlocks [ ADF_MAX_DATABLK - i ];
                 if ( dblock > 0 ) {
                     blocksToRemove->sectors [ blocksCount++ ] = dblock;
 #ifdef DEBUG_ADF_FILE
@@ -231,8 +231,8 @@ RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
                 }
             }*/
             for ( unsigned i = 1 ; i <= lastDBlockToRemove ; ++i ) {
-                assert ( dataBlocks [ MAX_DATABLK - i ] > 0 );
-                blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ MAX_DATABLK - i ];
+                assert ( dataBlocks [ ADF_MAX_DATABLK - i ] > 0 );
+                blocksToRemove->sectors [ blocksCount++ ] = dataBlocks [ ADF_MAX_DATABLK - i ];
 #ifdef DEBUG_ADF_FILE
                 dataBlocksCount++;
 #endif
@@ -306,7 +306,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         RETCODE rc = adfFileSeek ( file, fileSizeOld );
         if ( rc != RC_OK )
             return rc;
-        assert ( adfEndOfFile ( file ) == TRUE );
+        assert ( adfEndOfFile ( file ) == true );
         const unsigned bytesWritten = adfFileWriteFilled ( file, 0, enlargeSize );
         if ( enlargeSize != bytesWritten )
             return RC_ERROR;
@@ -334,7 +334,7 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
         // the new file is an empty file
 
         file->fileHdr->firstData = 0;
-        for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i )
+        for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i )
             file->fileHdr->dataBlocks[i] = 0;
         file->fileHdr->highSeq = 0;         // 0 data blocks stored in dataBlocks[]
         file->fileHdr->extension = 0;       // no ext. blocks
@@ -353,30 +353,30 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
 
         /* if the new last data block array (in file header or
            the last ext. block) is not full... */
-        if ( nDataBlocksNew % MAX_DATABLK != 0 ) {
+        if ( nDataBlocksNew % ADF_MAX_DATABLK != 0 ) {
             /* .., then cleaning block lists starts there */
 
-            const unsigned firstDBlockToRemove = nDataBlocksNew % MAX_DATABLK;
+            const unsigned firstDBlockToRemove = nDataBlocksNew % ADF_MAX_DATABLK;
             const unsigned lastDBlockToRemove =
-                ( nExtBlocksNew < nExtBlocksOld || nDataBlocksOld % MAX_DATABLK == 0 ) ?
-                MAX_DATABLK - 1 :
-                nDataBlocksOld % MAX_DATABLK;
+                ( nExtBlocksNew < nExtBlocksOld || nDataBlocksOld % ADF_MAX_DATABLK == 0 ) ?
+                ADF_MAX_DATABLK - 1 :
+                nDataBlocksOld % ADF_MAX_DATABLK;
 
             for ( unsigned i = firstDBlockToRemove ; i <= lastDBlockToRemove ; ++i )
-                dataBlocks [ MAX_DATABLK - 1 - i ] = 0;
+                dataBlocks [ ADF_MAX_DATABLK - 1 - i ] = 0;
 
             assert ( firstDBlockToRemove > 0 );  // new last ext. block cannot be an empty one
-            if ( nDataBlocksNew <= MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
+            if ( nDataBlocksNew <= ADF_MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
                 file->fileHdr->highSeq = (int32_t) firstDBlockToRemove;
             } else {
                 file->currentExt->highSeq = (int32_t) firstDBlockToRemove;
             }
         }
 
-        if ( isOFS ( file->volume->dosType ) ) {
+        if ( adfVolIsOFS ( file->volume ) ) {
             // for OFS - update also data block header
-            struct bOFSDataBlock * const data =
-                (struct bOFSDataBlock *) file->currentData;
+            struct AdfOFSDataBlock * const data =
+                (struct AdfOFSDataBlock *) file->currentData;
 
             data->dataSize =   //file->posInDataBlk;
                 ( fileSizeNew % file->volume->datablockSize == 0 ) ?
@@ -384,13 +384,13 @@ RETCODE adfFileTruncate ( struct AdfFile * const file,
                 fileSizeNew % file->volume->datablockSize;
 
             data->nextData = 0;
-            //file->currentDataBlockChanged = TRUE;
+            //file->currentDataBlockChanged = true;
         }
-        file->currentDataBlockChanged = TRUE; // could be done only for OFS - but
+        file->currentDataBlockChanged = true; // could be done only for OFS - but
                                               // here it will force saving also the ext.
                                               // (required for now at least)
                                               // to improve (?)
-        if ( nDataBlocksNew <= MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
+        if ( nDataBlocksNew <= ADF_MAX_DATABLK ) {   // could be: nExtBlocksNew < 1
             file->fileHdr->extension = 0;
         } else {
             file->currentExt->extension = 0;
@@ -439,8 +439,9 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
          file->currentData != NULL &&
          file->curDataPtr != 0 )
     {
-        if ( isOFS ( file->volume->dosType ) ) {
-            struct bOFSDataBlock *data = (struct bOFSDataBlock *) file->currentData;
+        if ( adfVolIsOFS ( file->volume ) ) {
+            struct AdfOFSDataBlock * const data =
+                (struct AdfOFSDataBlock *) file->currentData;
             assert ( file->posInDataBlk <= file->volume->datablockSize );
             data->dataSize = file->posInDataBlk;
         }
@@ -471,9 +472,9 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         return rc;
     }
 
-    if ( isDIRCACHE ( file->volume->dosType ) ) {
+    if ( adfVolHasDIRCACHE ( file->volume ) ) {
 /*printf("parent=%ld\n",file->fileHdr->parent);*/
-        struct bEntryBlock parent;
+        struct AdfEntryBlock parent;
         rc = adfReadEntryBlock ( file->volume, file->fileHdr->parent, &parent );
         if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error reading entry block %d",
@@ -482,7 +483,7 @@ RETCODE adfFileFlush ( struct AdfFile * const file )
         }
 
         rc = adfUpdateCache ( file->volume, &parent,
-                              (struct bEntryBlock*) file->fileHdr, FALSE );
+                              (struct AdfEntryBlock *) file->fileHdr, false );
         if ( rc != RC_OK ) {
             adfEnv.eFct ( "adfFlushfile : error updating cache" );
             return rc;
@@ -596,11 +597,11 @@ static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
                                           &file->nDataBlock );
     if ( extBlock == -1 ) {
         file->curDataPtr = file->fileHdr->dataBlocks [
-            MAX_DATABLK - 1 - file->nDataBlock ];
+            ADF_MAX_DATABLK - 1 - file->nDataBlock ];
     } else {
         if ( ! file->currentExt ) {
-            file->currentExt = ( struct bFileExtBlock * )
-                malloc ( sizeof ( struct bFileExtBlock ) );
+            file->currentExt = ( struct AdfFileExtBlock * )
+                malloc ( sizeof ( struct AdfFileExtBlock ) );
             if ( ! file->currentExt ) {
                 (*adfEnv.eFct)( "adfFileSeekExt : malloc" );
                 file->curDataPtr = 0;  // invalidate data ptr
@@ -616,7 +617,7 @@ static RETCODE adfFileSeekExt_ ( struct AdfFile * const file,
         }
 
         file->curDataPtr = file->currentExt->dataBlocks [
-            MAX_DATABLK - 1 - file->posInExtBlk ];
+            ADF_MAX_DATABLK - 1 - file->posInExtBlk ];
         file->posInExtBlk++;
     }
 
@@ -668,7 +669,7 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
 
     if ( file->modeWrite && file->currentDataBlockChanged ) {
         adfFileFlush ( file );
-        file->currentDataBlockChanged = FALSE;
+        file->currentDataBlockChanged = false;
     }
 
     if ( pos == 0 )
@@ -677,14 +678,14 @@ RETCODE adfFileSeek ( struct AdfFile * const file,
 #ifdef TEST_OFS_SEEK
     // optional code for testing only
     // (ie. to test OFS seek, which is less optimal and not used by default)
-    if ( isOFS ( file->volume->dosType ) )
+    if ( adfVolIsOFS ( file->volume ) )
         return adfFileSeekOFS_ ( file, pos );
     else
         return adfFileSeekExt_ ( file, pos );
 #endif
 
     RETCODE status = adfFileSeekExt_ ( file, pos );
-    if ( status != RC_OK && isOFS ( file->volume->dosType ) ) {
+    if ( status != RC_OK && adfVolIsOFS ( file->volume ) ) {
         adfEnv.wFct ( "adfFileSeek: seeking using ext blocks failed, fallback"
                       " to the OFS alt. way (traversing data blocks), "
                       "file '%s'", file->fileHdr->fileName );
@@ -712,8 +713,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    const BOOL modeRead  = ( mode & ADF_FILE_MODE_READ );
-    const BOOL modeWrite = ( mode & ADF_FILE_MODE_WRITE );
+    const bool modeRead  = ( mode & ADF_FILE_MODE_READ );
+    const bool modeWrite = ( mode & ADF_FILE_MODE_WRITE );
     if ( ! ( modeRead || modeWrite ) ) {
         adfEnv.eFct ( "adfFileOpen : Incorrect mode '0x%0x' (%d)", mode, mode );
         return NULL;
@@ -724,11 +725,11 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    struct bEntryBlock entry, parent;
+    struct AdfEntryBlock entry, parent;
     if ( adfReadEntryBlock(vol, vol->curDirPtr, &parent) != RC_OK )
         return NULL;
 
-    BOOL fileAlreadyExists =
+    bool fileAlreadyExists =
         ( adfNameToEntryBlk ( vol, parent.hashTable, name, &entry, NULL ) != -1 );
 
     if ( modeRead && ( ! modeWrite ) && ( ! fileAlreadyExists ) ) {
@@ -737,19 +738,19 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    if ( modeRead && hasR ( entry.access ) ) {
+    if ( modeRead && adfAccHasR ( entry.access ) ) {
         adfEnv.wFct ( "adfFileOpen : read access denied to '%s'", name );
         return NULL;
     }
 
-    if ( fileAlreadyExists && modeWrite && hasW ( entry.access ) ) {
+    if ( fileAlreadyExists && modeWrite && adfAccHasW ( entry.access ) ) {
         adfEnv.wFct ( "adfFileOpen : write access denied to '%s'", name );
         return NULL;
     }
 
     if ( fileAlreadyExists &&
-         entry.secType != ST_FILE &&
-         entry.secType != ST_LFILE )
+         entry.secType != ADF_ST_FILE &&
+         entry.secType != ADF_ST_LFILE )
     {
         adfEnv.wFct ( "adfFileOpen : '%s' is not a file (or a hardlink to a file)",
                       name );
@@ -778,8 +779,8 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
         return NULL;
     }
 
-    file->fileHdr = (struct bFileHeaderBlock *)
-        malloc ( sizeof(struct bFileHeaderBlock) );
+    file->fileHdr = (struct AdfFileHeaderBlock *)
+        malloc ( sizeof(struct AdfFileHeaderBlock) );
     if ( file->fileHdr == NULL ) {
         adfEnv.eFct ( "adfFileOpen : malloc" );
         free ( file );
@@ -801,13 +802,13 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     file->currentExt = NULL;
     file->nDataBlock = 0;
     file->curDataPtr = 0;
-    file->currentDataBlockChanged = FALSE;
+    file->currentDataBlockChanged = false;
     file->modeRead  = modeRead;
     file->modeWrite = modeWrite;
 
     if ( ! modeWrite ) {
         /* read-only mode */
-        memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+        memcpy ( file->fileHdr, &entry, sizeof ( struct AdfFileHeaderBlock ) );
         if ( adfFileSeek ( file, 0 ) != RC_OK ) {
             adfEnv.eFct ( "adfFileOpen : error seeking pos. %d, file: %s",
                           0, file->fileHdr->fileName );
@@ -817,7 +818,7 @@ struct AdfFile * adfFileOpen ( struct AdfVolume * const vol,
     else {
         /* write or read-write mode */
         if ( fileAlreadyExists ) {
-            memcpy ( file->fileHdr, &entry, sizeof ( struct bFileHeaderBlock ) );
+            memcpy ( file->fileHdr, &entry, sizeof ( struct AdfFileHeaderBlock ) );
             unsigned seekpos = 0; //( mode_append ? file->fileHdr->byteSize : 0 );
             if ( adfFileSeek ( file, seekpos ) != RC_OK ) {
                 adfEnv.eFct ( "adfFileOpen : error seeking pos. %d, file: %s",
@@ -892,9 +893,9 @@ uint32_t adfFileRead ( struct AdfFile * const file,
     if (file->pos+n > file->fileHdr->byteSize)
         n = file->fileHdr->byteSize - file->pos;
 
-    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
+    uint8_t * const dataPtr = ( adfVolIsOFS ( file->volume ) ) ?
         //(uint8_t*)(file->currentData)+24 :
-        ( (struct bOFSDataBlock *) file->currentData )->data :
+        ( (struct AdfOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
     uint32_t bytesRead = 0;
@@ -912,7 +913,7 @@ uint32_t adfFileRead ( struct AdfFile * const file,
                 return bytesRead;
             }
             file->posInDataBlk = 0;
-            file->currentDataBlockChanged = FALSE;
+            file->currentDataBlockChanged = false;
         }
 
         unsigned size = min ( n - bytesRead, blockSize - file->posInDataBlk );
@@ -934,26 +935,25 @@ uint32_t adfFileRead ( struct AdfFile * const file,
 RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
 {
     SECTNUM nSect;
-    struct bOFSDataBlock *data;
     RETCODE rc = RC_OK;
 
-    data =(struct bOFSDataBlock *) file->currentData;
+    struct AdfOFSDataBlock * const data = (struct AdfOFSDataBlock *) file->currentData;
 
     if (file->nDataBlock==0) {
         nSect = file->fileHdr->firstData;
     }
-    else if (isOFS(file->volume->dosType)) {
+    else if ( adfVolIsOFS ( file->volume ) ) {
         nSect = data->nextData;
     }
     else {
-        if (file->nDataBlock<MAX_DATABLK)
-            nSect = file->fileHdr->dataBlocks[MAX_DATABLK-1-file->nDataBlock];
+        if ( file->nDataBlock < ADF_MAX_DATABLK )
+            nSect = file->fileHdr->dataBlocks[ ADF_MAX_DATABLK - 1 - file->nDataBlock ];
         else {
-            if (file->nDataBlock==MAX_DATABLK) {
+            if ( file->nDataBlock == ADF_MAX_DATABLK ) {
 
                 if ( file->currentExt == NULL ) {
-                    file->currentExt = (struct bFileExtBlock *)
-                        malloc ( sizeof(struct bFileExtBlock) );
+                    file->currentExt = (struct AdfFileExtBlock *)
+                        malloc ( sizeof(struct AdfFileExtBlock) );
                     if ( file->currentExt == NULL ) {
                         adfEnv.eFct ("adfReadNextFileBlock : malloc");
                         return RC_MALLOC;
@@ -971,7 +971,7 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
 
                 file->posInExtBlk = 0;
             }
-            else if (file->posInExtBlk==MAX_DATABLK) {
+            else if ( file->posInExtBlk == ADF_MAX_DATABLK ) {
 
                 rc = adfReadFileExtBlock ( file->volume,
                                            file->currentExt->extension,
@@ -984,7 +984,7 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
 
                 file->posInExtBlk = 0;
             }
-            nSect = file->currentExt->dataBlocks[MAX_DATABLK-1-file->posInExtBlk];
+            nSect = file->currentExt->dataBlocks[ ADF_MAX_DATABLK - 1 - file->posInExtBlk ];
             file->posInExtBlk++;
         }
     }
@@ -1002,8 +1002,11 @@ RETCODE adfFileReadNextBlock ( struct AdfFile * const file )
         adfEnv.eFct ( "adfReadNextFileBlock : error reading data block %d / %d, file '%s'",
                        file->nDataBlock, nSect, file->fileHdr->fileName );
 
-    if (isOFS(file->volume->dosType) && data->seqNum!=file->nDataBlock+1)
+    if ( adfVolIsOFS ( file->volume ) &&
+         data->seqNum != file->nDataBlock + 1 )
+    {
         (*adfEnv.wFct)("adfReadNextFileBlock : seqnum incorrect");
+    }
 
     file->curDataPtr = nSect;
     file->nDataBlock++;
@@ -1027,8 +1030,8 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
 /*puts("adfWriteFile");*/
     const unsigned blockSize = file->volume->datablockSize;
 
-    uint8_t * const dataPtr = ( isOFS ( file->volume->dosType ) ) ?
-        ( (struct bOFSDataBlock *) file->currentData )->data :
+    uint8_t * const dataPtr = ( adfVolIsOFS ( file->volume ) ) ?
+        ( (struct AdfOFSDataBlock *) file->currentData )->data :
         file->currentData;
 
     uint32_t bytesWritten = 0;
@@ -1040,7 +1043,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
             if ( file->pos == file->fileHdr->byteSize ) {   // at EOF ?
                 // ...  create a new block
                 RETCODE rc = adfFileCreateNextBlock ( file );
-                file->currentDataBlockChanged = FALSE;
+                file->currentDataBlockChanged = false;
                 if ( rc != RC_OK ) {
                     /* bug found by Rikard */
                     adfEnv.wFct ( "adfWritefile : no more free sectors available" );
@@ -1054,7 +1057,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
                 // write the block stored currently in the memory
                 if ( file->currentDataBlockChanged ) {
                     adfFileFlush ( file ); // to optimize (?)
-                    file->currentDataBlockChanged = FALSE;
+                    file->currentDataBlockChanged = false;
                 }
 
                 // - and read the next block
@@ -1077,7 +1080,7 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
         file->pos += size;
         bytesWritten += size;
         file->posInDataBlk += size;
-        file->currentDataBlockChanged = TRUE;
+        file->currentDataBlockChanged = true;
 
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,
@@ -1129,27 +1132,28 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
     unsigned int blockSize = file->volume->datablockSize;
 
     /* the first data blocks pointers are inside the file header block */
-    if (file->nDataBlock<MAX_DATABLK) {
+    if ( file->nDataBlock < ADF_MAX_DATABLK ) {
         nSect = adfGet1FreeBlock(file->volume);
         if ( nSect == -1 )
             return RC_VOLFULL;
 /*printf("adfCreateNextFileBlock fhdr %ld\n",nSect);*/
         if (file->nDataBlock==0)
             file->fileHdr->firstData = nSect;
-        file->fileHdr->dataBlocks[MAX_DATABLK-1-file->nDataBlock] = nSect;
+        file->fileHdr->dataBlocks[ ADF_MAX_DATABLK - 1 - file->nDataBlock ] = nSect;
         file->fileHdr->highSeq++;
     }
     else {
         /* one more sector is needed for one file extension block */
-        if ((file->nDataBlock%MAX_DATABLK)==0) {
+        if ( file->nDataBlock % ADF_MAX_DATABLK == 0 ) {
             extSect = adfGet1FreeBlock(file->volume);
 /*printf("extSect=%ld\n",extSect);*/
             if ( extSect == -1 )
                 return RC_VOLFULL;
 
             /* the future block is the first file extension block */
-            if (file->nDataBlock==MAX_DATABLK) {
-                file->currentExt=(struct bFileExtBlock*)malloc(sizeof(struct bFileExtBlock));
+            if ( file->nDataBlock == ADF_MAX_DATABLK ) {
+                file->currentExt = (struct AdfFileExtBlock *)
+                    malloc ( sizeof(struct AdfFileExtBlock) );
                 if (!file->currentExt) {
                     adfSetBlockFree(file->volume, extSect);
                     (*adfEnv.eFct)("adfCreateNextFileBlock : malloc");
@@ -1159,7 +1163,7 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
             }
 
             /* not the first : save the current one, and link it with the future */
-            if (file->nDataBlock>=2*MAX_DATABLK) {
+            if ( file->nDataBlock >= 2 * ADF_MAX_DATABLK ) {
                 file->currentExt->extension = extSect;
 /*printf ("write ext=%d\n",file->currentExt->headerKey);*/
                 adfWriteFileExtBlock(file->volume, file->currentExt->headerKey,
@@ -1167,7 +1171,7 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
             }
 
             /* initializes a file extension block */
-            for ( int i = 0 ; i < MAX_DATABLK ; i++ )
+            for ( int i = 0 ; i < ADF_MAX_DATABLK ; i++ )
                 file->currentExt->dataBlocks[i] = 0L;
             file->currentExt->headerKey = extSect;
             file->currentExt->parent = file->fileHdr->headerKey;
@@ -1182,15 +1186,15 @@ RETCODE adfFileCreateNextBlock ( struct AdfFile * const file )
 
 /*printf("adfCreateNextFileBlock ext %ld\n",nSect);*/
 
-        file->currentExt->dataBlocks[MAX_DATABLK-1-file->posInExtBlk] = nSect;
+        file->currentExt->dataBlocks[ ADF_MAX_DATABLK - 1 - file->posInExtBlk ] = nSect;
         file->currentExt->highSeq++;
         file->posInExtBlk++;
     }
 
     /* builds OFS header */
-    if (isOFS(file->volume->dosType)) {
+    if ( adfVolIsOFS ( file->volume ) ) {
         /* writes previous data block and link it  */
-        struct bOFSDataBlock * const data = file->currentData;
+        struct AdfOFSDataBlock * const data = file->currentData;
         if (file->pos>=blockSize) {
             data->nextData = nSect;
             adfWriteDataBlock(file->volume, file->curDataPtr, file->currentData);
@@ -1231,14 +1235,14 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
 {
     *posInDataBlk = pos % blockSize;   // offset in the data block
     *curDataN     = pos / blockSize;   // index of the data block
-    if ( *curDataN < MAX_DATABLK ) {
+    if ( *curDataN < ADF_MAX_DATABLK ) {
         *posInExtBlk = 0;
         return -1;
     }
     else {
         // size of data allocated in file header or by a single ext. block
         unsigned dataSizeByExtBlock = //72 * blockSize;
-            blockSize * MAX_DATABLK;
+            blockSize * ADF_MAX_DATABLK;
 
         // data offset starting from the 1st allocation done in ext. blocks
         // (without data allocated in the file header)
@@ -1248,7 +1252,7 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
         unsigned extBlock = offsetInExt / dataSizeByExtBlock;
 
         // data block index in ext. block
-        *posInExtBlk = ( offsetInExt / blockSize ) % MAX_DATABLK;
+        *posInExtBlk = ( offsetInExt / blockSize ) % ADF_MAX_DATABLK;
 
         return (int32_t) extBlock;
     }
@@ -1259,9 +1263,9 @@ int32_t adfPos2DataBlock ( const unsigned   pos,
  * adfReadFileExtBlockN
  *
  */
-RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
-                               const int32_t                extBlock,
-                               struct bFileExtBlock * const fext )
+RETCODE adfFileReadExtBlockN ( const struct AdfFile * const   file,
+                               const int32_t                  extBlock,
+                               struct AdfFileExtBlock * const fext )
 {
     // check if the given extBlock index is valid
     const int nExtBlocks = (int) adfFileSize2Extblocks ( file->fileHdr->byteSize,
@@ -1285,7 +1289,7 @@ RETCODE adfFileReadExtBlockN ( const struct AdfFile * const file,
             return RC_BLOCKREAD;
         }
 #ifdef DEBUG_ADF_FILE
-        //show_bFileExtBlock ( fext );
+        //showAdfFileExtBlock ( fext );
 #endif
         nSect = fext->extension;
         i++;
@@ -1309,7 +1313,7 @@ static void show_File ( const struct AdfFile * const file )
              //"volume:\t0x%x
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              "  nDataBlock:\t0x%x\t\t%u\n"
              "  curDataPtr:\t0x%x\t\t%u\n"
              "  pos:\t\t0x%x\t\t%u\n"
@@ -1319,7 +1323,7 @@ static void show_File ( const struct AdfFile * const file )
              //volume;
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              file->nDataBlock,
              file->nDataBlock,
              file->curDataPtr,
@@ -1334,17 +1338,17 @@ static void show_File ( const struct AdfFile * const file )
              file->writeMode );
 }
 
-static void show_bFileHeaderBlock (
-    const struct bFileHeaderBlock * const block )
+static void showAdfFileHeaderBlock (
+    const struct AdfFileHeaderBlock * const block )
 {
-    printf ( "\nbFileHeaderBlock:\n"
+    printf ( "\nAdfFileHeaderBlock:\n"
              "  type:\t\t%d\n"
              "  headerKey:\t%d\n"
              "  highSeq:\t%d\n"
              "  dataSize:\t%d\n"
              "  firstData:\t%d\n"
              "  checkSum:\t%d\n"
-             //"	dataBlocks[MAX_DATABLK]:\n"
+             //"	dataBlocks[ADF_MAX_DATABLK]:\n"
              "  r1:\t\t%d\n"
              "  r2:\t\t%d\n"
              "  access:\t%d\n"
@@ -1371,7 +1375,7 @@ static void show_bFileHeaderBlock (
              block->dataSize,	/* == 0 */
              block->firstData,
              block->checkSum,
-             //dataBlocks[MAX_DATABLK],
+             //dataBlocks[ADF_MAX_DATABLK],
              block->r1,
              block->r2,
              block->access,	/* bit0=del, 1=modif, 2=write, 3=read */
@@ -1394,17 +1398,17 @@ static void show_bFileHeaderBlock (
              block->secType );	/* == -3 */
 }
 
-static void show_bFileExtBlock (
-    const struct bFileExtBlock * const block )
+static void showAdfFileExtBlock (
+    const struct AdfFileExtBlock * const block )
 {
-    printf ( "\nbFileExtBlock:\n"
+    printf ( "\nAdfFileExtBlock:\n"
              "  type:\t\t0x%x\t\t%u\n"
              "  headerKey:\t0x%x\t\t%u\n"
              "  highSeq:\t0x%x\t\t%u\n"
              "  dataSize:\t0x%x\t\t%u\n"
              "  firstData:\t0x%x\t\t%u\n"
              "  checkSum:\t0x%x\t%u\n"
-             //"dataBlocks[MAX_DATABLK]:\t%d\n""
+             //"dataBlocks[ADF_MAX_DATABLK]:\t%d\n""
              "  r[45]:\t0x%x\t%u\n"
              "  info:\t\t0x%x\t\t%u\n"
              "  nextSameHash:\t0x%x\t\t%u\n"
@@ -1424,7 +1428,7 @@ static void show_bFileExtBlock (
              block->firstData,
              block->checkSum,
              block->checkSum,
-//block->dataBlocks[MAX_DATABLK],
+//block->dataBlocks[ADF_MAX_DATABLK],
              block->r,
              block->r,
              block->info,		/* == 0 */

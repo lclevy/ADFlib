@@ -28,11 +28,11 @@
 #include "adf_env.h"
 
 #include "adf_blk.h"
+#include "adf_byteorder.h"
 #include "adf_dev_drivers.h"
 #include "adf_dev_driver_dump.h"
 #include "adf_dev_driver_ramdisk.h"
 #include "adf_version.h"
-#include "defendian.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -51,7 +51,7 @@ static void Changed ( SECTNUM nSect,
 
 static void rwHeadAccess ( SECTNUM physical,
                            SECTNUM logical,
-                           BOOL    write );
+                           bool    write );
 
 static void progressBar ( int perCentDone );
 
@@ -74,10 +74,10 @@ void adfEnvInitDefault(void)
     adfEnv.rwhAccess = rwHeadAccess;
     adfEnv.progressBar = progressBar;
 
-    adfEnv.useDirCache = FALSE;
-    adfEnv.useRWAccess = FALSE;
-    adfEnv.useNotify = FALSE;
-    adfEnv.useProgressBar = FALSE;
+    adfEnv.useDirCache    = false;
+    adfEnv.useRWAccess    = false;
+    adfEnv.useNotify      = false;
+    adfEnv.useProgressBar = false;
 
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
@@ -103,7 +103,7 @@ void adfEnvCleanUp(void)
  */
 void adfChgEnvProp(int prop, void *newval)
 {
-    BOOL *newBool;
+    bool *newBool;
 /*    int *newInt;*/
 
     switch(prop) {
@@ -120,25 +120,25 @@ void adfChgEnvProp(int prop, void *newval)
         adfEnv.notifyFct = (AdfNotifyFct) newval;
         break;
     case PR_USE_NOTFCT:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useNotify = *newBool;
         break;
     case PR_PROGBAR:
         adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
     case PR_USE_PROGBAR:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useProgressBar = *newBool;
         break;
     case PR_USE_RWACCESS:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useRWAccess = *newBool;
         break;
     case PR_RWACCESS:
         adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
         break;
     case PR_USEDIRC:
-        newBool = (BOOL*)newval;
+        newBool = (bool *) newval;
         adfEnv.useDirCache = *newBool;
         break;
     }
@@ -187,7 +187,7 @@ char* adfGetVersionDate(void)
 
 static void rwHeadAccess ( SECTNUM physical,
                            SECTNUM logical,
-                           BOOL    write )
+                           bool    write )
 {
     /* display the physical sector, the logical block, and if the access is read or write */
     fprintf(stderr, "phy %d / log %d : %c\n", physical, logical, write ? 'W' : 'R');
@@ -250,13 +250,13 @@ static void Changed(SECTNUM nSect, int changedType)
 {
     (void) nSect, (void) changedType;
 /*    switch(changedType) {
-    case ST_FILE:
+    case ADF_ST_FILE:
         fprintf(stderr,"Notification : sector %ld (FILE)\n",nSect);
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         fprintf(stderr,"Notification : sector %ld (DIR)\n",nSect);
         break;
-    case ST_ROOT:
+    case ADF_ST_ROOT:
         fprintf(stderr,"Notification : sector %ld (ROOT)\n",nSect);
         break;
     default:
@@ -270,7 +270,7 @@ union u {
     char    c[4];
 };
 
-static void assertInternal ( BOOL cnd, const char * const msg )
+static void assertInternal ( bool cnd, const char * const msg )
 {
     if ( ! cnd ) {
         fputs ( msg, stderr );
@@ -291,35 +291,35 @@ static void checkInternals(void)
     assertInternal ( sizeof(int32_t) == 4,
                      "Compilation error : sizeof(int32_t) != 4\n" );
 
-    assertInternal ( sizeof(struct bEntryBlock) == 512,
-                     "Internal error : sizeof(struct bEntryBlock) != 512\n");
+    assertInternal ( sizeof(struct AdfEntryBlock) == 512,
+                     "Internal error : sizeof(struct AdfEntryBlock) != 512\n");
 
-    assertInternal ( sizeof(struct bRootBlock) == 512,
-                     "Internal error : sizeof(struct bRootBlock) != 512\n");
+    assertInternal ( sizeof(struct AdfRootBlock) == 512,
+                     "Internal error : sizeof(struct AdfRootBlock) != 512\n");
 
-    assertInternal ( sizeof(struct bDirBlock) == 512,
-                     "Internal error : sizeof(struct bDirBlock) != 512\n");
+    assertInternal ( sizeof(struct AdfDirBlock) == 512,
+                     "Internal error : sizeof(struct AdfDirBlock) != 512\n");
 
-    assertInternal ( sizeof(struct bBootBlock) == 1024,
-                     "Internal error : sizeof(struct bBootBlock) != 1024\n" );
+    assertInternal ( sizeof(struct AdfBootBlock) == 1024,
+                     "Internal error : sizeof(struct AdfBootBlock) != 1024\n" );
 
-    assertInternal ( sizeof(struct bFileHeaderBlock) == 512,
-                     "Internal error : sizeof(struct bFileHeaderBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfFileHeaderBlock) == 512,
+                     "Internal error : sizeof(struct AdfFileHeaderBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bFileExtBlock) == 512,
-                     "Internal error : sizeof(struct bFileExtBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfFileExtBlock) == 512,
+                     "Internal error : sizeof(struct AdfFileExtBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bOFSDataBlock) == 512,
-                     "Internal error : sizeof(struct bOFSDataBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfOFSDataBlock) == 512,
+                     "Internal error : sizeof(struct AdfOFSDataBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bBitmapBlock) == 512,
-                     "Internal error : sizeof(struct bBitmapBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfBitmapBlock) == 512,
+                     "Internal error : sizeof(struct AdfBitmapBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bBitmapExtBlock) == 512,
-                     "Internal error : sizeof(struct bBitmapExtBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfBitmapExtBlock) == 512,
+                     "Internal error : sizeof(struct AdfBitmapExtBlock) != 512\n" );
 
-    assertInternal ( sizeof(struct bLinkBlock) == 512,
-                     "Internal error : sizeof(struct bLinkBlock) != 512\n" );
+    assertInternal ( sizeof(struct AdfLinkBlock) == 512,
+                     "Internal error : sizeof(struct AdfLinkBlock) != 512\n" );
 
     val.l = 1L;
 /* if LITT_ENDIAN not defined : must be BIG endian */

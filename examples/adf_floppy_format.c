@@ -37,9 +37,16 @@ int main ( int     argc,
     }
 
     RETCODE rc = adfDevMount ( device );
-    if ( rc == RC_OK ) {
-        fprintf ( stderr, "The floppy disk %s already contains a filesystem - aborting...\n",
+    if ( rc != RC_OK ) {
+        fprintf ( stderr, "adfDevMount failed on %s - aborting...\n",
                   adfname );
+        adfDevUnMount ( device );
+        adfDevClose ( device );
+        return 1;
+    }
+    if ( device->nVol > 0 && adfVolIsFsValid ( device->volList[0] ) ) {
+        fprintf ( stderr, "The floppy disk %s already contains a filesystem (%s)"
+                  " - aborting...\n", adfname, adfVolGetFsStr ( device->volList[0] ) );
         adfDevUnMount ( device );
         adfDevClose ( device );
         return 1;

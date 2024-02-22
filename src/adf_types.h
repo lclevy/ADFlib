@@ -24,21 +24,17 @@
  *
  */
 
-#ifndef _ADF_TYPES_H
-#define _ADF_TYPES_H 1
+#ifndef ADF_TYPES_H
+#define ADF_TYPES_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef int32_t SECTNUM;
-
-typedef int      BOOL;
-
-#define TRUE    1
-#define FALSE   0
 
 typedef enum {
     ADF_ACCESS_MODE_READWRITE = 0,
     ADF_ACCESS_MODE_READONLY  = 1
 } AdfAccessMode;
 
-#endif
+#endif  /* ADF_TYPES_H */

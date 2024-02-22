@@ -247,13 +247,13 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     unsigned errors = 0;
 
     // mount volume
-    struct AdfVolume * vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+    struct AdfVolume * vol = adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     if ( vol == NULL ) {
         errors += 1;
         goto umount_device;
     }
     const unsigned blocksize =
-        //( isOFS ( vol->dosType ) ? 488u : 512u );
+        //( adfVolIsOFS ( vol ) ? 488u : 512u );
         (unsigned) vol->datablockSize;
     assert ( (unsigned) vol->datablockSize == test_data->dblocksize );
     
@@ -374,7 +374,7 @@ cleanup:
 cleanup_0:
     free ( buffer_0 );
 umount_volume:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 umount_device:
     adfDevUnMount ( device );
     adfDevClose ( device );

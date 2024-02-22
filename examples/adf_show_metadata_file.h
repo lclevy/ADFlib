@@ -7,12 +7,12 @@
 void show_file_metadata ( struct AdfVolume * const vol,
                           SECTNUM                  fheader_sector );
 
-void show_file_header_block ( const struct bFileHeaderBlock * const block );
+void show_file_header_block ( const struct AdfFileHeaderBlock * const block );
 
-void show_file_ext_blocks ( struct AdfVolume * const              vol,
-                            const struct bFileHeaderBlock * const fheader_block );
+void show_file_ext_blocks ( struct AdfVolume * const                vol,
+                            const struct AdfFileHeaderBlock * const fheader_block );
 
-void show_ext_block ( const struct bFileExtBlock * const extblock );
-void show_file_data_blocks_array ( const int32_t datablocks[MAX_DATABLK] );
+void show_ext_block ( const struct AdfFileExtBlock * const extblock );
+void show_file_data_blocks_array ( const int32_t datablocks[ADF_MAX_DATABLK] );
 
 #endif

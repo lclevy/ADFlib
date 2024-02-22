@@ -39,7 +39,7 @@ static struct AdfDevice * ramdiskCreate ( const char * const name,
         return NULL;
     }
 
-    dev->readOnly  = FALSE; // ( mode != ADF_ACCESS_MODE_READWRITE );
+    dev->readOnly  = false; // ( mode != ADF_ACCESS_MODE_READWRITE );
     dev->heads     = heads;
     dev->sectors   = sectors;
     dev->cylinders = cylinders;
@@ -55,7 +55,7 @@ static struct AdfDevice * ramdiskCreate ( const char * const name,
     dev->devType   = adfDevType ( dev );
     dev->nVol      = 0;
     dev->volList   = NULL;
-    dev->mounted   = FALSE;
+    dev->mounted   = false;
     dev->name      = strdup ( name );
     dev->drv       = &adfDeviceDriverRamdisk;
 
@@ -103,9 +103,9 @@ static RETCODE ramdiskWriteSector ( struct AdfDevice * const dev,
 }
 
 
-static BOOL ramdiskIsDevNative ( void )
+static bool ramdiskIsDevNative ( void )
 {
-    return FALSE;
+    return false;
 }
 
 

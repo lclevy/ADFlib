@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     part1.startCyl = 2;
 	part1.lenCyl = 2889;
 	part1.volName = strdup("zip");
-    part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
+    part1.volType = ADF_DOSFS_FFS | ADF_DOSFS_DIRCACHE;
 
     partList[0] = &part1;
     RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
-    adfUnMount(vol);
+    adfVolInfo(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo(hd);
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
