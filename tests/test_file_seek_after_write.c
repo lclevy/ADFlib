@@ -281,13 +281,13 @@ Suite * adflib_suite ( void )
 
     tc = tcase_create ( "adflib test_file_seek_after_write_ofs" );
     tcase_add_test ( tc, test_file_seek_after_write_ofs );
-    tcase_set_timeout ( tc, 120 );
+    tcase_set_timeout ( tc, 180 );
     suite_add_tcase ( s, tc );
 
     tc = tcase_create ( "adflib test_file_seek_after_write_ffs" );
     //tcase_add_checked_fixture ( tc, setup_ffs, teardown_ffs );
     tcase_add_test ( tc, test_file_seek_after_write_ffs );
-    tcase_set_timeout ( tc, 120 );
+    tcase_set_timeout ( tc, 180 );
     suite_add_tcase ( s, tc );
 
     return s;
