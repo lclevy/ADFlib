@@ -22,6 +22,8 @@
 #ifndef __NT4_DEV_H__
 #define __NT4_DEV_H__
 
+#include <stdbool.h>
+
 typedef struct NT4DriveGeometry_s {
     unsigned
         cylinders,
