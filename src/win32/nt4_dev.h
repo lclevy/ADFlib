@@ -19,8 +19,8 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __NT4_DEV_H__
-#define __NT4_DEV_H__
+#ifndef NT4_DEV_H
+#define NT4_DEV_H
 
 #include <stdbool.h>
 
@@ -51,5 +51,4 @@ ULONG NT4GetDriveSize ( const HANDLE hDrv );
 bool NT4GetDriveGeometry ( const HANDLE               hDrv,
                            NT4DriveGeometry_t * const geometry );
 
-#endif
-
+#endif  /* NT4_DEV_H */
