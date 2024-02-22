@@ -32,7 +32,7 @@ void show_file_header_block ( const struct AdfFileHeaderBlock * const block )
     adfSwapEndian ( file_header_block_orig_endian, ADF_SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_header_block_orig_endian, 0x14,
                                                   sizeof (struct AdfFileHeaderBlock ) );
-    printf ( "\nAdfFileHeaderBlock:\n"
+    printf ( "\nFile Header Block:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
              "  0x008  highSeq:\t0x%x\t\t%u\n"

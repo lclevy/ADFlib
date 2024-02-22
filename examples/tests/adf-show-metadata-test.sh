@@ -99,7 +99,7 @@ Mounted volume:		0
 
 Path:		CSH
 
-bFileHeaderBlock:
+File Header Block:
   0x000  type:		0x2		2
   0x004  headerKey:	0x3f6		1014
   0x008  highSeq:	0x48		72
