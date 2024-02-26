@@ -280,6 +280,8 @@ ADF_RETCODE adfMountHd ( struct AdfDevice * const dev )
        http://lclevy.free.fr/adflib/adf_info.html#p64 */
 
     struct AdfFSHDblock fshd;
+    fshd.segListBlock = -1;
+
     next = rdsk.fileSysHdrList;
     while( next!=-1 ) {
         rc = adfReadFSHDblock ( dev, next, &fshd ); 
