@@ -255,15 +255,17 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file
         free ( extBlock );
     }
 
-#ifdef DEBUG_ADF_FILE
     if ( blocksCount != blocksToRemove->len ) {
+#ifdef DEBUG_ADF_FILE
         fprintf ( stderr,
                   "Error: blocksCount %u != blocksToRemove->len %u, datablocksCount %u\n",
                  blocksCount, blocksToRemove->len, dataBlocksCount );
         fflush ( stderr );
-    }
 #endif
-    assert ( blocksCount == blocksToRemove->len );
+        free ( blocksToRemove->sectors );
+        blocksToRemove->sectors = NULL;
+        return ADF_RC_ERROR;
+    }
     return ADF_RC_OK;
 }
 
