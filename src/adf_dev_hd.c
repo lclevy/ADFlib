@@ -448,7 +448,7 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
         return RC_ERROR;
     }
-    dev->volList = (struct AdfVolume **) malloc (sizeof(struct Volume *));
+    dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if ( dev->volList == NULL ) {
         adfEnv.eFct ( "adfCreateHdFile : malloc" );
         return RC_ERROR;
