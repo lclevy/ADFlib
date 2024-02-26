@@ -33,7 +33,9 @@
 
 #include <string.h>
 
+#ifndef NDEBUG
 #define NDEBUG
+#endif
 #include <assert.h>
 
 #define SW_LONG  4
