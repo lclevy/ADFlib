@@ -496,6 +496,8 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
             if ( rc != RC_OK )
                 return rc;
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );
+            if ( rc != RC_OK )
+                return rc;
         }
 
         // if any subdirectory present - process recursively
