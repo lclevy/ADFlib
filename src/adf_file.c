@@ -136,6 +136,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file
         struct AdfFileExtBlock * const extBlock = malloc ( sizeof ( struct AdfFileExtBlock ) );
         if ( extBlock == NULL ) {
             free ( blocksToRemove->sectors );
+            blocksToRemove->sectors = NULL;
             return ADF_RC_MALLOC;
         }
 
@@ -162,6 +163,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file
             if ( rc != ADF_RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
+                blocksToRemove->sectors = NULL;
                 return rc;
             }
 
@@ -210,6 +212,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file
             if ( rc != ADF_RC_OK ) {
                 free ( extBlock );
                 free ( blocksToRemove->sectors );
+                blocksToRemove->sectors = NULL;
                 return rc;
             }
 
