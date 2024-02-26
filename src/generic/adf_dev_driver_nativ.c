@@ -34,12 +34,11 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice ( struct AdfDevice * const dev,
-                       const char * const       name,
-                       const AdfAccessMode      mode )
+static struct AdfDevice * myInitDevice ( const char * const  name,
+                                        const AdfAccessMode mode )
 {
-    (void) dev, (void) name, (void) mode;
-    return RC_ERROR;
+    (void) name, (void) mode;
+    return NULL;
 }
 
 
