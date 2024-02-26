@@ -96,7 +96,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
             entry->sector = (int32_t) caEntry.header;
             entry->comment = strdup(caEntry.comm);
             if (entry->comment==NULL) {
-                free(entry->name); adfFreeDirList(head);
+                free(entry->name); free(entry); adfFreeDirList(head);
                 return NULL;
             }
             entry->size = (uint32_t) caEntry.size;

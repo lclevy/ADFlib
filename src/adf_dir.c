@@ -449,11 +449,14 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
                  return NULL;
              }
              if (adfReadEntryBlock(vol, hashTable[i], &entryBlk)!=ADF_RC_OK) {
-				 adfFreeDirList(head);
+                 free(entry);
+                 adfFreeDirList(head);
                  return NULL;
              }
              if (adfEntBlock2Entry(&entryBlk, entry)!=ADF_RC_OK) {
-				 adfFreeDirList(head); return NULL;
+                 free(entry);
+                 adfFreeDirList(head);
+                 return NULL;
              }
              entry->sector = hashTable[i];
 	
@@ -462,6 +465,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
              else
                  cell = newCell(cell, (void*)entry);
              if (cell==NULL) {
+                 free(entry);
                  adfFreeDirList(head); return NULL;
              }
 
@@ -478,11 +482,14 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
                      return NULL;
                  }
                  if (adfReadEntryBlock(vol, nextSector, &entryBlk)!=ADF_RC_OK) {
-					 adfFreeDirList(head); return NULL;
+                     free(entry);
+                     adfFreeDirList(head);
+                     return NULL;
                  }
 
                  if (adfEntBlock2Entry(&entryBlk, entry)!=ADF_RC_OK) {
-					 adfFreeDirList(head);
+                     free(entry);
+                     adfFreeDirList(head);
                      return NULL;
                  }
                  entry->sector = nextSector;
