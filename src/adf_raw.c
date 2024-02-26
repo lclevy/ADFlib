@@ -341,7 +341,7 @@ uint32_t adfBootSum2 ( const uint8_t * const buf )
 {
     uint32_t prevsum, newSum;
 
-    prevsum = newSum=0L;
+    newSum = 0L;
     for ( unsigned i = 0; i < 1024 / sizeof(uint32_t) ; i++ ) {
         if (i!=1) {
             prevsum = newSum;
