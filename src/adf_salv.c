@@ -95,6 +95,7 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
             }
 
             if ( adfReadGenBlock ( vol, i, block ) != ADF_RC_OK ) {
+                free(block);
                 adfFreeDelList ( head );
                 return NULL;
             }
@@ -108,11 +109,13 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
                     list = head = newCell(NULL, (void*)block);
                 else
                     list = newCell(list, (void*)block);
+
+                block = NULL;
             }
         }
     }
 
-    if (block!=NULL && list!=NULL && block!=list->content) {
+    if (block!=NULL) {
         free(block);
 /*        printf("%p\n",block);*/
     }
