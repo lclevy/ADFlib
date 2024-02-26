@@ -173,27 +173,33 @@ ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
 ADF_RETCODE adfCheckParent ( struct AdfVolume * vol,
                              ADF_SECTNUM        pSect )
 {
-    struct GenBlock block;
-
     if (adfIsBlockFree(vol, pSect)) {
         (*adfEnv.wFct)("adfCheckParent : parent doesn't exists");
         return ADF_RC_ERROR;
     }
 
-    /* verify if parent is a DIR or ROOT */
-    ADF_RETCODE rc = adfReadGenBlock ( vol, pSect, &block );
-    if ( rc != ADF_RC_OK )
-        return rc;
+    struct GenBlock* block = (struct GenBlock*)malloc(sizeof(struct GenBlock));
+    block->name = NULL;
 
-    if ( block.type != ADF_T_HEADER ||
-         ( block.secType != ADF_ST_DIR &&
-           block.secType != ADF_ST_ROOT ) )
-    {
-        (*adfEnv.wFct)("adfCheckParent : parent secType is incorrect");
+    if ( block == NULL) {
+        (*adfEnv.wFct)("adfCheckParent : malloc failed");
         return ADF_RC_ERROR;
     }
 
-    return ADF_RC_OK;
+    /* verify if parent is a DIR or ROOT */
+    RETCODE rc = adfReadGenBlock ( vol, pSect, block );
+    if ( rc == ADF_RC_OK ) {
+        if ( block->type != ADF_T_HEADER ||
+           ( block->secType != ADF_ST_DIR &&
+             block->secType != ADF_ST_ROOT ) ) {
+            (*adfEnv.wFct)("adfCheckParent : parent secType is incorrect");
+            rc = ADF_RC_ERROR;
+        }
+    }
+
+    adfFreeGenBlock(block);
+
+    return rc;
 }
 
 
