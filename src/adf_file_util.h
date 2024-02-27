@@ -4,7 +4,9 @@
 
 #include "adf_blk.h"
 
+#ifndef NDEBUG
 #define NDEBUG
+#endif
 #include <assert.h>
 
 static inline unsigned adfFilePos2datablockIndex ( unsigned pos,

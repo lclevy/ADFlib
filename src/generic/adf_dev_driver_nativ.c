@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -34,12 +34,11 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice ( struct AdfDevice * const dev,
-                       const char * const       name,
-                       const AdfAccessMode      mode )
+static struct AdfDevice * myInitDevice ( const char * const  name,
+                                        const AdfAccessMode mode )
 {
-    (void) dev, (void) name, (void) mode;
-    return RC_ERROR;
+    (void) name, (void) mode;
+    return NULL;
 }
 
 

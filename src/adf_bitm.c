@@ -20,7 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -491,8 +491,8 @@ static RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         // mark directory and directory cache blocks
         else if ( entry->type == ADF_ST_DIR ) {
             struct AdfDirBlock dirBlock;
-            RETCODE rc = adfReadEntryBlock ( vol, entry->sector,
-                                             (struct AdfEntryBlock *) &dirBlock );
+            rc = adfReadEntryBlock ( vol, entry->sector,
+                                     (struct AdfEntryBlock *) &dirBlock );
             if ( rc != RC_OK )
                 return rc;
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );

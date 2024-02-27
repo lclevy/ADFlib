@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -30,11 +30,15 @@
 #include "adf_types.h"
 #include "adf_vol.h"
 
-
+#if defined (__ANY_IDEA_WHAT_IS_THIS_FOR__)
+// the code below is not used anywhere and seems unfinished
+// (not clear what it was meant for...)
+// -> disabling it for now
 PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
                                        SECTNUM            nSect,
                                        SECTNUM            lPar,
                                        char **            name,
                                        int32_t *          size );
+#endif
 
 #endif  /* ADF_LINK_H */

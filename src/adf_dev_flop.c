@@ -20,7 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -60,7 +60,7 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
 
     /* set filesystem info (read from bootblock) */
     struct AdfBootBlock boot;
-    if ( adfDevReadBlock ( dev, vol->firstBlock, 512, &boot ) != RC_OK ) {
+    if ( adfDevReadBlock ( dev, (uint32_t)vol->firstBlock, 512, (uint8_t *)&boot ) != RC_OK ) {
         adfEnv.eFct ( "adfMountFlop : error reading BootBlock, device %s, volume %d",
                       dev->name, 0 );
         free ( vol );

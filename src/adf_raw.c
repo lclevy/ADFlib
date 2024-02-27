@@ -20,7 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -33,7 +33,9 @@
 
 #include <string.h>
 
+#ifndef NDEBUG
 #define NDEBUG
+#endif
 #include <assert.h>
 
 #define SW_LONG  4
@@ -339,7 +341,7 @@ uint32_t adfBootSum2 ( const uint8_t * const buf )
 {
     uint32_t prevsum, newSum;
 
-    prevsum = newSum=0L;
+    newSum = 0L;
     for ( unsigned i = 0; i < 1024 / sizeof(uint32_t) ; i++ ) {
         if (i!=1) {
             prevsum = newSum;
