@@ -137,7 +137,7 @@ ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
         adfEnv.useDirCache = (bool) newval;
         break;
     case ADF_PR_IGNORE_CHECKSUM_ERRORS:
-        adfEnv.useDirCache =  (bool) newval;
+        adfEnv.ignoreChecksumErrors =  (bool) newval;
         break;
     default:
         adfEnv.eFct ( "adfEnvSetProp: invalid property %d", property );
@@ -160,7 +160,7 @@ intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property )
     case ADF_PR_USE_RWACCESS:            return (intptr_t) adfEnv.useRWAccess;
     case ADF_PR_RWACCESS:                return (intptr_t) adfEnv.rwhAccess;
     case ADF_PR_USEDIRC:                 return (intptr_t) adfEnv.useDirCache;
-    case ADF_PR_IGNORE_CHECKSUM_ERRORS:  return (intptr_t) adfEnv.useDirCache;
+    case ADF_PR_IGNORE_CHECKSUM_ERRORS:  return (intptr_t) adfEnv.ignoreChecksumErrors;
     default:
         adfEnv.eFct ( "adfEnvGetProp: invalid property %d", property );
     }
