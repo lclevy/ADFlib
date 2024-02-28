@@ -73,13 +73,12 @@ struct AdfEnv {
 
 
 PREFIX void adfEnvInitDefault(void);
+PREFIX void adfEnvCleanUp(void);
 
 PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
                            const AdfLogFct    wFct,
                            const AdfLogFct    vFct,
                            const AdfNotifyFct notifyFct );
-
-PREFIX void adfEnvCleanUp(void);
 
 PREFIX ADF_RETCODE adfEnvChgProp ( const int      property,
                                    const intptr_t newValue );
