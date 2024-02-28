@@ -15,6 +15,11 @@ Copyright: 1999-2024 Laurent Clévy (laurent.clevy@club-internet.fr)
            2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
 License: LGPL-2.1+ or GPL-2.0+
 
+Files: src/win32/*
+Copyright: 1999-2024 Dan Sutherland (dan@chromerhino.demon.co.uk)
+           2023-2024 Tomasz Wolak (tomas.wolak@gmail.com)
+License: LGPL-2.1+ or GPL-2.0+
+
 Files: debian/* examples/*
 Copyright: 2022-2024 Tomasz Wolak (tomas.wolak@gmail.com)
 License: GPL-2.0+
