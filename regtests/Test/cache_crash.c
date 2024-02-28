@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
         if (adfDevMount(dev) == RC_OK) {
             if ((vol = adfVolMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {
                 /* use dir cache (enables the crash) */
-                adfEnvSetProp(ADF_PR_USEDIRC, true);
+                adfEnvSetProperty(ADF_PR_USEDIRC, true);
                 /* read all directory entries (crash happens here) */
                 list = adfGetRDirEnt(vol, vol->curDirPtr, true);
                 /* success! we didn't crash */

@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
  
     adfEnvInitDefault();
 
-    adfEnvSetProp ( ADF_PR_USEDIRC, true );
+    adfEnvSetProperty ( ADF_PR_USEDIRC, true );
 
     /* display or not the physical / logical blocks and W or R */
-    adfEnvSetProp ( ADF_PR_USE_RWACCESS, true );
+    adfEnvSetProperty ( ADF_PR_USE_RWACCESS, true );
  
     /* create and mount one device */
     hd = adfDevCreate ( "dump", "dispsect-newdev", 80, 2, 11 );

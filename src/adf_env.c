@@ -99,11 +99,11 @@ void adfEnvCleanUp(void)
 
 
 /*
- * adfEnvSetProp
+ * adfEnvSetProperty
  *
  */
-ADF_RETCODE adfEnvSetProp ( const ADF_ENV_PROPERTY property,
-                            const intptr_t         newval )
+ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
+                                const intptr_t         newval )
 {
     switch ( property ) {
     case ADF_PR_VFCT:
@@ -147,7 +147,7 @@ ADF_RETCODE adfEnvSetProp ( const ADF_ENV_PROPERTY property,
 }
 
 
-intptr_t adfEnvGetProp ( const ADF_ENV_PROPERTY property )
+intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property )
 {
     switch ( property ) {
     case ADF_PR_VFCT:                    return (intptr_t) adfEnv.vFct;

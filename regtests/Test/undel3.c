@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   
     adfEnvInitDefault();
 
-    adfEnvSetProp ( ADF_PR_USEDIRC, true );
+    adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
     struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {
