@@ -102,8 +102,8 @@ void adfEnvCleanUp(void)
  * adfEnvChgProp
  *
  */
-ADF_RETCODE adfEnvChgProp ( const int      property,
-                            const intptr_t newval )
+ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
+                            const intptr_t         newval )
 {
     switch ( property ) {
     case ADF_PR_VFCT:

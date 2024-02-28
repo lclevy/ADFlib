@@ -32,17 +32,19 @@
 
 /* ----- ENVIRONMENT ----- */
 
-#define ADF_PR_VFCT                   1
-#define ADF_PR_WFCT                   2
-#define ADF_PR_EFCT                   3
-#define ADF_PR_NOTFCT                 4
-#define ADF_PR_USEDIRC                5
-#define ADF_PR_USE_NOTFCT             6
-#define ADF_PR_PROGBAR                7
-#define ADF_PR_USE_PROGBAR            8
-#define ADF_PR_RWACCESS               9
-#define ADF_PR_USE_RWACCESS           10
-#define ADF_PR_IGNORE_CHECKSUM_ERRORS 11
+typedef enum {
+    ADF_PR_VFCT                   = 1,
+    ADF_PR_WFCT                   = 2,
+    ADF_PR_EFCT                   = 3,
+    ADF_PR_NOTFCT                 = 4,
+    ADF_PR_USEDIRC                = 5,
+    ADF_PR_USE_NOTFCT             = 6,
+    ADF_PR_PROGBAR                = 7,
+    ADF_PR_USE_PROGBAR            = 8,
+    ADF_PR_RWACCESS               = 9,
+    ADF_PR_USE_RWACCESS           = 10,
+    ADF_PR_IGNORE_CHECKSUM_ERRORS = 11
+} ADF_ENV_PROPERTY;
 
 //typedef void (*AdfLogFct)(const char * const txt);
 typedef void (*AdfLogFct)(const char * const format, ...);
@@ -80,8 +82,8 @@ PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
                            const AdfLogFct    vFct,
                            const AdfNotifyFct notifyFct );
 
-PREFIX ADF_RETCODE adfEnvChgProp ( const int      property,
-                                   const intptr_t newValue );
+PREFIX ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
+                                   const intptr_t         newValue );
 
 PREFIX char* adfGetVersionNumber(void);
 PREFIX char* adfGetVersionDate(void);
