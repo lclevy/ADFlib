@@ -20,12 +20,6 @@
  *
  */
 
-
-/* Modified 29/8/00 by Gary Harris.
-** - Added a third, Boolean argument to Win32InitDevice() to avoid a compilation warning
-**   caused by the mismatch with the number of arguments in ADFLib's adfInitDevice().
-*/
-
 #include <windows.h>
 #include <stdlib.h>
 #include <string.h>
