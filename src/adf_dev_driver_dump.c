@@ -112,10 +112,10 @@ static struct AdfDevice * adfDevDumpOpen ( const char * const  name,
  * adfReadDumpSector
  *
  */
-static RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
-                                   const uint32_t           n,
-                                   const unsigned           size,
-                                   uint8_t * const          buf )
+static ADF_RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
+                                       const uint32_t           n,
+                                       const unsigned           size,
+                                       uint8_t * const          buf )
 {
 /*puts("adfReadDumpSector");*/
     FILE * const fd = ( (struct DevDumpData *) dev->drvData )->fd;
@@ -140,10 +140,10 @@ static RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
  * adfWriteDumpSector
  *
  */
-static RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
-                                    const uint32_t           n,
-                                    const unsigned           size,
-                                    const uint8_t * const    buf )
+static ADF_RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
+                                        const uint32_t           n,
+                                        const unsigned           size,
+                                        const uint8_t * const    buf )
 {
     FILE * const fd = ( (struct DevDumpData *) dev->drvData )->fd;
     int r = fseek ( fd, 512 * n, SEEK_SET );
@@ -161,7 +161,7 @@ static RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
  * adfReleaseDumpDevice
  *
  */
-static RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
+static ADF_RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
 {
     fclose ( ( (struct DevDumpData *) dev->drvData )->fd );
 

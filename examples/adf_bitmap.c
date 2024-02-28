@@ -13,7 +13,7 @@ char* basename(char* path);
 #include <adflib.h>
 
 
-RETCODE rebuild_bitmap ( struct AdfVolume * const vol );
+ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol );
 int show_block_allocation_bitmap ( struct AdfVolume * const vol );
 
 typedef char bitstr32_t [36];
@@ -84,7 +84,7 @@ int main ( int     argc,
         goto env_cleanup;
     }
 
-    RETCODE rc = adfDevMount ( dev );
+    ADF_RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   adfname );
@@ -111,7 +111,7 @@ int main ( int     argc,
              1 + ( volSizeBlocks - 2 ) / ( ADF_BM_MAP_SIZE * 4 * 8 ) );
 
     if ( command == COMMAND_REBUILD ) {
-        RETCODE rc = rebuild_bitmap ( vol );
+        ADF_RETCODE rc = rebuild_bitmap ( vol );
         status = ( rc == RC_OK ? 0 : 1 );
     } else {  // COMMAND_SHOW
         status = show_block_allocation_bitmap ( vol );
@@ -130,9 +130,9 @@ env_cleanup:
 }
 
 
-RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
+ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
 {
-    RETCODE rc = adfVolRemount ( vol, ADF_ACCESS_MODE_READWRITE );
+    ADF_RETCODE rc = adfVolRemount ( vol, ADF_ACCESS_MODE_READWRITE );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Remounting the volume read-write has failed -"
                   " aborting...\n" );
@@ -201,7 +201,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         if ( bmPage == 0 )
             continue;
 
-        RETCODE rc = adfReadBitmapBlock ( vol, bmPage, &bm );
+        ADF_RETCODE rc = adfReadBitmapBlock ( vol, bmPage, &bm );
         if ( rc != RC_OK ) {
             fprintf ( stderr, "error reading bitmap block on vol. %s, block %u\n",
                       vol->volName, bmPage );
@@ -234,7 +234,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     SECTNUM bmExtBlkPtr = rb.bmExt;
     while ( bmExtBlkPtr != 0 ) {
         struct AdfBitmapExtBlock bmExtBlk;
-        RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
+        ADF_RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
         if ( rc != RC_OK ) {
             adfFreeBitmap ( vol );
             return 1;

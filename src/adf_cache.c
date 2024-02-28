@@ -140,9 +140,9 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
  * Returns a cache entry, starting from the offset p (the index into records[])
  * This offset is updated to the end of the returned entry.
  */
-RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
-                           int * const                           p,
-                           struct AdfCacheEntry * const          cEntry )
+ADF_RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
+                               int * const                           p,
+                               struct AdfCacheEntry * const          cEntry )
 {
     int ptr;
 
@@ -299,9 +299,9 @@ printf("newEntry->nLen %d newEntry->cLen %d\n",newEntry->nLen,newEntry->cLen);
  *
  * delete one cache entry from its block. don't do 'records garbage collecting'
  */
-RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
-                          const struct AdfEntryBlock * const parent,
-                          const SECTNUM                      headerKey )
+ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
+                              const struct AdfEntryBlock * const parent,
+                              const SECTNUM                      headerKey )
 {
     struct AdfDirCacheBlock dirc;
     SECTNUM nSect, prevSect;
@@ -309,7 +309,7 @@ RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
     int offset, oldOffset, n;
     int entryLen;
     int i;
-    RETCODE rc = RC_OK;
+    ADF_RETCODE rc = RC_OK;
 
     prevSect = -1;
 	nSect = parent->extension;
@@ -388,16 +388,16 @@ RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
  * adfAddInCache
  *
  */
-RETCODE adfAddInCache ( struct AdfVolume * const           vol,
-                        const struct AdfEntryBlock * const parent,
-                        const struct AdfEntryBlock * const entry )
+ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
+                            const struct AdfEntryBlock * const parent,
+                            const struct AdfEntryBlock * const entry )
 {
     struct AdfDirCacheBlock dirc, newDirc;
     SECTNUM nSect, nCache;
     struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
-    RETCODE rc = RC_OK;
+    ADF_RETCODE rc = RC_OK;
 
     entryLen = adfEntry2CacheEntry(entry, &newEntry);
 /*printf("adfAddInCache--%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
@@ -484,10 +484,10 @@ dumpBlock(&dirc);
  * adfUpdateCache
  *
  */
-RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
-                         const struct AdfEntryBlock * const parent,
-                         const struct AdfEntryBlock * const entry,
-                         const bool                         entryLenChg )
+ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
+                             const struct AdfEntryBlock * const parent,
+                             const struct AdfEntryBlock * const entry,
+                             const bool                         entryLenChg )
 {
     struct AdfDirCacheBlock dirc;
     SECTNUM nSect;
@@ -495,7 +495,7 @@ RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
     int offset, oldOffset, n;
     int i, oLen, nLen;
     int sLen; /* shift length */
-    RETCODE rc = RC_OK;
+    ADF_RETCODE rc = RC_OK;
 
     nLen = adfEntry2CacheEntry(entry, &newEntry);
 
@@ -577,9 +577,9 @@ RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
  * adfCreateEmptyCache
  *
  */
-RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
-                              struct AdfEntryBlock * const parent,
-                              const SECTNUM                nSect )
+ADF_RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
+                                  struct AdfEntryBlock * const parent,
+                                  const SECTNUM                nSect )
 {
     SECTNUM nCache;
 
@@ -619,13 +619,13 @@ RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
  * adfReadDirCBlock
  *
  */
-RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
-                           const SECTNUM                   nSect,
-                           struct AdfDirCacheBlock * const dirc )
+ADF_RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
+                               const SECTNUM                   nSect,
+                               struct AdfDirCacheBlock * const dirc )
 {
     uint8_t buf[512];
 
-    RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
+    ADF_RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
@@ -651,9 +651,9 @@ RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
  * adfWriteDirCblock
  *
  */
-RETCODE adfWriteDirCBlock ( struct AdfVolume * const        vol,
-                            const int32_t                   nSect,
-                            struct AdfDirCacheBlock * const dirc )
+ADF_RETCODE adfWriteDirCBlock ( struct AdfVolume * const        vol,
+                                const int32_t                   nSect,
+                                struct AdfDirCacheBlock * const dirc )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

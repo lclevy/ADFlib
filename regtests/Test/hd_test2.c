@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     part1.volType = ADF_DOSFS_FFS | ADF_DOSFS_DIRCACHE;
 
     partList[0] = &part1;
-    RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
+    ADF_RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
     if ( rc != RC_OK ) {

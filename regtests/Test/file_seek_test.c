@@ -143,7 +143,7 @@ int run_single_seek_tests ( reading_test_t * test_data )
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( dev );
+    ADF_RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
@@ -209,7 +209,7 @@ int test_single_seek ( struct AdfFile *    file,
              offset, offset );
     fflush ( stdout );
 #endif
-    RETCODE rc = adfFileSeek ( file, offset );
+    ADF_RETCODE rc = adfFileSeek ( file, offset );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Seeking to position 0x%x (%d) failed!!!\n",
                   offset, offset );
@@ -249,7 +249,7 @@ int test_seek_eof ( struct AdfFile * file,
 #endif
 
     // seek to end and check EOF
-    RETCODE rc = adfFileSeek ( file, offset );
+    ADF_RETCODE rc = adfFileSeek ( file, offset );
     if ( rc != RC_OK ) {
         fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
                   offset, offset );

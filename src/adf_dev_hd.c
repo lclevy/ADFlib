@@ -64,7 +64,7 @@ static void adfFreeTmpVolList ( struct AdfList * const root )
  * adfMountHdFile
  *
  */
-RETCODE adfMountHdFile ( struct AdfDevice * const dev )
+ADF_RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 {
     struct AdfVolume * vol;
 
@@ -147,7 +147,7 @@ RETCODE adfMountHdFile ( struct AdfDevice * const dev )
  *
  * fills geometry fields and volumes list (dev->nVol and dev->volList[])
  */
-RETCODE adfMountHd ( struct AdfDevice * const dev )
+ADF_RETCODE adfMountHd ( struct AdfDevice * const dev )
 {
     struct AdfRSDKblock rdsk;
     struct AdfPARTblock part;
@@ -157,7 +157,7 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
     struct AdfVolume * vol;
     unsigned len;
 
-    RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
+    ADF_RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
     if ( rc != RC_OK )
         return rc;
 
@@ -300,9 +300,9 @@ RETCODE adfMountHd ( struct AdfDevice * const dev )
  * do not fill dev->volList[]
  * called by adfCreateHd()
  */
-RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
-                            const int                              n,
-                            const struct Partition * const * const partList )
+ADF_RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
+                                const int                              n,
+                                const struct Partition * const * const partList )
 {
     (void) n;
     int i;
@@ -329,7 +329,7 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
     rdsk.partitionList = 1;
     rdsk.fileSysHdrList = 1 + dev->nVol;
 
-    RETCODE rc = adfWriteRDSKblock ( dev, &rdsk );
+    ADF_RETCODE rc = adfWriteRDSKblock ( dev, &rdsk );
     if ( rc != RC_OK )
         return rc;
 
@@ -390,9 +390,9 @@ RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
  * fills dev->volList[]
  *
  */
-RETCODE adfCreateHd ( struct AdfDevice * const               dev,
-                      const unsigned                         n,
-                      const struct Partition * const * const partList )
+ADF_RETCODE adfCreateHd ( struct AdfDevice * const               dev,
+                          const unsigned                         n,
+                          const struct Partition * const * const partList )
 {
     unsigned i, j;
 
@@ -440,9 +440,9 @@ printf("0first=%ld last=%ld root=%ld\n",vol->firstBlock,
  * adfCreateHdFile
  *
  */
-RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
-                          const char * const       volName,
-                          const uint8_t            volType )
+ADF_RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                              const char * const       volName,
+                              const uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
@@ -471,12 +471,12 @@ RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
  * ReadRDSKblock
  *
  */
-RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
-                           struct AdfRSDKblock * const blk )
+ADF_RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
+                               struct AdfRSDKblock * const blk )
 {
     uint8_t buf[256];
 
-    RETCODE rc = adfDevReadBlock ( dev, 0, 256, buf );
+    ADF_RETCODE rc = adfDevReadBlock ( dev, 0, 256, buf );
     if ( rc != RC_OK )
        return rc;
 
@@ -514,8 +514,8 @@ RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
  * adfWriteRDSKblock
  *
  */
-RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
-                            struct AdfRSDKblock * const rdsk )
+ADF_RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
+                                struct AdfRSDKblock * const rdsk )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -552,14 +552,14 @@ RETCODE adfWriteRDSKblock ( struct AdfDevice * const    dev,
  * ReadPARTblock
  *
  */
-RETCODE adfReadPARTblock ( struct AdfDevice * const    dev,
-                           const int32_t               nSect,
-                           struct AdfPARTblock * const blk )
+ADF_RETCODE adfReadPARTblock ( struct AdfDevice * const    dev,
+                               const int32_t               nSect,
+                               struct AdfPARTblock * const blk )
 {
     uint8_t buf[ sizeof(struct AdfPARTblock) ];
 
-    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct AdfPARTblock), buf );
+    ADF_RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
+                                       sizeof(struct AdfPARTblock), buf );
     if ( rc != RC_OK )
        return rc;
 
@@ -593,9 +593,9 @@ RETCODE adfReadPARTblock ( struct AdfDevice * const    dev,
  * adfWritePARTblock
  *
  */
-RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
-                            const int32_t               nSect,
-                            struct AdfPARTblock * const part )
+ADF_RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
+                                const int32_t               nSect,
+                                struct AdfPARTblock * const part )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -631,14 +631,14 @@ RETCODE adfWritePARTblock ( struct AdfDevice * const    dev,
  * ReadFSHDblock
  *
  */
-RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
-                           const int32_t               nSect,
-                           struct AdfFSHDblock * const blk )
+ADF_RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
+                               const int32_t               nSect,
+                               struct AdfFSHDblock * const blk )
 {
     uint8_t buf[ sizeof(struct AdfFSHDblock) ];
 
-    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct AdfFSHDblock), buf );
+    ADF_RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
+                                       sizeof(struct AdfFSHDblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
@@ -667,9 +667,9 @@ RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
  *  adfWriteFSHDblock
  *
  */
-RETCODE adfWriteFSHDblock ( struct AdfDevice * const    dev,
-                            const int32_t               nSect,
-                            struct AdfFSHDblock * const fshd )
+ADF_RETCODE adfWriteFSHDblock ( struct AdfDevice * const    dev,
+                                const int32_t               nSect,
+                                struct AdfFSHDblock * const fshd )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;
@@ -701,14 +701,14 @@ RETCODE adfWriteFSHDblock ( struct AdfDevice * const    dev,
  * ReadLSEGblock
  *
  */
-RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
-                           const int32_t               nSect,
-                           struct AdfLSEGblock * const blk )
+ADF_RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
+                               const int32_t               nSect,
+                               struct AdfLSEGblock * const blk )
 {
     uint8_t buf[ sizeof(struct AdfLSEGblock) ];
 
-    RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
-                                   sizeof(struct AdfLSEGblock), buf );
+    ADF_RETCODE rc = adfDevReadBlock ( dev, (uint32_t) nSect,
+                                       sizeof(struct AdfLSEGblock), buf );
     if ( rc != RC_OK )
         return rc;
 		
@@ -737,9 +737,9 @@ RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
  * adfWriteLSEGblock
  *
  */
-RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
-                            const int32_t               nSect,
-                            struct AdfLSEGblock * const lseg )
+ADF_RETCODE adfWriteLSEGblock ( struct AdfDevice * const    dev,
+                                const int32_t               nSect,
+                                struct AdfLSEGblock * const lseg )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
     uint32_t newSum;

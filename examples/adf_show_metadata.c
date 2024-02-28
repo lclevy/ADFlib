@@ -60,7 +60,7 @@ int main ( const int                  argc,
         goto env_cleanup;
     }
 
-    RETCODE rc = adfDevMount ( dev );
+    ADF_RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   args.adfname );

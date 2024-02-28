@@ -137,7 +137,7 @@ static struct AdfDevice * adfLinuxInitDevice ( const char * const  name,
  *
  * free native device
  */
-static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
+static ADF_RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
     close ( ( (struct AdfNativeDevice *) dev->drvData )->fd );
     free ( dev->drvData );
@@ -151,10 +151,10 @@ static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
  * adfLinuxReadSector
  *
  */
-static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                                    const uint32_t           n,
-                                    const unsigned           size,
-                                    uint8_t * const          buf )
+static ADF_RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                                        const uint32_t           n,
+                                        const unsigned           size,
+                                        uint8_t * const          buf )
 {
     const int fd = ( (struct AdfNativeDevice *) dev->drvData )->fd;
 
@@ -174,10 +174,10 @@ static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
  * adfLinuxWriteSector
  *
  */
-static RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                                     const uint32_t           n,
-                                     const unsigned           size,
-                                     const uint8_t * const    buf )
+static ADF_RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                                         const uint32_t           n,
+                                         const unsigned           size,
+                                         const uint8_t * const    buf )
 {
     const int fd = ( (struct AdfNativeDevice *) dev->drvData )->fd;
 

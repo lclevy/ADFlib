@@ -123,8 +123,8 @@ static inline bool adfVolIsFsValid (  const struct AdfVolume * const vol )
 PREFIX char * adfVolGetFsStr ( const struct AdfVolume * const vol );
 
 
-PREFIX RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
-                                        const uint8_t * const    code );
+PREFIX ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
+                                            const uint8_t * const    code );
 
 PREFIX bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
                                    const SECTNUM                  nSect );
@@ -133,8 +133,8 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const int                nPart,
                                         const AdfAccessMode      mode );
 
-PREFIX RETCODE adfVolRemount ( struct AdfVolume *  vol,
-                               const AdfAccessMode mode );
+PREFIX ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
+                                   const AdfAccessMode mode );
 
 PREFIX void adfVolUnMount ( struct AdfVolume * const vol );
 
@@ -146,12 +146,12 @@ PREFIX struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                          const char * const       volName,
                                          const uint8_t            volType );
 
-PREFIX RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
-                                 const uint32_t           nSect,
-                                 uint8_t * const          buf );
+PREFIX ADF_RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
+                                     const uint32_t           nSect,
+                                     uint8_t * const          buf );
 
-PREFIX RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
-                                  const uint32_t           nSect,
-                                  const uint8_t * const    buf );
+PREFIX ADF_RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
+                                      const uint32_t           nSect,
+                                      const uint8_t * const    buf );
 
 #endif  /* ADF_VOL_H */

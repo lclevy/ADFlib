@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( hd );
+    ADF_RETCODE rc = adfDevMount ( hd );
     if ( rc != RC_OK ) {
         fprintf(stderr, "can't mount device\n");
         adfDevClose ( hd );

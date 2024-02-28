@@ -116,13 +116,13 @@ void adfSwapEndian ( uint8_t * const buf,
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
-                           const uint32_t              nSect,
-                           struct AdfRootBlock * const root )
+ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
+                               const uint32_t              nSect,
+                               struct AdfRootBlock * const root )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
-    RETCODE rc = adfVolReadBlock ( vol, nSect, buf );
+    ADF_RETCODE rc = adfVolReadBlock ( vol, nSect, buf );
     if ( rc != RC_OK )
         return rc;
 
@@ -154,9 +154,9 @@ RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
  *
  * 
  */
-RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
-                            const uint32_t              nSect,
-                            struct AdfRootBlock * const root )
+ADF_RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
+                                const uint32_t              nSect,
+                                struct AdfRootBlock * const root )
 {
 /*printf("adfWriteRootBlock %ld\n",nSect);*/
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
@@ -191,13 +191,13 @@ RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
  *
  * ENDIAN DEPENDENT
  */
-RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
-                           struct AdfBootBlock * const boot )
+ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
+                               struct AdfBootBlock * const boot )
 {
     uint8_t buf[1024];
 	
 /*puts("22");*/
-    RETCODE rc = adfVolReadBlock ( vol, 0, buf );
+    ADF_RETCODE rc = adfVolReadBlock ( vol, 0, buf );
     if ( rc != RC_OK )
         return rc;
 /*puts("11");*/
@@ -238,8 +238,8 @@ RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
  *
  *     write bootcode ?
  */
-RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
-                            struct AdfBootBlock * const boot )
+ADF_RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
+                                struct AdfBootBlock * const boot )
 {
     uint8_t buf[ ADF_LOGICAL_BLOCK_SIZE * 2 ];
 
@@ -262,7 +262,7 @@ RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
 	dumpBlock(buf+512);
 */
 
-    RETCODE rc = adfVolWriteBlock ( vol, 0, buf );
+    ADF_RETCODE rc = adfVolWriteBlock ( vol, 0, buf );
     if ( rc != RC_OK )
         return rc;
 

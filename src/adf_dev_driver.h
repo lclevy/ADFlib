@@ -43,14 +43,14 @@ struct AdfDeviceDriver {
 
     /* required */
 
-    RETCODE (*closeDev)(struct AdfDevice * const dev);
+    ADF_RETCODE (*closeDev)(struct AdfDevice * const dev);
 
-    RETCODE (*readSector)( struct AdfDevice * const dev,
+    ADF_RETCODE (*readSector)( struct AdfDevice * const dev,
                            const uint32_t           n,
                            const unsigned           size,
                            uint8_t * const          buf );
 
-    RETCODE (*writeSector)( struct AdfDevice * const dev,
+    ADF_RETCODE (*writeSector)( struct AdfDevice * const dev,
                             const uint32_t           n,
                             const unsigned           size,
                             const uint8_t * const    buf );

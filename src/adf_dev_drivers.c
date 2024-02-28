@@ -34,7 +34,7 @@ struct AdfDeviceDriverListNode {
 static struct AdfDeviceDriverListNode * adfDeviceDrivers = NULL;
 
 
-RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
+ADF_RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
 {
     struct AdfDeviceDriverListNode * newNode =
         malloc ( sizeof ( struct AdfDeviceDriverListNode ) );
@@ -58,7 +58,7 @@ RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
 }
 
 
-RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver )
+ADF_RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver )
 {
     struct AdfDeviceDriverListNode
         *node = adfDeviceDrivers,

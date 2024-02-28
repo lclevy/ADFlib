@@ -85,17 +85,17 @@ PREFIX void adfDevClose ( struct AdfDevice * const dev );
 PREFIX int adfDevType ( const struct AdfDevice * const dev );
 PREFIX void adfDevInfo ( const struct AdfDevice * const dev );
 
-PREFIX RETCODE adfDevMount ( struct AdfDevice * const dev );
+PREFIX ADF_RETCODE adfDevMount ( struct AdfDevice * const dev );
 PREFIX void adfDevUnMount ( struct AdfDevice * const dev );
 
 
-RETCODE adfDevReadBlock ( struct AdfDevice * const dev,
-                          const uint32_t           pSect,
-                          const uint32_t           size,
-                          uint8_t * const          buf );
+ADF_RETCODE adfDevReadBlock ( struct AdfDevice * const dev,
+                              const uint32_t           pSect,
+                              const uint32_t           size,
+                              uint8_t * const          buf );
 
-RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
-                           const uint32_t           pSect,
-                           const uint32_t           size,
-                           const uint8_t * const    buf );
+ADF_RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
+                               const uint32_t           pSect,
+                               const uint32_t           size,
+                               const uint8_t * const    buf );
 #endif  /* ADF_DEV_H */

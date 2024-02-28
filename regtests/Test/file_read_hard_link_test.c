@@ -118,7 +118,7 @@ int test_hlink_read ( reading_test_t * test_data )
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( dev );
+    ADF_RETCODE rc = adfDevMount ( dev );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );

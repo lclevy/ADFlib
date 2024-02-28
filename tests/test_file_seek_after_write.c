@@ -126,7 +126,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
             fflush (stdout);
         }*/
 
-        RETCODE rc = adfFileSeek ( file, offset );
+        ADF_RETCODE rc = adfFileSeek ( file, offset );
         ck_assert_int_eq ( rc, RC_OK );
         bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
@@ -143,7 +143,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
                 ( bufsize % chunksize == 0 ? chunksize :
                   bufsize % chunksize ) :
                 chunksize;
-            RETCODE rc = adfFileSeek ( file, offset );
+            ADF_RETCODE rc = adfFileSeek ( file, offset );
             ck_assert_int_eq ( rc, RC_OK );
             bytes_written = (unsigned) adfFileWrite ( file, (int) wsize, chunk );
             ck_assert_uint_eq ( wsize, bytes_written );

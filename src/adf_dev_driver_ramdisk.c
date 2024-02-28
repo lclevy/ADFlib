@@ -63,7 +63,7 @@ static struct AdfDevice * ramdiskCreate ( const char * const name,
 }
 
 
-static RETCODE ramdiskRelease ( struct AdfDevice * const dev )
+static ADF_RETCODE ramdiskRelease ( struct AdfDevice * const dev )
 {
     free ( dev->drvData );
     free ( dev->name );
@@ -72,10 +72,10 @@ static RETCODE ramdiskRelease ( struct AdfDevice * const dev )
 }
 
 
-static RETCODE ramdiskReadSector ( struct AdfDevice * const dev,
-                                   const uint32_t           n,
-                                   const unsigned           size,
-                                   uint8_t * const          buf )
+static ADF_RETCODE ramdiskReadSector ( struct AdfDevice * const dev,
+                                       const uint32_t           n,
+                                       const unsigned           size,
+                                       uint8_t * const          buf )
 {
     unsigned int offset = n * 512;
     if ( offset > dev->size ||
@@ -87,10 +87,10 @@ static RETCODE ramdiskReadSector ( struct AdfDevice * const dev,
     return RC_OK;
 }
 
-static RETCODE ramdiskWriteSector ( struct AdfDevice * const dev,
-                                    const uint32_t           n,
-                                    const unsigned           size,
-                                    const uint8_t * const    buf )
+static ADF_RETCODE ramdiskWriteSector ( struct AdfDevice * const dev,
+                                        const uint32_t           n,
+                                        const unsigned           size,
+                                        const uint8_t * const    buf )
 {
     unsigned int offset = n * 512;
     if ( offset > dev->size ||

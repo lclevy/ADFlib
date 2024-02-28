@@ -114,7 +114,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->nDataBlock );
     ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
-    RETCODE rc = adfFileSeek ( file, adfFileGetSize ( file ) );
+    ADF_RETCODE rc = adfFileSeek ( file, adfFileGetSize ( file ) );
     ck_assert_int_eq ( rc, RC_OK );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );

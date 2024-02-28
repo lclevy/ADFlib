@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     partList[0] = &part1;
     partList[1] = &part2;
 
-    RETCODE rc = adfCreateHd ( hd, 2, (const struct Partition * const * const) partList );
+    ADF_RETCODE rc = adfCreateHd ( hd, 2, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
     free(part2.volName);

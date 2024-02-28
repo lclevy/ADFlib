@@ -36,7 +36,7 @@ struct AdfNativeDevice {
 };
 
 static bool Win32IsDevice ( const char * const devName );
-static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
+static ADF_RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
 
 
 static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
@@ -118,10 +118,10 @@ static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
 }
 
 
-static RETCODE Win32ReadSector ( struct AdfDevice * const dev,
-                                 const uint32_t           n,
-                                 const unsigned           size,
-                                 uint8_t * const          buf )
+static ADF_RETCODE Win32ReadSector ( struct AdfDevice * const dev,
+                                     const uint32_t           n,
+                                     const unsigned           size,
+                                     uint8_t * const          buf )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
@@ -134,10 +134,10 @@ static RETCODE Win32ReadSector ( struct AdfDevice * const dev,
 }
 
 
-static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
-                                  const uint32_t           n,
-                                  const unsigned           size,
-                                  const uint8_t * const    buf )
+static ADF_RETCODE Win32WriteSector ( struct AdfDevice * const dev,
+                                      const uint32_t           n,
+                                      const unsigned           size,
+                                      const uint8_t * const    buf )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
@@ -150,7 +150,7 @@ static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
 }
 
 
-static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
+static ADF_RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 

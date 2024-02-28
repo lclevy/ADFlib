@@ -78,10 +78,12 @@ typedef enum {
 
 /*-- adfWriteRDSKblock() --*/
 /*RC_BLOCKREADONLY*/
-} RETCODE;
+} ADF_RETCODE;
 
 //#define hasRC(rc,c) ((rc)&(c))
-static inline bool adfHasRC ( RETCODE mask, RETCODE code ) {
+static inline bool adfHasRC ( ADF_RETCODE mask,
+                              ADF_RETCODE code )
+{
     return ( mask & code );
 }
 

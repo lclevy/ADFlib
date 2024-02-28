@@ -37,7 +37,7 @@ void log_warning ( FILE * const       file,
 void log_info ( FILE * const       file,
                 const char * const format, ... );
 
-RETCODE copy_file ( const char * const dst_fname,
+ADF_RETCODE copy_file ( const char * const dst_fname,
                     const char * const src_fname );
 
 unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
@@ -82,7 +82,7 @@ int main ( const int          argc,
         goto clean_up;
     }
 
-    RETCODE rc = adfDevMount ( devOrig );
+    ADF_RETCODE rc = adfDevMount ( devOrig );
     if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfOrig );
         error_status = true;
@@ -209,7 +209,7 @@ delete_adf_copy:
 
 #define BUFSIZE 1024
 
-RETCODE copy_file ( const char * const dst_fname,
+ADF_RETCODE copy_file ( const char * const dst_fname,
                     const char * const src_fname )
 {
     log_info ( stdout, "Copying %s to %s... ", src_fname, dst_fname );
@@ -223,7 +223,7 @@ RETCODE copy_file ( const char * const dst_fname,
         return RC_ERROR;
     }
 
-    RETCODE status = RC_OK;
+    ADF_RETCODE status = RC_OK;
     char buffer[BUFSIZE];
     size_t bytes_read;
     while ( ( bytes_read = fread ( buffer, 1, BUFSIZE, src ) ) > 0 ) {
@@ -291,7 +291,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
                           i, bmPageOrig, bmPageUpdate );
         }
 
-        RETCODE rc = adfReadBitmapBlock ( volOrig, bmPageOrig, &bmOrig );
+        ADF_RETCODE rc = adfReadBitmapBlock ( volOrig, bmPageOrig, &bmOrig );
         if ( rc != RC_OK ) {
             log_error ( stderr, "error reading bitmap block on vol. orig, block %u\n",
                         bmPageOrig );

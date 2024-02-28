@@ -41,35 +41,35 @@ struct AdfFileBlocks {
 };
 
 
-RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
-                           const struct AdfFileHeaderBlock * const entry,
-                           struct AdfFileBlocks * const            fileBlocks );
+ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
+                               const struct AdfFileHeaderBlock * const entry,
+                               struct AdfFileBlocks * const            fileBlocks );
 
-RETCODE adfFreeFileBlocks ( struct AdfVolume * const          vol,
-                            struct AdfFileHeaderBlock * const entry );
+ADF_RETCODE adfFreeFileBlocks ( struct AdfVolume * const          vol,
+                                struct AdfFileHeaderBlock * const entry );
 
 PREFIX uint32_t adfFileRealSize ( const uint32_t  size,
                                   const unsigned  blockSize,
                                   int32_t * const dataN,
                                   int32_t * const extN );
 
-RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const          vol,
-                               const SECTNUM                     nSect,
-                               struct AdfFileHeaderBlock * const fhdr );
+ADF_RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const          vol,
+                                   const SECTNUM                     nSect,
+                                   struct AdfFileHeaderBlock * const fhdr );
 
-RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
-                           const SECTNUM            nSect,
-                           void * const             data );
+ADF_RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
+                               const SECTNUM            nSect,
+                               void * const             data );
 
-RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
-                            const SECTNUM            nSect,
-                            void * const             data );
+ADF_RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
+                                const SECTNUM            nSect,
+                                void * const             data );
 
-PREFIX RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
-                                     const SECTNUM                  nSect,
-                                     struct AdfFileExtBlock * const fext );
+PREFIX ADF_RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
+                                         const SECTNUM                  nSect,
+                                         struct AdfFileExtBlock * const fext );
 
-PREFIX RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
-                                      const SECTNUM                  nSect,
-                                      struct AdfFileExtBlock * const fext );
+PREFIX ADF_RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
+                                          const SECTNUM                  nSect,
+                                          struct AdfFileExtBlock * const fext );
 #endif  /* ADF_FILE_BLOCK_H */

@@ -36,7 +36,7 @@ int main ( int     argc,
         return 1;
     }
 
-    RETCODE rc = adfDevMount ( device );
+    ADF_RETCODE rc = adfDevMount ( device );
     if ( rc != RC_OK ) {
         fprintf ( stderr, "adfDevMount failed on %s - aborting...\n",
                   adfname );

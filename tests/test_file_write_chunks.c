@@ -151,7 +151,7 @@ void test_file_write ( test_data_t * const tdata )
             fflush (stdout);
             }*/
         
-        //RETCODE rc = adfFileSeek ( file, offset );
+        //ADF_RETCODE rc = adfFileSeek ( file, offset );
         //ck_assert_int_eq ( rc, RC_OK );
         unsigned bytes_written = adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );

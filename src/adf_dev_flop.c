@@ -43,7 +43,7 @@
  * use dev->devType to choose between DD and HD
  * fills the volume list with one volume
  */
-RETCODE adfMountFlop ( struct AdfDevice * const dev )
+ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
 {
     struct AdfVolume *vol;
 
@@ -114,9 +114,9 @@ RETCODE adfMountFlop ( struct AdfDevice * const dev )
  * create a filesystem on a floppy device
  * fills dev->volList[]
  */
-RETCODE adfCreateFlop ( struct AdfDevice * const dev,
-                        const char * const       volName,
-                        const uint8_t            volType )
+ADF_RETCODE adfCreateFlop ( struct AdfDevice * const dev,
+                            const char * const       volName,
+                            const uint8_t            volType )
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");

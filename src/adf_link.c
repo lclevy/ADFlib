@@ -41,11 +41,11 @@
  *
  *
  */
-RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                SECTNUM            nSect,
-                                SECTNUM            lPar,
-                                char **            name,
-                                int32_t *          size )
+ADF_RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
+                                    SECTNUM            nSect,
+                                    SECTNUM            lPar,
+                                    char **            name,
+                                    int32_t *          size )
 {
     struct AdfEntryBlock entryBlk;
     struct AdfEntry entry;
