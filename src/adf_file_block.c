@@ -219,10 +219,11 @@ ADF_RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
             const char msg[] = "adfReadDataBlock : invalid checksum 0x%x != 0x%x (calculated)"
                 ", block %d, volume '%s'";
             if ( adfEnv.ignoreChecksumErrors ) {
+                adfEnv.wFct ( msg, dBlock->checkSum, checksumCalculated, nSect, vol->volName );
+            } else {
                 adfEnv.eFct ( msg, dBlock->checkSum, checksumCalculated, nSect, vol->volName );
                 return RC_BLOCKSUM;
-            } else
-                adfEnv.wFct ( msg, dBlock->checkSum, checksumCalculated, nSect, vol->volName );
+            }
         }
 
         if ( dBlock->type != ADF_T_DATA )
@@ -313,10 +314,11 @@ ADF_RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
         const char msg[] = "adfReadFileExtBlock : invalid checksum 0x%x != 0x%x (calculated)"
             ", block %d, volume '%s'";
         if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, fext->checkSum, checksumCalculated, nSect, vol->volName );
+        } else {
             adfEnv.eFct ( msg, fext->checkSum, checksumCalculated, nSect, vol->volName );
             return RC_BLOCKSUM;
-        } else
-            adfEnv.wFct ( msg, fext->checkSum, checksumCalculated, nSect, vol->volName );
+        }
     }
 
     if ( fext->type != ADF_T_LIST )

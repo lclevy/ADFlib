@@ -1121,10 +1121,11 @@ ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
         const char msg[] = "adfReadEntryBlock : invalid checksum 0x%x != 0x%x (calculated)"
             ", block %d, volume '%s'";
         if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
+        } else {
             adfEnv.eFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
             return RC_BLOCKSUM;
-        } else
-            adfEnv.wFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
+        }
     }
 
     if ( ent->type != ADF_T_HEADER)  {

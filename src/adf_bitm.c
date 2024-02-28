@@ -827,10 +827,11 @@ ADF_RETCODE adfReadBitmapBlock ( struct AdfVolume *      vol,
         const char msg[] = "adfReadBitmapBlock : invalid checksum 0x%x != 0x%x (calculated)"
             ", block %d, volume '%s'";
         if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, bitm->checkSum, checksumCalculated, nSect, vol->volName );
+        } else {
             adfEnv.eFct ( msg, bitm->checkSum, checksumCalculated, nSect, vol->volName );
             return RC_BLOCKSUM;
-        } else
-            adfEnv.wFct ( msg, bitm->checkSum, checksumCalculated, nSect, vol->volName );
+        }
     }
 
     return RC_OK;
