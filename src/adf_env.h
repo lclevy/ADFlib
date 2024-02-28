@@ -41,6 +41,7 @@
 #define PR_USE_PROGBAR  8
 #define PR_RWACCESS     9
 #define PR_USE_RWACCESS 10
+#define PR_IGNORE_CHECKSUM_ERRORS 11
 
 //typedef void (*AdfLogFct)(const char * const txt);
 typedef void (*AdfLogFct)(const char * const format, ...);
@@ -65,6 +66,8 @@ struct AdfEnv {
     bool useProgressBar;
 
     bool useDirCache;
+
+    bool ignoreChecksumErrors;
 };
 
 

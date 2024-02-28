@@ -78,6 +78,7 @@ void adfEnvInitDefault(void)
     adfEnv.useRWAccess    = false;
     adfEnv.useNotify      = false;
     adfEnv.useProgressBar = false;
+    adfEnv.ignoreChecksumErrors = false;
 
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
@@ -141,6 +142,10 @@ void adfChgEnvProp(int prop, void *newval)
         newBool = (bool *) newval;
         adfEnv.useDirCache = *newBool;
         break;
+    case PR_IGNORE_CHECKSUM_ERRORS:
+        newBool = (bool *) newval;
+        adfEnv.useDirCache = *newBool;
+        break;
     }
 }
 
@@ -182,6 +187,7 @@ char* adfGetVersionDate(void)
 {
 	return(ADFLIB_DATE);
 }
+
 
 /*##################################################################################*/
 

@@ -138,11 +138,15 @@ ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
         return RC_BLOCKTYPE;
     }
 
-    uint32_t checksumCalculated = adfNormalSum ( buf, 0x14, ADF_LOGICAL_BLOCK_SIZE );
+    const uint32_t checksumCalculated = adfNormalSum ( buf, 0x14, ADF_LOGICAL_BLOCK_SIZE );
     if ( root->checkSum != checksumCalculated ) {
-        adfEnv.wFct ( "adfReadRootBlock : invalid checksum 0x%x, calculated 0x%x",
-                      root->checkSum, checksumCalculated );
-        //return RC_BLOCKSUM;
+        const char msg[] = "adfReadRootBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, volume '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.eFct ( msg, root->checkSum, checksumCalculated, nSect, vol->volName );
+            return RC_BLOCKSUM;
+        } else
+            adfEnv.wFct ( msg, root->checkSum, checksumCalculated, nSect, vol->volName );
     }
 		
     return RC_OK;
@@ -220,12 +224,16 @@ ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
 
 
     if ( boot->data[0] != 0 ) {
-        uint32_t checksumCalculated = adfBootSum ( buf );
+        const uint32_t checksumCalculated = adfBootSum ( buf );
 /*printf("compsum=%lx sum=%lx\n",	adfBootSum(buf),boot->checkSum );*/		/* BV */
         if ( boot->checkSum != checksumCalculated ) {
-            adfEnv.wFct ( "adfReadBootBlock : incorrect checksum 0x%x, calculated 0x%x",
-                          boot->checkSum, checksumCalculated );
-            //return RC_BLOCKSUM;
+            const char msg[] = "adfReadBootBlock : invalid checksum 0x%x != 0x%x (calculated)"
+                ", block %d, volume '%s'";
+            if ( adfEnv.ignoreChecksumErrors ) {
+                adfEnv.eFct ( msg, boot->checkSum, checksumCalculated, 0, vol->volName );
+                return RC_BLOCKSUM;
+            } else
+                adfEnv.wFct ( msg, boot->checkSum, checksumCalculated, 0, vol->volName );
         }
     }
 

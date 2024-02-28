@@ -822,10 +822,15 @@ ADF_RETCODE adfReadBitmapBlock ( struct AdfVolume *      vol,
     adfSwapEndian ( (uint8_t *) bitm, ADF_SWBL_BITMAP );
 #endif
 
-    if ( bitm->checkSum != adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE ) ) {
-        adfEnv.wFct ( "adfReadBitmapBlock : invalid checksum, volume '%s', block %u",
-                      vol->volName, nSect );
-        // return error here?
+    const uint32_t checksumCalculated = adfNormalSum ( buf, 0, ADF_LOGICAL_BLOCK_SIZE );
+    if ( bitm->checkSum != checksumCalculated ) {
+        const char msg[] = "adfReadBitmapBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, volume '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.eFct ( msg, bitm->checkSum, checksumCalculated, nSect, vol->volName );
+            return RC_BLOCKSUM;
+        } else
+            adfEnv.wFct ( msg, bitm->checkSum, checksumCalculated, nSect, vol->volName );
     }
 
     return RC_OK;

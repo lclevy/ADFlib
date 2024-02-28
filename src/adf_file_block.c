@@ -213,9 +213,18 @@ ADF_RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
         struct AdfOFSDataBlock * const dBlock = (struct AdfOFSDataBlock *) data;
 /*printf("adfReadDataBlock %ld\n",nSect);*/
 
-        if ( dBlock->checkSum != adfNormalSum ( buf, 20, sizeof(struct AdfOFSDataBlock) ) )
-            adfEnv.wFct ( "adfReadDataBlock : invalid checksum, block %d, volume '%s'",
-                           nSect, vol->volName );
+        const uint32_t checksumCalculated =
+            adfNormalSum ( buf, 20, sizeof(struct AdfOFSDataBlock) );
+        if ( dBlock->checkSum != checksumCalculated ) {
+            const char msg[] = "adfReadDataBlock : invalid checksum 0x%x != 0x%x (calculated)"
+                ", block %d, volume '%s'";
+            if ( adfEnv.ignoreChecksumErrors ) {
+                adfEnv.eFct ( msg, dBlock->checkSum, checksumCalculated, nSect, vol->volName );
+                return RC_BLOCKSUM;
+            } else
+                adfEnv.wFct ( msg, dBlock->checkSum, checksumCalculated, nSect, vol->volName );
+        }
+
         if ( dBlock->type != ADF_T_DATA )
             adfEnv.wFct ( "adfReadDataBlock : id ADF_T_DATA not found, block %d, volume '%s'",
                            nSect, vol->volName );
@@ -297,8 +306,19 @@ ADF_RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
 #ifdef LITT_ENDIAN
     adfSwapEndian ( (uint8_t *) fext, ADF_SWBL_FEXT );
 #endif
-    if ( fext->checkSum != adfNormalSum ( buf, 20, sizeof(struct AdfFileExtBlock) ) )
-        (*adfEnv.wFct)("adfReadFileExtBlock : invalid checksum");
+
+    const uint32_t checksumCalculated =
+        adfNormalSum ( buf, 20, sizeof(struct AdfFileExtBlock) );
+    if ( fext->checkSum != checksumCalculated ) {
+        const char msg[] = "adfReadFileExtBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, volume '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.eFct ( msg, fext->checkSum, checksumCalculated, nSect, vol->volName );
+            return RC_BLOCKSUM;
+        } else
+            adfEnv.wFct ( msg, fext->checkSum, checksumCalculated, nSect, vol->volName );
+    }
+
     if ( fext->type != ADF_T_LIST )
         adfEnv.wFct ( "adfReadFileExtBlock : type ADF_T_LIST not found" );
     if ( fext->secType != ADF_ST_FILE )

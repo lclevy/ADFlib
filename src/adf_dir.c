@@ -1115,11 +1115,18 @@ ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
     }
 #endif
 /*printf("readentry=%d\n",nSect);*/
-    if (ent->checkSum!=adfNormalSum((uint8_t*)buf,20,512)) {
-        adfEnv.wFct ( "adfReadEntryBlock : invalid checksum, volume '%s', block %u",
-                      vol->volName, nSect );
-        return RC_BLOCKSUM;
+
+    const uint32_t checksumCalculated = adfNormalSum ( (uint8_t *) buf, 20, 512 );
+    if ( ent->checkSum != checksumCalculated ) {
+        const char msg[] = "adfReadEntryBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, volume '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.eFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
+            return RC_BLOCKSUM;
+        } else
+            adfEnv.wFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
     }
+
     if ( ent->type != ADF_T_HEADER)  {
         adfEnv.wFct ( "adfReadEntryBlock : ADF_T_HEADER id not found, volume '%s', block %u",
                       vol->volName, nSect );
