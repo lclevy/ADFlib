@@ -102,13 +102,10 @@ void adfEnvCleanUp(void)
  * adfEnvChgProp
  *
  */
-ADF_RETCODE adfEnvChgProp ( const int          prop,
-                            const void * const newval )
+ADF_RETCODE adfEnvChgProp ( const int      property,
+                            const intptr_t newval )
 {
-    bool *newBool;
-/*    int *newInt;*/
-
-    switch(prop) {
+    switch ( property ) {
     case PR_VFCT:
         adfEnv.vFct = (AdfLogFct) newval;
         break;
@@ -122,30 +119,25 @@ ADF_RETCODE adfEnvChgProp ( const int          prop,
         adfEnv.notifyFct = (AdfNotifyFct) newval;
         break;
     case PR_USE_NOTFCT:
-        newBool = (bool *) newval;
-        adfEnv.useNotify = *newBool;
+        adfEnv.useNotify = (bool) newval;
         break;
     case PR_PROGBAR:
         adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
     case PR_USE_PROGBAR:
-        newBool = (bool *) newval;
-        adfEnv.useProgressBar = *newBool;
+        adfEnv.useProgressBar = (bool) newval;
         break;
     case PR_USE_RWACCESS:
-        newBool = (bool *) newval;
-        adfEnv.useRWAccess = *newBool;
+        adfEnv.useRWAccess = (bool) newval;
         break;
     case PR_RWACCESS:
         adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
         break;
     case PR_USEDIRC:
-        newBool = (bool *) newval;
-        adfEnv.useDirCache = *newBool;
+        adfEnv.useDirCache = (bool) newval;
         break;
     case PR_IGNORE_CHECKSUM_ERRORS:
-        newBool = (bool *) newval;
-        adfEnv.useDirCache = *newBool;
+        adfEnv.useDirCache =  (bool) newval;
         break;
     default:
         return RC_ERROR;

@@ -62,8 +62,7 @@ int main(int argc, char *argv[])
 
     /* cd dir_2 */
 
-    bool boolPr = true;
-    adfEnvChgProp ( PR_USEDIRC, (void *) &boolPr );
+    adfEnvChgProp ( PR_USEDIRC, true );
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
