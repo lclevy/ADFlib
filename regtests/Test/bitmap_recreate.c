@@ -71,7 +71,7 @@ int main ( const int          argc,
 
     /* init adflib */
     adfEnvInitDefault();
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
     /* mount the original image */
     struct AdfDevice * devOrig = adfDevOpen ( adfOrig, ADF_ACCESS_MODE_READONLY );

@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
  
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
     /* mount existing device */
     hd = adfMountDev ( "testdirc.adf", ADF_ACCESS_MODE_READWRITE );

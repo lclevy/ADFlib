@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
  
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
     /* open and mount existing device : FFS */
     struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );

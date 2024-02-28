@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEndSetFct(0,0,MyVer,0);
 
     /* mount existing device : FFS */
     hd = adfMountDev ( "testffs.bak", ADF_ACCESS_MODE_READWRITE );

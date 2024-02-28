@@ -110,7 +110,7 @@ int main ( int argc, char * argv[] )
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     int status = 0;
 
     test_ofs.image_filename = argv[1];

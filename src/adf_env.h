@@ -74,7 +74,7 @@ struct AdfEnv {
 
 PREFIX void adfEnvInitDefault(void);
 
-PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
+PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
                            const AdfLogFct    wFct,
                            const AdfLogFct    vFct,
                            const AdfNotifyFct notifyFct );

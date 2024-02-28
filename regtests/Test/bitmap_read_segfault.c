@@ -37,7 +37,7 @@ int main ( const int          argc,
     
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     bool error_status = false;
     struct AdfDevice * const dev = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {

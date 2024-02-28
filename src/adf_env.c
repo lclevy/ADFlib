@@ -146,10 +146,10 @@ ADF_RETCODE adfEnvChgProp ( const int      property,
 }
 
 /*
- *  adfSetEnv
+ *  adfEnvSetFct
  *
  */
-void adfSetEnvFct ( const AdfLogFct    eFct,
+void adfEnvSetFct ( const AdfLogFct    eFct,
                     const AdfLogFct    wFct,
                     const AdfLogFct    vFct,
                     const AdfNotifyFct notifyFct )
