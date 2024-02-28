@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
 
     if (argc <= 1) return 1;
     adfEnvInitDefault();
+    adfEnvSetProperty ( ADF_PR_IGNORE_CHECKSUM_ERRORS, true );
     if ((dev = adfDevOpen(argv[1], ADF_ACCESS_MODE_READONLY))) {
         if (adfDevMount(dev) == RC_OK) {
             if ((vol = adfVolMount(dev, 0, ADF_ACCESS_MODE_READONLY))) {

@@ -71,6 +71,7 @@ int main ( const int          argc,
 
     /* init adflib */
     adfEnvInitDefault();
+    adfEnvSetProperty ( ADF_PR_IGNORE_CHECKSUM_ERRORS, true );
 //	adfEnvSetFct(0,0,MyVer,0);
 
     /* mount the original image */
