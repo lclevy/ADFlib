@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 
     struct AdfVolume *vol;
     struct AdfList *list, *head;
-    SECTNUM nSect;
  
     adfEnvInitDefault();
 
@@ -72,7 +71,8 @@ int main(int argc, char *argv[])
 
 
     /* cd dir_2 */
-    nSect = adfChangeDir(vol, "same_hash");
+    //SECTNUM nSect =
+    adfChangeDir(vol, "same_hash");
 
     head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
