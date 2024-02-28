@@ -47,7 +47,7 @@ int main ( const int          argc,
         exit(1);
     }
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( dev == NULL ) {
+    if ( rc != RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", argv[1] );
         error_status = true;
         goto close_dev;
