@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 
     putchar('\n');
 
-    adfEnvChgProp ( PR_USEDIRC, true );
+    adfEnvChgProp ( ADF_PR_USEDIRC, true );
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {

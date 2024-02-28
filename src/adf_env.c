@@ -106,37 +106,37 @@ ADF_RETCODE adfEnvChgProp ( const int      property,
                             const intptr_t newval )
 {
     switch ( property ) {
-    case PR_VFCT:
+    case ADF_PR_VFCT:
         adfEnv.vFct = (AdfLogFct) newval;
         break;
-    case PR_WFCT:
+    case ADF_PR_WFCT:
         adfEnv.wFct = (AdfLogFct) newval;
         break;
-    case PR_EFCT:
+    case ADF_PR_EFCT:
         adfEnv.eFct = (AdfLogFct) newval;
         break;
-    case PR_NOTFCT:
+    case ADF_PR_NOTFCT:
         adfEnv.notifyFct = (AdfNotifyFct) newval;
         break;
-    case PR_USE_NOTFCT:
+    case ADF_PR_USE_NOTFCT:
         adfEnv.useNotify = (bool) newval;
         break;
-    case PR_PROGBAR:
+    case ADF_PR_PROGBAR:
         adfEnv.progressBar = (AdfProgressBarFct) newval;
         break;
-    case PR_USE_PROGBAR:
+    case ADF_PR_USE_PROGBAR:
         adfEnv.useProgressBar = (bool) newval;
         break;
-    case PR_USE_RWACCESS:
+    case ADF_PR_USE_RWACCESS:
         adfEnv.useRWAccess = (bool) newval;
         break;
-    case PR_RWACCESS:
+    case ADF_PR_RWACCESS:
         adfEnv.rwhAccess = (AdfRwhAccessFct) newval;
         break;
-    case PR_USEDIRC:
+    case ADF_PR_USEDIRC:
         adfEnv.useDirCache = (bool) newval;
         break;
-    case PR_IGNORE_CHECKSUM_ERRORS:
+    case ADF_PR_IGNORE_CHECKSUM_ERRORS:
         adfEnv.useDirCache =  (bool) newval;
         break;
     default:

@@ -32,17 +32,17 @@
 
 /* ----- ENVIRONMENT ----- */
 
-#define PR_VFCT	        1
-#define PR_WFCT	        2
-#define PR_EFCT	        3
-#define PR_NOTFCT       4
-#define PR_USEDIRC      5
-#define PR_USE_NOTFCT   6
-#define PR_PROGBAR      7
-#define PR_USE_PROGBAR  8
-#define PR_RWACCESS     9
-#define PR_USE_RWACCESS 10
-#define PR_IGNORE_CHECKSUM_ERRORS 11
+#define ADF_PR_VFCT                   1
+#define ADF_PR_WFCT                   2
+#define ADF_PR_EFCT                   3
+#define ADF_PR_NOTFCT                 4
+#define ADF_PR_USEDIRC                5
+#define ADF_PR_USE_NOTFCT             6
+#define ADF_PR_PROGBAR                7
+#define ADF_PR_USE_PROGBAR            8
+#define ADF_PR_RWACCESS               9
+#define ADF_PR_USE_RWACCESS           10
+#define ADF_PR_IGNORE_CHECKSUM_ERRORS 11
 
 //typedef void (*AdfLogFct)(const char * const txt);
 typedef void (*AdfLogFct)(const char * const format, ...);

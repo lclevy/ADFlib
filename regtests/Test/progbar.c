@@ -27,10 +27,10 @@ int main(int argc, char *argv[])
  
     adfEnvInitDefault();
 
-    adfEnvChgProp ( PR_USEDIRC, true );
+    adfEnvChgProp ( ADF_PR_USEDIRC, true );
 
     /* use or not the progress bar callback */
-    adfEnvChgProp ( PR_USE_PROGBAR, true );
+    adfEnvChgProp ( ADF_PR_USE_PROGBAR, true );
  
     /* create and mount one device */
 puts("\ncreate dumpdevice");
