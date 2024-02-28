@@ -145,6 +145,28 @@ ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
     return RC_OK;
 }
 
+
+intptr_t adfEnvGetProp ( const ADF_ENV_PROPERTY property )
+{
+    switch ( property ) {
+    case ADF_PR_VFCT:                    return (intptr_t) adfEnv.vFct;
+    case ADF_PR_WFCT:                    return (intptr_t) adfEnv.wFct;
+    case ADF_PR_EFCT:                    return (intptr_t) adfEnv.eFct;
+    case ADF_PR_NOTFCT:                  return (intptr_t) adfEnv.notifyFct;
+    case ADF_PR_USE_NOTFCT:              return (intptr_t) adfEnv.useNotify;
+    case ADF_PR_PROGBAR:                 return (intptr_t) adfEnv.progressBar;
+    case ADF_PR_USE_PROGBAR:             return (intptr_t) adfEnv.useProgressBar;
+    case ADF_PR_USE_RWACCESS:            return (intptr_t) adfEnv.useRWAccess;
+    case ADF_PR_RWACCESS:                return (intptr_t) adfEnv.rwhAccess;
+    case ADF_PR_USEDIRC:                 return (intptr_t) adfEnv.useDirCache;
+    case ADF_PR_IGNORE_CHECKSUM_ERRORS:  return (intptr_t) adfEnv.useDirCache;
+    default:
+        adfEnv.eFct ( "adfEnvGetProp: invalid property %d", property );
+    }
+    return 0;
+}
+
+
 /*
  *  adfEnvSetFct
  *

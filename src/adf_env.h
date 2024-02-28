@@ -85,6 +85,8 @@ PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
 PREFIX ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
                                    const intptr_t         newValue );
 
+PREFIX intptr_t adfEnvGetProp ( const ADF_ENV_PROPERTY property );
+
 PREFIX char* adfGetVersionNumber(void);
 PREFIX char* adfGetVersionDate(void);
 
