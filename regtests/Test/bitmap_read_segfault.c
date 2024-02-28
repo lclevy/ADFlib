@@ -72,7 +72,7 @@ umount_dev:
 close_dev:
     adfDevClose ( dev );
 
-clean_up:
+//clean_up:
     adfEnvCleanUp();
 
     return error_status;
