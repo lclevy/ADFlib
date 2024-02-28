@@ -82,7 +82,7 @@ PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
                            const AdfLogFct    vFct,
                            const AdfNotifyFct notifyFct );
 
-PREFIX ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
+PREFIX ADF_RETCODE adfEnvSetProp ( const ADF_ENV_PROPERTY property,
                                    const intptr_t         newValue );
 
 PREFIX intptr_t adfEnvGetProp ( const ADF_ENV_PROPERTY property );

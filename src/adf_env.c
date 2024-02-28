@@ -99,10 +99,10 @@ void adfEnvCleanUp(void)
 
 
 /*
- * adfEnvChgProp
+ * adfEnvSetProp
  *
  */
-ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
+ADF_RETCODE adfEnvSetProp ( const ADF_ENV_PROPERTY property,
                             const intptr_t         newval )
 {
     switch ( property ) {
@@ -140,6 +140,7 @@ ADF_RETCODE adfEnvChgProp ( const ADF_ENV_PROPERTY property,
         adfEnv.useDirCache =  (bool) newval;
         break;
     default:
+        adfEnv.eFct ( "adfEnvSetProp: invalid property %d", property );
         return RC_ERROR;
     }
     return RC_OK;
