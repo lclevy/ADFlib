@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
         /* list files */
         if (use_dircache && adfVolHasDIRCACHE(vol)) {
             bool truevar = true;
-            adfChgEnvProp(PR_USEDIRC, &truevar);
+            adfEnvChgProp(PR_USEDIRC, &truevar);
             puts("Using dir cache blocks.");
         }
         if (list_all) {

@@ -26,6 +26,7 @@
 #ifndef ADF_ENV_H
 #define ADF_ENV_H
 
+#include "adf_err.h"
 #include "adf_prefix.h"
 #include "adf_types.h"
 
@@ -79,7 +80,10 @@ PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
                            const AdfNotifyFct notifyFct );
 
 PREFIX void adfEnvCleanUp(void);
-PREFIX void adfChgEnvProp(int prop, void *new);
+
+PREFIX ADF_RETCODE adfEnvChgProp ( const int          prop,
+                                   const void * const new );
+
 PREFIX char* adfGetVersionNumber(void);
 PREFIX char* adfGetVersionDate(void);
 

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     bool truevar = true;
-    adfChgEnvProp ( PR_USEDIRC, &truevar );
+    adfEnvChgProp ( PR_USEDIRC, &truevar );
  
     /* create and mount one device */
     struct AdfDevice * const hd = adfDevCreate ( "dump", "undel-newdev", 80, 2, 11 );

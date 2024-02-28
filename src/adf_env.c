@@ -99,10 +99,11 @@ void adfEnvCleanUp(void)
 
 
 /*
- * adfChgEnvProp
+ * adfEnvChgProp
  *
  */
-void adfChgEnvProp(int prop, void *newval)
+ADF_RETCODE adfEnvChgProp ( const int          prop,
+                            const void * const newval )
 {
     bool *newBool;
 /*    int *newInt;*/
@@ -146,7 +147,10 @@ void adfChgEnvProp(int prop, void *newval)
         newBool = (bool *) newval;
         adfEnv.useDirCache = *newBool;
         break;
+    default:
+        return RC_ERROR;
     }
+    return RC_OK;
 }
 
 /*
