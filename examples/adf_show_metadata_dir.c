@@ -14,7 +14,7 @@ void show_directory_metadata ( struct AdfVolume * const vol,
     struct AdfDirBlock //AdfEntryBlock
         dir_block;
     if ( adfReadEntryBlock ( vol, dir_sector,
-                             ( struct AdfEntryBlock * ) &dir_block ) != RC_OK )
+                             ( struct AdfEntryBlock * ) &dir_block ) != ADF_RC_OK )
     {
         fprintf ( stderr, "Error reading directory entry block (%d)\n",
                   dir_sector );

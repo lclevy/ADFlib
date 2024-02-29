@@ -13,7 +13,7 @@ void show_file_metadata ( struct AdfVolume * const vol,
 {
     struct AdfFileHeaderBlock fheader_block;
     if ( adfReadEntryBlock ( vol, fheader_sector,
-                             ( struct AdfEntryBlock * ) &fheader_block ) != RC_OK )
+                             ( struct AdfEntryBlock * ) &fheader_block ) != ADF_RC_OK )
     {
         fprintf ( stderr, "Error reading file header block (sector: %d).\n",
                   fheader_sector );
@@ -136,7 +136,7 @@ void show_file_ext_blocks ( struct AdfVolume * const                vol,
     extblock.extension = fheader_block->extension; // copy initial extension pointer (sector)
     while ( extblock.extension ) {
         int32_t extblock_sector = extblock.extension;
-        if ( adfReadFileExtBlock ( vol, extblock_sector, &extblock ) != RC_OK ) {
+        if ( adfReadFileExtBlock ( vol, extblock_sector, &extblock ) != ADF_RC_OK ) {
             fprintf ( stderr, "Error reading ext block from sector 0x%x (%u).\n",
                       extblock_sector, extblock_sector );
             return;

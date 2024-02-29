@@ -68,7 +68,7 @@ static struct AdfDevice *
     dev->devType = adfDevType ( dev );
 
     if ( ! dev->drv->isNative() ) {
-        if ( adfDevSetCalculatedGeometry_ ( dev ) != RC_OK ) {
+        if ( adfDevSetCalculatedGeometry_ ( dev ) != ADF_RC_OK ) {
             dev->drv->closeDev ( dev );
             return NULL;
         }
@@ -87,7 +87,7 @@ static struct AdfDevice *
 
     struct AdfRSDKblock rdsk;
     ADF_RETCODE rc = adfReadRDSKblock ( dev, &rdsk );
-    if ( rc == RC_OK ) {
+    if ( rc == ADF_RC_OK ) {
         /* rigid block exists -> check geometry */
         //if ( ! adfDevIsRDSKGeometryValid_ ( dev, &rdsk ) ) {
         if  ( dev->cylinders != rdsk.cylinders ||
@@ -251,7 +251,7 @@ void adfDevInfo ( const struct AdfDevice * const dev )
 ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
 {
     if ( dev == NULL )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     ADF_RETCODE rc;
 
@@ -260,7 +260,7 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
     case DEVTYPE_FLOPDD:
     case DEVTYPE_FLOPHD: {
         rc = adfMountFlop ( dev );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
         }
         break;
@@ -270,7 +270,7 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
         rc = adfDevReadBlock ( dev, 0, 512, buf );
 
        /* BV ...from here*/
-        if( rc != RC_OK ) {
+        if( rc != ADF_RC_OK ) {
             adfEnv.eFct ( "adfMountDev : adfReadBlockDev 0 (bootblock) failed");
             return rc;
         }
@@ -281,12 +281,12 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
         {
             dev->devType = DEVTYPE_HARDFILE;
             rc = adfMountHdFile ( dev );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;
         }
         else {
             rc = adfMountHd ( dev );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;								/* BV ...to here.*/
             }
         }
@@ -294,11 +294,11 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
 
     default:
         (*adfEnv.eFct)("adfMountDev : unknown device type");
-        return RC_ERROR;								/* BV */
+        return ADF_RC_ERROR;								/* BV */
     }
 
     dev->mounted = true;
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -361,7 +361,7 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
         dev->cylinders = dev->size / ( dev->heads * dev->sectors * 512 );
         if ( dev->cylinders < 80 || dev->cylinders > 83 ) {
             adfEnv.eFct ( "adfDevSetCalculatedGeometry_: invalid size %u", dev->size );
-            return RC_ERROR;
+            return ADF_RC_ERROR;
         }
         break;
 
@@ -371,7 +371,7 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
         dev->cylinders = dev->size / ( dev->heads * dev->sectors * 512 );
         if ( dev->cylinders != 80 ) {
             adfEnv.eFct ( "adfDevSetCalculatedGeometry_: invalid size %u", dev->size );
-            return RC_ERROR;
+            return ADF_RC_ERROR;
         }
         break;
 
@@ -387,9 +387,9 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
 
     default:
         adfEnv.eFct ( "adfDevSetCalculatedGeometry_: invalid dev type %d", dev->devType );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

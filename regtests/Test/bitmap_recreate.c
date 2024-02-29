@@ -64,7 +64,7 @@ int main ( const int          argc,
     bool error_status = false;
 
     /* make a copy for updating */
-    if ( copy_file ( adfUpdate, adfOrig ) != RC_OK ) {
+    if ( copy_file ( adfUpdate, adfOrig ) != ADF_RC_OK ) {
         error_status = true;
         goto delete_adf_copy;
     }
@@ -84,7 +84,7 @@ int main ( const int          argc,
     }
 
     ADF_RETCODE rc = adfDevMount ( devOrig );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfOrig );
         error_status = true;
         goto close_dev_orig;
@@ -110,7 +110,7 @@ int main ( const int          argc,
     }
 
     rc = adfDevMount ( devUpdate );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", adfUpdate );
         error_status = true;
         goto close_dev_updated;
@@ -127,7 +127,7 @@ int main ( const int          argc,
 
     /* update the block allocation bitmap */
     rc = adfVolRemount ( volUpdate, ADF_ACCESS_MODE_READWRITE );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         log_error (
             stderr, "error remounting read-write, volume %d\n", 0 );
         error_status = true;
@@ -136,7 +136,7 @@ int main ( const int          argc,
 
     struct AdfRootBlock root;
     rc = adfReadRootBlock ( volUpdate, (uint32_t) volUpdate->rootBlock, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Invalid RootBlock, volume %s, sector %u - aborting...",
                       volUpdate->volName, volUpdate->rootBlock );
         error_status = true;
@@ -144,7 +144,7 @@ int main ( const int          argc,
     }
 
     rc = adfReconstructBitmap ( volUpdate, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Error rebuilding the bitmap (%d), volume %s",
                       rc, volUpdate->volName );
         error_status = true;
@@ -153,7 +153,7 @@ int main ( const int          argc,
 
     /*
     rc = adfUpdateBitmap ( vol );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Error writing updated bitmap (%d), volume %s",
                       rc, volUpdate->volName );
         return rc;
@@ -216,22 +216,22 @@ ADF_RETCODE copy_file ( const char * const dst_fname,
     log_info ( stdout, "Copying %s to %s... ", src_fname, dst_fname );
     FILE * const src = fopen ( src_fname, "rb" );
     if ( src == NULL )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     FILE * const dst = fopen ( dst_fname, "wb" );
     if ( src == NULL ) {
         fclose ( src );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
-    ADF_RETCODE status = RC_OK;
+    ADF_RETCODE status = ADF_RC_OK;
     char buffer[BUFSIZE];
     size_t bytes_read;
     while ( ( bytes_read = fread ( buffer, 1, BUFSIZE, src ) ) > 0 ) {
         size_t bytes_written = fwrite ( buffer, 1, bytes_read, dst );
         if ( bytes_written != bytes_read ) {
             log_error ( stderr, "error writing copy to %s\n", dst_fname );
-            status = RC_ERROR;
+            status = ADF_RC_ERROR;
             break;
         }
     }
@@ -250,7 +250,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
     struct AdfBitmapBlock bmOrig, bmUpdate;
 
     if ( adfReadRootBlock ( volOrig, (uint32_t) volOrig->rootBlock,
-                            &rbOrig ) != RC_OK )
+                            &rbOrig ) != ADF_RC_OK )
     {
         log_error ( stderr, "invalid RootBlock on orig. volume, sector %u\n",
                     volOrig->rootBlock );
@@ -259,7 +259,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
     }
 
     if ( adfReadRootBlock ( volUpdate, (uint32_t) volUpdate->rootBlock,
-                            &rbUpdate ) != RC_OK )
+                            &rbUpdate ) != ADF_RC_OK )
     {
         log_error ( stderr, "invalid RootBlock on orig. volume, sector %u\n",
                     volOrig->rootBlock );
@@ -293,7 +293,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
         }
 
         ADF_RETCODE rc = adfReadBitmapBlock ( volOrig, bmPageOrig, &bmOrig );
-        if ( rc != RC_OK ) {
+        if ( rc != ADF_RC_OK ) {
             log_error ( stderr, "error reading bitmap block on vol. orig, block %u\n",
                         bmPageOrig );
             nerrors++;
@@ -301,7 +301,7 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
         }
 
         rc = adfReadBitmapBlock ( volUpdate, bmPageUpdate, &bmUpdate );
-        if ( rc != RC_OK ) {
+        if ( rc != ADF_RC_OK ) {
             log_error ( stderr, "error reading bitmap block on vol. update, block %u\n",
                         bmPageOrig );
             nerrors++;

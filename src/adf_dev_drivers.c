@@ -39,7 +39,7 @@ ADF_RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
     struct AdfDeviceDriverListNode * newNode =
         malloc ( sizeof ( struct AdfDeviceDriverListNode ) );
     if ( newNode == NULL )
-        return RC_MALLOC;
+        return ADF_RC_MALLOC;
 
     newNode->next   = NULL;
     newNode->driver = driver;
@@ -54,7 +54,7 @@ ADF_RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
     
     //fprintf (stderr, "Added driver %s\n", newNode->driver->name );
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -72,11 +72,11 @@ ADF_RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver 
                 prev->next = node->next;
             }
             free ( node );
-            return RC_OK;
+            return ADF_RC_OK;
         }
     }
 
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 

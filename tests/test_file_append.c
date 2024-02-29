@@ -115,7 +115,7 @@ void test_file_append ( test_data_t * const tdata )
     ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     ADF_RETCODE rc = adfFileSeek ( file, adfFileGetSize ( file ) );
-    ck_assert_int_eq ( rc, RC_OK );
+    ck_assert_int_eq ( rc, ADF_RC_OK );
     ck_assert_uint_eq ( 0, file->fileHdr->byteSize );
     ck_assert_int_eq ( file->fileHdr->firstData, 0 );
     ck_assert_uint_eq ( 0, file->pos );
@@ -251,7 +251,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

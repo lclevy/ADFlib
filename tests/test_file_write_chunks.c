@@ -152,7 +152,7 @@ void test_file_write ( test_data_t * const tdata )
             }*/
         
         //ADF_RETCODE rc = adfFileSeek ( file, offset );
-        //ck_assert_int_eq ( rc, RC_OK );
+        //ck_assert_int_eq ( rc, ADF_RC_OK );
         unsigned bytes_written = adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
     }
@@ -371,7 +371,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

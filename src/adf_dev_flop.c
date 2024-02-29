@@ -50,7 +50,7 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
         (*adfEnv.eFct)("adfMount : malloc");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     vol->firstBlock = 0;
@@ -60,11 +60,11 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
 
     /* set filesystem info (read from bootblock) */
     struct AdfBootBlock boot;
-    if ( adfDevReadBlock ( dev, (uint32_t)vol->firstBlock, 512, (uint8_t *)&boot ) != RC_OK ) {
+    if ( adfDevReadBlock ( dev, (uint32_t)vol->firstBlock, 512, (uint8_t *)&boot ) != ADF_RC_OK ) {
         adfEnv.eFct ( "adfMountFlop : error reading BootBlock, device %s, volume %d",
                       dev->name, 0 );
         free ( vol );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     memcpy ( vol->fs.id, boot.dosType, 3 );
     vol->fs.id[3] = '\0';
@@ -76,9 +76,9 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
         vol->rootBlock = adfVolCalcRootBlk ( vol );
         struct AdfRootBlock root;
         vol->mounted = true;    // must be set to read the root block
-        if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
+        if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != ADF_RC_OK ) {
             free ( vol );
-            return RC_ERROR;
+            return ADF_RC_ERROR;
         }
         vol->mounted = false;
 
@@ -98,13 +98,13 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
         free(vol->volName);
         free(vol);
         (*adfEnv.eFct)("adfMount : malloc");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     dev->volList[0] = vol;
     dev->nVol = 1;
 
 /*printf("root=%d\n",vol->rootBlock);	    */
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -120,21 +120,21 @@ ADF_RETCODE adfCreateFlop ( struct AdfDevice * const dev,
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     if ( volName == NULL ) {
         (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) { 
         (*adfEnv.eFct)("adfCreateFlop : malloc");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     dev->volList[0] = adfVolCreate ( dev, 0L, 80L, volName, volType );
     if (dev->volList[0]==NULL) {
         free(dev->volList);
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     dev->nVol = 1;
     if (dev->sectors==11)
@@ -144,5 +144,5 @@ ADF_RETCODE adfCreateFlop ( struct AdfDevice * const dev,
 
     dev->mounted = true;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }

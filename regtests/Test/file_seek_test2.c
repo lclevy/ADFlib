@@ -92,7 +92,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
     }
 
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         adfDevClose ( dev );
@@ -161,7 +161,7 @@ int test_single_seek ( struct AdfFile * const file_adf,
 #endif
 
     ADF_RETCODE rc = adfFileSeek ( file_adf, offset );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
                   offset, offset );
         return 1;

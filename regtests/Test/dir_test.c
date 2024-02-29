@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     }
 
     ADF_RETCODE rc = adfDevMount ( hd );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
@@ -135,7 +135,7 @@ int test_chdir_hlink ( struct AdfVolume * vol,
 
     printf ("*** Test entering hard link %s\n", hlink );
     ADF_RETCODE rc = adfChangeDir ( vol, hlink );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "adfChangeDir error entering hard link %s.\n",
                   hlink );
         status++;

@@ -70,7 +70,7 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
     unsigned fsize = file->fileHdr->byteSize;
 
     ADF_RETCODE rc = adfFileSeek ( file, fsize + 1 );
-    if ( rc != RC_OK || ! adfEndOfFile ( file ) ) {
+    if ( rc != ADF_RC_OK || ! adfEndOfFile ( file ) ) {
         return 1;
     }
     //unsigned nerrors = 0;
@@ -100,7 +100,7 @@ static unsigned validate_file_metadata_last_ext ( struct AdfFile * const file )
             fext = (struct AdfFileExtBlock *) malloc ( sizeof (struct AdfFileExtBlock) );
             if ( fext == NULL )
                 return 3;
-            if ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ) !=  RC_OK )
+            if ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ) !=  ADF_RC_OK )
                 return 4;
             dataBlocks = fext->dataBlocks;
         }

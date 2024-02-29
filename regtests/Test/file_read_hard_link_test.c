@@ -119,7 +119,7 @@ int test_hlink_read ( reading_test_t * test_data )
     }
 
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         adfDevClose ( dev );
@@ -147,7 +147,7 @@ int test_hlink_read ( reading_test_t * test_data )
         printf ("Entering directory %s...\n", dir );
 #endif
         int chdir_st = adfChangeDir ( vol, dir );
-        if ( chdir_st != RC_OK ) {
+        if ( chdir_st != ADF_RC_OK ) {
             fprintf ( stderr, " -> Cannot chdir to %s, status %d - aborting...\n",
                       dir, chdir_st );
             adfToRootDir ( vol );

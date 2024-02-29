@@ -60,7 +60,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     if ( pSect == nPSect  &&
          strcmp ( oldName, newName ) == 0 )
     {
-        return RC_OK;
+        return ADF_RC_OK;
     }
     
     bool intl = adfVolHasINTL ( vol ) || adfVolHasDIRCACHE ( vol );
@@ -70,7 +70,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     /* newName == oldName ? */
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, pSect, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     unsigned hashValueO = adfGetHashValue ( (uint8_t *) oldName, intl );
@@ -78,7 +78,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     nSect = adfNameToEntryBlk(vol, parent.hashTable, oldName, &entry, &prevSect);
     if (nSect==-1) {
         adfEnv.wFct ( "adfRenameEntry : entry '%s' not found", oldName );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     /* change name and parent dir */
@@ -89,7 +89,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
 
     entry.nextSameHash = 0;
     rc = adfWriteEntryBlock ( vol, nSect, &entry );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     /* del from the oldname list */
@@ -101,12 +101,12 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
     else {
         /* in linked list */
         rc = adfReadEntryBlock ( vol, prevSect, &previous );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
         /* entry.nextSameHash (tmpSect) could be == 0 */
         previous.nextSameHash = tmpSect;
         rc = adfWriteEntryBlock ( vol, prevSect, &previous );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
 
@@ -120,11 +120,11 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         rc = adfWriteRootBlock ( vol, (uint32_t) pSect, (struct AdfRootBlock*) &parent );
     else
         rc = adfWriteDirBlock ( vol, pSect, (struct AdfDirBlock*) &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     rc = adfReadEntryBlock ( vol, nPSect, &nParent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     unsigned hashValueN = adfGetHashValue ( (uint8_t * ) newName, intl );
@@ -140,7 +140,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                    */
         do {
             rc = adfReadEntryBlock ( vol, nSect2, &previous );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;
             if (previous.nameLen==len) {
                 adfStrToUpper ( (uint8_t *) name3,
@@ -148,7 +148,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                                 previous.nameLen, intl );
                 if (strncmp(name3,name2,len)==0) {
                     (*adfEnv.wFct)("adfRenameEntry : entry already exists");
-                    return RC_ERROR;
+                    return ADF_RC_ERROR;
                 }
             }
             nSect2 = previous.nextSameHash;
@@ -164,9 +164,9 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
                                         (struct AdfFileHeaderBlock *) &previous );
         else {
             (*adfEnv.wFct)("adfRenameEntry : unknown entry type");
-            rc = RC_ERROR;
+            rc = ADF_RC_ERROR;
         }
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
 
@@ -180,7 +180,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         rc = adfWriteRootBlock ( vol, (uint32_t) nPSect, (struct AdfRootBlock*) &nParent );
     else
         rc = adfWriteDirBlock ( vol, nPSect, (struct AdfDirBlock*) &nParent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     // update dircache
@@ -191,7 +191,7 @@ ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
         }
         else {
             rc = adfDelFromCache ( vol, &parent, entry.headerKey );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;
             rc = adfAddInCache ( vol, &nParent, &entry );
         }
@@ -217,13 +217,13 @@ ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     char buf[200];
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, pSect, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, &nSect2);
     if (nSect==-1) {
       sprintf(buf, "adfRemoveEntry : entry '%s' not found", name);
         (*adfEnv.wFct)(buf);
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     /* if it is a directory, is it empty ? */
     if ( entry.secType == ADF_ST_DIR &&
@@ -231,7 +231,7 @@ ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     {
       sprintf(buf, "adfRemoveEntry : directory '%s' not empty", name);
         (*adfEnv.wFct)(buf);
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 /*    printf("name=%s  nSect2=%ld\n",name, nSect2);*/
 
@@ -243,23 +243,23 @@ ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
  entry.nextSameHash);*/
         parent.hashTable[hashVal] = entry.nextSameHash;
         rc = adfWriteEntryBlock ( vol, pSect, &parent );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
     /* in linked list */
     else {
         rc = adfReadEntryBlock ( vol, nSect2, &previous );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
         previous.nextSameHash = entry.nextSameHash;
         rc = adfWriteEntryBlock ( vol, nSect2, &previous );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
 
     if ( entry.secType == ADF_ST_FILE ) {
         rc = adfFreeFileBlocks ( vol, (struct AdfFileHeaderBlock*) &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     	adfSetBlockFree(vol, nSect); //marks the FileHeaderBlock as free in BitmapBlock
     	if (adfEnv.useNotify)
@@ -277,12 +277,12 @@ ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
     else {
       sprintf(buf, "adfRemoveEntry : secType %d not supported", entry.secType);
         (*adfEnv.wFct)(buf);
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if ( adfVolHasDIRCACHE ( vol ) ) {
         rc = adfDelFromCache ( vol, &parent, entry.headerKey );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
 
@@ -305,12 +305,12 @@ ADF_RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
     SECTNUM nSect;
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, parSect, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
     if (nSect==-1) {
         (*adfEnv.wFct)("adfSetEntryComment : entry not found");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     entry.commLen = (uint8_t) min ( (unsigned) ADF_MAX_COMMENT_LEN, strlen ( newCmt ) );
@@ -318,12 +318,12 @@ ADF_RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
 
     if ( entry.secType == ADF_ST_DIR ) {
         rc = adfWriteDirBlock ( vol, nSect, (struct AdfDirBlock*) &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
     else if ( entry.secType == ADF_ST_FILE ) {
         rc = adfWriteFileHdrBlock ( vol, nSect, (struct AdfFileHeaderBlock *) &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
     else {
@@ -351,24 +351,24 @@ ADF_RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
     SECTNUM nSect;
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, parSect, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     nSect = adfNameToEntryBlk(vol, parent.hashTable, name, &entry, NULL);
     if (nSect==-1) {
         (*adfEnv.wFct)("adfSetEntryAccess : entry not found");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     entry.access = newAcc;
     if ( entry.secType == ADF_ST_DIR ) {
         rc = adfWriteDirBlock ( vol, nSect, (struct AdfDirBlock *) &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
     else if ( entry.secType == ADF_ST_FILE) {
         adfWriteFileHdrBlock ( vol, nSect, (struct AdfFileHeaderBlock *) &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
     else {
@@ -432,7 +432,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
     if ( adfEnv.useDirCache && adfVolHasDIRCACHE ( vol ) )
         return (adfGetDirEntCache(vol, nSect, recurs ));
 
-    if (adfReadEntryBlock(vol,nSect,&parent)!=RC_OK)
+    if (adfReadEntryBlock(vol,nSect,&parent)!=ADF_RC_OK)
 		return NULL;
 
     hashTable = parent.hashTable;
@@ -445,11 +445,11 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
 				 (*adfEnv.eFct)("adfGetDirEnt : malloc");
                  return NULL;
              }
-             if (adfReadEntryBlock(vol, hashTable[i], &entryBlk)!=RC_OK) {
+             if (adfReadEntryBlock(vol, hashTable[i], &entryBlk)!=ADF_RC_OK) {
 				 adfFreeDirList(head);
                  return NULL;
              }
-             if (adfEntBlock2Entry(&entryBlk, entry)!=RC_OK) {
+             if (adfEntBlock2Entry(&entryBlk, entry)!=ADF_RC_OK) {
 				 adfFreeDirList(head); return NULL;
              }
              entry->sector = hashTable[i];
@@ -474,11 +474,11 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
 					 (*adfEnv.eFct)("adfGetDirEnt : malloc");
                      return NULL;
                  }
-                 if (adfReadEntryBlock(vol, nextSector, &entryBlk)!=RC_OK) {
+                 if (adfReadEntryBlock(vol, nextSector, &entryBlk)!=ADF_RC_OK) {
 					 adfFreeDirList(head); return NULL;
                  }
 
-                 if (adfEntBlock2Entry(&entryBlk, entry)!=RC_OK) {
+                 if (adfEntBlock2Entry(&entryBlk, entry)!=ADF_RC_OK) {
 					 adfFreeDirList(head);
                      return NULL;
                  }
@@ -560,7 +560,7 @@ ADF_RETCODE adfToRootDir ( struct AdfVolume * const vol )
 {
     vol->curDirPtr = vol->rootBlock;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -575,16 +575,16 @@ ADF_RETCODE adfChangeDir ( struct AdfVolume * const vol,
     SECTNUM nSect;
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, vol->curDirPtr, &entry );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     nSect = adfNameToEntryBlk(vol, entry.hashTable, name, &entry, NULL);
     if ( nSect == -1 )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     // if current entry is a hard-link - load entry of the hard-linked directory
     rc = adfReadEntryBlock ( vol, nSect, &entry );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
     if ( entry.realEntry )  {
         nSect = entry.realEntry;
@@ -595,10 +595,10 @@ ADF_RETCODE adfChangeDir ( struct AdfVolume * const vol,
         vol->curDirPtr = nSect;
 /*        if (*adfEnv.useNotify)
             (*adfEnv.notifyFct)( 0, ADF_ST_ROOT );*/
-        return RC_OK;
+        return ADF_RC_OK;
     }
     else
-		return RC_ERROR;
+		return ADF_RC_ERROR;
 }
 
 
@@ -611,11 +611,11 @@ SECTNUM adfParentDir ( struct AdfVolume * const vol )
     if (vol->curDirPtr!=vol->rootBlock) {
         struct AdfEntryBlock entry;
         ADF_RETCODE rc = adfReadEntryBlock ( vol, vol->curDirPtr, &entry );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
         vol->curDirPtr = entry.parent;
     }
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -636,7 +636,7 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
     buf[len] = '\0';
     entry->name = strdup(buf);
     if (entry->name==NULL)
-        return RC_MALLOC;
+        return ADF_RC_MALLOC;
 /*printf("len=%d name=%s parent=%ld\n",entryBlk->nameLen, entry->name,entry->parent );*/
     adfDays2Date( entryBlk->days, &(entry->year), &(entry->month), &(entry->days));
     entry->hour = entryBlk->mins / 60;
@@ -659,7 +659,7 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
         if (entry->comment==NULL) {
             free(entry->name);
             entry->name = NULL;
-            return RC_MALLOC;
+            return ADF_RC_MALLOC;
         }
         break;
     case ADF_ST_FILE:
@@ -672,7 +672,7 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
         if (entry->comment==NULL) {
             free(entry->name);
             entry->name = NULL;
-            return RC_MALLOC;
+            return ADF_RC_MALLOC;
         }
         break;
     case ADF_ST_LFILE:
@@ -685,7 +685,7 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
                       entry->type, entry->name, entry->sector );
     }
 	
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -697,7 +697,7 @@ SECTNUM adfGetEntryByName ( struct AdfVolume * const     vol,
     // get parent
     struct AdfEntryBlock parent;
     ADF_RETCODE rc = adfReadEntryBlock ( vol, dirPtr, &parent );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfGetEntryByName: error reading parent entry "
                       "(block %d)\n", dirPtr );
         return rc;
@@ -745,7 +745,7 @@ for ( int i = 0 ; i < ADF_HT_SIZE ; i++ )  printf("ht[%d]=%d    ", i, ht[i]);
     updSect = 0;
     bool found = false;
     do {
-        if (adfReadEntryBlock(vol, nSect, entry)!=RC_OK)
+        if (adfReadEntryBlock(vol, nSect, entry)!=ADF_RC_OK)
 			return -1;
         if (nameLen==entry->nameLen) {
             adfStrToUpper ( upperName2, (uint8_t *) entry->name, nameLen, intl );
@@ -835,7 +835,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
             rc = adfWriteDirBlock ( vol, dir->headerKey, (struct AdfDirBlock * ) dir );
         }
 /*puts("adfCreateEntry out, dir");*/
-        if (rc!=RC_OK) {
+        if (rc!=ADF_RC_OK) {
             adfSetBlockFree(vol, newSect);    
             return -1;
         }
@@ -844,7 +844,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
     }
 
     do {
-        if (adfReadEntryBlock(vol, nSect, &updEntry)!=RC_OK)
+        if (adfReadEntryBlock(vol, nSect, &updEntry)!=ADF_RC_OK)
 			return -1;
         if (updEntry.nameLen==len) {
             adfStrToUpper ( (uint8_t *) name3,
@@ -868,7 +868,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
         }
     }
 	 
-    rc = RC_OK;
+    rc = ADF_RC_OK;
     updEntry.nextSameHash = newSect2;
     if ( updEntry.secType == ADF_ST_DIR )
         rc = adfWriteDirBlock ( vol, updEntry.headerKey,
@@ -880,7 +880,7 @@ SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
         (*adfEnv.wFct)("adfCreateEntry : unknown entry type");
 
 /*puts("adfCreateEntry out, hash");*/
-    if (rc!=RC_OK) {
+    if (rc!=ADF_RC_OK) {
         adfSetBlockFree(vol, newSect2);    
         return -1;
     }
@@ -988,14 +988,14 @@ ADF_RETCODE adfCreateDir ( struct AdfVolume * const vol,
     struct AdfEntryBlock parent;
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, nParent, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     /* -1 : do not use a specific, already allocated sector */
     nSect = adfCreateEntry(vol, &parent, name, -1);
     if (nSect==-1) {
         (*adfEnv.wFct)("adfCreateDir : no sector available");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     struct AdfDirBlock dir;
@@ -1014,16 +1014,16 @@ ADF_RETCODE adfCreateDir ( struct AdfVolume * const vol,
         /* for adfCreateEmptyCache, will be added by adfWriteDirBlock */
         dir.secType = ADF_ST_DIR;
         rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) &dir );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
         rc = adfCreateEmptyCache ( vol, (struct AdfEntryBlock *) &dir, -1 );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;        
     }
 
     /* writes the dirblock, with the possible dircache assiocated */
     rc = adfWriteDirBlock ( vol, nSect, &dir );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     rc = adfUpdateBitmap ( vol );
@@ -1049,12 +1049,12 @@ ADF_RETCODE adfCreateFile ( struct AdfVolume * const          vol,
 /*puts("adfCreateFile in");*/
 
     ADF_RETCODE rc = adfReadEntryBlock ( vol, nParent, &parent );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     /* -1 : do not use a specific, already allocated sector */
     nSect = adfCreateEntry(vol, &parent, name, -1);
-    if (nSect==-1) return RC_ERROR;
+    if (nSect==-1) return ADF_RC_ERROR;
 /*printf("new fhdr=%d\n",nSect);*/
     memset(fhdr,0,512);
     fhdr->nameLen = (uint8_t) min ( (unsigned) ADF_MAX_NAME_LEN, (unsigned) strlen ( name ) );
@@ -1070,12 +1070,12 @@ ADF_RETCODE adfCreateFile ( struct AdfVolume * const          vol,
         &(fhdr->days),&(fhdr->mins),&(fhdr->ticks));
 
     rc = adfWriteFileHdrBlock ( vol, nSect, fhdr );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     if ( adfVolHasDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) fhdr );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
     }
 
@@ -1099,7 +1099,7 @@ ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
     uint8_t buf[512];
 
     ADF_RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     memcpy(ent, buf, 512);
@@ -1124,14 +1124,14 @@ ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
             adfEnv.wFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
         } else {
             adfEnv.eFct ( msg, ent->checkSum, checksumCalculated, nSect, vol->volName );
-            return RC_BLOCKSUM;
+            return ADF_RC_BLOCKSUM;
         }
     }
 
     if ( ent->type != ADF_T_HEADER)  {
         adfEnv.wFct ( "adfReadEntryBlock : ADF_T_HEADER id not found, volume '%s', block %u",
                       vol->volName, nSect );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
     if ( ent->nameLen > ADF_MAX_NAME_LEN ) {
         adfEnv.wFct ( "adfReadEntryBlock : nameLen (%d) incorrect, volume '%s', block %u, entry %s",
@@ -1146,7 +1146,7 @@ ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
         //    ent->nameLen, ent->commLen, ent->name, ent->headerKey);
     }
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -1198,10 +1198,10 @@ ADF_RETCODE adfWriteDirBlock ( struct AdfVolume * const   vol,
     newSum = adfNormalSum ( buf, 20, sizeof(struct AdfDirBlock) );
     swLong(buf+20, newSum);
 
-    if ( adfVolWriteBlock ( vol, (uint32_t) nSect, buf ) != RC_OK )
-        return RC_ERROR;
+    if ( adfVolWriteBlock ( vol, (uint32_t) nSect, buf ) != ADF_RC_OK )
+        return ADF_RC_ERROR;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

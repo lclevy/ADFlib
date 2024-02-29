@@ -61,7 +61,7 @@ int main ( const int                  argc,
     }
 
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   args.adfname );
         goto dev_cleanup;
@@ -159,7 +159,7 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
 
     //printf ( "Directory:\t%s\n", dir_path );
     if ( strcmp ( dir_path, "." ) != 0 ) {
-        if ( adfChangeDir ( vol, dir_path ) != RC_OK ) {
+        if ( adfChangeDir ( vol, dir_path ) != ADF_RC_OK ) {
             fprintf ( stderr, "Invalid dir: '%s'\n", dir_path );
             goto show_entry_cleanup;
         }

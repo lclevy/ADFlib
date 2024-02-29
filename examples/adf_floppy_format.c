@@ -37,7 +37,7 @@ int main ( int     argc,
     }
 
     ADF_RETCODE rc = adfDevMount ( device );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "adfDevMount failed on %s - aborting...\n",
                   adfname );
         adfDevUnMount ( device );
@@ -74,7 +74,7 @@ int main ( int     argc,
     adfDevInfo ( device );
 
     printf ( "Formatting floppy (%s) disk '%s'...\n", fdtype, adfname );
-    if ( adfCreateFlop ( device, label, (unsigned char) type ) != RC_OK ) {
+    if ( adfCreateFlop ( device, label, (unsigned char) type ) != ADF_RC_OK ) {
         fprintf ( stderr, "Error formatting the disk image '%s'!", adfname );
         adfDevClose ( device );
         adfEnvCleanUp();

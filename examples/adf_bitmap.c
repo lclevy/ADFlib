@@ -85,7 +85,7 @@ int main ( int     argc,
     }
 
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   adfname );
         goto dev_cleanup;
@@ -112,7 +112,7 @@ int main ( int     argc,
 
     if ( command == COMMAND_REBUILD ) {
         ADF_RETCODE rc = rebuild_bitmap ( vol );
-        status = ( rc == RC_OK ? 0 : 1 );
+        status = ( rc == ADF_RC_OK ? 0 : 1 );
     } else {  // COMMAND_SHOW
         status = show_block_allocation_bitmap ( vol );
     }
@@ -133,7 +133,7 @@ env_cleanup:
 ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
 {
     ADF_RETCODE rc = adfVolRemount ( vol, ADF_ACCESS_MODE_READWRITE );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Remounting the volume read-write has failed -"
                   " aborting...\n" );
         return rc;
@@ -142,7 +142,7 @@ ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
     struct AdfRootBlock root;
     //printf ("reading root block from %u\n", vol->rootBlock );
     rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Invalid RootBlock, sector %u - aborting...",
                       vol->rootBlock );
         return rc;
@@ -150,20 +150,20 @@ ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol )
     //printf ("root block read, name %s\n", root.diskName );
 
     rc = adfReconstructBitmap ( vol, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Error rebuilding the bitmap (%d)", rc );
         return rc;
     }
 
     rc = adfUpdateBitmap ( vol );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "Error writing updated bitmap (%d)", rc );
         return rc;
     }
 
     printf ("Bitmap reconstruction complete.\n");
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -177,7 +177,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     struct AdfRootBlock   rb;
     struct AdfBitmapBlock bm;
 
-    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &rb ) != RC_OK ) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &rb ) != ADF_RC_OK ) {
         fprintf ( stderr, "invalid RootBlock on orig. volume, sector %u\n",
                   vol->rootBlock );
         return 1;
@@ -202,7 +202,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
             continue;
 
         ADF_RETCODE rc = adfReadBitmapBlock ( vol, bmPage, &bm );
-        if ( rc != RC_OK ) {
+        if ( rc != ADF_RC_OK ) {
             fprintf ( stderr, "error reading bitmap block on vol. %s, block %u\n",
                       vol->volName, bmPage );
             nerrors++;
@@ -235,7 +235,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     while ( bmExtBlkPtr != 0 ) {
         struct AdfBitmapExtBlock bmExtBlk;
         ADF_RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
-        if ( rc != RC_OK ) {
+        if ( rc != ADF_RC_OK ) {
             adfFreeBitmap ( vol );
             return 1;
         }
@@ -250,7 +250,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
             }
 
             rc = adfReadBitmapBlock ( vol, bmBlkPtr, &bm );
-            if ( rc != RC_OK ) {
+            if ( rc != ADF_RC_OK ) {
                 fprintf ( stderr, "error reading bitmap block on vol. %s, block %u\n",
                       vol->volName, bmBlkPtr );
                 nerrors++;

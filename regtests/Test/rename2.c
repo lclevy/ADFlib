@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     }
 
     if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
-                                      ADF_DOSFS_DIRCACHE ) != RC_OK )
+                                      ADF_DOSFS_DIRCACHE ) != ADF_RC_OK )
     {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );

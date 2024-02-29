@@ -123,7 +123,7 @@ ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
 
     ADF_RETCODE rc = adfVolReadBlock ( vol, nSect, buf );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     memcpy ( root, buf, ADF_LOGICAL_BLOCK_SIZE );
@@ -135,7 +135,7 @@ ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
          root->secType != ADF_ST_ROOT )
     {
         (*adfEnv.wFct)("adfReadRootBlock : id not found");
-        return RC_BLOCKTYPE;
+        return ADF_RC_BLOCKTYPE;
     }
 
     const uint32_t checksumCalculated = adfNormalSum ( buf, 0x14, ADF_LOGICAL_BLOCK_SIZE );
@@ -146,11 +146,11 @@ ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
             adfEnv.wFct ( msg, root->checkSum, checksumCalculated, nSect, vol->volName );
         } else {
             adfEnv.eFct ( msg, root->checkSum, checksumCalculated, nSect, vol->volName );
-            return RC_BLOCKSUM;
+            return ADF_RC_BLOCKSUM;
         }
     }
 		
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -203,11 +203,11 @@ ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
 	
 /*puts("22");*/
     ADF_RETCODE rc = adfVolReadBlock ( vol, 0, buf );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 /*puts("11");*/
     rc = adfVolReadBlock ( vol, 1, buf + ADF_LOGICAL_BLOCK_SIZE );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     memcpy ( boot, buf, ADF_LOGICAL_BLOCK_SIZE * 2 );
@@ -217,10 +217,10 @@ ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
     if ( strncmp ( "DOS", boot->dosType, 3 ) != 0 ) {
         if ( strncmp ( "PFS", boot->dosType, 3 ) == 0 ) {
             adfEnv.wFct("adfReadBootBlock : PFS volume found - not supported...");
-            return RC_ERROR;
+            return ADF_RC_ERROR;
         }
         adfEnv.wFct("adfReadBootBlock : DOS id not found");
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
 
@@ -234,12 +234,12 @@ ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
                 adfEnv.wFct ( msg, boot->checkSum, checksumCalculated, 0, vol->volName );
             } else {
                 adfEnv.eFct ( msg, boot->checkSum, checksumCalculated, 0, vol->volName );
-                return RC_BLOCKSUM;
+                return ADF_RC_BLOCKSUM;
             }
         }
     }
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 /*
@@ -273,15 +273,15 @@ ADF_RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
 */
 
     ADF_RETCODE rc = adfVolWriteBlock ( vol, 0, buf );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     rc = adfVolWriteBlock ( vol, 1, buf + 512 );
-    if (rc != RC_OK )
+    if (rc != ADF_RC_OK )
         return rc;
 
 /*puts("adfWriteBootBlock");*/
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

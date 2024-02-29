@@ -128,7 +128,7 @@ static struct AdfDevice * adfLinuxInitDevice ( const char * const  name,
     dev->name    = strdup ( name );
     dev->drv     = &adfDeviceDriverNative;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -143,7 +143,7 @@ static ADF_RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
     free ( dev->drvData );
     free ( dev->name );
     free ( dev );
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -160,13 +160,13 @@ static ADF_RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
 
     off_t offset = n * 512;
     if ( lseek ( fd, offset, SEEK_SET ) != offset ) {
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if ( read ( fd, buf, (size_t) size ) != (ssize_t) size )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
-    return RC_OK;   
+    return ADF_RC_OK;   
 }
 
 
@@ -183,13 +183,13 @@ static ADF_RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
 
     off_t offset = n * 512;
     if ( lseek ( fd, offset, SEEK_SET ) != offset ) {
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if ( write ( fd, (void *) buf, (size_t) size ) != size )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

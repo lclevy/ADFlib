@@ -320,7 +320,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     // write chunk being end of a data block + 1 byte (so that the last byte is
     // in the next/following data block) from buffer with random data
     ADF_RETCODE rc = adfFileSeek ( file, offset );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfFileClose ( file );
         fprintf ( stderr, "seeking to offset 0x%x (0x%u) failed\n",
                 offset, offset );
@@ -401,7 +401,7 @@ unsigned verify_overwritten_data ( struct AdfVolume * const vol,
     assert ( rbuf != NULL );
 
     //ADF_RETCODE rc = adfFileSeek ( file, offset );
-    //assert ( rc == RC_OK );
+    //assert ( rc == ADF_RC_OK );
 
     // verify part filled with 0
     unsigned chunk0_size = offset;

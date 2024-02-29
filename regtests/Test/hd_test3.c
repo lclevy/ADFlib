@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     free(partList);
     free(part1.volName);
     free(part2.volName);
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         fprintf ( stderr, "adfCreateHd returned error %d\n", rc );
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     }
 
     rc = adfDevMount ( hd );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfDevClose ( hd );
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);

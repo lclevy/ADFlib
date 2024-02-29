@@ -159,8 +159,8 @@ void test_file_truncate ( test_data_t * const tdata )
              bufsize, truncsize, file->volume->datablockSize );
     fflush(stdout);
 #endif
-    //ck_assert_int_eq ( RC_OK, adfFileTruncate ( file, truncsize ) );
-    ck_assert_msg ( adfFileTruncate ( file, truncsize ) == RC_OK,
+    //ck_assert_int_eq ( ADF_RC_OK, adfFileTruncate ( file, truncsize ) );
+    ck_assert_msg ( adfFileTruncate ( file, truncsize ) == ADF_RC_OK,
         "adfFileTruncate failed, bufsize %u, truncsize %u",
         bufsize, truncsize );
 
@@ -225,8 +225,8 @@ void test_file_truncate ( test_data_t * const tdata )
 #endif
 
     // make sure we have available current ext. block (if needed)
-    /*ck_assert_int_eq ( adfFileSeek ( file, 0 ), RC_OK );
-    ck_assert_int_eq ( adfFileSeek ( file, truncsize + 1 ), RC_OK );
+    /*ck_assert_int_eq ( adfFileSeek ( file, 0 ), ADF_RC_OK );
+    ck_assert_int_eq ( adfFileSeek ( file, truncsize + 1 ), ADF_RC_OK );
     ck_assert_int_eq ( adfEndOfFile ( file ), true );
     int32_t * const dataBlocks = ( nExtBlocks < 1 ) ? file->fileHdr->dataBlocks :
                                                       file->currentExt->dataBlocks;
@@ -245,7 +245,7 @@ void test_file_truncate ( test_data_t * const tdata )
             fext = (struct AdfFileExtBlock *) malloc ( sizeof (struct AdfFileExtBlock) );
             ck_assert_ptr_nonnull ( fext );
             ck_assert_int_eq ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ),
-                               RC_OK );
+                               ADF_RC_OK );
             dataBlocks = fext->dataBlocks;
         }
     }
@@ -457,7 +457,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

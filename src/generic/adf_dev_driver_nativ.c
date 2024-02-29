@@ -52,7 +52,7 @@ ADF_RETCODE myReadSector ( struct AdfDevice * const dev,
                        uint8_t * const          buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -66,7 +66,7 @@ ADF_RETCODE myWriteSector ( struct AdfDevice * const dev,
                         const uint8_t * const    buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -78,7 +78,7 @@ ADF_RETCODE myWriteSector ( struct AdfDevice * const dev,
 ADF_RETCODE myReleaseDevice ( struct AdfDevice * const dev )
 {
     (void) dev;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 

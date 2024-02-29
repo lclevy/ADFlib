@@ -109,13 +109,13 @@ void test_file_seek_eof ( test_data_t * const tdata )
         // checking: eof pos. - offset
         unsigned offset = file->fileHdr->byteSize >= seek_offsets_from_eof[i] ?
             file->fileHdr->byteSize - seek_offsets_from_eof[i] : 0;
-        ck_assert_int_eq ( adfFileSeek ( file, offset ), RC_OK );
+        ck_assert_int_eq ( adfFileSeek ( file, offset ), ADF_RC_OK );
         ck_assert_uint_eq ( file->fileHdr->byteSize, bufsize );
         ck_assert_uint_eq ( file->pos, offset );
 
         // checking: eof pos. + offset
         offset = file->fileHdr->byteSize + seek_offsets_from_eof[i];
-        ck_assert_int_eq ( adfFileSeek ( file, offset ), RC_OK );
+        ck_assert_int_eq ( adfFileSeek ( file, offset ), ADF_RC_OK );
         ck_assert_uint_eq ( file->fileHdr->byteSize, bufsize );
         ck_assert_uint_eq ( file->pos, file->fileHdr->byteSize );
     }
@@ -249,7 +249,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

@@ -65,7 +65,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
     struct AdfEntry *entry;
     SECTNUM nSect;
 
-    if (adfReadEntryBlock(vol,dir,&parent)!=RC_OK)
+    if ( adfReadEntryBlock ( vol, dir, &parent ) != ADF_RC_OK )
         return NULL;
 
     nSect = parent.extension;
@@ -74,7 +74,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
     do {
         /* one loop per cache block */
         n = offset = 0;
-	    if (adfReadDirCBlock(vol, nSect, &dirc)!=RC_OK)
+        if ( adfReadDirCBlock ( vol, nSect, &dirc ) != ADF_RC_OK )
             return NULL;
         while (n<dirc.recordsNb) {
             /* one loop per record */
@@ -83,7 +83,7 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
                 adfFreeDirList(head);
                 return NULL;
             }
-            if (adfGetCacheEntry(&dirc, &offset, &caEntry) != RC_OK) {
+            if ( adfGetCacheEntry ( &dirc, &offset, &caEntry ) != ADF_RC_OK ) {
                 free(entry); adfFreeDirList(head);
                 return NULL;
             }
@@ -148,7 +148,7 @@ ADF_RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
 
     ptr = *p;
     if ( ptr > ADF_LOGICAL_BLOCK_SIZE - 26 )  /* minimum cache entry length */
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
 /*printf("p=%d\n",ptr);*/
 
@@ -174,17 +174,21 @@ ADF_RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
     if (!cEntry->name)
          return;
 */
-    if (cEntry->nLen < 1 || cEntry->nLen > ADF_MAX_NAME_LEN) return RC_ERROR;
+    if ( cEntry->nLen < 1 ||
+         cEntry->nLen > ADF_MAX_NAME_LEN )
+    {
+        return ADF_RC_ERROR;
+    }
     if ( ( ptr + 24 + cEntry->nLen ) > ADF_LOGICAL_BLOCK_SIZE )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     memcpy(cEntry->name, dirc->records+ptr+24, cEntry->nLen);
     cEntry->name[(int)(cEntry->nLen)]='\0';
 
     cEntry->cLen = dirc->records[ptr+24+cEntry->nLen];
     if ( cEntry->cLen > ADF_MAX_COMMENT_LEN )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     if ( ptr + 24 + cEntry->nLen + 1 + cEntry->cLen > ADF_LOGICAL_BLOCK_SIZE )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     if (cEntry->cLen>0) {
 /*        cEntry->comm =(char*)malloc(sizeof(char)*(cEntry->cLen+1));
         if (!cEntry->comm) {
@@ -201,7 +205,7 @@ ADF_RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
     if ((*p%2)!=0)
         *p=(*p)+1;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -309,14 +313,14 @@ ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
     int offset, oldOffset, n;
     int entryLen;
     int i;
-    ADF_RETCODE rc = RC_OK;
+    ADF_RETCODE rc = ADF_RC_OK;
 
     prevSect = -1;
 	nSect = parent->extension;
     bool found = false;
     do {
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
 
         offset = 0; n = 0;
@@ -324,7 +328,7 @@ ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
             oldOffset = offset;
 
             rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
-            if ( rc != RC_OK)
+            if ( rc != ADF_RC_OK)
                 return rc;
 
             found = ( caEntry.header == (uint32_t) headerKey );
@@ -347,7 +351,7 @@ ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
                     dirc.recordsNb--;
 
                     rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
                 }
                 else {
@@ -357,17 +361,17 @@ ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
                     adfSetBlockFree(vol, dirc.headerKey);
 
                     rc = adfReadDirCBlock ( vol, prevSect, &dirc );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
 
                     dirc.nextDirC = 0L;
 
                     rc = adfWriteDirCBlock ( vol, prevSect, &dirc );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
 
                     rc = adfUpdateBitmap ( vol );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
                 }
             }
@@ -397,7 +401,7 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
     struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
-    ADF_RETCODE rc = RC_OK;
+    ADF_RETCODE rc = ADF_RC_OK;
 
     entryLen = adfEntry2CacheEntry(entry, &newEntry);
 /*printf("adfAddInCache--%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
@@ -409,14 +413,14 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
     nSect = parent->extension;
     do {
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
 
         offset = 0; n = 0;
 /*printf("parent=%4ld\n",dirc.parent);*/
         while(n < dirc.recordsNb) {
             rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;
 
 /*printf("*%4ld %2d %6ld %8lx %4d %2d:%02d:%02d %30s %22s\n",
@@ -448,7 +452,7 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
         nCache = adfGet1FreeBlock(vol);
         if (nCache==-1) {
            (*adfEnv.wFct)("adfCreateDir : nCache==-1");
-           return RC_VOLFULL;
+           return ADF_RC_VOLFULL;
         }
 
         /* create a new dircache block */
@@ -466,7 +470,7 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
         newDirc.recordsNb++;
 
         rc = adfWriteDirCBlock ( vol, nCache, &newDirc );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
 
         dirc.nextDirC = nCache;
@@ -495,7 +499,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
     int offset, oldOffset, n;
     int i, oLen, nLen;
     int sLen; /* shift length */
-    ADF_RETCODE rc = RC_OK;
+    ADF_RETCODE rc = ADF_RC_OK;
 
     nLen = adfEntry2CacheEntry(entry, &newEntry);
 
@@ -504,7 +508,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
     do {
 /*printf("dirc=%ld\n",nSect);*/
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
-        if ( rc != RC_OK )
+        if ( rc != ADF_RC_OK )
             return rc;
 
         offset = 0; n = 0;
@@ -513,7 +517,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
             oldOffset = offset;
             /* offset is updated */
             rc = adfGetCacheEntry ( &dirc, &offset, &caEntry );
-            if ( rc != RC_OK )
+            if ( rc != ADF_RC_OK )
                 return rc;
             oLen = offset-oldOffset;
             sLen = oLen-nLen;
@@ -525,7 +529,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
                     adfPutCacheEntry(&dirc, &oldOffset, &newEntry);
 /*if (entryLenChg) puts("oLen==nLen");*/
                     rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
                 }
                 else if (oLen>nLen) {
@@ -541,18 +545,18 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
                         dirc.records[i] = (char)0;
 
                     rc = adfWriteDirCBlock ( vol, dirc.headerKey, &dirc );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
                 }
                 else {
                     /* the new record is larger */
 /*puts("oLen<nLen");*/
                     rc = adfDelFromCache ( vol, parent, entry->headerKey );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
 
                     rc = adfAddInCache ( vol, parent, entry );
-                    if ( rc != RC_OK )
+                    if ( rc != ADF_RC_OK )
                         return rc;
 /*puts("oLen<nLen end");*/
 
@@ -569,7 +573,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
     else
         (*adfEnv.wFct)("adfUpdateCache : entry not found");
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -587,7 +591,7 @@ ADF_RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
         nCache = adfGet1FreeBlock(vol);
         if (nCache==-1) {
            (*adfEnv.wFct)("adfCreateDir : nCache==-1");
-           return RC_VOLFULL;
+           return ADF_RC_VOLFULL;
         }
     }
     else
@@ -626,7 +630,7 @@ ADF_RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
     uint8_t buf[512];
 
     ADF_RETCODE rc = adfVolReadBlock ( vol, (uint32_t) nSect, buf );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     memcpy(dirc,buf,512);
@@ -643,7 +647,7 @@ ADF_RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
         adfEnv.wFct ( "adfReadDirCBlock : headerKey (%u) != nSect (%u), volume '%s', block %u",
             dirc->headerKey, nSect, vol->volName, nSect );
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

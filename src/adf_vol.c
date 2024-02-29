@@ -60,11 +60,11 @@ ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
     if ( vol->dev->devType != DEVTYPE_FLOPDD &&
          vol->dev->devType != DEVTYPE_FLOPHD )
     {
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     ADF_RETCODE rc = adfReadBootBlock ( vol, &boot );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     boot.rootBlock = 880;
@@ -72,12 +72,12 @@ ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
         boot.data[i] = code[i+12];
 
     rc = adfWriteBootBlock ( vol, &boot );
-    if ( rc != RC_OK )
+    if ( rc != ADF_RC_OK )
         return rc;
 
     vol->bootCode = true;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -103,7 +103,7 @@ void adfVolInfo ( struct AdfVolume * const vol )
     char diskName[35];
     int days,month,year;
 	
-    if ( adfReadRootBlock(vol, (uint32_t) vol->rootBlock, &root) != RC_OK )
+    if ( adfReadRootBlock(vol, (uint32_t) vol->rootBlock, &root) != ADF_RC_OK )
         return;
 	
     memset(diskName, 0, 35);
@@ -218,7 +218,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
-    if (adfReadBootBlock(vol, &boot)!=RC_OK) {
+    if (adfReadBootBlock(vol, &boot)!=ADF_RC_OK) {
         adfEnv.eFct ( "adfVolMount : invalid BootBlock" );
         vol->mounted = false;
         return NULL;
@@ -233,14 +233,14 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         vol->readOnly = ( mode != ADF_ACCESS_MODE_READWRITE );
 	   	
     struct AdfRootBlock root;
-    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != RC_OK ) {
+    if ( adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root ) != ADF_RC_OK ) {
         adfEnv.eFct ( "adfVolMount : invalid RootBlock, sector %u", vol->rootBlock );
         vol->mounted = false;
         return NULL;
     }
 
     ADF_RETCODE rc = adfBitmapAllocate ( vol );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
             adfEnv.eFct ( "adfVolMount : adfBitmapAllocate() returned error %d, "
                           "mounting volume %s failed", rc, vol->volName );
             adfVolUnMount ( vol );
@@ -248,7 +248,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     }
 
     rc = adfReadBitmap ( vol, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfVolMount : adfReadBitmap() returned error %d, "
                       "mounting volume %s failed", rc, vol->volName );
         adfVolUnMount ( vol );
@@ -259,7 +259,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
     if ( root.bmFlag != ADF_BM_VALID ) {
         if ( vol->readOnly == true ) {
             rc = adfReconstructBitmap ( vol, &root );
-            if ( rc != RC_OK ) {
+            if ( rc != ADF_RC_OK ) {
                 adfEnv.eFct ( "adfMount : adfReconstructBitmap() returned error %d, "
                               "mounting volume %s failed", rc, vol->volName );
                 adfVolUnMount ( vol );
@@ -293,16 +293,16 @@ PREFIX ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
                                    const AdfAccessMode mode )
 {
     if ( vol == NULL )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     if ( ! vol->mounted )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     if ( mode == ADF_ACCESS_MODE_READWRITE ) {
         if ( vol->dev->readOnly ) {
             adfEnv.eFct ( "adfVolRemount : device read-only, cannot mount "
                           "volume '%s' read-write", vol->volName );
-            return RC_ERROR;
+            return ADF_RC_ERROR;
         }
         vol->readOnly = false;
     } else if ( mode == ADF_ACCESS_MODE_READONLY ) {
@@ -310,9 +310,9 @@ PREFIX ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
     } else {
         adfEnv.eFct ( "adfVolRemount : cannot remount volume %s, invalid mode %d",
                       vol->volName, mode );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -401,7 +401,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 /*printf("first=%d last=%d\n", vol->firstBlock, vol->lastBlock);
 printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
 */
-    if (adfWriteBootBlock(vol, &boot)!=RC_OK) {
+    if (adfWriteBootBlock(vol, &boot)!=ADF_RC_OK) {
         free(vol->volName); free(vol);
         return NULL;
     }
@@ -409,7 +409,7 @@ printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(20);
 
-    if (adfCreateBitmap( vol )!=RC_OK) {
+    if (adfCreateBitmap( vol )!=ADF_RC_OK) {
         free(vol->volName); free(vol);
         return NULL;
     }
@@ -446,19 +446,19 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(60);
 
-    if ( adfWriteRootBlock ( vol, (uint32_t) blkList[0], &root ) != RC_OK ) {
+    if ( adfWriteRootBlock ( vol, (uint32_t) blkList[0], &root ) != ADF_RC_OK ) {
         free(vol->volName); free(vol);
         return NULL;
     }
 
    /* fills root->bmPages[] and writes filled bitmapExtBlocks */
-    if (adfWriteNewBitmap(vol)!=RC_OK)
+    if (adfWriteNewBitmap(vol)!=ADF_RC_OK)
         return NULL;
 
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(80);
 
-    if (adfUpdateBitmap(vol)!=RC_OK)
+    if (adfUpdateBitmap(vol)!=ADF_RC_OK)
         return NULL;
 
     if (adfEnv.useProgressBar)
@@ -487,7 +487,7 @@ ADF_RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
 {
     if (!vol->mounted) {
         adfEnv.eFct ( "the volume isn't mounted, adfVolReadBlock not possible" );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     /* translate logical sect to physical sect */
@@ -505,11 +505,11 @@ ADF_RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
          pSect > (unsigned) vol->lastBlock )
     {
         adfEnv.wFct ( "adfVolReadBlock : nSect %u out of range", nSect );
-        return RC_BLOCKOUTOFRANGE;
+        return ADF_RC_BLOCKOUTOFRANGE;
     }
 
     ADF_RETCODE rc = adfDevReadBlock ( vol->dev, pSect, 512, buf );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfVolReadBlock: error reading block %d, volume '%s'",
                       nSect, vol->volName );
     }
@@ -527,12 +527,12 @@ ADF_RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
 {
     if (!vol->mounted) {
         adfEnv.eFct ( "the volume isn't mounted, adfVolWriteBlock not possible" );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if (vol->readOnly) {
         adfEnv.wFct ( "adfVolWriteBlock : can't write block, read only volume" );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     unsigned pSect = nSect + (unsigned) vol->firstBlock;
@@ -545,11 +545,11 @@ ADF_RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
          pSect > (unsigned) vol->lastBlock )
     {
         adfEnv.wFct ( "adfVolWriteBlock : nSect %u out of range", nSect );
-        return RC_BLOCKOUTOFRANGE;
+        return ADF_RC_BLOCKOUTOFRANGE;
     }
 
     ADF_RETCODE rc = adfDevWriteBlock ( vol->dev, pSect, 512, buf );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfVolWriteBlock: error writing block %d, volume '%s'",
                       nSect, vol->volName );
     }

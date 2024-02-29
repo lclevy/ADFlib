@@ -122,17 +122,17 @@ static ADF_RETCODE adfReadDumpSector ( struct AdfDevice * const dev,
     int pos = fseek ( fd, 512 * n, SEEK_SET );
 /*printf("nnn=%ld size=%d\n",n,size);*/
     if ( pos == -1 )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     size_t bytes_read = fread ( buf, 1, size, fd );
 /*puts("123");*/
     if ( bytes_read != size ) {
 /*printf("rr=%d\n",r);*/
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 /*puts("1234");*/
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -148,12 +148,12 @@ static ADF_RETCODE adfWriteDumpSector ( struct AdfDevice * const dev,
     FILE * const fd = ( (struct DevDumpData *) dev->drvData )->fd;
     int r = fseek ( fd, 512 * n, SEEK_SET );
     if (r==-1)
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
     if ( fwrite ( buf, 1, size, fd ) != (unsigned int) size )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 /*puts("adfWriteDumpSector");*/
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -172,7 +172,7 @@ static ADF_RETCODE adfReleaseDumpDevice ( struct AdfDevice * const dev )
     free ( dev->name );
     free ( dev );
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

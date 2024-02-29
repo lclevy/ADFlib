@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* mount device */
-    if (adfDevMount(dev) != RC_OK) {
+    if (adfDevMount(dev) != ADF_RC_OK) {
         fprintf(stderr, "%s: can't mount device\n", adf_file);
         goto error_handler;
     }
@@ -376,7 +376,7 @@ void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
         /* recurse into subdirectories */
         if (node->subdir) {
             char *newpath = join_path(path, e->name);
-            if (adfChangeDir(vol, e->name) == RC_OK) {
+            if (adfChangeDir(vol, e->name) == ADF_RC_OK) {
                 extract_tree(vol, node->subdir, newpath);
                 adfParentDir(vol);
             }
@@ -405,7 +405,7 @@ void extract_filepath(struct AdfVolume *vol, char *filepath)
         if (*p == '/') {
             *p = 0;
             if (*element) {
-                if (adfChangeDir(vol, element) != RC_OK) {
+                if (adfChangeDir(vol, element) != ADF_RC_OK) {
                     fprintf(stderr, "%s: can't find directory %s in volume\n",
                         adf_file, filepath);
                     return;

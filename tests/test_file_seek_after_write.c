@@ -127,7 +127,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
         }*/
 
         ADF_RETCODE rc = adfFileSeek ( file, offset );
-        ck_assert_int_eq ( rc, RC_OK );
+        ck_assert_int_eq ( rc, ADF_RC_OK );
         bytes_written = (unsigned) adfFileWrite ( file, wsize, chunk );
         ck_assert_uint_eq ( wsize, bytes_written );
         chunks[ chunk_i ] = true;
@@ -144,7 +144,7 @@ void test_file_seek_after_write ( test_data_t * const tdata )
                   bufsize % chunksize ) :
                 chunksize;
             ADF_RETCODE rc = adfFileSeek ( file, offset );
-            ck_assert_int_eq ( rc, RC_OK );
+            ck_assert_int_eq ( rc, ADF_RC_OK );
             bytes_written = (unsigned) adfFileWrite ( file, (int) wsize, chunk );
             ck_assert_uint_eq ( wsize, bytes_written );
             //chunks[ i ] = true;   // not necessary
@@ -318,7 +318,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

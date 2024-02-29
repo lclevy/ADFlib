@@ -100,7 +100,7 @@ int run_chdir_tests ( chdir_test_t * test_data )
     }
 
     ADF_RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image );
         adfDevClose ( dev );
@@ -156,7 +156,7 @@ int test_chdir ( struct AdfVolume * vol,
 #if TEST_VERBOSITY > 0
         printf ( "\nchdir to %s\n", dir );
 #endif
-        if ( adfChangeDir ( vol, dir ) != RC_OK ) {
+        if ( adfChangeDir ( vol, dir ) != ADF_RC_OK ) {
             fprintf ( stderr, " -> Cannot chdir to %s\n", dir );
             adfToRootDir ( vol );
             return 1;

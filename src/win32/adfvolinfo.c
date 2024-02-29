@@ -43,7 +43,7 @@ void adfVolumeInfoWin ( HWND               hWnd,
 	char	diskName[35];
 	int		days,month,year;
 	
-	if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK)
+	if ( adfReadRootBlock ( vol, vol->rootBlock, &root ) != ADF_RC_OK )
 		return;
 	
 	memset(diskName, 0, 35);

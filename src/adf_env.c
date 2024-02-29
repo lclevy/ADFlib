@@ -141,9 +141,9 @@ ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
         break;
     default:
         adfEnv.eFct ( "adfEnvSetProp: invalid property %d", property );
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 

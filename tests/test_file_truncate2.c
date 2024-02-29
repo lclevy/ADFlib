@@ -170,7 +170,7 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
     //printf ( "testing 2 with : bufsize %u, truncsize %u\n",
     //         bufsize, truncsize );
     //fflush(stdout);
-    ck_assert_int_eq ( rc, RC_OK );
+    ck_assert_int_eq ( rc, ADF_RC_OK );
 
     adfFileClose ( file );
 
@@ -334,7 +334,7 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);

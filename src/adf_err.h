@@ -29,55 +29,55 @@
 #include "adf_types.h"
 
 typedef enum {
-    RC_OK              = 0,
-    RC_ERROR           = -1,
+    ADF_RC_OK              = 0,
+    ADF_RC_ERROR           = -1,
 
-    RC_MALLOC          = 1,
-    RC_VOLFULL         = 2,
+    ADF_RC_MALLOC          = 1,
+    ADF_RC_VOLFULL         = 2,
 
-    RC_FOPEN           = 1 << 10,
-    RC_NULLPTR         = 1 << 12,
+    ADF_RC_FOPEN           = 1 << 10,
+    ADF_RC_NULLPTR         = 1 << 12,
 
 /* adfRead*Block() */
 
-    RC_BLOCKTYPE       = 1,
-    RC_BLOCKSTYPE      = 1 << 1,
-    RC_BLOCKSUM        = 1 << 2,
-    RC_HEADERKEY       = 1 << 3,
-    RC_BLOCKREAD       = 1 << 4,
+    ADF_RC_BLOCKTYPE       = 1,
+    ADF_RC_BLOCKSTYPE      = 1 << 1,
+    ADF_RC_BLOCKSUM        = 1 << 2,
+    ADF_RC_HEADERKEY       = 1 << 3,
+    ADF_RC_BLOCKREAD       = 1 << 4,
 
 /* adfWrite*Block */
-    RC_BLOCKWRITE      = 1 << 4,
+    ADF_RC_BLOCKWRITE      = 1 << 4,
 
 /* adfVolReadBlock() */
-    RC_BLOCKOUTOFRANGE = 1,
-    RC_BLOCKNATREAD    = 1 << 1,
+    ADF_RC_BLOCKOUTOFRANGE = 1,
+    ADF_RC_BLOCKNATREAD    = 1 << 1,
 
 /* adfVolWriteBlock() */
-/* RC_BLOCKOUTOFRANGE */
-    RC_BLOCKNATWRITE   = 1 << 1,
-    RC_BLOCKREADONLY   = 1 << 2,
+/* ADF_RC_BLOCKOUTOFRANGE */
+    ADF_RC_BLOCKNATWRITE   = 1 << 1,
+    ADF_RC_BLOCKREADONLY   = 1 << 2,
 
 /* adfInitDumpDevice() */
-/* RC_FOPEN */
-/* RC_MALLOC */
+/* ADF_RC_FOPEN */
+/* ADF_RC_MALLOC */
 
 /* adfNativeReadBlock(), adfReadDumpSector() */
 
-    RC_BLOCKSHORTREAD  = 1,
-    RC_BLOCKFSEEK      = 1 << 1,
+    ADF_RC_BLOCKSHORTREAD  = 1,
+    ADF_RC_BLOCKFSEEK      = 1 << 1,
 
 /* adfNativeWriteBlock(), adfWriteDumpSector() */
 
-    RC_BLOCKSHORTWRITE = 1,
-/* RC_BLOCKFSEEK */
+    ADF_RC_BLOCKSHORTWRITE = 1,
+/* ADF_RC_BLOCKFSEEK */
 
 
 /*-- adfReadRDSKblock --*/
-    RC_BLOCKID         = 1 << 5,
+    ADF_RC_BLOCKID         = 1 << 5,
 
 /*-- adfWriteRDSKblock() --*/
-/*RC_BLOCKREADONLY*/
+/*ADF_RC_BLOCKREADONLY*/
 } ADF_RETCODE;
 
 //#define hasRC(rc,c) ((rc)&(c))
