@@ -513,15 +513,14 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
 
         // if any subdirectory present - process recursively
         if ( cell->subdir != NULL ) {
-            ADF_RETCODE rc2 = adfBitmapListSetUsed ( vol,
-                ( const struct AdfList * const ) cell->subdir );
+            const struct AdfList * const subdir =
+                ( const struct AdfList * const ) cell->subdir;
+            ADF_RETCODE rc2 = adfBitmapListSetUsed ( vol, subdir );
             if ( rc2 != ADF_RC_OK )
                 adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapListSetUsed returned "
                               "error %d, volume '%s', directory name '%s'",
                               rc, vol->volName,
-                              ((const struct AdfEntry * const)
-                               ( ( const struct AdfList * const )
-                                cell->subdir->content ))->name );
+                              ( (const struct AdfEntry * const) subdir->content )->name );
                 rc = rc2;
         }
         cell = cell->next;
