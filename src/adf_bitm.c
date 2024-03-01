@@ -475,14 +475,18 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
             ADF_RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
                                                   (struct AdfEntryBlock *) &fhBlock );
             if ( rc2 != ADF_RC_OK ) {
-                //showerror ?
+                adfEnv.eFct ( "adfBitmapListSetUsed: error reading entry (file) block, "
+                              "block %d, volume '%s', file name '%s'",
+                              entry->sector, vol->volName, entry->name );
                 rc = rc2;
                 break;
             }
 
             rc2 = adfBitmapFileBlocksSetUsed ( vol, &fhBlock );
             if ( rc2 != ADF_RC_OK ) {
-                //showerror ?
+                adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapFileBlocksSetUsed returned "
+                              "error %d, block %d, volume '%s', file name '%s'",
+                              rc, entry->sector, vol->volName, entry->name );
                 rc = rc2;
                 break;
             }
@@ -493,10 +497,17 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
             struct AdfDirBlock dirBlock;
             rc = adfReadEntryBlock ( vol, entry->sector,
                                      (struct AdfEntryBlock *) &dirBlock );
-            if ( rc != ADF_RC_OK )
+            if ( rc != ADF_RC_OK ) {
+                adfEnv.eFct ( "adfBitmapSetUsed: error reading entry (directory) block, "
+                              "block %d, volume '%s', directory name '%s'",
+                              entry->sector, vol->volName, entry->name );
                 return rc;
+            }
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );
             if ( rc != ADF_RC_OK )
+                adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapDirCacheSetUsed returned "
+                              "error %d, block %d, volume '%s', directory name '%s'",
+                              rc, entry->sector, vol->volName, entry->name );
                 return rc;
         }
 
@@ -505,6 +516,12 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
             ADF_RETCODE rc2 = adfBitmapListSetUsed ( vol,
                 ( const struct AdfList * const ) cell->subdir );
             if ( rc2 != ADF_RC_OK )
+                adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapListSetUsed returned "
+                              "error %d, volume '%s', directory name '%s'",
+                              rc, vol->volName,
+                              ((const struct AdfEntry * const)
+                               ( ( const struct AdfList * const )
+                                cell->subdir->content ))->name );
                 rc = rc2;
         }
         cell = cell->next;
