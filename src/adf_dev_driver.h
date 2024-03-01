@@ -55,11 +55,9 @@ struct AdfDeviceDriver {
                             const unsigned           size,
                             const uint8_t * const    buf );
 
-    bool (*isNative)( void );   /* should return true only on a native block device driver;
-                                   used only in adfMountDev() to determine which method
-                                   should be used to mount the device
-                                   (check if there is a better way so that this can be removed */
-
+    bool (*isNative)( void );   /* should return true only on a native block device driver,
+                                   ie. such driver which can return real hardware
+                                   geometry information */
 
     /* optional (can be NULL); should help to match device string with the driver */
 
