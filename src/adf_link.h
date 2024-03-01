@@ -35,8 +35,8 @@
 // (not clear what it was meant for...)
 // -> disabling it for now
 PREFIX ADF_RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                           SECTNUM            nSect,
-                                           SECTNUM            lPar,
+                                           ADF_SECTNUM        nSect,
+                                           ADF_SECTNUM        lPar,
                                            char **            name,
                                            int32_t *          size );
 #endif

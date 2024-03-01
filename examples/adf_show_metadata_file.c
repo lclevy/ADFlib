@@ -9,7 +9,7 @@ static void show_data_blocks_array ( const int32_t datablocks [ ADF_MAX_DATABLK 
 
 
 void show_file_metadata ( struct AdfVolume * const vol,
-                          SECTNUM                  fheader_sector )
+                          const ADF_SECTNUM        fheader_sector )
 {
     struct AdfFileHeaderBlock fheader_block;
     if ( adfReadEntryBlock ( vol, fheader_sector,

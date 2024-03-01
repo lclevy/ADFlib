@@ -30,7 +30,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef int32_t SECTNUM;
+typedef int32_t ADF_SECTNUM;
 
 typedef enum {
     ADF_ACCESS_MODE_READWRITE = 0,

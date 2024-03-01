@@ -46,12 +46,12 @@ static void Warningf ( const char * const format, ... );
 static void Errorf ( const char * const format, ... );
 static void Verbosef ( const char * const format, ... );
 
-static void Changed ( SECTNUM nSect,
-                      int     changedType );
+static void Changed ( ADF_SECTNUM nSect,
+                      int         changedType );
 
-static void rwHeadAccess ( SECTNUM physical,
-                           SECTNUM logical,
-                           bool    write );
+static void rwHeadAccess ( const ADF_SECTNUM physical,
+                           const ADF_SECTNUM logical,
+                           const bool        write );
 
 static void progressBar ( int perCentDone );
 
@@ -210,9 +210,9 @@ char* adfGetVersionDate(void)
 
 /*##################################################################################*/
 
-static void rwHeadAccess ( SECTNUM physical,
-                           SECTNUM logical,
-                           bool    write )
+static void rwHeadAccess ( const ADF_SECTNUM physical,
+                           const ADF_SECTNUM logical,
+                           const bool        write )
 {
     /* display the physical sector, the logical block, and if the access is read or write */
     fprintf(stderr, "phy %d / log %d : %c\n", physical, logical, write ? 'W' : 'R');
@@ -271,7 +271,8 @@ static void Verbosef ( const char * const format, ... )
 }
 
 
-static void Changed(SECTNUM nSect, int changedType)
+static void Changed ( const ADF_SECTNUM nSect,
+                      const int         changedType )
 {
     (void) nSect, (void) changedType;
 /*    switch(changedType) {

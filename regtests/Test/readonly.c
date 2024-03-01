@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     adfCreateDir(vol,vol->curDirPtr,"newdir");
 
     /* cd dir_2 */
-    //SECTNUM nSect = adfChangeDir(vol, "same_hash");
+    //ADF_SECTNUM nSect = adfChangeDir(vol, "same_hash");
     adfChangeDir(vol, "same_hash");
 
     list = adfGetDirEnt(vol,vol->curDirPtr);

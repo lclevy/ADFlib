@@ -45,8 +45,8 @@ typedef struct AdfVector_s {
 */
 
 typedef struct AdfVectorSectors_s {
-    unsigned  len;
-    SECTNUM * sectors;
+    unsigned      len;
+    ADF_SECTNUM * sectors;
 } AdfVectorSectors;
 
 

@@ -279,7 +279,7 @@ void print_device(struct AdfDevice *dev)
 /* prints one line of information about a volume */
 void print_volume(struct AdfVolume *vol)
 {
-    SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
+    ADF_SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
 
     switch (vol->dev->devType) {
     case DEVTYPE_FLOPDD:

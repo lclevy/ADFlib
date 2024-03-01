@@ -50,8 +50,8 @@ typedef enum {
 typedef void (*AdfLogFct)(const char * const format, ...);
 //typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
-typedef void (*AdfNotifyFct)(SECTNUM, int);
-typedef void (*AdfRwhAccessFct)(SECTNUM, SECTNUM, bool);
+typedef void (*AdfNotifyFct)(ADF_SECTNUM, int);
+typedef void (*AdfRwhAccessFct)(ADF_SECTNUM, ADF_SECTNUM, bool);
 typedef void (*AdfProgressBarFct)(int);
 
 struct AdfEnv {

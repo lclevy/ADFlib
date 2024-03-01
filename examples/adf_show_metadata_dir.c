@@ -9,7 +9,7 @@
 
 
 void show_directory_metadata ( struct AdfVolume * const vol,
-                               SECTNUM                  dir_sector )
+                               const ADF_SECTNUM        dir_sector )
 {
     struct AdfDirBlock //AdfEntryBlock
         dir_block;

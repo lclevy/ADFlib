@@ -86,7 +86,7 @@ ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
  *
  */
 bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
-                            const SECTNUM                  nSect )
+                            const ADF_SECTNUM              nSect )
 {
     return ( nSect >= 0 &&
              nSect <= (vol->lastBlock - vol->firstBlock) );
@@ -350,7 +350,7 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
                                   const uint8_t            volType )
 {
 /*    struct AdfDirCacheBlock dirc;*/
-    SECTNUM blkList[2];
+    ADF_SECTNUM blkList[2];
     struct AdfVolume* vol;
 
     if (adfEnv.useProgressBar)
@@ -494,7 +494,7 @@ ADF_RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
     unsigned pSect = nSect + (unsigned) vol->firstBlock;
 
     if (adfEnv.useRWAccess)
-        (*adfEnv.rwhAccess)( (SECTNUM) pSect, (SECTNUM) nSect, false );
+        (*adfEnv.rwhAccess)( (ADF_SECTNUM) pSect, (ADF_SECTNUM) nSect, false );
 
 /*  char strBuf[80];
     printf("psect=%ld nsect=%ld\n",pSect,nSect);
@@ -539,7 +539,7 @@ ADF_RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
 /*printf("write nsect=%ld psect=%ld\n",nSect,pSect);*/
 
     if (adfEnv.useRWAccess)
-        adfEnv.rwhAccess ( (SECTNUM) pSect, (SECTNUM) nSect, true );
+        adfEnv.rwhAccess ( (ADF_SECTNUM) pSect, (ADF_SECTNUM) nSect, true );
  
     if ( pSect < (unsigned) vol->firstBlock ||
          pSect > (unsigned) vol->lastBlock )

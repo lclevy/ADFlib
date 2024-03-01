@@ -38,7 +38,7 @@
 
 struct AdfBitmap {
     uint32_t                 size;         /* in blocks */
-    SECTNUM *                blocks;       /* bitmap blocks pointers */
+    ADF_SECTNUM *            blocks;       /* bitmap blocks pointers */
     struct AdfBitmapBlock ** table;
     bool *                   blocksChg;
 };
@@ -46,9 +46,9 @@ struct AdfBitmap {
 struct AdfVolume {
     struct AdfDevice *dev;
 
-    SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
-    SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
-    SECTNUM rootBlock;      /* root block (from firstBlock) */
+    ADF_SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
+    ADF_SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
+    ADF_SECTNUM rootBlock;      /* root block (from firstBlock) */
 
     struct fs {
         char    id[4];          /* "DOS", "PFS", ... */
@@ -66,7 +66,7 @@ struct AdfVolume {
 
     struct AdfBitmap bitmap;
 
-    SECTNUM curDirPtr;
+    ADF_SECTNUM curDirPtr;
 };
 
 static inline uint32_t adfVolGetBlockNumWithoutBootblock (
@@ -80,7 +80,7 @@ static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
     return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 );
 }
 
-static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
+static inline ADF_SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
 {
     return ( vol->lastBlock - vol->firstBlock + 1 ) / 2;
 }
@@ -127,7 +127,7 @@ PREFIX ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
                                             const uint8_t * const    code );
 
 PREFIX bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
-                                   const SECTNUM                  nSect );
+                                   const ADF_SECTNUM              nSect );
 
 PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const int                nPart,

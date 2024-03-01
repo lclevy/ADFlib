@@ -5,7 +5,7 @@
 #include <adflib.h>
 
 void show_file_metadata ( struct AdfVolume * const vol,
-                          SECTNUM                  fheader_sector );
+                          const ADF_SECTNUM        fheader_sector );
 
 void show_file_header_block ( const struct AdfFileHeaderBlock * const block );
 

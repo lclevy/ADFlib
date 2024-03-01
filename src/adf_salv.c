@@ -125,7 +125,7 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
  *
  */
 ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
-                              const SECTNUM            nSect,
+                              const ADF_SECTNUM        nSect,
                               struct GenBlock * const  block )
 {
     uint8_t buf[ADF_LOGICAL_BLOCK_SIZE];
@@ -168,7 +168,7 @@ ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
  *
  */
 ADF_RETCODE adfCheckParent ( struct AdfVolume * vol,
-                             SECTNUM            pSect )
+                             ADF_SECTNUM        pSect )
 {
     struct GenBlock block;
 
@@ -199,8 +199,8 @@ ADF_RETCODE adfCheckParent ( struct AdfVolume * vol,
  *
  */
 ADF_RETCODE adfUndelDir ( struct AdfVolume *   vol,
-                          SECTNUM              pSect,
-                          SECTNUM              nSect,
+                          ADF_SECTNUM          pSect,
+                          ADF_SECTNUM          nSect,
                           struct AdfDirBlock * entry )
 {
     (void) nSect;
@@ -253,8 +253,8 @@ ADF_RETCODE adfUndelDir ( struct AdfVolume *   vol,
  *
  */
 ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
-                           SECTNUM                     pSect,
-                           SECTNUM                     nSect,
+                           ADF_SECTNUM                 pSect,
+                           ADF_SECTNUM                 nSect,
                            struct AdfFileHeaderBlock * entry )
 {
     (void) nSect;
@@ -316,8 +316,8 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
  *
  */
 ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
-                            const SECTNUM            parent,
-                            const SECTNUM            nSect )
+                            const ADF_SECTNUM        parent,
+                            const ADF_SECTNUM        nSect )
 {
     struct AdfEntryBlock entry;
 
@@ -345,7 +345,7 @@ ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
  *
  */
 ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
-                           const SECTNUM                           nSect,
+                           const ADF_SECTNUM                       nSect,
                            const struct AdfFileHeaderBlock * const file,
                            const int                               level )
 {
@@ -414,7 +414,7 @@ adfCheckFile_free:
  *
  */
 ADF_RETCODE adfCheckDir ( const struct AdfVolume * const   vol,
-                          const SECTNUM                    nSect,
+                          const ADF_SECTNUM                nSect,
                           const struct AdfDirBlock * const dir,
                           const int                        level )
 {
@@ -431,7 +431,7 @@ ADF_RETCODE adfCheckDir ( const struct AdfVolume * const   vol,
  *
  */
 ADF_RETCODE adfCheckEntry ( struct AdfVolume * const vol,
-                            const SECTNUM            nSect,
+                            const ADF_SECTNUM        nSect,
                             const int                level )
 {
     struct AdfEntryBlock entry;

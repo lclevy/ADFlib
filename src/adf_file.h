@@ -39,10 +39,10 @@ struct AdfFile {
     void *                      currentData;
     struct AdfFileExtBlock *    currentExt;
 
-    unsigned nDataBlock;  /* current data block number */
-    SECTNUM  curDataPtr;  /* sector number of current data block;
-                             if == 0 -> data in the buffer (currentData) is
-                                        invalid (eg. block not read correctly) */
+    unsigned    nDataBlock;  /* current data block number */
+    ADF_SECTNUM curDataPtr;  /* sector number of current data block;
+                                if == 0 -> data in the buffer (currentData) is
+                                           invalid (eg. block not read correctly) */
     uint32_t pos;
 
     unsigned posInDataBlk;

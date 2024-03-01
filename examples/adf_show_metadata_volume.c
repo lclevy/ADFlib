@@ -27,7 +27,7 @@ void show_volume_metadata ( struct AdfVolume * const vol )
     }
     show_bootblock ( &bblock, false );
 
-    SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
+    ADF_SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
     struct AdfRootBlock rblock;
     if ( adfReadRootBlock ( vol, (uint32_t)root_block_sector, &rblock ) != ADF_RC_OK ) {
@@ -161,7 +161,7 @@ static void show_bmpages ( struct AdfVolume * const        vol,
     show_bmpages_array ( rblock->bmPages, ADF_BM_PAGES_ROOT_SIZE );
 
     // show bm ext block pages
-    SECTNUM nSect = rblock->bmExt;
+    ADF_SECTNUM nSect = rblock->bmExt;
     while ( nSect != 0 ) {
         struct AdfBitmapExtBlock bmExtBlock;
         ADF_RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );

@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     putchar('\n');
 
     /* cd dir_2 */
-    //SECTNUM nSect = adfChangeDir(vol, "dir_2");
+    //ADF_SECTNUM nSect = adfChangeDir(vol, "dir_2");
     adfChangeDir(vol, "dir_2");
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
@@ -172,8 +172,8 @@ int test_softlink_realname ( struct AdfVolume * vol,
     printf ("*** Test getting destination name for soft link %s\n", slink );
 
     struct AdfLinkBlock entry;
-    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
-                                          (struct AdfEntryBlock *) &entry );
+    ADF_SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
+                                              (struct AdfEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }

@@ -32,8 +32,8 @@
 #include "adf_vol.h"
 
 struct GenBlock {
-    SECTNUM sect;
-    SECTNUM parent;
+    ADF_SECTNUM sect;
+    ADF_SECTNUM parent;
     int type;
     int secType;
     char *name;	/* if (type == 2 and (secType==2 or secType==-3)) */
@@ -41,16 +41,16 @@ struct GenBlock {
 
 
 ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
-                              const SECTNUM            nSect,
+                              const ADF_SECTNUM        nSect,
                               struct GenBlock * const  block );
 
 PREFIX ADF_RETCODE adfCheckEntry ( struct AdfVolume * const vol,
-                                   const SECTNUM            nSect,
+                                   const ADF_SECTNUM        nSect,
                                    const int                level );
 
 PREFIX ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
-                                   const SECTNUM            parent,
-                                   const SECTNUM            nSect );
+                                   const ADF_SECTNUM        parent,
+                                   const ADF_SECTNUM        nSect );
 
 PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
 PREFIX void adfFreeDelList ( struct AdfList * const list );

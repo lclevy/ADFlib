@@ -196,7 +196,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         filesystem_blocks_num % 32 == 0 ? 0 : 32 - filesystem_blocks_num % 32;
 
     for ( unsigned i = 0 ; i < ADF_BM_PAGES_ROOT_SIZE ; i++ ) {
-        SECTNUM bmPage = rb.bmPages[i];
+        ADF_SECTNUM bmPage = rb.bmPages[i];
 
         if ( bmPage == 0 )
             continue;
@@ -231,7 +231,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
     }
 
     /* show bmExt blocks */
-    SECTNUM bmExtBlkPtr = rb.bmExt;
+    ADF_SECTNUM bmExtBlkPtr = rb.bmExt;
     while ( bmExtBlkPtr != 0 ) {
         struct AdfBitmapExtBlock bmExtBlk;
         ADF_RETCODE rc = adfReadBitmapExtBlock ( vol, bmExtBlkPtr, &bmExtBlk );
@@ -242,7 +242,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
 
         unsigned i = 0;
         while ( i < ADF_BM_PAGES_EXT_SIZE ) {
-            SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
+            ADF_SECTNUM bmBlkPtr = bmExtBlk.bmPages[i];
             if ( ! adfVolIsSectNumValid ( vol, bmBlkPtr ) ) {
                 adfEnv.eFct ( "adfReadBitmap : sector %d out of range", bmBlkPtr );
                 adfFreeBitmap ( vol );

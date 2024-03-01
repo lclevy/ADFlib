@@ -270,8 +270,8 @@ unsigned compare_bitmaps ( struct AdfVolume * const volOrig,
     /* Check root bm pages  */
     unsigned nerrors = 0;
     for ( unsigned i = 0 ; i < ADF_BM_PAGES_ROOT_SIZE ; i++ ) {
-        SECTNUM bmPageOrig   = rbOrig.bmPages[i],
-                bmPageUpdate = rbUpdate.bmPages[i];
+        ADF_SECTNUM bmPageOrig   = rbOrig.bmPages[i],
+                    bmPageUpdate = rbUpdate.bmPages[i];
 
         if ( bmPageOrig == 0 && bmPageUpdate == 0 )
             continue;

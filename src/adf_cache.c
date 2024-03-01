@@ -54,7 +54,7 @@ freeEntCache(struct AdfCacheEntry *cEntry)
  * replace 'adfGetDirEnt'. returns a the dir contents based on the dircache list
  */
 struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
-                                     const SECTNUM            dir,
+                                     const ADF_SECTNUM        dir,
                                      const bool               recurs )
 {
     struct AdfEntryBlock parent;
@@ -63,13 +63,11 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
     struct AdfList *cell, *head;
     struct AdfCacheEntry caEntry;
     struct AdfEntry *entry;
-    SECTNUM nSect;
 
     if ( adfReadEntryBlock ( vol, dir, &parent ) != ADF_RC_OK )
         return NULL;
 
-    nSect = parent.extension;
-
+    ADF_SECTNUM nSect = parent.extension;
     cell = head = NULL;
     do {
         /* one loop per cache block */
@@ -305,18 +303,17 @@ printf("newEntry->nLen %d newEntry->cLen %d\n",newEntry->nLen,newEntry->cLen);
  */
 ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
                               const struct AdfEntryBlock * const parent,
-                              const SECTNUM                      headerKey )
+                              const ADF_SECTNUM                  headerKey )
 {
     struct AdfDirCacheBlock dirc;
-    SECTNUM nSect, prevSect;
     struct AdfCacheEntry caEntry;
     int offset, oldOffset, n;
     int entryLen;
     int i;
     ADF_RETCODE rc = ADF_RC_OK;
 
-    prevSect = -1;
-	nSect = parent->extension;
+    ADF_SECTNUM prevSect = -1,
+                nSect    = parent->extension;
     bool found = false;
     do {
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
@@ -397,7 +394,6 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
                             const struct AdfEntryBlock * const entry )
 {
     struct AdfDirCacheBlock dirc, newDirc;
-    SECTNUM nSect, nCache;
     struct AdfCacheEntry caEntry, newEntry;
     int offset, n;
     int entryLen;
@@ -410,7 +406,7 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
 	newEntry.ticks/50,
 	newEntry.name, newEntry.comm);
 */
-    nSect = parent->extension;
+    ADF_SECTNUM nSect = parent->extension;
     do {
         rc = adfReadDirCBlock ( vol, nSect, &dirc );
         if ( rc != ADF_RC_OK )
@@ -449,7 +445,7 @@ ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
     }
     else {
         /* request one new block free */
-        nCache = adfGet1FreeBlock(vol);
+        ADF_SECTNUM nCache = adfGet1FreeBlock ( vol );
         if (nCache==-1) {
            (*adfEnv.wFct)("adfCreateDir : nCache==-1");
            return ADF_RC_VOLFULL;
@@ -494,7 +490,6 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
                              const bool                         entryLenChg )
 {
     struct AdfDirCacheBlock dirc;
-    SECTNUM nSect;
     struct AdfCacheEntry caEntry, newEntry;
     int offset, oldOffset, n;
     int i, oLen, nLen;
@@ -503,7 +498,7 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
 
     nLen = adfEntry2CacheEntry(entry, &newEntry);
 
-    nSect = parent->extension;
+    ADF_SECTNUM nSect = parent->extension;
     bool found = false;
     do {
 /*printf("dirc=%ld\n",nSect);*/
@@ -583,9 +578,9 @@ ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
  */
 ADF_RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
                                   struct AdfEntryBlock * const parent,
-                                  const SECTNUM                nSect )
+                                  const ADF_SECTNUM            nSect )
 {
-    SECTNUM nCache;
+    ADF_SECTNUM nCache;
 
     if (nSect==-1) {
         nCache = adfGet1FreeBlock(vol);
@@ -624,7 +619,7 @@ ADF_RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
  *
  */
 ADF_RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
-                               const SECTNUM                   nSect,
+                               const ADF_SECTNUM               nSect,
                                struct AdfDirCacheBlock * const dirc )
 {
     uint8_t buf[512];

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
-    SECTNUM nSect;
+    //ADF_SECTNUM nSect;
  
     adfEnvInitDefault();
 
