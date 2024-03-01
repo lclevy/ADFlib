@@ -472,22 +472,20 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
         // mark file blocks
         if ( entry->type == ADF_ST_FILE ) {
             struct AdfFileHeaderBlock fhBlock;
-            ADF_RETCODE rc2 = adfReadEntryBlock ( vol, entry->sector,
-                                                  (struct AdfEntryBlock *) &fhBlock );
-            if ( rc2 != ADF_RC_OK ) {
+            rc = adfReadEntryBlock ( vol, entry->sector,
+                                     (struct AdfEntryBlock *) &fhBlock );
+            if ( rc != ADF_RC_OK ) {
                 adfEnv.eFct ( "adfBitmapListSetUsed: error reading entry (file) block, "
                               "block %d, volume '%s', file name '%s'",
                               entry->sector, vol->volName, entry->name );
-                rc = rc2;
                 break;
             }
 
-            rc2 = adfBitmapFileBlocksSetUsed ( vol, &fhBlock );
-            if ( rc2 != ADF_RC_OK ) {
+            rc = adfBitmapFileBlocksSetUsed ( vol, &fhBlock );
+            if ( rc != ADF_RC_OK ) {
                 adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapFileBlocksSetUsed returned "
                               "error %d, block %d, volume '%s', file name '%s'",
                               rc, entry->sector, vol->volName, entry->name );
-                rc = rc2;
                 break;
             }
         }
@@ -501,27 +499,29 @@ static ADF_RETCODE adfBitmapListSetUsed ( struct AdfVolume * const     vol,
                 adfEnv.eFct ( "adfBitmapSetUsed: error reading entry (directory) block, "
                               "block %d, volume '%s', directory name '%s'",
                               entry->sector, vol->volName, entry->name );
-                return rc;
+                break;
             }
             rc = adfBitmapDirCacheSetUsed ( vol, dirBlock.extension );
-            if ( rc != ADF_RC_OK )
+            if ( rc != ADF_RC_OK ) {
                 adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapDirCacheSetUsed returned "
                               "error %d, block %d, volume '%s', directory name '%s'",
                               rc, entry->sector, vol->volName, entry->name );
-                return rc;
+                break;
+            }
         }
 
         // if any subdirectory present - process recursively
         if ( cell->subdir != NULL ) {
             const struct AdfList * const subdir =
                 ( const struct AdfList * const ) cell->subdir;
-            ADF_RETCODE rc2 = adfBitmapListSetUsed ( vol, subdir );
-            if ( rc2 != ADF_RC_OK )
+            rc = adfBitmapListSetUsed ( vol, subdir );
+            if ( rc != ADF_RC_OK ) {
                 adfEnv.eFct ( "adfBitmapListSetUsed: adfBitmapListSetUsed returned "
                               "error %d, volume '%s', directory name '%s'",
                               rc, vol->volName,
                               ( (const struct AdfEntry * const) subdir->content )->name );
-                rc = rc2;
+                break;
+            }
         }
         cell = cell->next;
     }
