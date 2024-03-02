@@ -454,12 +454,12 @@ ADF_RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateHdFile : dev==NULL");
-        return ADF_RC_ERROR;
+        return ADF_RC_NULLPTR;
     }
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if ( dev->volList == NULL ) {
         adfEnv.eFct ( "adfCreateHdFile : malloc" );
-        return ADF_RC_ERROR;
+        return ADF_RC_MALLOC;
     }
 
     dev->volList[0] = adfVolCreate( dev, 0L, dev->cylinders, volName, volType );
