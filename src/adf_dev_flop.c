@@ -50,7 +50,7 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
         (*adfEnv.eFct)("adfMount : malloc");
-        return ADF_RC_ERROR;
+        return ADF_RC_MALLOC;
     }
 
     vol->firstBlock = 0;
@@ -123,16 +123,16 @@ ADF_RETCODE adfCreateFlop ( struct AdfDevice * const dev,
 {
     if (dev==NULL) {
         (*adfEnv.eFct)("adfCreateFlop : dev==NULL");
-        return ADF_RC_ERROR;
+        return ADF_RC_NULLPTR;
     }
     if ( volName == NULL ) {
         (*adfEnv.eFct)("adfCreateFlop : volName == NULL");
-        return ADF_RC_ERROR;
+        return ADF_RC_NULLPTR;
     }
     dev->volList = (struct AdfVolume **) malloc (sizeof(struct AdfVolume *));
     if (!dev->volList) { 
         (*adfEnv.eFct)("adfCreateFlop : malloc");
-        return ADF_RC_ERROR;
+        return ADF_RC_MALLOC;
     }
     dev->volList[0] = adfVolCreate ( dev, 0L, 80L, volName, volType );
     if (dev->volList[0]==NULL) {
