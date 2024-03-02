@@ -533,7 +533,7 @@ static ADF_RETCODE adfBitmapFileBlocksSetUsed (
     struct AdfVolume * const                vol,
     const struct AdfFileHeaderBlock * const fhBlock )
 {
-    ADF_RETCODE rc = RC_OK;
+    ADF_RETCODE rc = ADF_RC_OK;
 
     // mark blocks from the header
     for ( uint32_t block = 0 ; block < ADF_MAX_DATABLK ; block++ ) {
