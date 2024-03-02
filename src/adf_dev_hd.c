@@ -754,8 +754,17 @@ ADF_RETCODE adfReadLSEGblock ( struct AdfDevice * const    dev,
         return ADF_RC_ERROR;
     }
 
-    if ( blk->checksum != adfNormalSum ( buf, 8, sizeof(struct AdfLSEGblock) ) )
-        (*adfEnv.wFct)("ReadLSEGBlock : incorrect checksum");
+    const uint32_t checksumCalculated = adfNormalSum ( buf, 8, sizeof(struct AdfLSEGblock) );
+    if ( blk->checksum != checksumCalculated ) {
+        const char msg[] = "adfReadLSEGBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, device '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, blk->checksum, checksumCalculated, nSect, dev->name );
+        } else {
+            adfEnv.eFct ( msg, blk->checksum, checksumCalculated, nSect, dev->name );
+            return ADF_RC_BLOCKSUM;
+        }
+    }
 
     if ( blk->next!=-1 && blk->size != 128 )
         (*adfEnv.wFct)("ReadLSEGBlock : size != 128");
