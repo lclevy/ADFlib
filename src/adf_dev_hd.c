@@ -177,7 +177,8 @@ ADF_RETCODE adfMountHd ( struct AdfDevice * const dev )
         rc = adfReadPARTblock ( dev, next, &part );
         if ( rc != ADF_RC_OK ) {
             adfFreeTmpVolList(listRoot);
-            (*adfEnv.eFct)("adfMountHd : malloc");
+            adfEnv.eFct ( "adfMountHd : read PART, block %d, device '%s'",
+                          next, dev->name );
             return rc;
         }
 
