@@ -679,9 +679,17 @@ ADF_RETCODE adfReadFSHDblock ( struct AdfDevice * const    dev,
     if ( blk->size != 64 )
          (*adfEnv.wFct)("ReadFSHDblock : size != 64");
 
-    if ( blk->checksum != adfNormalSum(buf,8,256) )
-        (*adfEnv.wFct)( "ReadFSHDblock : incorrect checksum");
-
+    const uint32_t checksumCalculated = adfNormalSum ( buf, 8, 256 );
+    if ( blk->checksum != checksumCalculated ) {
+        const char msg[] = "adfReadFSHDBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, device '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, blk->checksum, checksumCalculated, nSect, dev->name );
+        } else {
+            adfEnv.eFct ( msg, blk->checksum, checksumCalculated, nSect, dev->name );
+            return ADF_RC_BLOCKSUM;
+        }
+    }
     return rc;
 }
 
