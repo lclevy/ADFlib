@@ -502,10 +502,16 @@ ADF_RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
     if ( blk->size != 64 )
         (*adfEnv.wFct)("ReadRDSKBlock : size != 64");				/* BV */
 
-    if ( blk->checksum != adfNormalSum(buf,8,256) ) {
-         (*adfEnv.wFct)("ReadRDSKBlock : incorrect checksum");
-         /* BV FIX: Due to malicious Win98 write to sector
-         rc|=ADF_RC_BLOCKSUM;*/
+    const uint32_t checksumCalculated = adfNormalSum ( buf, 8, 256 );
+    if ( blk->checksum != checksumCalculated ) {
+        const char msg[] = "adfReadRDSKBlock : invalid checksum 0x%x != 0x%x (calculated)"
+            ", block %d, device '%s'";
+        if ( adfEnv.ignoreChecksumErrors ) {
+            adfEnv.wFct ( msg, blk->checksum, checksumCalculated, 0, dev->name );
+        } else {
+            adfEnv.eFct ( msg, blk->checksum, checksumCalculated, 0, dev->name );
+            return ADF_RC_BLOCKSUM;
+        }
     }
 	
     if ( blk->blockSize != 512 )
