@@ -275,7 +275,7 @@ bool invalidate_bootblock_checksum ( const char * const adfname )
     if ( f == NULL )
         return false;
 
-    uint32_t invalid_checksum = (uint32_t) random();
+    uint32_t invalid_checksum = (uint32_t) ( rand() & 0xffffffff );
     bool status = true;
 
     if ( fseek ( f, 4, SEEK_SET ) != 0 ) {
@@ -297,7 +297,7 @@ bool invalidate_rootblock_checksum ( const char * const adfname )
     if ( f == NULL )
         return false;
 
-    uint32_t invalid_checksum = (uint32_t) random();
+    uint32_t invalid_checksum = (uint32_t) ( rand() & 0xffffffff );
     bool status = true;
     const uint32_t rootblock_offset = 0x6e000; // 880 * 512
 
