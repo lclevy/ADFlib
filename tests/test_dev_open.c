@@ -29,6 +29,7 @@ START_TEST ( test_check_framework )
 }
 END_TEST
 
+
 START_TEST ( test_dev_open_nonexistent )
 {
     test_data_t test_data[] = {
@@ -62,9 +63,10 @@ START_TEST ( test_dev_open_nonexistent )
 }
 END_TEST
 
+
 START_TEST ( test_dev_open_existent )
 {
-    const test_data_t test_data[] = {
+    test_data_t test_data[] = {
         {   .adfname = "anexistent1.adf",
             .volname = "AnExitentVolume",
             .openMode = ADF_ACCESS_MODE_READONLY,
@@ -88,9 +90,8 @@ START_TEST ( test_dev_open_existent )
     };
     unsigned ntest_data = sizeof ( test_data ) / sizeof (  test_data_t );
 
-
     for ( unsigned i = 0 ; i < ntest_data ; i++ ) {
-        const test_data_t * const tdata = &test_data[i];
+        test_data_t * const tdata = &test_data[i];
 
         setup ( tdata );
 
@@ -107,7 +108,6 @@ START_TEST ( test_dev_open_existent )
 
         teardown ( tdata );
     }
-
 }
 END_TEST
 
