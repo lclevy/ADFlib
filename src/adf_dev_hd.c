@@ -87,6 +87,7 @@ ADF_RETCODE adfMountHdFile ( struct AdfDevice * const dev )
 
     vol->dev = dev;
     vol->volName=NULL;
+    vol->blockSize = 512;
     
     vol->firstBlock = 0;
 
