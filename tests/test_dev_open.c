@@ -94,8 +94,8 @@ START_TEST ( test_dev_open_existent )
 
         setup ( tdata );
 
-        fprintf (stderr, "Testing: %u, open mode %d, ignore checksums %d\n",
-                 i, (int) tdata->openMode, tdata->ignoreChecksumErrors );
+        //fprintf (stderr, "Testing: %u, open mode %d, ignore checksums %d\n",
+        //         i, (int) tdata->openMode, tdata->ignoreChecksumErrors );
 
         adfEnvSetProperty ( ADF_PR_IGNORE_CHECKSUM_ERRORS,
                             tdata->ignoreChecksumErrors );
