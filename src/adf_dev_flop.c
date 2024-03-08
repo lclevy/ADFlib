@@ -57,6 +57,7 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol->lastBlock = (int32_t) ( dev->cylinders * dev->heads * dev->sectors - 1 );
     vol->blockSize = 512;
     vol->dev = dev;
+    vol->volName = NULL;
 
     /* set filesystem info (read from bootblock) */
     struct AdfBootBlock boot;
