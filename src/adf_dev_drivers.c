@@ -91,7 +91,8 @@ void adfRemoveDeviceDrivers ( void )
         //fflush(stderr);
         next = node->next;
         free ( node );
-    }        
+    }
+    adfDeviceDrivers = NULL;
 }
 
 
