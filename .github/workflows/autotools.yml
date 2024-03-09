@@ -78,14 +78,14 @@ jobs:
       run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
 
   msys2_native_default:
-    if: false
+#    if: false
     runs-on: windows-latest
     defaults:
       run:
         shell: msys2 '{0}'
     steps:
     - uses: actions/checkout@v3
-    - uses: msys2/setup-msys2@v2
+    - uses: msys2/setup-msys2@v2.22.0
       with:
         update: true
         install: autotools diffutils mingw-w64-x86_64-check mingw-w64-x86_64-toolchain
@@ -99,6 +99,15 @@ jobs:
       run: ( make check || grep . examples/*.log examples/tests/*.log )
     - name: make distcheck
       run: make distcheck
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: msys2_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
     - name: make install
       run: make install
     - name: check installation
