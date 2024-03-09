@@ -41,13 +41,14 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: C:\tools\cygwin\bin\bash.exe '{0}'
+        shell: C:\cygwin\bin\bash.exe '{0}'
     env:
       SHELLOPTS: igncr
     steps:
     - uses: actions/checkout@v3
-    - uses: egor-tensin/setup-cygwin@v4
+    - uses: cygwin/cygwin-install-action@v4
       with:
+        site: https://sunsite.icm.edu.pl/pub/cygnus/cygwin/
         packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
     - name: autogen
       run: ./autogen.sh
@@ -66,6 +67,7 @@ jobs:
           examples/tests/*.log
           regtests/Test/*.log
           tests/*.log
+          C:\cygwin\var\log\setup.log.full
     - name: make distcheck
       run: make distcheck
     - name: make install
