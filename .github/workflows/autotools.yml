@@ -58,6 +58,14 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
     - name: store logs from failed tests
       if: failure()
       uses: actions/upload-artifact@v3
@@ -68,14 +76,6 @@ jobs:
           regtests/Test/*.log
           tests/*.log
 #          C:\cygwin\var\log\setup.log.full
-    - name: make distcheck
-      run: make distcheck
-    - name: make install
-      run: make install
-    - name: check installation
-      run: find /tmp/adflib -iname '*adf*'
-    - name: test installed command-line utils
-      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
 
   msys2_native_default:
 #    if: false
@@ -100,6 +100,12 @@ jobs:
       run: make check
     - name: make distcheck
       run: make distcheck
+    - name: make install
+      run: make install
+    - name: check installation
+      run: find /tmp/adflib -iname '*adf*'
+    - name: test installed command-line utils
+      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
     - name: store logs from failed tests
       if: failure()
       uses: actions/upload-artifact@v3
@@ -109,12 +115,6 @@ jobs:
           examples/tests/*.log
           regtests/Test/*.log
           tests/*.log
-    - name: make install
-      run: make install
-    - name: check installation
-      run: find /tmp/adflib -iname '*adf*'
-    - name: test installed command-line utils
-      run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
 
   macos_native_default:
     runs-on: macos-latest
