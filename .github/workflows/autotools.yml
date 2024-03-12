@@ -46,7 +46,7 @@ jobs:
           regtests/Test/*.log
           tests/*.log
 
-  cygwin_native_default:
+  cygwin:
     runs-on: windows-latest
     defaults:
       run:
@@ -86,7 +86,7 @@ jobs:
           tests/*.log
 #          C:\cygwin\var\log\setup.log.full
 
-  msys2_native_default:
+  msys2:
 #    if: false
     runs-on: windows-latest
     defaults:
@@ -125,7 +125,7 @@ jobs:
           regtests/Test/*.log
           tests/*.log
 
-  macos_native_default:
+  macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
