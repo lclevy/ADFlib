@@ -36,6 +36,15 @@ jobs:
       run: sudo ldconfig
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: ubuntu_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
 
   cygwin_native_default:
     runs-on: windows-latest
@@ -138,3 +147,12 @@ jobs:
       run: find /usr/local/ -iname '*adf*'
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos_native_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
