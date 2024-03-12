@@ -67,7 +67,7 @@ jobs:
           examples/tests/*.log
           regtests/Test/*.log
           tests/*.log
-          C:\cygwin\var\log\setup.log.full
+#          C:\cygwin\var\log\setup.log.full
     - name: make distcheck
       run: make distcheck
     - name: make install
@@ -96,7 +96,8 @@ jobs:
     - name: make
       run: make
     - name: make check
-      run: ( make check || grep . examples/*.log examples/tests/*.log )
+      #run: ( make check || grep . examples/*.log examples/tests/*.log )
+      run: make check
     - name: make distcheck
       run: make distcheck
     - name: store logs from failed tests
