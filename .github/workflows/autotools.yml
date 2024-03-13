@@ -40,7 +40,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: ubuntu_logs_failed_tests
+        name: ubuntu_autotools_logs_failed_tests
         path: |
           examples/tests/*.log
           regtests/Test/*.log
@@ -79,7 +79,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: cygwin_native_logs_failed_tests
+        name: cygwin_autotools_native_logs_failed_tests
         path: |
           examples/tests/*.log
           regtests/Test/*.log
@@ -119,7 +119,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: msys2_logs_failed_tests
+        name: msys2_autotools_logs_failed_tests
         path: |
           examples/tests/*.log
           regtests/Test/*.log
@@ -151,7 +151,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: macos_native_logs_failed_tests
+        name: macos_autotools_native_logs_failed_tests
         path: |
           examples/tests/*.log
           regtests/Test/*.log
