@@ -158,30 +158,46 @@ int test_single_seek ( struct AdfFile * const file_adf,
 #if TEST_VERBOSITY > 0
     printf ( "  Reading data after seek to position 0x%x (%d)...",
              offset, offset );
+    fflush(stdout);
 #endif
 
     ADF_RETCODE rc = adfFileSeek ( file_adf, offset );
     if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
                   offset, offset );
+        fflush(stderr);
         return 1;
     }
 
     unsigned char c;
     unsigned n = adfFileRead ( file_adf, 1, &c );
-
     if ( n != 1 ) {
         fprintf ( stderr, " -> Reading data failed!!!\n" );
+        fflush(stderr);
+        return 1;
+    }
+
+    if ( fseek ( file_local, offset, SEEK_SET ) != 0 ) {
+        fprintf ( stderr, " -> fseek error on local file at %u (0x%08x).",
+                  offset, offset );
+        perror (" -> ");
+        fflush(stderr);
         return 1;
     }
 
     unsigned char expected_value;
-    fseek ( file_local, offset, SEEK_SET );
-    fread ( &expected_value, 1, 1, file_local );
+    size_t items_read = fread ( &expected_value, 1, 1, file_local );
+    if ( items_read != 1 ) {
+        fprintf ( stderr, " -> Error reading local file at %u (0x%08x), items read %lu.\n",
+                  offset, offset, items_read );
+        fflush(stderr);
+        return 1;
+    }
     
     if ( c != expected_value ) {
         fprintf ( stderr, " -> Incorrect data read:  expected 0x%x != read 0x%x\n",
                  (int) expected_value, (int) c );
+        fflush(stderr);
         return 1;
     }
 
