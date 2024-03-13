@@ -51,9 +51,15 @@ jobs:
     defaults:
       run:
         shell: C:\cygwin\bin\bash.exe '{0}'
-    env:
-      SHELLOPTS: igncr
+#    env:
+#      SHELLOPTS: igncr
     steps:
+    - name: setup git (eol)
+#      shell: powershell
+      shell: cmd
+      run: |
+        git config --global core.autocrlf false
+#        git config --global core.eol lf
     - uses: actions/checkout@v4
     - uses: cygwin/cygwin-install-action@v4
       with:
