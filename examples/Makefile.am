@@ -12,7 +12,50 @@ dist_check_SCRIPTS = \
 dist_check_DATA = \
 	tests/arccsh.adf \
 	tests/common.sh \
-	tests/win32-names.adf
+	tests/win32-names.adf \
+	tests/results/adf-floppy-test_1 \
+	tests/results/adf-floppy-test_2 \
+	tests/results/adf-floppy-test_3 \
+	tests/results/adf-floppy-test_4 \
+	tests/results/adf-show-metadata-test_1 \
+	tests/results/adf-show-metadata-test_2 \
+	tests/results/adf-show-metadata-test_3 \
+	tests/results/adf-show-metadata-test_4 \
+	tests/results/adf-show-metadata-test_5 \
+	tests/results/unadf_1 \
+	tests/results/unadf_2 \
+	tests/results/unadf_3 \
+	tests/results/unadf_4 \
+	tests/results/unadf_5 \
+	tests/results/unadf_6 \
+	tests/results/unadf_7 \
+	tests/results/unadf_8 \
+	tests/results/unadf_9 \
+	tests/results/unadf_10 \
+	tests/results/unadf_11 \
+	tests/results_msys/adf-floppy-test_1 \
+	tests/results_msys/adf-floppy-test_2 \
+	tests/results_msys/adf-floppy-test_3 \
+	tests/results_msys/adf-floppy-test_4 \
+	tests/results_msys/adf-show-metadata-test_1 \
+	tests/results_msys/adf-show-metadata-test_2 \
+	tests/results_msys/adf-show-metadata-test_3 \
+	tests/results_msys/adf-show-metadata-test_4 \
+	tests/results_msys/adf-show-metadata-test_5 \
+	tests/results_msys/unadf_1 \
+	tests/results_msys/unadf_2 \
+	tests/results_msys/unadf_3 \
+	tests/results_msys/unadf_4 \
+	tests/results_msys/unadf_5 \
+	tests/results_msys/unadf_6 \
+	tests/results_msys/unadf_7 \
+	tests/results_msys/unadf_8 \
+	tests/results_msys/unadf_9 \
+	tests/results_msys/unadf_10 \
+	tests/results_msys/unadf_11
+
+check_SCRIPTS = $(dist_check_SCRIPTS)
+check_DATA = $(dist_check_DATA)
 
 TESTS = $(dist_check_SCRIPTS)
 

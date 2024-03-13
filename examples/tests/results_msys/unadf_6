@@ -1,0 +1,10 @@
+Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
+Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
+         1999/07/30  22:35:01  000882  c/
+         1999/07/30  22:14:46  001012  l/
+         1999/07/04  14:24:24  001746  devs/
+         1999/07/30  22:33:56  000887  s/
+         1999/07/04  14:24:31  001363  libs/
+ 130156  1996/08/03   0:55:04  001014  CSH
+   1136  1992/09/02  11:51:33  000883  LoadWB
+    232  1992/09/02  11:51:33  000888  system-configuration

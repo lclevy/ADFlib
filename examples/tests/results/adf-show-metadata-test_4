@@ -1,0 +1,50 @@
+
+Opening image/device:	'BASEDIR/arccsh.adf'
+Mounted volume:		0
+
+Path:		c/
+
+Directory block:
+  0x000  type		0x2		2
+  0x004  headerKey	0x372		882
+  0x008  highSeq	0x0		0
+  0x00c  hashTableSize	0x0		0
+  0x010  r1		0x0
+  0x014  checkSum	0xfe9ca61c
+     ->  calculated:	0xfe9ca61c -> OK
+  0x018  hashTable[72]:	(see below)
+  0x138  r2[2]:		(see below)
+  0x140  access		0x0
+  0x144  r4		0x0
+  0x148  commLen	0x0		0
+  0x149  comment [ 80 ]:	
+  0x199  r5[11]:	(see below)
+  0x1a4  days		0x1ec8		7880
+  0x1a8  mins		0x54b		1355
+  0x1ac  ticks		0x37		55
+  0x1b0  nameLen	0x1		1
+  0x1b1  dirName:	c
+  0x1d0  r6		0x0
+  0x1d4  real		0x0		0
+  0x1d8  nextLink	0x0		0
+  0x1dc  r7[5]:		(see below)
+  0x1f0  nextSameHash	0x0		0
+  0x1f4  parent		0x370		880
+  0x1f8  extension	0x0		0
+  0x1fc  secType	0x2		2
+
+Hashtable (non-zero):
+  hashtable [  3 ]:		0x5ed		1517
+  hashtable [  8 ]:		0x6df		1759
+  hashtable [ 14 ]:		0x19		25
+  hashtable [ 15 ]:		0x625		1573
+  hashtable [ 17 ]:		0x1bc		444
+  hashtable [ 18 ]:		0x16e		366
+  hashtable [ 22 ]:		0x11		17
+  hashtable [ 28 ]:		0x37e		894
+  hashtable [ 31 ]:		0x390		912
+  hashtable [ 34 ]:		0x399		921
+  hashtable [ 52 ]:		0x384		900
+  hashtable [ 60 ]:		0x60b		1547
+  hashtable [ 63 ]:		0x37a		890
+  hashtable [ 69 ]:		0xbf		191

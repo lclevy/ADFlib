@@ -1,0 +1,6 @@
+c:assign ENV: ram:
+path C: ram: add
+mount sd0:
+c:loadwb
+csh
+endcli

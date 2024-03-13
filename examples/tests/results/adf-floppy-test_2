@@ -1,0 +1,15 @@
+
+ADF device info:
+  Type:		floppy dd
+  Driver:	dump
+  Geometry:
+    Cylinders	80
+    Heads	2
+    Sectors	11
+
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    ???(???)      ""
+
+Formatting floppy (DD) disk 'TEMPDIR/testflopdd1.adf'...
+Done!

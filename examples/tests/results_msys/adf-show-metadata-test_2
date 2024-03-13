@@ -1,0 +1,63 @@
+
+Opening image/device:	'BASEDIR/arccsh.adf'
+Mounted volume:		0
+
+ADF volume info:
+  Name:		cshell                        
+  Type:		Floppy Double Density, 880 KBytes
+  Filesystem:	OFS  
+  Free blocks:	436
+  R/W:		Read only
+  Created:	24/03/1999 19:35:24
+  Last access:	30/07/1999 22:35:04
+		30/07/1999 22:14:39
+
+Bootblock:
+  dosType:	DOS. (0x0)
+  checkSum:	0xe33d0e73
+  - calculated:	0xe33d0e73 -> OK
+  rootBlock:	0x370 (880)
+
+Root block sector:	880
+
+Rootblock:
+  0x000  type:		0x2		2
+  0x004  headerKey:	0x0		0
+  0x008  highSeq:	0x0		0
+  0x00c  hashTableSize:	0x48		72
+  0x010  firstData:	0x0		0
+  0x014  checkSum:	0x942f7f25
+     ->  calculated:	0x942f7f25 -> OK
+  0x018  hashTable [ 72 ]:	(see below)
+  0x138  bmFlag:	0xffffffff
+  0x13c  bmPages[ 25 ]:		(see below)
+  0x1a0  bmExt:		0x0
+  0x1a4  cDays:		0x1ec8		7880
+  0x1a8  cMins:		0x536		1334
+  0x1ac  cTicks:	0x7c3		1987
+  0x1b0  nameLen:	0x6		6
+  0x1b1  diskName:	cshell
+  0x1d0  r2[8]:			(see below)
+  0x1d8  days:		0x1ec8		7880
+  0x1dc  mins:		0x54b		1355
+  0x1e0  ticks:		0xd7		215
+  0x1e4  coDays:	0x1e48		7752
+  0x1e8  coMins:	0x497		1175
+  0x1ec  coTicks:	0x4da		1242
+  0x1f0  nextSameHash:	0x0		0
+  0x1f4  parent:	0x0		0
+  0x1f8  extension:	0x371		881
+  0x1fc  secType:	0x1		1
+
+Hashtable (non-zero):
+  hashtable [  8 ]:		0x372		882
+  hashtable [ 17 ]:		0x3f4		1012
+  hashtable [ 22 ]:		0x6d2		1746
+  hashtable [ 24 ]:		0x377		887
+  hashtable [ 46 ]:		0x553		1363
+  hashtable [ 57 ]:		0x3f6		1014
+  hashtable [ 63 ]:		0x373		883
+  hashtable [ 66 ]:		0x378		888
+
+Bitmap block pointers (bmPages) (non-zero):
+  bmpages [  0 ]:		0x371		881

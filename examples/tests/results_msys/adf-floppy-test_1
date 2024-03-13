@@ -1,0 +1,13 @@
+Creating floppy disk image: 'TEMPDIR/testflopdd1.adf'
+
+ADF device info:
+  Type:		floppy dd
+  Driver:	dump
+  Geometry:
+    Cylinders	80
+    Heads	2
+    Sectors	11
+
+  Volumes:	0
+
+Done!

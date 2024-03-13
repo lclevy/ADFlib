@@ -1,19 +1,42 @@
 set -e
 
-tmpdir=`mktemp -d`
+mkdir -vp tmp
+tmpdir=`mktemp -d tmp/tmp.XXXXXX`
+
 trap cleanup 0 1 2
 cleanup() {
     rm -rf $tmpdir
 }
 
+host_type=`uname | sed 's/_.*//'`
+echo "Host type: '${host_type}'"
+if [ "x${host_type}" = 'xMINGW32' -o \
+     "x${host_type}" = 'xMINGW64' ]
+then
+    expected_dir=$basedir/results_msys
+##elif [ "x${host_type}" = 'xCYGWIN' ]; then
+else
+    expected_dir=$basedir/results
+fi
+echo "expected_dir: ${expected_dir}"
+
 status=$tmpdir/status
 expected=$tmpdir/expected
 actual=$tmpdir/actual
 echo success >$status
+tmpdir4sed=$(echo "$tmpdir" | sed -e 's/\//\\\//g')
+basedir4sed=$(echo "$basedir" | sed -e 's/\//\\\//g')
+
+
+# parameters:
+#   - name or description of the test
+#   - filename (of the file with expected result/output from the test)
 compare_with() {
-    cat >$expected
-    if diff -u $expected $actual; then
-        :
+    #cat >$expected
+    sed -e "s/TEMPDIR/$tmpdir4sed/" \
+        -e "s/BASEDIR/$basedir4sed/" $expected_dir/$2 > $expected
+    if diff -u --strip-trailing-cr $expected $actual; then
+	echo "Test '$1' OK."
     else
 	echo "Test '$1' failed."
         echo failed >$status
