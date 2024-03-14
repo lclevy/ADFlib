@@ -29,6 +29,7 @@
 
 #include "adf_env.h"
 #include "adf_raw.h"
+#include "adf_util.h"
 #include "adf_vol.h"
 
 #include <stdlib.h>
@@ -87,11 +88,9 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
             return rc;
         }
 
-        char diskName[35];
-        memset(diskName, 0, 35);
-        memcpy(diskName, root.diskName, root.nameLen);
-
-        vol->volName = strdup(diskName);
+        vol->volName = strndup ( root.diskName,
+                                 min ( root.nameLen,
+                                       (unsigned) ADF_MAX_NAME_LEN ) );
     } else { // if ( adfVolIsPFS ( vol ) ) {
         vol->datablockSize = 0; //512;
         vol->volName = NULL;

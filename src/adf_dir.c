@@ -628,17 +628,15 @@ ADF_SECTNUM adfParentDir ( struct AdfVolume * const vol )
 ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
                                 struct AdfEntry * const            entry )
 {
-    char buf[ ADF_MAX_COMMENT_LEN + 1 ];
-
     entry->type   = entryBlk->secType;
     entry->parent = entryBlk->parent;
 
-    unsigned len = min ( entryBlk->nameLen, (unsigned) ADF_MAX_NAME_LEN );
-    strncpy(buf, entryBlk->name, len);
-    buf[len] = '\0';
-    entry->name = strdup(buf);
+    entry->name = strndup ( entryBlk->name,
+                            min ( entryBlk->nameLen,
+                                  (unsigned) ADF_MAX_NAME_LEN ) );
     if (entry->name==NULL)
         return ADF_RC_MALLOC;
+
 /*printf("len=%d name=%s parent=%ld\n",entryBlk->nameLen, entry->name,entry->parent );*/
     adfDays2Date( entryBlk->days, &(entry->year), &(entry->month), &(entry->days));
     entry->hour = entryBlk->mins / 60;
@@ -654,10 +652,9 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
         break;
     case ADF_ST_DIR:
         entry->access = entryBlk->access;
-        len = min ( entryBlk->commLen, (unsigned) ADF_MAX_COMMENT_LEN );
-        strncpy(buf, entryBlk->comment, len);
-        buf[len] = '\0';
-        entry->comment = strdup(buf);
+        entry->comment = strndup ( entryBlk->comment,
+                                   min ( entryBlk->commLen,
+                                         (unsigned) ADF_MAX_COMMENT_LEN ) );
         if (entry->comment==NULL) {
             free(entry->name);
             entry->name = NULL;
@@ -667,10 +664,9 @@ ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
     case ADF_ST_FILE:
         entry->access = entryBlk->access;
         entry->size = entryBlk->byteSize;
-        len = min ( entryBlk->commLen, (unsigned) ADF_MAX_COMMENT_LEN );
-        strncpy(buf, entryBlk->comment, len);
-        buf[len] = '\0';
-        entry->comment = strdup(buf);
+        entry->comment = strndup ( entryBlk->comment,
+                                   min ( entryBlk->commLen,
+                                         (unsigned) ADF_MAX_COMMENT_LEN ) );
         if (entry->comment==NULL) {
             free(entry->name);
             entry->name = NULL;
