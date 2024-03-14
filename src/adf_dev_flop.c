@@ -58,6 +58,7 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
     vol->blockSize = 512;
     vol->dev = dev;
     vol->volName = NULL;
+    vol->mounted = false;
 
     /* set filesystem info (read from bootblock) */
     struct AdfBootBlock boot;
@@ -80,11 +81,11 @@ ADF_RETCODE adfMountFlop ( struct AdfDevice * const dev )
         struct AdfRootBlock root;
         vol->mounted = true;    // must be set to read the root block
         rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+        vol->mounted = false;
         if ( rc != ADF_RC_OK ) {
             free ( vol );
             return rc;
         }
-        vol->mounted = false;
 
         char diskName[35];
         memset(diskName, 0, 35);
