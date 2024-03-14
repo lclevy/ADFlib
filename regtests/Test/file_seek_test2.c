@@ -121,7 +121,7 @@ int run_multiple_seek_tests ( test_file_t * test_data )
         goto cleanup;
     }
 
-    FILE * file_local = fopen ( test_data->filename_local, "r" );
+    FILE * file_local = fopen ( test_data->filename_local, "rb" );
     if ( ! file_local ) {
         fprintf ( stderr, "Cannot open local file %s - aborting...\n",
                   test_data->filename_local );
