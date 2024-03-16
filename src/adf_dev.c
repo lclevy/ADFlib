@@ -280,7 +280,8 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
         }
         break;
 
-    case DEVTYPE_HARDDISK: {
+    case DEVTYPE_HARDDISK:
+    case DEVTYPE_HARDFILE: {
         uint8_t buf[512];
         rc = adfDevReadBlock ( dev, 0, 512, buf );
         if ( rc != ADF_RC_OK ) {
@@ -288,20 +289,16 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
             return rc;
         }
 
-        /* a file with the first three bytes equal to 'DOS' */
-        if ( ! dev->drv->isNative() &&
-             strncmp ( "DOS", (char *) buf, 3 ) == 0 )
-        {
+        if ( strncmp ( "RDSK", (char *) buf, 4 ) == 0 ) {
+            dev->devType = DEVTYPE_HARDDISK;
+            rc = adfMountHd ( dev );
+        } else {
             dev->devType = DEVTYPE_HARDFILE;
             rc = adfMountHdFile ( dev );
-            if ( rc != ADF_RC_OK )
-                return rc;
         }
-        else {
-            rc = adfMountHd ( dev );
-            if ( rc != ADF_RC_OK )
-                return rc;								/* BV ...to here.*/
-            }
+
+        if ( rc != ADF_RC_OK )
+            return rc;
         }
         break;
 
