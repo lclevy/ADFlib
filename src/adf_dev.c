@@ -283,10 +283,8 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
     case DEVTYPE_HARDDISK: {
         uint8_t buf[512];
         rc = adfDevReadBlock ( dev, 0, 512, buf );
-
-       /* BV ...from here*/
-        if( rc != ADF_RC_OK ) {
-            adfEnv.eFct ( "adfMountDev : adfReadBlockDev 0 (bootblock) failed");
+        if ( rc != ADF_RC_OK ) {
+            adfEnv.eFct ( "adfMountDev : reading block 0 of %s failed", dev->name );
             return rc;
         }
 
