@@ -138,6 +138,22 @@ ADF_RETCODE adfMountHdFile ( struct AdfDevice * const dev )
             return ADF_RC_ERROR;
         }
         vol->lastBlock = vol->rootBlock * 2 - 1;
+
+        struct AdfRootBlock root;
+        vol->mounted = true;    // must be set to read the root block
+        rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+        vol->mounted = false;
+        if ( rc != ADF_RC_OK ) {
+            free ( vol );
+            free ( dev->volList );
+            dev->volList = NULL;
+            dev->nVol = 0;
+            return rc;
+        }
+
+        vol->volName = strndup ( root.diskName,
+                                 min ( root.nameLen,
+                                       (unsigned) ADF_MAX_NAME_LEN ) );
     } else { // if ( adfVolIsPFS ( vol ) ) {
         vol->datablockSize = 0; //512;
         vol->volName = NULL;
