@@ -472,6 +472,8 @@ ADF_RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
     dev->nVol = 1;
     dev->devType = DEVTYPE_HARDFILE;
 
+    dev->mounted = true;
+
     return ADF_RC_OK;
 }
 
