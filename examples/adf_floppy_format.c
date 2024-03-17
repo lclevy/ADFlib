@@ -3,11 +3,18 @@
 #include "adf_dev.h"
 #include "adf_dev_flop.h"
 #include <errno.h>
-#include <libgen.h>
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#ifdef WIN32
+#include "getopt.h"
+#else
+#include <libgen.h>
 #include <unistd.h>
+#endif
 
 typedef struct CmdlineOptions {
     char     *adfName,

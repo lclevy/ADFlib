@@ -5,13 +5,25 @@ include_directories (
   ${PROJECT_BINARY_DIR}/src
 )
 
+
+if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+  set ( ADFLIB_CUSTOM_GETOPT_SRC
+    getopt.c
+    getopt.h )
+else()
+  set ( ADFLIB_CUSTOM_GETOPT_SRC "")
+endif()
+
 add_executable ( unadf unadf.c )
 TARGET_LINK_LIBRARIES ( unadf adf )
 
 add_executable ( adf_floppy_create adf_floppy_create.c )
 TARGET_LINK_LIBRARIES ( adf_floppy_create adf )
 
-add_executable ( adf_floppy_format adf_floppy_format.c )
+add_executable ( adf_floppy_format
+  adf_floppy_format.c
+  ${ADFLIB_CUSTOM_GETOPT_SRC}
+)
 TARGET_LINK_LIBRARIES ( adf_floppy_format adf )
 
 add_executable ( adf_show_metadata
