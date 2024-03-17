@@ -43,7 +43,8 @@ typedef enum {
     ADF_PR_USE_PROGBAR            = 8,
     ADF_PR_RWACCESS               = 9,
     ADF_PR_USE_RWACCESS           = 10,
-    ADF_PR_IGNORE_CHECKSUM_ERRORS = 11
+    ADF_PR_IGNORE_CHECKSUM_ERRORS = 11,
+    ADF_PR_QUIET                  = 12
 } ADF_ENV_PROPERTY;
 
 //typedef void (*AdfLogFct)(const char * const txt);
@@ -71,6 +72,8 @@ struct AdfEnv {
     bool useDirCache;
 
     bool ignoreChecksumErrors;
+
+    bool quiet;          /* true disables warning/error messages */
 };
 
 

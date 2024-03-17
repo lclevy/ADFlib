@@ -79,6 +79,7 @@ void adfEnvInitDefault(void)
     adfEnv.useNotify      = false;
     adfEnv.useProgressBar = false;
     adfEnv.ignoreChecksumErrors = false;
+    adfEnv.quiet          = false;
 
 /*    sprintf(str,"ADFlib %s (%s)",adfGetVersionNumber(),adfGetVersionDate());
     (*adfEnv.vFct)(str);
@@ -139,6 +140,9 @@ ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
     case ADF_PR_IGNORE_CHECKSUM_ERRORS:
         adfEnv.ignoreChecksumErrors =  (bool) newval;
         break;
+    case ADF_PR_QUIET:
+        adfEnv.quiet =  (bool) newval;
+        break;
     default:
         adfEnv.eFct ( "adfEnvSetProp: invalid property %d", property );
         return ADF_RC_ERROR;
@@ -161,6 +165,7 @@ intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property )
     case ADF_PR_RWACCESS:                return (intptr_t) adfEnv.rwhAccess;
     case ADF_PR_USEDIRC:                 return (intptr_t) adfEnv.useDirCache;
     case ADF_PR_IGNORE_CHECKSUM_ERRORS:  return (intptr_t) adfEnv.ignoreChecksumErrors;
+    case ADF_PR_QUIET:                   return (intptr_t) adfEnv.quiet;
     default:
         adfEnv.eFct ( "adfEnvGetProp: invalid property %d", property );
     }
@@ -239,6 +244,9 @@ static void progressBar ( int perCentDone )
 
 static void Warningf ( const char * const format, ... )
 {
+    if ( adfEnv.quiet )
+        return;
+
     va_list ap;
     va_start ( ap, format );
 
@@ -250,6 +258,9 @@ static void Warningf ( const char * const format, ... )
 
 static void Errorf ( const char * const format, ... )
 {
+    if ( adfEnv.quiet )
+        return;
+
     va_list ap;
     va_start ( ap, format );
 
@@ -262,6 +273,9 @@ static void Errorf ( const char * const format, ... )
 
 static void Verbosef ( const char * const format, ... )
 {
+    if ( adfEnv.quiet )
+        return;
+
     va_list ap;
     va_start ( ap, format );
 
