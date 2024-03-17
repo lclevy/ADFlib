@@ -141,11 +141,8 @@ ADF_RETCODE adfCreateFlop ( struct AdfDevice * const dev,
         return ADF_RC_ERROR;
     }
     dev->nVol = 1;
-    if (dev->sectors==11)
-        dev->devType=DEVTYPE_FLOPDD;
-    else
-        dev->devType=DEVTYPE_FLOPHD;
-
+    dev->devType = ( dev->sectors == 11 ) ? ADF_DEVTYPE_FLOPDD :
+                                            ADF_DEVTYPE_FLOPHD;
     dev->mounted = true;
 
     return ADF_RC_OK;

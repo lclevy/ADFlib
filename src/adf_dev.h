@@ -20,14 +20,16 @@ struct Partition {
 
 /* ----- DEVICES ----- */
 
-#define DEVTYPE_FLOPDD 		1
-#define DEVTYPE_FLOPHD 		2
-#define DEVTYPE_HARDDISK 	3
-#define DEVTYPE_HARDFILE 	4
+typedef enum {
+    ADF_DEVTYPE_FLOPDD   = 1,
+    ADF_DEVTYPE_FLOPHD   = 2,
+    ADF_DEVTYPE_HARDDISK = 3,
+    ADF_DEVTYPE_HARDFILE = 4
+} AdfDeviceType;
 
 struct AdfDevice {
     char * name;
-    int devType;               /* see below */
+    AdfDeviceType devType;
     bool readOnly;
     uint32_t size;                /* in bytes */
 

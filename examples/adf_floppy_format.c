@@ -57,15 +57,15 @@ int main ( int     argc,
 
     char *fdtype;
     int devtype = adfDevType ( device );
-    if ( devtype == DEVTYPE_FLOPDD ) {
+    if ( devtype == ADF_DEVTYPE_FLOPDD ) {
         device->sectors = 11;
         device->heads   = 2;
         fdtype          = "DD";
-    } else if ( devtype == DEVTYPE_FLOPHD ) {
+    } else if ( devtype == ADF_DEVTYPE_FLOPHD ) {
         device->sectors = 22;
         device->heads   = 2;
         fdtype          = "HD";
-    } else { //if ( devtype == DEVTYPE_HARDDISK ) {
+    } else { //if ( devtype == ADF_DEVTYPE_HARDDISK ) {
         fprintf ( stderr, "The device is not a floppy - aborting...\n" );
         return 1;
     }

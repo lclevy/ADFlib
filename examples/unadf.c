@@ -269,10 +269,10 @@ void help(void) {
 void print_device(struct AdfDevice *dev)
 {
     printf("Device : %s. Cylinders = %d, Heads = %d, Sectors = %d. Volumes = %d\n",
-        dev->devType == DEVTYPE_FLOPDD   ? "Floppy DD" :
-        dev->devType == DEVTYPE_FLOPHD   ? "Floppy HD" :
-        dev->devType == DEVTYPE_HARDDISK ? "Harddisk"  :
-        dev->devType == DEVTYPE_HARDFILE ? "Hardfile"  : "???",
+        dev->devType == ADF_DEVTYPE_FLOPDD   ? "Floppy DD" :
+        dev->devType == ADF_DEVTYPE_FLOPHD   ? "Floppy HD" :
+        dev->devType == ADF_DEVTYPE_HARDDISK ? "Harddisk"  :
+        dev->devType == ADF_DEVTYPE_HARDFILE ? "Hardfile"  : "???",
         dev->cylinders, dev->heads, dev->sectors, dev->nVol);
 }
 
@@ -282,16 +282,16 @@ void print_volume(struct AdfVolume *vol)
     ADF_SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
 
     switch (vol->dev->devType) {
-    case DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPDD:
         printf("Volume : Floppy 880 KBytes,");
         break;
-    case DEVTYPE_FLOPHD:
+    case ADF_DEVTYPE_FLOPHD:
         printf("Volume : Floppy 1760 KBytes,");
         break;
-    case DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDDISK:
         printf("Volume : HD partition #%d %3.1f KBytes,", vol_number, num_blocks / 2.0);
         break;
-    case DEVTYPE_HARDFILE:
+    case ADF_DEVTYPE_HARDFILE:
         printf("Volume : HardFile %3.1f KBytes,", num_blocks / 2.0);
         break;
     default:

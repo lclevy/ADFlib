@@ -57,8 +57,8 @@ ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
     int i;
     struct AdfBootBlock boot;
 
-    if ( vol->dev->devType != DEVTYPE_FLOPDD &&
-         vol->dev->devType != DEVTYPE_FLOPHD )
+    if ( vol->dev->devType != ADF_DEVTYPE_FLOPDD &&
+         vol->dev->devType != ADF_DEVTYPE_FLOPHD )
     {
         return ADF_RC_ERROR;
     }
@@ -112,17 +112,17 @@ void adfVolInfo ( struct AdfVolume * const vol )
     printf ( "\nADF volume info:\n  Name:\t\t%-30s\n", vol->volName );
     printf ("  Type:\t\t");
     switch ( vol->dev->devType) {
-    case DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPDD:
         printf ("Floppy Double Density, 880 KBytes\n");
         break;
-    case DEVTYPE_FLOPHD:
+    case ADF_DEVTYPE_FLOPHD:
         printf ("Floppy High Density, 1760 KBytes\n");
         break;
-    case DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDDISK:
         printf ("Hard Disk partition, %3.1f KBytes\n",
                 ( vol->lastBlock - vol->firstBlock + 1 ) * 512.0 / 1024.0 );
         break;
-    case DEVTYPE_HARDFILE:
+    case ADF_DEVTYPE_HARDFILE:
         printf ("HardFile : %3.1f KBytes\n",
                 ( vol->lastBlock - vol->firstBlock + 1 ) * 512.0 / 1024.0 );
         break;

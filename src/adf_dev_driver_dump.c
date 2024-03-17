@@ -254,11 +254,11 @@ static struct AdfDevice * adfCreateDumpDevice ( const char * const filename,
     dev->size = cylinders * heads * sectors * ADF_LOGICAL_BLOCK_SIZE;
 
     if ( dev->size == 80 * 11 * 2 * ADF_LOGICAL_BLOCK_SIZE )
-        dev->devType = DEVTYPE_FLOPDD;
+        dev->devType = ADF_DEVTYPE_FLOPDD;
     else if ( dev->size == 80 * 22 * 2 * ADF_LOGICAL_BLOCK_SIZE )
-        dev->devType = DEVTYPE_FLOPHD;
+        dev->devType = ADF_DEVTYPE_FLOPHD;
 	else 	
-        dev->devType = DEVTYPE_HARDDISK;
+        dev->devType = ADF_DEVTYPE_HARDDISK;
 		
     dev->nVol = 0;
     dev->readOnly = false;

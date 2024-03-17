@@ -83,7 +83,7 @@ static struct AdfDevice *
         return NULL;
     }
 
-    if ( dev->devType == DEVTYPE_HARDDISK ) {
+    if ( dev->devType == ADF_DEVTYPE_HARDDISK ) {
         struct AdfRDSKblock rdsk;
         ADF_RETCODE rc = adfDevReadBlock ( dev, 0, sizeof(struct AdfRDSKblock),
                                            (uint8_t *) &rdsk );
@@ -186,11 +186,11 @@ int adfDevType ( const struct AdfDevice * const dev )
         (dev->size==512*11*2*81) ||		/* BV */
         (dev->size==512*11*2*82) || 	/* BV */
         (dev->size==512*11*2*83) )		/* BV */
-        return(DEVTYPE_FLOPDD);
+        return ADF_DEVTYPE_FLOPDD;
     else if (dev->size==512*22*2*80)
-        return(DEVTYPE_FLOPHD);
+        return ADF_DEVTYPE_FLOPHD;
     else if (dev->size>512*22*2*80)
-        return(DEVTYPE_HARDDISK);
+        return ADF_DEVTYPE_HARDDISK;
     else {
         (*adfEnv.eFct)("adfDevType : unknown device type");
         return(-1);
@@ -210,16 +210,16 @@ void adfDevInfo ( const struct AdfDevice * const dev )
 {
     const char * devTypeInfo = NULL;
     switch ( dev->devType ) {
-    case DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPDD:
         devTypeInfo = "floppy dd";
         break;
-    case DEVTYPE_FLOPHD:
+    case ADF_DEVTYPE_FLOPHD:
         devTypeInfo = "floppy hd";
         break;
-    case DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDDISK:
         devTypeInfo = "harddisk";
         break;
-    case DEVTYPE_HARDFILE:
+    case ADF_DEVTYPE_HARDFILE:
         devTypeInfo = "hardfile";
         break;
     default:
@@ -272,16 +272,16 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
 
     switch( dev->devType ) {
 
-    case DEVTYPE_FLOPDD:
-    case DEVTYPE_FLOPHD: {
+    case ADF_DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPHD: {
         rc = adfMountFlop ( dev );
         if ( rc != ADF_RC_OK )
             return rc;
         }
         break;
 
-    case DEVTYPE_HARDDISK:
-    case DEVTYPE_HARDFILE: {
+    case ADF_DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDFILE: {
         uint8_t buf[512];
         rc = adfDevReadBlock ( dev, 0, 512, buf );
         if ( rc != ADF_RC_OK ) {
@@ -290,10 +290,10 @@ ADF_RETCODE adfDevMount ( struct AdfDevice * const dev )
         }
 
         if ( strncmp ( "RDSK", (char *) buf, 4 ) == 0 ) {
-            dev->devType = DEVTYPE_HARDDISK;
+            dev->devType = ADF_DEVTYPE_HARDDISK;
             rc = adfMountHd ( dev );
         } else {
-            dev->devType = DEVTYPE_HARDFILE;
+            dev->devType = ADF_DEVTYPE_HARDFILE;
             rc = adfMountHdFile ( dev );
         }
 
@@ -365,7 +365,7 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
 {
     /* set geometry (based on already set size) */
     switch ( dev->devType ) {
-    case DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPDD:
         dev->heads     = 2;
         dev->sectors   = 11;
         dev->cylinders = dev->size / ( dev->heads * dev->sectors * 512 );
@@ -375,7 +375,7 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
         }
         break;
 
-    case DEVTYPE_FLOPHD:
+    case ADF_DEVTYPE_FLOPHD:
         dev->heads     = 2;
         dev->sectors   = 22;
         dev->cylinders = dev->size / ( dev->heads * dev->sectors * 512 );
@@ -385,8 +385,8 @@ static ADF_RETCODE adfDevSetCalculatedGeometry_ ( struct AdfDevice * const dev )
         }
         break;
 
-    case DEVTYPE_HARDDISK:
-    case DEVTYPE_HARDFILE:
+    case ADF_DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDFILE:
         //dev->heads = 2;
         //dev->sectors   = dev->size / 4;
         //dev->cylinders = dev->size / ( dev->sectors * dev->heads * 512 );
