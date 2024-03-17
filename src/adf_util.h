@@ -116,4 +116,9 @@ struct DateTime adfGiveCurrentTime ( void );
 
 void dumpBlock ( const uint8_t * const buf );
 
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined (__APPLE__)
+char * strndup ( const char * const s, size_t n );
+#endif
+
 #endif  /* ADF_UTIL_H */
