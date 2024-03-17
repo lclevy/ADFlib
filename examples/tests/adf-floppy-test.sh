@@ -9,7 +9,7 @@ adf_show_metadata=`get_test_cmd adf_show_metadata`
 $adf_floppy_create $tmpdir/testflopdd1.adf dd >$actual
 compare_with "adf floppy create dd" adf-floppy-test_1
 
-$adf_floppy_format $tmpdir/testflopdd1.adf TestFlopDD1 1 >$actual 2>/dev/null
+$adf_floppy_format $tmpdir/testflopdd1.adf -t 1 -l TestFlopDD1 -v >$actual 2>/dev/null
 compare_with "adf floppy format dd" adf-floppy-test_2
 
 $adf_show_metadata $tmpdir/testflopdd1.adf >$actual
