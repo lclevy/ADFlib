@@ -11,5 +11,17 @@ ADF device info:
    idx  first bl.     last bl.    filesystem    name
      0          0         1759    ???(???)      ""
 
-Formatting floppy (DD) disk 'TEMPDIR/testflopdd1.adf'...
-Done!
+Formatting DD floppy (880k) 'TEMPDIR/testflopdd1.adf', volume 0, DOS fstype 1, label 'TestFlopDD1'... Done!
+
+ADF device info:
+  Type:		floppy dd
+  Driver:	dump
+  Geometry:
+    Cylinders	80
+    Heads	2
+    Sectors	11
+
+  Volumes:	1
+   idx  first bl.     last bl.    filesystem    name
+     0          0         1759    DOS(FFS)      "TestFlopDD1"
+
