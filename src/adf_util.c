@@ -212,8 +212,9 @@ void dumpBlock ( const uint8_t * const buf )
     }
 }
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined (__APPLE__)
-/* strndup() is missing on some (crippled ;) platforms */
+
+#ifndef HAVE_STRNDUP
+/* strndup() custom implementation (used only where missing) */
 char * strndup ( const char * const s, size_t n )
 {
     n = min ( strlen(s), n );
@@ -224,6 +225,6 @@ char * strndup ( const char * const s, size_t n )
     }
     return buf;
 }
-
 #endif
+
 /*################################################################################*/

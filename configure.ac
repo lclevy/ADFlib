@@ -114,6 +114,9 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 
+# Check functions
+AC_CHECK_FUNCS(strndup, AC_DEFINE([HAVE_STRNDUP], [1]))
+
 # Version
 AC_SUBST([ADFLIB_VERSION], [adflib_version])
 AC_SUBST([ADFLIB_LT_VERSION], [adflib_lt_version])
