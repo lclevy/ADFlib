@@ -1,7 +1,7 @@
 bin_PROGRAMS = unadf \
 	adf_bitmap \
 	adf_floppy_create \
-	adf_floppy_format \
+	adf_format \
 	adf_show_metadata
 
 dist_check_SCRIPTS = \
@@ -73,9 +73,9 @@ adf_floppy_create_SOURCES = adf_floppy_create.c
 adf_floppy_create_LDADD = $(ADFLIBS)
 adf_floppy_create_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
-adf_floppy_format_SOURCES = adf_floppy_format.c
-adf_floppy_format_LDADD = $(ADFLIBS)
-adf_floppy_format_DEPENDENCIES = $(top_builddir)/src/libadf.la
+adf_format_SOURCES = adf_format.c
+adf_format_LDADD = $(ADFLIBS)
+adf_format_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 adf_show_metadata_SOURCES = adf_show_metadata.c \
   adf_show_metadata_common.c \

@@ -35,7 +35,7 @@ bool parse_args ( const int * const    argc,
 
 void usage ( void )
 {
-    printf ( "\nUsage:  adf_floppy_format [-f] [-l label] [-p volume] [-t fstype] adf_device\n\n"
+    printf ( "\nUsage:  adf_format [-f] [-l label] [-p volume] [-t fstype] adf_device\n\n"
              "Quick-format an ADF (Amiga Disk File) or an HDF (Hard Disk File) volume.\n\n"
              "Options:\n"
              "  -f         force formatting even if a filesystem already present\n"
@@ -162,7 +162,8 @@ bool parse_args ( const int * const    argc,
 {
     // set default options
     memset ( options, 0, sizeof ( CmdlineOptions ) );
-    options->volidx = 0;
+    options->fsType  = 1;
+    options->volidx  = 0;
     options->label   = "";
     options->force   =
     options->verbose =

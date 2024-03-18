@@ -20,11 +20,11 @@ TARGET_LINK_LIBRARIES ( unadf adf )
 add_executable ( adf_floppy_create adf_floppy_create.c )
 TARGET_LINK_LIBRARIES ( adf_floppy_create adf )
 
-add_executable ( adf_floppy_format
-  adf_floppy_format.c
+add_executable ( adf_format
+  adf_format.c
   ${ADFLIB_CUSTOM_GETOPT_SRC}
 )
-TARGET_LINK_LIBRARIES ( adf_floppy_format adf )
+TARGET_LINK_LIBRARIES ( adf_format adf )
 
 add_executable ( adf_show_metadata
   adf_show_metadata.c
@@ -63,7 +63,7 @@ endif()
 install ( TARGETS
   unadf
   adf_floppy_create
-  adf_floppy_format
+  adf_format
   adf_show_metadata
   adf_bitmap
 )

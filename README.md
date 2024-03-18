@@ -66,11 +66,15 @@ standard DD (double density) 880K floppy image, HD (high density) 1760K, or
 special formats extended number of tracks (like DD with 81-83 tracks).
 
 
-### adf_floppy_format
+### adf_format
 
-Formats the specified floppy disk image file (an ADF, ie. one created with
-`adf_floppy_create`), creating on it the Amiga filesystem of the specified
-type (in particular: OFS/"Old File System" or FFS/"Fast File System").
+Create a classic AmigaDOS filesystem (OFS or FFS) on the specified volume
+of an ADF/HDF device.
+
+Current limitation: it supports only unpartitioned devices/disk images,
+so ones without an RDSK block and the typical hard disk structure.
+Only devices with a single volume on the whole device, so only floppy disks
+(ADF) or unpartitioned hard disk file (HDF) devices can be formatted.
 
 
 ### adf_show_metadata

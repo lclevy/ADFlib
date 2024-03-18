@@ -3,7 +3,7 @@ basedir=`dirname "$0"`
 . $basedir/common.sh
 
 adf_floppy_create=`get_test_cmd adf_floppy_create`
-adf_floppy_format=`get_test_cmd adf_floppy_format`
+adf_floppy_format=`get_test_cmd adf_format`
 adf_show_metadata=`get_test_cmd adf_show_metadata`
 
 $adf_floppy_create $tmpdir/testflopdd1.adf dd >$actual
