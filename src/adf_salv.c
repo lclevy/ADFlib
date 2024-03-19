@@ -178,16 +178,16 @@ ADF_RETCODE adfCheckParent ( struct AdfVolume * vol,
         return ADF_RC_ERROR;
     }
 
-    struct GenBlock* block = (struct GenBlock*)malloc(sizeof(struct GenBlock));
-    block->name = NULL;
-
+    struct GenBlock * const block =
+        (struct GenBlock *) malloc (sizeof(struct GenBlock));
     if ( block == NULL) {
         (*adfEnv.wFct)("adfCheckParent : malloc failed");
         return ADF_RC_ERROR;
     }
+    block->name = NULL;
 
     /* verify if parent is a DIR or ROOT */
-    RETCODE rc = adfReadGenBlock ( vol, pSect, block );
+    ADF_RETCODE rc = adfReadGenBlock ( vol, pSect, block );
     if ( rc == ADF_RC_OK ) {
         if ( block->type != ADF_T_HEADER ||
            ( block->secType != ADF_ST_DIR &&
