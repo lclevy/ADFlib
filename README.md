@@ -26,8 +26,8 @@ Untested and/or exprerimental support exists for:
 It is written in portable C.
 
 The current version was built and tested in the CI system (GitHub Actions)
-on Linux (Debian 11 and 12, Ubuntu), Windows (native build with MSVC and
-CygWin) and MacOs.
+on Linux (Debian 11 and 12, Ubuntu), Windows (build with MSVC, CygWin
+and MSYS2) and MacOs.
 
 It should be possible to build on (or cross-compile for) other systems.
 
@@ -181,7 +181,7 @@ Because of this, it is strongly advised to **UPDATE TO THE LATEST VERSION**.
 
 ## The API documentation in doc/
 ... in major part is outdated. The lib underwent many changes and, possibly,
-many are to come, no enough time to fully deal with this, too...
+many are to come, not enough time to fully deal with this, too...
 
 Please use it as a reference for the concepts and general ways of use (as those
 have not changed) while for the details regarding functions check the header
@@ -194,6 +194,11 @@ Have fun anyway !
 
 
 ## Contributing
+Please note that the code development has moved to
+[the new repo](https://github.com/t-w/ADFlib), while
+[the old one](https://github.com/lclevy/ADFlib) remains updated
+but only with the released versions.
+
 If you encountered a problem, please review
 [the existing issues](https://github.com/lclevy/ADFlib/issues), and,
 if the problem you have is not already there, open a new one.
