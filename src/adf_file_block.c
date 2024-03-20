@@ -50,9 +50,23 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
     int32_t i;
 
     fileBlocks->header = entry->headerKey;
+    fileBlocks->data   = NULL;
+    fileBlocks->extens = NULL;
     adfFileRealSize( entry->byteSize, vol->datablockSize, 
         &(fileBlocks->nbData), &(fileBlocks->nbExtens) );
 
+    const int32_t dblocksInHeader = min ( fileBlocks->nbData,  ADF_MAX_DATABLK );
+    if ( dblocksInHeader != entry->highSeq ) {
+        adfEnv.eFct ( "adfGetFileBlocks : inconsistent data in the File Header block "
+                      "0x%x (%d, file name: %s), "
+                      "highSeq value should be the number of data blocks in the file header, "
+                      "while:  calculated (expected) %d != file header highSeq %d",
+                      entry->headerKey, entry->headerKey, entry->fileName,
+                      dblocksInHeader, entry->highSeq );
+        return ADF_RC_ERROR;
+    }
+
+    /* add data blocks from file header block */
     fileBlocks->data = (ADF_SECTNUM *)
         malloc ( (unsigned) fileBlocks->nbData * sizeof(ADF_SECTNUM) );
     if (!fileBlocks->data) {
@@ -60,31 +74,40 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         return ADF_RC_MALLOC;
     }
 
-    fileBlocks->extens = (ADF_SECTNUM *)
-        malloc ( (unsigned) fileBlocks->nbExtens * sizeof(ADF_SECTNUM) );
-    if (!fileBlocks->extens) {
-        (*adfEnv.eFct)("adfGetFileBlocks : malloc");
-        return ADF_RC_MALLOC;
-    }
- 
     n = m = 0;	
-    /* in file header block */
     for(i=0; i<entry->highSeq; i++)
         fileBlocks->data[ n++ ] = entry->dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
 
-    /* in file extension blocks */
-    ADF_SECTNUM nSect = entry->extension;
-    struct AdfFileExtBlock extBlock;
-    while(nSect!=0) {
-        fileBlocks->extens[m++] = nSect;
-        adfReadFileExtBlock(vol, nSect, &extBlock);
-        for(i=0; i<extBlock.highSeq; i++)
-            fileBlocks->data[n++] = extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
-        nSect = extBlock.extension;
+    if ( fileBlocks->nbExtens > 0 ) {
+        /* add file extension blocks and data blocks indexed in them */
+
+        fileBlocks->extens = (ADF_SECTNUM *)
+            malloc ( (unsigned) fileBlocks->nbExtens * sizeof(ADF_SECTNUM) );
+        if (!fileBlocks->extens) {
+            (*adfEnv.eFct)("adfGetFileBlocks : malloc");
+            free ( fileBlocks->data );
+            fileBlocks->data = NULL;
+            return ADF_RC_MALLOC;
+        }
+
+        ADF_SECTNUM nSect = entry->extension;
+        struct AdfFileExtBlock extBlock;
+        while(nSect!=0) {
+            fileBlocks->extens[m++] = nSect;
+            adfReadFileExtBlock(vol, nSect, &extBlock);
+            for(i=0; i<extBlock.highSeq; i++)
+                fileBlocks->data[n++] = extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
+            nSect = extBlock.extension;
+        }
     }
+
     if ( (n != fileBlocks->nbData) || (m != fileBlocks->nbExtens) ) {
         adfEnv.eFct ( "adfGetFileBlocks : not as many blocks as expected" );
-        return RC_ERROR;
+        free ( fileBlocks->extens );
+        fileBlocks->extens = NULL;
+        free ( fileBlocks->data );
+        fileBlocks->data = NULL;
+        return ADF_RC_ERROR;
     }
 
     return ADF_RC_OK;
