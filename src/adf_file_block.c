@@ -61,7 +61,7 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
                           vol->datablockSize,
                           &fileBlocks->nbData,
                           &fileBlocks->nbExtens );
-    assert ( sizeInBlocks ==
+    assert ( (int32_t) sizeInBlocks ==
              fileBlocks->nbData + fileBlocks->nbExtens + 1 );  // +1 for file header block
 
     const int32_t dblocksInHeader = min ( fileBlocks->nbData,  ADF_MAX_DATABLK );
