@@ -103,7 +103,11 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         struct AdfFileExtBlock extBlock;
         while(nSect!=0) {
             fileBlocks->extens[ nExtBlocks++ ] = nSect;
-            adfReadFileExtBlock(vol, nSect, &extBlock);
+            ADF_RETCODE rc = adfReadFileExtBlock ( vol, nSect, &extBlock );
+            if ( rc != ADF_RC_OK ) {
+                status = rc;
+                goto adfGetFileBlocks_error;
+            }
             for ( int i = 0 ; i < extBlock.highSeq ; i++ ) {
                 fileBlocks->data[ nDataBlocks++ ] =
                     extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
