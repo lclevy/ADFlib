@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
                                       ADF_DOSFS_DIRCACHE ) != ADF_RC_OK )
     {
-		fprintf(stderr, "can't create floppy\n");
+        fprintf(stderr, "can't create floppy\n");
         status = 2;
 	goto clean_up_dev_close;
     }
@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	goto clean_up_dev_unmount;
     }
 
+    puts("\ncreate file_1a");
     struct AdfFile * const fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
         status = 4;
@@ -66,11 +67,10 @@ int main(int argc, char *argv[])
         status = 5;
 	goto clean_up_volume;
     }
-    puts("\ncreate file_1a");
     adfVolInfo(vol);
 
-    adfCreateDir(vol,vol->curDirPtr,"dir_5u");
     puts("\ncreate dir_5u");
+    adfCreateDir(vol,vol->curDirPtr,"dir_5u");
     adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
     adfRemoveEntry(vol,vol->curDirPtr,"file_1a");
     adfVolInfo(vol);
 
-    adfRemoveEntry(vol,vol->curDirPtr,"dir_5u");
     puts("\nremove dir_5u");
+    adfRemoveEntry(vol,vol->curDirPtr,"dir_5u");
     adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
@@ -107,12 +107,12 @@ int main(int argc, char *argv[])
     }
     adfFreeDelList(list);
 
-    adfUndelEntry(vol,vol->curDirPtr,883); // file_1a
     puts("\nundel file_1a");
+    adfUndelEntry(vol,vol->curDirPtr,883); // file_1a
     adfVolInfo(vol);
 
-    adfUndelEntry(vol,vol->curDirPtr,885); // dir_5u
     puts("\nundel dir_5u");
+    adfUndelEntry(vol,vol->curDirPtr,885); // dir_5u
     adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
