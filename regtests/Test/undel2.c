@@ -31,14 +31,19 @@ int main(int argc, char *argv[])
     FILE *out;
     int status = 0;
 
+    if ( argc < 3 )
+        exit(10);
+    const char * const adfDevName    = argv[1];
+    const char * const fileToRecover = argv[2]; // "mod.and.distantcall";
+
     adfEnvInitDefault();
 
     adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
-    struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
+    struct AdfDevice * hd = adfDevOpen ( adfDevName, ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
-                  argv[1] );
+                  adfDevName );
         status = 1;
         goto clean_up_env;
     }
@@ -67,8 +72,8 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
     adfVolInfo(vol);
 
-    puts("\nremove mod.and.distantcall");
-    adfRemoveEntry(vol,vol->curDirPtr,"mod.and.distantcall");
+    printf ( "\nremove %s", fileToRecover );
+    adfRemoveEntry(vol,vol->curDirPtr, fileToRecover );
     adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
@@ -83,7 +88,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDelList(list);
 
-    puts("\nundel mod.and.distantcall");
+    printf ( "\nundel %s", fileToRecover );
     rc = adfCheckEntry ( vol, 886, 0 );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfCheckEntry error %d\n", rc );
@@ -106,12 +111,12 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
+    file = adfFileOpen ( vol, fileToRecover, ADF_FILE_MODE_READ );
     if ( file == NULL ) {
         status = 6;
         goto clean_up_volume;
     }
-    out = fopen("mod.distant","wb");
+    out = fopen ( fileToRecover, "wb" );
     if ( out == NULL ) {
         status = 7;
         goto clean_up_file_adf;
@@ -124,7 +129,7 @@ int main(int argc, char *argv[])
         n = adfFileRead ( file, len, buf );
         if ( n != len && ! adfEndOfFile ( file ) ) {
             fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
-                      "mod.and.distantcall", adfFileGetPos ( file ), argv[1] );
+                      fileToRecover, adfFileGetPos ( file ), adfDevName );
             status = 8;
             goto clean_up_file_local;
         }

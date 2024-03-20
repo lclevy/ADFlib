@@ -6,7 +6,8 @@
 set -e
 
 #echo "----- undel2"
+TEST_FILE=mod.and.distantcall
 cat $FFSDUMP >testffs_adf
-./undel2 testffs_adf
+./undel2 testffs_adf ${TEST_FILE}
 #diff mod.distant $CHECK/mod.And.DistantCall
-rm -v mod.distant testffs_adf
+rm -v ${TEST_FILE} testffs_adf
