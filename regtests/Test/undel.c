@@ -89,9 +89,16 @@ int main(int argc, char *argv[])
     adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
+    if (cell)
+        puts ( "Found deleted entries:" );
+    else {
+        fprintf ( stderr, "No deleted entries found! -> ERROR.\n" );
+        status = 5;
+        goto clean_up_volume;
+    }
     while(cell) {
         block =(struct GenBlock*) cell->content;
-        printf ( "%s %d %d %d\n",
+        printf ( "name %s, block type %d, 2nd type %d, sector %d\n",
                  block->name,
                  block->type,
                  block->secType,
