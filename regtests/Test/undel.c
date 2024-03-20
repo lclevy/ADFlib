@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
     int status = 0;
-    struct AdfList *list, *cell;
  
     adfEnvInitDefault();
 
@@ -77,6 +76,7 @@ int main(int argc, char *argv[])
     }
     adfVolInfo(vol);
 
+    struct AdfList *list, *cell;
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
