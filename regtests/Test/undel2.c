@@ -26,7 +26,7 @@ int main ( const int          argc,
     int status = 0;
 
     if ( argc < 4 )
-        exit(10);
+        exit(1);
     const char * const adfDevName    = argv[1];
     const char * const fileToRecover = argv[2]; // "mod.and.distantcall";
 
@@ -35,10 +35,10 @@ int main ( const int          argc,
     const ADF_SECTNUM fileHeaderSector = (ADF_SECTNUM) strtol ( argv[3], &endptr, 10 );
     if ( errno != 0 ) {
         perror("strtol");
-        exit(11);
+        exit(2);
     }
     if ( fileHeaderSector < 2 )
-        exit(12);
+        exit(3);
 
     adfEnvInitDefault();
 
@@ -48,17 +48,19 @@ int main ( const int          argc,
     if ( ! hd ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfDevName );
-        status = 1;
+        status = 4;
         goto clean_up_env;
     }
 
-    if ( (unsigned) fileHeaderSector > hd->cylinders * hd->heads * hd->sectors )
-        exit(12);
+    if ( (unsigned) fileHeaderSector > hd->cylinders * hd->heads * hd->sectors ) {
+        status = 5;
+        goto clean_up_env;
+    }
 
     ADF_RETCODE rc = adfDevMount ( hd );
     if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
-        status = 2;
+        status = 6;
         goto clean_up_dev_close;
     }
 
@@ -67,7 +69,7 @@ int main ( const int          argc,
     struct AdfVolume * const vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         fprintf(stderr, "can't mount volume\n");
-        status = 3;
+        status = 7;
         goto clean_up_dev_unmount;
     }
 
@@ -89,7 +91,7 @@ int main ( const int          argc,
         puts ( "Found deleted entries:" );
     else {
         fprintf ( stderr, "No deleted entries found! -> ERROR.\n" );
-        status = 4;
+        status = 8;
         goto clean_up_volume;
     }
     while(cell) {
@@ -107,13 +109,13 @@ int main ( const int          argc,
     rc = adfCheckEntry ( vol, fileHeaderSector, 0 );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfCheckEntry error %d\n", rc );
-        status = 5;
+        status = 9;
         goto clean_up_volume;
     }
     rc = adfUndelEntry ( vol, vol->curDirPtr, fileHeaderSector );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfUndelEntry error %d\n", rc );
-        status = 6;
+        status = 10;
         goto clean_up_volume;
     }
 
@@ -129,13 +131,13 @@ int main ( const int          argc,
     struct AdfFile * const file = adfFileOpen ( vol, fileToRecover,
                                                 ADF_FILE_MODE_READ );
     if ( file == NULL ) {
-        status = 7;
+        status = 11;
         goto clean_up_volume;
     }
 
     FILE * const out = fopen ( fileToRecover, "wb" );
     if ( out == NULL ) {
-        status = 8;
+        status = 12;
         goto clean_up_file_adf;
     }
 
@@ -151,7 +153,7 @@ int main ( const int          argc,
         if ( n != len && ! adfEndOfFile ( file ) ) {
             fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
                       fileToRecover, adfFileGetPos ( file ), adfDevName );
-            status = 9;
+            status = 13;
             goto clean_up_file_local;
         }
         fwrite(buf,sizeof(unsigned char),n,out);
@@ -163,7 +165,7 @@ int main ( const int          argc,
                   " (device '%s', file '%s')\n",
                   fileSizeInHeader, fileSizeCalculated, adfDevName,
                   file->fileHdr->fileName );
-        status = 10;
+        status = 14;
     }
 
 clean_up_file_local:
