@@ -85,9 +85,16 @@ int main ( const int          argc,
     adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
+    if (cell)
+        puts ( "Found deleted entries:" );
+    else {
+        fprintf ( stderr, "No deleted entries found! -> ERROR.\n" );
+        status = 4;
+        goto clean_up_volume;
+    }
     while(cell) {
         struct GenBlock * const block = (struct GenBlock *) cell->content;
-        printf ( "%s %d %d %d\n",
+        printf ( "name %s, block type %d, 2nd type %d, sector %d\n",
                  block->name,
                  block->type,
                  block->secType,
@@ -100,13 +107,13 @@ int main ( const int          argc,
     rc = adfCheckEntry ( vol, fileHeaderSector, 0 );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfCheckEntry error %d\n", rc );
-        status = 4;
+        status = 5;
         goto clean_up_volume;
     }
     rc = adfUndelEntry ( vol, vol->curDirPtr, fileHeaderSector );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfUndelEntry error %d\n", rc );
-        status = 5;
+        status = 6;
         goto clean_up_volume;
     }
 
@@ -122,13 +129,13 @@ int main ( const int          argc,
     struct AdfFile * const file = adfFileOpen ( vol, fileToRecover,
                                                 ADF_FILE_MODE_READ );
     if ( file == NULL ) {
-        status = 6;
+        status = 7;
         goto clean_up_volume;
     }
 
     FILE * const out = fopen ( fileToRecover, "wb" );
     if ( out == NULL ) {
-        status = 7;
+        status = 8;
         goto clean_up_file_adf;
     }
 
@@ -141,7 +148,7 @@ int main ( const int          argc,
         if ( n != len && ! adfEndOfFile ( file ) ) {
             fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
                       fileToRecover, adfFileGetPos ( file ), adfDevName );
-            status = 8;
+            status = 9;
             goto clean_up_file_local;
         }
     }
