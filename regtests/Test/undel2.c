@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
     struct AdfFile *file;
     unsigned char buf[600];
     FILE *out;
-  
+    int status = 0;
+
     adfEnvInitDefault();
 
     adfEnvSetProperty ( ADF_PR_USEDIRC, true );
@@ -38,25 +39,24 @@ int main(int argc, char *argv[])
     if ( ! hd ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   argv[1] );
-        adfEnvCleanUp();
-        exit(1);
+        status = 1;
+        goto clean_up_env;
     }
 
     ADF_RETCODE rc = adfDevMount ( hd );
     if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
-        adfDevClose ( hd );
-        adfEnvCleanUp(); exit(1);
+        status = 2;
+        goto clean_up_dev_close;
     }
 
     adfDevInfo ( hd );
 
     vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfDevUnMount ( hd );
-        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
-        adfEnvCleanUp(); exit(1);
+        status = 3;
+        goto clean_up_dev_unmount;
     }
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
@@ -83,9 +83,20 @@ int main(int argc, char *argv[])
     }
     adfFreeDelList(list);
 
-    adfCheckEntry(vol,886,0);
-    adfUndelEntry(vol,vol->curDirPtr,886);
     puts("\nundel mod.and.distantcall");
+    rc = adfCheckEntry ( vol, 886, 0 );
+    if ( rc != ADF_RC_OK ) {
+        fprintf (stderr, "adfCheckEntry error %d\n", rc );
+        status = 4;
+        goto clean_up_volume;
+    }
+    rc = adfUndelEntry ( vol, vol->curDirPtr, 886 );
+    if ( rc != ADF_RC_OK ) {
+        fprintf (stderr, "adfUndelEntry error %d\n", rc );
+        status = 5;
+        goto clean_up_volume;
+    }
+
     adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
@@ -96,28 +107,48 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
-    if (!file) return 1;
+    if ( file == NULL ) {
+        status = 6;
+        goto clean_up_volume;
+    }
     out = fopen("mod.distant","wb");
-    if (!out) return 1;
+    if ( out == NULL ) {
+        status = 7;
+        goto clean_up_file_adf;
+    }
 
     unsigned len = 600;
     unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
         n = adfFileRead ( file, len, buf );
+        if ( n != len && ! adfEndOfFile ( file ) ) {
+            fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
+                      "mod.and.distantcall", adfFileGetPos ( file ), argv[1] );
+            status = 8;
+            goto clean_up_file_local;
+        }
     }
     if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
 
+clean_up_file_local:
     fclose(out);
 
+clean_up_file_adf:
     adfFileClose ( file );
 
+clean_up_volume:
     adfVolUnMount(vol);
+
+clean_up_dev_unmount:
     adfDevUnMount ( hd );
+
+clean_up_dev_close:
     adfDevClose ( hd );
 
+clean_up_env:
     adfEnvCleanUp();
 
-    return 0;
+    return status;
 }
