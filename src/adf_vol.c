@@ -171,7 +171,6 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const int                nPart,
                                         const AdfAccessMode      mode )
 {
-    struct AdfBootBlock boot;
     struct AdfVolume * vol;
 
     if ( dev == NULL ) {
@@ -218,13 +217,6 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
 /*printf("first=%ld last=%ld root=%ld\n",vol->firstBlock,
  vol->lastBlock, vol->rootBlock);
 */
-    if (adfReadBootBlock(vol, &boot)!=ADF_RC_OK) {
-        adfEnv.eFct ( "adfVolMount : invalid BootBlock" );
-        vol->mounted = false;
-        return NULL;
-    }       
-    
-    vol->fs.type = (uint8_t) boot.dosType[3];
     vol->datablockSize = adfVolIsOFS ( vol ) ? 488 : 512;
 
     if (dev->readOnly /*|| isDIRCACHE(vol->fs.type)*/)
