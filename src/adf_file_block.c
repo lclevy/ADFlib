@@ -34,6 +34,7 @@
 #include "adf_raw.h"
 #include "adf_util.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -52,8 +53,16 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
     fileBlocks->header = entry->headerKey;
     fileBlocks->data   = NULL;
     fileBlocks->extens = NULL;
-    adfFileRealSize( entry->byteSize, vol->datablockSize, 
-        &(fileBlocks->nbData), &(fileBlocks->nbExtens) );
+
+#ifndef NDEBUG
+    uint32_t sizeInBlocks =
+#endif
+        adfFileRealSize ( entry->byteSize,
+                          vol->datablockSize,
+                          &fileBlocks->nbData,
+                          &fileBlocks->nbExtens );
+    assert ( sizeInBlocks ==
+             fileBlocks->nbData + fileBlocks->nbExtens + 1 );  // +1 for file header block
 
     const int32_t dblocksInHeader = min ( fileBlocks->nbData,  ADF_MAX_DATABLK );
     if ( dblocksInHeader != entry->highSeq ) {
