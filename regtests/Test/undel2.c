@@ -141,19 +141,30 @@ int main ( const int          argc,
 
     unsigned char buf[600];
     const unsigned len = sizeof(buf) / sizeof(unsigned char);
-    unsigned n = adfFileRead ( file, len, buf );
+
+    unsigned
+        fileSizeInHeader   = file->fileHdr->byteSize,
+        fileSizeCalculated = 0;
+
     while(!adfEndOfFile(file)) {
-        fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfFileRead ( file, len, buf );
+        unsigned n = adfFileRead ( file, len, buf );
         if ( n != len && ! adfEndOfFile ( file ) ) {
             fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
                       fileToRecover, adfFileGetPos ( file ), adfDevName );
             status = 9;
             goto clean_up_file_local;
         }
-    }
-    if (n>0)
         fwrite(buf,sizeof(unsigned char),n,out);
+        fileSizeCalculated += n;
+    }
+
+    if ( fileSizeInHeader != fileSizeCalculated ) {
+        fprintf ( stderr, "file size error: size in file header block %u != size read %u"
+                  " (device '%s', file '%s')\n",
+                  fileSizeInHeader, fileSizeCalculated, adfDevName,
+                  file->fileHdr->fileName );
+        status = 10;
+    }
 
 clean_up_file_local:
     fclose(out);
