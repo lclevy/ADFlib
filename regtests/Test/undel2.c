@@ -2,7 +2,7 @@
  *  undel2.c
  */
 
-
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,10 +25,20 @@ int main ( const int          argc,
 {
     int status = 0;
 
-    if ( argc < 3 )
+    if ( argc < 4 )
         exit(10);
     const char * const adfDevName    = argv[1];
     const char * const fileToRecover = argv[2]; // "mod.and.distantcall";
+
+    char *endptr;
+    errno = 0;
+    const ADF_SECTNUM fileHeaderSector = (ADF_SECTNUM) strtol ( argv[3], &endptr, 10 );
+    if ( errno != 0 ) {
+        perror("strtol");
+        exit(11);
+    }
+    if ( fileHeaderSector < 2 )
+        exit(12);
 
     adfEnvInitDefault();
 
@@ -41,6 +51,9 @@ int main ( const int          argc,
         status = 1;
         goto clean_up_env;
     }
+
+    if ( (unsigned) fileHeaderSector > hd->cylinders * hd->heads * hd->sectors )
+        exit(12);
 
     ADF_RETCODE rc = adfDevMount ( hd );
     if ( rc != ADF_RC_OK ) {
@@ -83,14 +96,14 @@ int main ( const int          argc,
     }
     adfFreeDelList(list);
 
-    printf ( "\nundel %s", fileToRecover );
-    rc = adfCheckEntry ( vol, 886, 0 );
+    printf ( "\nundel %s at %d", fileToRecover, fileHeaderSector );
+    rc = adfCheckEntry ( vol, fileHeaderSector, 0 );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfCheckEntry error %d\n", rc );
         status = 4;
         goto clean_up_volume;
     }
-    rc = adfUndelEntry ( vol, vol->curDirPtr, 886 );
+    rc = adfUndelEntry ( vol, vol->curDirPtr, fileHeaderSector );
     if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "adfUndelEntry error %d\n", rc );
         status = 5;
