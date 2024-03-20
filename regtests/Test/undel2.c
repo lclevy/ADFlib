@@ -20,15 +20,12 @@ void MyVer(char *msg)
  *
  *
  */
-int main(int argc, char *argv[])
+int main ( const int          argc,
+           const char * const argv[] )
 {
-    (void) argc, (void) argv;
-    struct AdfVolume *vol;
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    struct AdfFile *file;
     unsigned char buf[600];
-    FILE *out;
     int status = 0;
 
     if ( argc < 3 )
@@ -40,7 +37,7 @@ int main(int argc, char *argv[])
 
     adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
-    struct AdfDevice * hd = adfDevOpen ( adfDevName, ADF_ACCESS_MODE_READWRITE );
+    struct AdfDevice * const hd = adfDevOpen ( adfDevName, ADF_ACCESS_MODE_READWRITE );
     if ( ! hd ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
                   adfDevName );
@@ -57,7 +54,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo ( hd );
 
-    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    struct AdfVolume * const vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         fprintf(stderr, "can't mount volume\n");
         status = 3;
@@ -111,12 +108,14 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, fileToRecover, ADF_FILE_MODE_READ );
+    struct AdfFile * const file = adfFileOpen ( vol, fileToRecover,
+                                                ADF_FILE_MODE_READ );
     if ( file == NULL ) {
         status = 6;
         goto clean_up_volume;
     }
-    out = fopen ( fileToRecover, "wb" );
+
+    FILE * const out = fopen ( fileToRecover, "wb" );
     if ( out == NULL ) {
         status = 7;
         goto clean_up_file_adf;
