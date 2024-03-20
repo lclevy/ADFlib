@@ -367,15 +367,13 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 
     vol->mounted = true;
 
-    unsigned nlen = min ( (unsigned) ADF_MAX_NAME_LEN,
-                          (unsigned) strlen ( volName ) );
-    vol->volName = (char*)malloc(nlen+1);
+    vol->volName = strndup ( volName,
+                             min ( strlen ( volName ),
+                                  (unsigned) ADF_MAX_NAME_LEN ) );
     if (!vol->volName) { 
         adfEnv.eFct ( "adfVolCreate : malloc volName" );
         free(vol); return NULL;
     }
-    memcpy(vol->volName, volName, nlen);
-    vol->volName[nlen]='\0';
 
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(25);
