@@ -47,7 +47,6 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
                                const struct AdfFileHeaderBlock * const entry,
                                struct AdfFileBlocks * const            fileBlocks )
 {
-    int32_t n, m;
     int32_t i;
     ADF_RETCODE status = ADF_RC_OK;
 
@@ -84,9 +83,10 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         return ADF_RC_MALLOC;
     }
 
-    n = m = 0;	
+    int32_t nDataBlocks = 0,
+            nExtBlocks  = 0;
     for(i=0; i<entry->highSeq; i++)
-        fileBlocks->data[ n++ ] = entry->dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
+        fileBlocks->data[ nDataBlocks++ ] = entry->dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
 
     if ( fileBlocks->nbExtens > 0 ) {
         /* add file extension blocks and data blocks indexed in them */
@@ -102,24 +102,25 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         ADF_SECTNUM nSect = entry->extension;
         struct AdfFileExtBlock extBlock;
         while(nSect!=0) {
-            fileBlocks->extens[m++] = nSect;
+            fileBlocks->extens[ nExtBlocks++ ] = nSect;
             adfReadFileExtBlock(vol, nSect, &extBlock);
             for(i=0; i<extBlock.highSeq; i++)
-                fileBlocks->data[n++] = extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
+                fileBlocks->data[ nDataBlocks++ ] =
+                    extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
             nSect = extBlock.extension;
         }
     }
 
-    if ( n != fileBlocks->nbData ) {
+    if ( nDataBlocks != fileBlocks->nbData ) {
         adfEnv.eFct ( "adfGetFileBlocks : invalid number of data blocks: "
-                      "expected %d != retrieved %d", fileBlocks->nbData, n );
+                      "expected %d != retrieved %d", fileBlocks->nbData, nDataBlocks );
         status = ADF_RC_ERROR;
         goto adfGetFileBlocks_error;
     }
 
-    if ( m != fileBlocks->nbExtens ) {
+    if ( nExtBlocks != fileBlocks->nbExtens ) {
         adfEnv.eFct ( "adfGetFileBlocks : invalid number of ext. blocks: "
-                      "expected %d != retrieved %d", fileBlocks->nbExtens, m );
+                      "expected %d != retrieved %d", fileBlocks->nbExtens, nExtBlocks );
         status = ADF_RC_ERROR;
         goto adfGetFileBlocks_error;
     }
