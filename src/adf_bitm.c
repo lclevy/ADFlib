@@ -746,7 +746,7 @@ ADF_RETCODE adfWriteNewBitmap ( struct AdfVolume * const vol )
 
     struct AdfRootBlock root;
     ADF_RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         return rc;
     }
 
