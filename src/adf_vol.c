@@ -171,8 +171,6 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
                                         const int                nPart,
                                         const AdfAccessMode      mode )
 {
-    struct AdfVolume * vol;
-
     if ( dev == NULL ) {
         adfEnv.eFct ( "adfVolMount : invalid device (NULL)" );
         return NULL;
@@ -199,7 +197,7 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
         return NULL;
     }
 
-    vol = dev->volList[nPart];
+    struct AdfVolume * const vol = dev->volList[ nPart ];
 
     if ( ! adfVolIsDosFS ( vol ) ) {
         if ( adfVolIsPFS ( vol ) ) {
