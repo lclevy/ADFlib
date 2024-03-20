@@ -23,8 +23,6 @@ void MyVer(char *msg)
 int main ( const int          argc,
            const char * const argv[] )
 {
-    struct AdfList *list, *cell;
-    struct GenBlock *block;
     int status = 0;
 
     if ( argc < 3 )
@@ -60,6 +58,7 @@ int main ( const int          argc,
         goto clean_up_dev_unmount;
     }
 
+    struct AdfList *list, *cell;
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
@@ -74,7 +73,7 @@ int main ( const int          argc,
 
     cell = list = adfGetDelEnt(vol);
     while(cell) {
-        block =(struct GenBlock*) cell->content;
+        struct GenBlock * const block = (struct GenBlock *) cell->content;
         printf ( "%s %d %d %d\n",
                  block->name,
                  block->type,
