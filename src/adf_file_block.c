@@ -47,7 +47,6 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
                                const struct AdfFileHeaderBlock * const entry,
                                struct AdfFileBlocks * const            fileBlocks )
 {
-    int32_t i;
     ADF_RETCODE status = ADF_RC_OK;
 
     fileBlocks->header = entry->headerKey;
@@ -85,8 +84,9 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
 
     int32_t nDataBlocks = 0,
             nExtBlocks  = 0;
-    for(i=0; i<entry->highSeq; i++)
+    for ( int i = 0; i < entry->highSeq ; i++ ) {
         fileBlocks->data[ nDataBlocks++ ] = entry->dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
+    }
 
     if ( fileBlocks->nbExtens > 0 ) {
         /* add file extension blocks and data blocks indexed in them */
@@ -104,9 +104,10 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         while(nSect!=0) {
             fileBlocks->extens[ nExtBlocks++ ] = nSect;
             adfReadFileExtBlock(vol, nSect, &extBlock);
-            for(i=0; i<extBlock.highSeq; i++)
+            for ( int i = 0 ; i < extBlock.highSeq ; i++ ) {
                 fileBlocks->data[ nDataBlocks++ ] =
                     extBlock.dataBlocks[ ADF_MAX_DATABLK - 1 - i ];
+            }
             nSect = extBlock.extension;
         }
     }
