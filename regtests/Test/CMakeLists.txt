@@ -98,9 +98,6 @@ TARGET_LINK_LIBRARIES ( dispsect adf )
 add_executable ( progbar progbar.c )
 TARGET_LINK_LIBRARIES ( progbar adf )
 
-add_executable ( undel3 undel3.c )
-TARGET_LINK_LIBRARIES ( undel3 adf )
-
 add_executable ( floppy_overfilling_test floppy_overfilling_test.c )
 TARGET_LINK_LIBRARIES ( floppy_overfilling_test adf )
 
@@ -140,7 +137,6 @@ foreach ( a_file
     rename2.sh
     rename.sh
     undel2.sh
-    undel3.sh
     undel.sh )
   configure_file ( ${a_file} ${a_file} COPYONLY )
 endforeach ( a_file )

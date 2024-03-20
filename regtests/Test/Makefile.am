@@ -38,8 +38,7 @@ check_PROGRAMS = \
 	rename \
 	rename2 \
 	undel \
-	undel2 \
-	undel3
+	undel2
 
 dist_check_SCRIPTS = \
 	bigdev.sh \
@@ -68,8 +67,7 @@ dist_check_SCRIPTS = \
 	hd_test3.sh \
 	rename.sh \
 	undel.sh \
-	undel2.sh \
-	undel3.sh 
+	undel2.sh
 
 TESTS = floppy.sh bigdev.sh
 
@@ -190,10 +188,6 @@ dispsect_DEPENDENCIES = $(top_builddir)/src/libadf.la
 progbar_SOURCES = progbar.c
 progbar_LDADD = $(ADFLIBS)
 progbar_DEPENDENCIES = $(top_builddir)/src/libadf.la
-
-undel3_SOURCES = undel3.c
-undel3_LDADD = $(ADFLIBS)
-undel3_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
 floppy_overfilling_test_SOURCES = floppy_overfilling_test.c
 floppy_overfilling_test_LDADD = $(ADFLIBS)
