@@ -70,7 +70,11 @@ int main(int argc, char *argv[])
     adfVolInfo(vol);
 
     puts("\ncreate dir_5u");
-    adfCreateDir(vol,vol->curDirPtr,"dir_5u");
+    ADF_RETCODE rc = adfCreateDir ( vol, vol->curDirPtr, "dir_5u" );
+    if ( rc != ADF_RC_OK ) {
+        status = 6;
+	goto clean_up_volume;
+    }
     adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
@@ -81,11 +85,19 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     puts("\nremove file_1a");
-    adfRemoveEntry(vol,vol->curDirPtr,"file_1a");
+    rc = adfRemoveEntry ( vol, vol->curDirPtr, "file_1a" );
+    if ( rc != ADF_RC_OK ) {
+        status = 7;
+	goto clean_up_volume;
+    }
     adfVolInfo(vol);
 
     puts("\nremove dir_5u");
-    adfRemoveEntry(vol,vol->curDirPtr,"dir_5u");
+    rc = adfRemoveEntry ( vol, vol->curDirPtr, "dir_5u" );
+    if ( rc != ADF_RC_OK ) {
+        status = 8;
+	goto clean_up_volume;
+    }
     adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
@@ -93,7 +105,7 @@ int main(int argc, char *argv[])
         puts ( "Found deleted entries:" );
     else {
         fprintf ( stderr, "No deleted entries found! -> ERROR.\n" );
-        status = 5;
+        status = 9;
         goto clean_up_volume;
     }
     while(cell) {
@@ -108,11 +120,19 @@ int main(int argc, char *argv[])
     adfFreeDelList(list);
 
     puts("\nundel file_1a");
-    adfUndelEntry(vol,vol->curDirPtr,883); // file_1a
+    rc = adfUndelEntry ( vol, vol->curDirPtr, 883 ); // file_1a
+    if ( rc != ADF_RC_OK ) {
+        status = 10;
+	goto clean_up_volume;
+    }
     adfVolInfo(vol);
 
     puts("\nundel dir_5u");
-    adfUndelEntry(vol,vol->curDirPtr,885); // dir_5u
+    rc = adfUndelEntry ( vol, vol->curDirPtr, 885 ); // dir_5u
+    if ( rc != ADF_RC_OK ) {
+        status = 11;
+	goto clean_up_volume;
+    }
     adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
