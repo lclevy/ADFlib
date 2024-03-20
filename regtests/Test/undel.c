@@ -23,11 +23,7 @@ int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
     int status = 0;
-    struct AdfVolume *vol;
-    struct AdfFile *fic;
-    unsigned char buf[1];
     struct AdfList *list, *cell;
-    struct GenBlock *block;
  
     adfEnvInitDefault();
 
@@ -51,18 +47,19 @@ int main(int argc, char *argv[])
 	goto clean_up_dev_close;
     }
 
-    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    struct AdfVolume * const vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         fprintf(stderr, "can't mount volume\n");
         status = 3;
 	goto clean_up_dev_unmount;
     }
 
-    fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
+    struct AdfFile * const fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
         status = 4;
         goto clean_up_volume;
     }
+    const unsigned char buf[1];
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
@@ -97,7 +94,7 @@ int main(int argc, char *argv[])
         goto clean_up_volume;
     }
     while(cell) {
-        block =(struct GenBlock*) cell->content;
+        struct GenBlock * const block = (struct GenBlock *) cell->content;
         printf ( "name %s, block type %d, 2nd type %d, sector %d\n",
                  block->name,
                  block->type,
