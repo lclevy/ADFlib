@@ -60,9 +60,12 @@ int main(int argc, char *argv[])
         goto clean_up_volume;
     }
     const unsigned char buf[1];
-    adfFileWrite ( fic, 1, buf );
+    const unsigned bytesWritten = adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
-
+    if ( bytesWritten != 1 ) {
+        status = 5;
+	goto clean_up_volume;
+    }
     puts("\ncreate file_1a");
     adfVolInfo(vol);
 
