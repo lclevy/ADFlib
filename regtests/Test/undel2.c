@@ -25,7 +25,6 @@ int main ( const int          argc,
 {
     struct AdfList *list, *cell;
     struct GenBlock *block;
-    unsigned char buf[600];
     int status = 0;
 
     if ( argc < 3 )
@@ -121,7 +120,8 @@ int main ( const int          argc,
         goto clean_up_file_adf;
     }
 
-    unsigned len = 600;
+    unsigned char buf[600];
+    const unsigned len = sizeof(buf) / sizeof(unsigned char);
     unsigned n = adfFileRead ( file, len, buf );
     while(!adfEndOfFile(file)) {
         fwrite(buf,sizeof(unsigned char),n,out);
