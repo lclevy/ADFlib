@@ -49,6 +49,7 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
 {
     int32_t n, m;
     int32_t i;
+    ADF_RETCODE status = ADF_RC_OK;
 
     fileBlocks->header = entry->headerKey;
     fileBlocks->data   = NULL;
@@ -94,9 +95,8 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
             malloc ( (unsigned) fileBlocks->nbExtens * sizeof(ADF_SECTNUM) );
         if (!fileBlocks->extens) {
             (*adfEnv.eFct)("adfGetFileBlocks : malloc");
-            free ( fileBlocks->data );
-            fileBlocks->data = NULL;
-            return ADF_RC_MALLOC;
+            status = ADF_RC_MALLOC;
+            goto adfGetFileBlocks_error;
         }
 
         ADF_SECTNUM nSect = entry->extension;
@@ -110,16 +110,28 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
         }
     }
 
-    if ( (n != fileBlocks->nbData) || (m != fileBlocks->nbExtens) ) {
-        adfEnv.eFct ( "adfGetFileBlocks : not as many blocks as expected" );
-        free ( fileBlocks->extens );
-        fileBlocks->extens = NULL;
-        free ( fileBlocks->data );
-        fileBlocks->data = NULL;
-        return ADF_RC_ERROR;
+    if ( n != fileBlocks->nbData ) {
+        adfEnv.eFct ( "adfGetFileBlocks : invalid number of data blocks: "
+                      "expected %d != retrieved %d", fileBlocks->nbData, n );
+        status = ADF_RC_ERROR;
+        goto adfGetFileBlocks_error;
+    }
+
+    if ( m != fileBlocks->nbExtens ) {
+        adfEnv.eFct ( "adfGetFileBlocks : invalid number of ext. blocks: "
+                      "expected %d != retrieved %d", fileBlocks->nbExtens, m );
+        status = ADF_RC_ERROR;
+        goto adfGetFileBlocks_error;
     }
 
     return ADF_RC_OK;
+
+adfGetFileBlocks_error:
+    free ( fileBlocks->extens );
+    fileBlocks->extens = NULL;
+    free ( fileBlocks->data );
+    fileBlocks->data = NULL;
+    return status;
 }
 
 /*
