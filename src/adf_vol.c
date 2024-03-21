@@ -361,17 +361,15 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
  vol->lastBlock, vol->rootBlock);
 */
     vol->curDirPtr = vol->rootBlock;
-
-    vol->readOnly = dev->readOnly;
-
-    vol->mounted = true;
-
-    vol->volName = strndup ( volName,
-                             min ( strlen ( volName ),
-                                  (unsigned) ADF_MAX_NAME_LEN ) );
-    if (!vol->volName) { 
+    vol->readOnly  = dev->readOnly;
+    vol->mounted   = true;
+    vol->volName   = strndup ( volName,
+                               min ( strlen ( volName ),
+                                     (unsigned) ADF_MAX_NAME_LEN ) );
+    if ( vol->volName == NULL ) {
         adfEnv.eFct ( "adfVolCreate : malloc volName" );
-        free(vol); return NULL;
+        free ( vol );
+        return NULL;
     }
 
     if (adfEnv.useProgressBar)
@@ -389,7 +387,8 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
 */
     if (adfWriteBootBlock(vol, &boot)!=ADF_RC_OK) {
-        free(vol->volName); free(vol);
+        free(vol->volName);
+        free(vol);
         return NULL;
     }
 
@@ -397,7 +396,8 @@ printf("name=%s root=%d\n", vol->volName, vol->rootBlock);
         (*adfEnv.progressBar)(20);
 
     if (adfCreateBitmap( vol )!=ADF_RC_OK) {
-        free(vol->volName); free(vol);
+        free(vol->volName);
+        free(vol);
         return NULL;
     }
 
@@ -434,7 +434,8 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
         (*adfEnv.progressBar)(60);
 
     if ( adfWriteRootBlock ( vol, (uint32_t) blkList[0], &root ) != ADF_RC_OK ) {
-        free(vol->volName); free(vol);
+        free(vol->volName);
+        free(vol);
         return NULL;
     }
 
@@ -457,7 +458,7 @@ printf("%3d %x, ",i,vol->bitmapTable[0]->map[i]);
 
     vol->mounted = false;
 
-    return(vol);
+    return vol;
 }
 
 
