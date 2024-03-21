@@ -1,0 +1,20 @@
+.TH ADF_SALVAGE 1 "Mar 21 2023"
+.SH NAME
+adf_salvage \- show (or, in the future, recover/extract) deleted files from an ADF device.
+
+.SH SYNOPSIS
+.B adf_salvage <\fIadf_device\fR>
+.SH DESCRIPTION
+\fBadf_salvage\fR is a filesystem utility allowing to display
+(or, in the future, to recover/extract) deleted files from a OFS/FFS volume of an ADF device.
+.PP
+The program currently implements only listing entries deleted from a volume.
+.
+.SH SEE ALSO
+.BR adf_show_metadata (1), unadf (1), adflib (3)
+.SH NOTES
+Detailed info about Commodore Amiga filesystems: http://lclevy.free.fr/adflib/adf_info.html
+.SH AUTHOR
+\fBadf_salvage\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
+as a part of the ADFlib (https://github.com/lclevy/ADFlib).
+.PP
