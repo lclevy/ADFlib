@@ -252,7 +252,7 @@ ADF_RETCODE adfReadDataBlock ( struct AdfVolume * const vol,
     if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfReadDataBlock: error reading block %d, volume '%s'",
                        nSect, vol->volName );
-        //return ADF_RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     memcpy(data,buf,512);
@@ -330,7 +330,7 @@ ADF_RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
     if ( rc != ADF_RC_OK ) {
         adfEnv.eFct ( "adfWriteDataBlock: error writing block %d, volume '%s'",
                       nSect, vol->volName );
-        //return ADF_RC_ERROR;
+        return ADF_RC_ERROR;
     }
 /*printf("adfWriteDataBlock %ld\n",nSect);*/
 
