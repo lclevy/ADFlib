@@ -45,8 +45,10 @@ Depends: libadf (= ${binary:Version}),
 Description: Utilities for Amiga disk image files (ADF).
  Utilities for ADF disk images:
  .
+ adf_bitmap        - show or reconstruct volume's block allocation bitmap
  adf_floppy_create - create a new floppy disk image file
- adf_floppy_format - format a floppy disk (an image or a device)
+ adf_format        - format a volume of an ADF device
+ adf_salvage       - show or recover/extract deleted files
  adf_show_metadata - display low-level info about a device/adf file
                      or a file/directory
 

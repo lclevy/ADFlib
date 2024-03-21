@@ -5,5 +5,5 @@
 usr/bin/adf_bitmap
 usr/bin/adf_floppy_create
 usr/bin/adf_format
+usr/bin/adf_salvage
 usr/bin/adf_show_metadata
-
