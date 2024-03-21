@@ -341,12 +341,11 @@ struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
 {
 /*    struct AdfDirCacheBlock dirc;*/
     ADF_SECTNUM blkList[2];
-    struct AdfVolume* vol;
 
     if (adfEnv.useProgressBar)
         (*adfEnv.progressBar)(0);
 
-    vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
+    struct AdfVolume * const vol = (struct AdfVolume *) malloc (sizeof(struct AdfVolume));
     if (!vol) { 
         adfEnv.eFct ( "adfVolCreate : malloc vol" );
         return NULL;
