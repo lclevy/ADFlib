@@ -431,7 +431,7 @@ ADF_RETCODE adfCheckDir ( const struct AdfVolume * const   vol,
     // for now - suppressing warnings about unused parameters
     (void) vol, (void) nSect, (void) dir, (void) level;
 
-    return ADF_RC_OK;
+    return ADF_RC_ERROR;
 }
 
 
