@@ -3,7 +3,8 @@
 
 #include "adflib.h"
 
-void showDeletedEntries ( const struct AdfList * cell );
+void showDeletedEntries ( struct AdfVolume * const     vol,
+                          const struct AdfList * const list );
 char * getBlockTypeStr ( const int block2ndaryType );
 
 
@@ -47,7 +48,7 @@ int main ( const int          argc,
     }
 
     struct AdfList * list = adfGetDelEnt ( vol );
-    showDeletedEntries ( list );
+    showDeletedEntries ( vol, list );
     //if ( list == NULL )
     //    goto clean_up_volume;
     adfFreeDelList ( list );
@@ -68,27 +69,44 @@ clean_up_env:
 }
 
 
-void showDeletedEntries ( const struct AdfList * const list )
+void showDeletedEntries (  struct AdfVolume * const     vol,
+                           const struct AdfList * const list )
 {
     if ( list == NULL ) {
         printf ( "No deleted entries found.\n" );
         return;
     }
-
-    printf ( "\nDeleted entries found:\n"
-                 "%26sname     block type       2nd type   sector\n", "" );
+    const char * const line =
+        "-----------------------------------------------------------||-------------------------------\n";
+    printf (
+        //"\nDeleted entries found:\n%s"
+        "%s"
+        "                     deleted entry                         ||          parent\n"
+        "%s"
+        "               name               |     type      | sector || sector |     type      | name\n"
+        "%s", line, line, line );
     unsigned nDeletedEntries = 0;
     for ( const struct AdfList * cell = list ; cell != NULL ; cell = cell->next ) {
         struct GenBlock * const block = (struct GenBlock *) cell->content;
-        printf ( "%30s%15d%12s%3d%9d\n",
+
+        struct AdfEntryBlock parent;
+        ADF_RETCODE rc = adfReadEntryBlock ( vol, block->parent, &parent );
+        const char * const parentName =
+            ( rc == ADF_RC_OK ) ? parent.name : "error getting entry name";
+
+        printf ( "%33s | %9s,%3d | %6d || %6d | %9s,%3d | %s\n",
                  block->name,
-                 block->type,
+                 //block->type,
                  getBlockTypeStr ( block->secType ),
                  block->secType,
-                 block->sect );
+                 block->sect,
+                 block->parent,
+                 getBlockTypeStr ( parent.secType ),
+                 parent.secType,
+                 parentName );
         nDeletedEntries++;
     }
-    printf ( "\nNumber of deleted entries: %u\n", nDeletedEntries );
+    printf ( "%s\nNumber of deleted entries: %u\n", line, nDeletedEntries );
 }
 
 
