@@ -461,9 +461,9 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
              entry->sector = hashTable[i];
 	
              if (head==NULL)
-                 head = cell = newCell(0, (void*)entry);
+                 head = cell = adfListNewCell ( NULL, (void *) entry );
              else
-                 cell = newCell(cell, (void*)entry);
+                 cell = adfListNewCell ( cell, (void *) entry );
              if (cell==NULL) {
                  free(entry);
                  adfFreeDirList(head); return NULL;
@@ -494,7 +494,7 @@ struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
                  }
                  entry->sector = nextSector;
 	
-                 cell = newCell(cell, (void*)entry);
+                 cell = adfListNewCell ( cell, (void *) entry );
                  if (cell==NULL) {
                      adfFreeDirList(head); return NULL;
                  }

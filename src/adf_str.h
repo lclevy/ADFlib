@@ -50,8 +50,8 @@ typedef struct AdfVectorSectors_s {
 } AdfVectorSectors;
 
 
-PREFIX struct AdfList * newCell ( struct AdfList * const list,
-                                  void * const           content );
+PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
+                                         void * const           content );
 
 PREFIX void freeList ( struct AdfList * const list );
 

@@ -106,9 +106,9 @@ struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol )
 
             if (delEnt) {
                 if (head==NULL)
-                    list = head = newCell(NULL, (void*)block);
+                    list = head = adfListNewCell ( NULL, (void *) block );
                 else
-                    list = newCell(list, (void*)block);
+                    list = adfListNewCell ( list, (void *) block );
 
                 block = NULL;
             }

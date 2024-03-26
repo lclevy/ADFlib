@@ -30,17 +30,17 @@
 #include <stdlib.h>
 
 /*
- * newCell
+ * adfListNewCell
  *
  * adds a cell at the end the list
  */
-struct AdfList * newCell ( struct AdfList * const list,
-                           void * const           content )
+struct AdfList * adfListNewCell ( struct AdfList * const list,
+                                  void * const           content )
 {
     struct AdfList * const cell = ( struct AdfList * )
         malloc ( sizeof ( struct AdfList ) );
     if (!cell) {
-        (*adfEnv.eFct)("newCell : malloc");
+        adfEnv.eFct ( "adfListNewCell : malloc" );
         return NULL;
     }
     cell->content = content;

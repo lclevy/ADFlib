@@ -109,9 +109,9 @@ struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
 
             /* add it into the linked list */
             if (head==NULL)
-                head = cell = newCell(NULL, (void*)entry);
+                head = cell = adfListNewCell ( NULL, (void *) entry );
             else
-                cell = newCell(cell, (void*)entry);
+                cell = adfListNewCell ( cell, (void *) entry );
 
             if (cell==NULL) {
                 adfFreeEntry(entry);

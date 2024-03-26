@@ -245,13 +245,13 @@ ADF_RETCODE adfMountHd ( struct AdfDevice * const dev )
 
         /* stores temporaly the volumes in a linked list */
         if (listRoot==NULL)
-            vList = listRoot = newCell(NULL, (void*)vol);
+            vList = listRoot = adfListNewCell ( NULL, (void *) vol);
         else
-            vList = newCell(vList, (void*)vol);
+            vList = adfListNewCell ( vList, (void *) vol);
 
         if (vList==NULL) {
             adfFreeTmpVolList(listRoot);
-            (*adfEnv.eFct)("adfMount : newCell() malloc");
+            adfEnv.eFct ( "adfMount : adfListNewCell() malloc" );
             return ADF_RC_MALLOC;
         }
 

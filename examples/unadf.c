@@ -244,7 +244,7 @@ void parse_args(int argc, char *argv[]) {
 
     /* list of files to extract can follow ADF filename */
     for (; i < argc; i++) {
-        list = newCell(list, argv[i]);
+        list = adfListNewCell(list, argv[i]);
         if (!file_list) {
             file_list = list;
         }
