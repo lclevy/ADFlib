@@ -21,32 +21,82 @@
  *
  */
 
+#include <adflib.h>
+#include "adf_dev.h"
+#include "adf_dev_flop.h"
+#include <errno.h>
+
+#include <stdbool.h>
 #include <stdio.h>
 
-#include "adflib.h"
+#ifdef WIN32
+#include "getopt.h"
+#else
+#include <libgen.h>
+#include <unistd.h>
+#endif
+
+typedef struct CmdlineOptions {
+    char     *adfDevName;
+    unsigned  volidx,
+             *entrySectors;
+    bool      verbose,
+              help,
+              version;
+} CmdlineOptions;
+
+
+bool parse_args ( const int * const    argc,
+                  char * const * const argv,
+                  CmdlineOptions *     options );
 
 void showDeletedEntries ( struct AdfVolume * const     vol,
                           const struct AdfList * const list );
 char * getBlockTypeStr ( const int block2ndaryType );
 
 
-int main ( const int          argc,
-           const char * const argv[] )
+void usage ( void )
 {
+    printf ( "\nUsage:  adf_salvage  [-p volume] adf_device\n\n"
+             "Salvage files from an ADF (Amiga Disk File) or an HDF (Hard Disk File) volume.\n\n"
+             "Options:\n"
+             "  -p volume  volume/partition index, counting from 0, default: 0\n"
+             "  -v         be more verbose\n\n"
+             "  -h         show help\n"
+             "  -V         show version\n\n" );
+}
 
-    if ( argc < 2 )
-          exit(1); 
-    const char * const adfDevName    = argv[1];
+
+int main ( const int     argc,
+           char * const argv[] )
+{
+    CmdlineOptions options;
+    if ( ! parse_args ( &argc, argv, &options ) ) {
+        fprintf ( stderr, "Usage info:  adf_salvage -h\n" );
+        exit ( EXIT_FAILURE );
+    }
+
+    if ( options.help ) {
+        usage();
+        exit ( EXIT_SUCCESS );
+    }
+
+    if ( options.version ) {
+        printf ( "%s (%s), powered by ADFlib %s (%s)\n",
+                 ADFLIB_VERSION, ADFLIB_DATE,
+                 adfGetVersionNumber(), adfGetVersionDate() );
+        exit ( EXIT_SUCCESS );
+    }
 
     int status = 0;
 
     adfEnvInitDefault();
     adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
-    struct AdfDevice * const dev = adfDevOpen ( adfDevName, ADF_ACCESS_MODE_READONLY );
+    struct AdfDevice * const dev = adfDevOpen ( options.adfDevName, ADF_ACCESS_MODE_READONLY );
     if ( dev == NULL ) {
         fprintf ( stderr, "Error opening device '%s' - aborting...\n",
-                  adfDevName );
+                  options.adfDevName );
         status = 1;
         goto clean_up_env;
     }
@@ -54,17 +104,18 @@ int main ( const int          argc,
     ADF_RETCODE rc = adfDevMount ( dev );
     if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Error mounting device '%s' - aborting...\n",
-                  adfDevName );
+                  options.adfDevName );
         status = 2;
         goto clean_up_dev_close;
     }
 
     //adfDevInfo ( dev );
 
-    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, (int) options.volidx,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( vol == NULL ) {
         fprintf ( stderr, "Error mounting volume %d of '%s' - aborting...\n",
-                  0, adfDevName );
+                  options.volidx, options.adfDevName );
         status = 3;
         goto clean_up_dev_unmount;
     }
@@ -88,6 +139,65 @@ clean_up_env:
     adfEnvCleanUp();
 
     return status;
+}
+
+
+/* return value: true - valid, false - invalid */
+bool parse_args ( const int * const    argc,
+                  char * const * const argv,
+                  CmdlineOptions *     options )
+{
+    // set default options
+    memset ( options, 0, sizeof ( CmdlineOptions ) );
+    options->volidx       = 0;
+    options->entrySectors = NULL;
+
+    options->verbose =
+    options->help    =
+    options->version = false;
+
+    const char * valid_options = "p:hvV";
+    int opt;
+    while ( ( opt = getopt ( *argc, (char * const *) argv, valid_options ) ) != -1 ) {
+//        printf ( "optind %d, opt %c, optarg %s\n", optind, ( char ) opt, optarg );
+        switch ( opt ) {
+        case 'p': {
+            // partition (volume) number (index)
+            char * endptr = NULL;
+            options->volidx = ( unsigned int ) strtoul ( optarg, &endptr, 10 );
+            if ( endptr == optarg ||
+                 options->volidx > 255 )  // is there a limit for max. number of partitions???
+            {
+                fprintf ( stderr, "Invalid volume/partition %u.\n", options->volidx );
+                return false;
+            }
+            continue;
+        }
+
+        case 'v':
+            options->verbose = true;
+            continue;
+
+        case 'h':
+            options->help = true;
+            return true;
+
+        case 'V':
+            options->version = true;
+            return true;
+
+        default:
+            return false;
+        }
+    }
+
+    if ( optind != *argc - 1 ) {
+        fprintf ( stderr, "Missing the name of an adf file/device.\n" );
+        return false;
+    }
+
+    options->adfDevName = argv [ optind ];
+    return true;
 }
 
 
