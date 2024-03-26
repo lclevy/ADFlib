@@ -38,8 +38,8 @@
 
 typedef struct CmdlineOptions {
     char     *adfDevName;
-    unsigned  volidx,
-             *entrySectors;
+    unsigned  volidx;
+    AdfVectorSectors entries;
     bool      verbose,
               help,
               version;
@@ -54,10 +54,26 @@ void showDeletedEntries ( struct AdfVolume * const     vol,
                           const struct AdfList * const list );
 char * getBlockTypeStr ( const int block2ndaryType );
 
+ADF_RETCODE checkEntriesToUndelete ( struct AdfVolume * const       vol,
+                                     const struct AdfList * const   deletedEntriesList,
+                                     const AdfVectorSectors * const entriesHeaderBlocks );
+
+bool entryIsDeleted ( ADF_SECTNUM entryBlockIdx,
+                      const struct AdfList * const deletedEntriesList );
+
+
+ADF_RETCODE undeleteFiles ( struct AdfVolume * const       vol,
+                            const AdfVectorSectors * const entriesHeaderBlocks );
+
+ADF_RETCODE undeleteFile ( struct AdfVolume * const vol,
+                           ADF_SECTNUM              block );
+
+
+
 
 void usage ( void )
 {
-    printf ( "\nUsage:  adf_salvage  [-p volume] adf_device\n\n"
+    printf ( "\nUsage:  adf_salvage  [-p volume] adf_device [file header block to undelete]...\n\n"
              "Salvage files from an ADF (Amiga Disk File) or an HDF (Hard Disk File) volume.\n\n"
              "Options:\n"
              "  -p volume  volume/partition index, counting from 0, default: 0\n"
@@ -93,7 +109,7 @@ int main ( const int     argc,
     adfEnvInitDefault();
     adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
-    struct AdfDevice * const dev = adfDevOpen ( options.adfDevName, ADF_ACCESS_MODE_READONLY );
+    struct AdfDevice * const dev = adfDevOpen ( options.adfDevName, ADF_ACCESS_MODE_READWRITE );
     if ( dev == NULL ) {
         fprintf ( stderr, "Error opening device '%s' - aborting...\n",
                   options.adfDevName );
@@ -112,7 +128,7 @@ int main ( const int     argc,
     //adfDevInfo ( dev );
 
     struct AdfVolume * const vol = adfVolMount ( dev, (int) options.volidx,
-                                                 ADF_ACCESS_MODE_READONLY );
+                                                 ADF_ACCESS_MODE_READWRITE );
     if ( vol == NULL ) {
         fprintf ( stderr, "Error mounting volume %d of '%s' - aborting...\n",
                   options.volidx, options.adfDevName );
@@ -120,13 +136,36 @@ int main ( const int     argc,
         goto clean_up_dev_unmount;
     }
 
-    struct AdfList * list = adfGetDelEnt ( vol );
-    showDeletedEntries ( vol, list );
+    /* check block allocation bitmap - if invalid, cannot salvage (dangerous)! */
+    if ( ! adfVolBitmapIsMarkedValid ( vol ) ) {
+        fprintf ( stderr, "Block allocation bitmap of the volume is marked as invalid "
+                  "-> cannot reliably salvage - aborting...\n" );
+        status = 4;
+        goto clean_up_volume;
+    }
+
+    /* get list of deleted entries on the volume */
+    struct AdfList * const deletedEntries = adfGetDelEnt ( vol );
     //if ( list == NULL )
     //    goto clean_up_volume;
-    adfFreeDelList ( list );
 
-//clean_up_volume:
+    if ( options.entries.sectors == NULL ) {
+        /* nothing specified to salvage - just show deleted entries */
+        showDeletedEntries ( vol, deletedEntries );
+        goto clean_up_free_del_list;
+    }
+
+    //adfVolUnMount(vol);
+
+    /* try to salvage / undelete specified files */
+    rc = undeleteFiles ( vol, &options.entries );
+    if ( rc != ADF_RC_OK )
+        status = 5;
+
+clean_up_free_del_list:
+    adfFreeDelList ( deletedEntries );
+
+clean_up_volume:
     adfVolUnMount ( vol );
 
 clean_up_dev_unmount:
@@ -137,6 +176,8 @@ clean_up_dev_close:
 
 clean_up_env:
     adfEnvCleanUp();
+
+    free ( options.entries.sectors );
 
     return status;
 }
@@ -150,11 +191,11 @@ bool parse_args ( const int * const    argc,
     // set default options
     memset ( options, 0, sizeof ( CmdlineOptions ) );
     options->volidx       = 0;
-    options->entrySectors = NULL;
-
     options->verbose =
     options->help    =
     options->version = false;
+    options->entries.len     = 0;
+    options->entries.sectors = NULL;
 
     const char * valid_options = "p:hvV";
     int opt;
@@ -191,12 +232,41 @@ bool parse_args ( const int * const    argc,
         }
     }
 
-    if ( optind != *argc - 1 ) {
+    /* the name of the adf device - required */
+    if ( optind > *argc - 1 ) {
         fprintf ( stderr, "Missing the name of an adf file/device.\n" );
         return false;
     }
+    options->adfDevName = argv [ optind++ ];
 
-    options->adfDevName = argv [ optind ];
+    if ( optind >= *argc )
+        return true;
+
+    /* (optional) list of files (given as sectors of their file header blocks)
+       to undelete */
+    options->entries.len = (unsigned) ( *argc - optind );
+    options->entries.sectors = malloc ( options->entries.len * sizeof (ADF_SECTNUM) );
+    if ( options->entries.sectors == NULL ) {
+        fprintf (stderr, "Memory allocation error.");
+        return false;
+    }
+
+    for ( unsigned i = 0 ; i < options->entries.len ; i++ ) {
+        char * endptr = NULL;
+        errno = 0;
+        //printf ("Adding %s\n", argv[ optind ] );
+        const char * const blockStr = argv[ optind++ ];
+        unsigned long blockIdx = strtoul ( blockStr, &endptr, 10 );
+        if ( errno != 0 ||
+             endptr == blockStr ||
+             blockIdx > 0x7fffffff )          /* overflow / negative */
+        {
+            fprintf ( stderr, "Invalid file header block number '%s'.\n", blockStr );
+            return false;
+        }
+        options->entries.sectors[i] = (ADF_SECTNUM) blockIdx;
+    }
+
     return true;
 }
 
@@ -256,4 +326,115 @@ char * getBlockTypeStr ( const int block2ndaryType )
     case ADF_T_DIRC:        return "t dirc";
     }
     return "unknown";
+}
+
+
+ADF_RETCODE checkEntriesToUndelete ( struct AdfVolume * const       vol,
+                                     const struct AdfList * const   deletedEntriesList,
+                                     const AdfVectorSectors * const entriesHeaderBlocks )
+{
+    for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
+        const ADF_SECTNUM block = entriesHeaderBlocks->sectors[i];
+
+        /* check if block number (index) is valid */
+        if ( block < 2 ||               /* exclude bootblock */
+             (unsigned) block > adfVolGetSizeInBlocks ( vol ) )
+        {
+            fprintf ( stderr, "Invalid file header block number %d.\n", block );
+            return ADF_RC_ERROR;
+        }
+
+        /* check if the entry at the given block exists and is valid */
+        struct AdfFileHeaderBlock fhb;
+        ADF_RETCODE rc = adfReadEntryBlock ( vol, (ADF_SECTNUM) block,
+                                             (struct AdfEntryBlock * const) &fhb );
+        if ( rc != ADF_RC_OK ) {
+            fprintf ( stderr, "Error reading entry (file header block) at %d.\n",
+                      block );
+            return rc;
+        }
+        if ( fhb.secType != ADF_ST_FILE ) {
+            fprintf ( stderr, "Entry at block %d is not a file but %s.\n",
+                      block, getBlockTypeStr ( fhb.secType ) );
+            return ADF_RC_ERROR;
+        }
+
+        /* check if the entry at the given block is a deleted entry */
+        if ( ! entryIsDeleted ( block, deletedEntriesList ) ) {
+            fprintf ( stderr, "Entry at block %d is not deleted.\n",
+                      block );
+            return ADF_RC_ERROR;
+        }
+
+        /* check if file metadata is valid */
+        //rc = adfCheckFile ( vol, block, &fhb, 0 );
+        rc = adfCheckEntry ( vol, block, 0 );
+        if ( rc != ADF_RC_OK ) {
+            fprintf ( stderr, "Error checking file at block %d - cannot undelete it.\n",
+                      block );
+            return rc;
+        }
+
+        /* check if parent dir. is valid */
+        /*rc = adfCheckparent ( vol, fhb->parent );
+        if ( rc != ADF_RC_OK ) {
+            fprintf ( stderr, "Entry at %d: invalid parent %d.\n",
+                      block, fhb->parent );
+            return rc;
+            }*/
+    }
+    return ADF_RC_OK;
+}
+
+
+bool entryIsDeleted ( ADF_SECTNUM entryBlockIdx,
+                      const struct AdfList * const deletedEntriesList )
+{
+    for ( const struct AdfList * deletedEntry = deletedEntriesList ;
+              deletedEntry != NULL ;
+              deletedEntry = deletedEntry->next )
+        {
+            const struct GenBlock * const block =
+                ( const struct GenBlock * const ) deletedEntry->content;
+            if ( block->sect == entryBlockIdx )
+                return true;
+        }
+    return false;
+}
+
+
+ADF_RETCODE undeleteFiles ( struct AdfVolume * const       vol,
+                            const AdfVectorSectors * const entriesHeaderBlocks )
+{
+    for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
+        ADF_RETCODE rc = undeleteFile ( vol, entriesHeaderBlocks->sectors[i] );
+        if ( rc != ADF_RC_OK )
+            return rc;
+    }
+    return ADF_RC_OK;
+}
+
+
+ADF_RETCODE undeleteFile ( struct AdfVolume * const vol,
+                           ADF_SECTNUM              block )
+{
+    printf ("Undeleting entry at %d... ", block );
+    fflush ( stdout );
+
+    struct AdfFileHeaderBlock fhb;
+    ADF_RETCODE rc = adfReadEntryBlock ( vol, (ADF_SECTNUM) block,
+                                         (struct AdfEntryBlock * const) &fhb );
+    if ( rc != ADF_RC_OK ) {
+        fprintf ( stderr, "Error reading entry (file header block) at %d.\n",
+                  block );
+        return rc;
+    }
+
+    rc = adfUndelEntry ( vol, fhb.parent, block );
+    if ( rc != ADF_RC_OK ) {
+        fprintf ( stderr, "Error %d undeleting file at %d.\n", rc, block );
+        return rc;
+    }
+    printf ("Done!\n");
+    return ADF_RC_OK;
 }
