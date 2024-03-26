@@ -415,7 +415,7 @@ void adfFreeDirList ( struct AdfList * const list )
             adfFreeDirList(cell->subdir);
         cell = cell->next;
     }
-    freeList(root);
+    adfListFree ( root );
 }
 
 

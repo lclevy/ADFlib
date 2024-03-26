@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree(list);
 */
 
     /* re read this file */

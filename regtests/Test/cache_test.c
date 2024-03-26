@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
 //    adfCreateDir(vol,vol->curDirPtr,"dir_1a");
     adfCreateDir(vol,vol->curDirPtr,"dir_1b");
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     adfVolUnMount(vol);
     adfUnMountDev(hd);

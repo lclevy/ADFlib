@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     putchar('\n');
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     putchar('\n');
 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     putchar('\n');
 
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     putchar('\n');
 

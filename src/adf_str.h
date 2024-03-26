@@ -53,6 +53,6 @@ typedef struct AdfVectorSectors_s {
 PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
                                          void * const           content );
 
-PREFIX void freeList ( struct AdfList * const list );
+PREFIX void adfListFree ( struct AdfList * const list );
 
 #endif  /* ADF_STR_H */

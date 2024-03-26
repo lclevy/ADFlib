@@ -55,8 +55,7 @@ static void adfFreeTmpVolList ( struct AdfList * const root )
             free(vol->volName);  
         cell = cell->next;
     }
-    freeList(root);
-
+    adfListFree ( root );
 }
 
 
@@ -273,7 +272,7 @@ ADF_RETCODE adfMountHd ( struct AdfDevice * const dev )
         dev->volList[i] = (struct AdfVolume *) vList->content;
         vList = vList->next;
     }
-    freeList(listRoot);
+    adfListFree ( listRoot );
 
     /* The code below seems to only check if the FSHD and LSEG blocks can be
        read. These blocks are not required to access partitions/volumes:

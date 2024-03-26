@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(cell->content);
         cell = cell->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     adfVolUnMount(vol);
     adfDevUnMount ( hd );

@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     /* write one file */
     file = adfOpenFile(vol, "moon_gif","w");
@@ -88,14 +88,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
-
-
-
-
-
-
-
+    adfListFree ( list );
 
     adfVolUnMount(vol);
     adfUnMountDev(hd);

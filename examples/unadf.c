@@ -173,7 +173,7 @@ error_handler:
     if (vol) adfVolUnMount(vol);
     if (dev && dev->mounted) adfDevUnMount(dev);
     if (dev) adfDevClose(dev);
-    if (file_list) freeList(file_list);
+    if (file_list) adfListFree(file_list);
     adfEnvCleanUp();
     return 0;
 }

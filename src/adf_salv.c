@@ -66,7 +66,7 @@ void adfFreeDelList ( struct AdfList * const list )
         adfFreeGenBlock((struct GenBlock*)cell->content);
         cell = cell->next;
     }
-    freeList(list);
+    adfListFree ( list );
 }
 
 

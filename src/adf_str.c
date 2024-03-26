@@ -53,15 +53,15 @@ struct AdfList * adfListNewCell ( struct AdfList * const list,
 
 
 /*
- * freeList
+ * adfListFree
  *
  */
-void freeList ( struct AdfList * const list )
+void adfListFree ( struct AdfList * const list )
 {
     if (list==NULL) 
         return;
     
     if (list->next)
-        freeList(list->next);
+        adfListFree ( list->next );
     free(list);
 }
