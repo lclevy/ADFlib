@@ -214,7 +214,7 @@ int show_block_allocation_bitmap ( struct AdfVolume * const vol )
         nblocks_free = 0,
         nblocks_used = 0;
     bitstr32_t bitStr;
-    unsigned filesystem_blocks_num = adfVolGetBlockNumWithoutBootblock ( vol );
+    unsigned filesystem_blocks_num = adfVolGetSizeInBlocksWithoutBootblock ( vol );
     unsigned last_uint32_bits_unused =
         filesystem_blocks_num % 32 == 0 ? 0 : 32 - filesystem_blocks_num % 32;
 

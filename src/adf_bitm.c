@@ -719,7 +719,7 @@ bool adfGetFreeBlocks ( struct AdfVolume * const vol,
  */
 ADF_RETCODE adfCreateBitmap ( struct AdfVolume * const vol )
 {
-    ADF_SECTNUM nBlock = (ADF_SECTNUM) adfVolGetBlockNumWithoutBootblock ( vol );
+    ADF_SECTNUM nBlock = (ADF_SECTNUM) adfVolGetSizeInBlocksWithoutBootblock ( vol );
 
     vol->bitmap.size = nBlock2bitmapSize ( (uint32_t) nBlock );
     ADF_RETCODE rc = adfBitmapAllocate ( vol );
@@ -959,7 +959,7 @@ void adfFreeBitmap ( struct AdfVolume * const vol )
 ADF_RETCODE adfBitmapAllocate ( struct AdfVolume * const vol )
 {
     vol->bitmap.size = nBlock2bitmapSize (
-        adfVolGetBlockNumWithoutBootblock ( vol ) );
+        adfVolGetSizeInBlocksWithoutBootblock ( vol ) );
 
     vol->bitmap.table = (struct AdfBitmapBlock**)
         malloc ( sizeof(struct AdfBitmapBlock *) * vol->bitmap.size );
