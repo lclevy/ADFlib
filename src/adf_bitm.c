@@ -63,6 +63,17 @@ static uint32_t nBlock2bitmapSize ( uint32_t nBlock )
     return mapSize;
 }
 
+
+bool adfVolBitmapIsMarkedValid ( struct AdfVolume * const vol )
+{
+    struct AdfRootBlock root;
+    ADF_RETCODE rc = adfReadRootBlock ( vol, (uint32_t) vol->rootBlock, &root );
+    if ( rc != ADF_RC_OK )
+        return false;
+    return ( root.bmFlag == ADF_BM_VALID );
+}
+
+
 /*
  * adfUpdateBitmap
  *

@@ -34,6 +34,7 @@
 #include "adf_types.h"
 #include "adf_vol.h"
 
+PREFIX bool adfVolBitmapIsMarkedValid ( struct AdfVolume * const vol );
 
 PREFIX ADF_RETCODE adfReadBitmapBlock ( struct AdfVolume * const      vol,
                                         const ADF_SECTNUM             nSect,
