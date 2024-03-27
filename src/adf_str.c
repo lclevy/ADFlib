@@ -65,3 +65,26 @@ void adfListFree ( struct AdfList * const list )
         adfListFree ( list->next );
     free(list);
 }
+
+
+ADF_RETCODE adfVectorAllocate ( struct AdfVector * const  vector )
+{
+    if ( vector == NULL )
+        return ADF_RC_NULLPTR;
+
+    if ( vector->items != NULL )
+        /* vector already allocated - error */
+        return ADF_RC_ERROR;
+
+    vector->items = ( vector->nItems > 0 ) ?
+        malloc ( vector->nItems * vector->itemSize ) : NULL;
+
+    return ( vector->nItems > 0 &&
+             vector->items == NULL ) ? ADF_RC_MALLOC : ADF_RC_OK;
+}
+
+void adfVectorFree ( struct AdfVector * const vector )
+{
+    free ( vector->items );
+    vector->items = NULL;
+}

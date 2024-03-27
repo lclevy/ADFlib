@@ -181,12 +181,12 @@ void test_adfFileTruncateGetBlocksToRemove ( test_data_t * const tdata )
         adfFileSize2Blocks ( truncsize, vol->datablockSize );
     
     //ck_assert_uint_eq ( n_blocks_to_remove_expected, blocks_to_remove.len );
-    ck_assert_msg ( n_blocks_to_remove_expected == blocks_to_remove.len,
+    ck_assert_msg ( n_blocks_to_remove_expected == blocks_to_remove.nItems,
                     "n_blocks_to_remove_expected %d == blocks_to_remove.len %d, "
                     "bufsize %u, truncsize %u",
-                    n_blocks_to_remove_expected, blocks_to_remove.len,
+                    n_blocks_to_remove_expected, blocks_to_remove.nItems,
                     bufsize, truncsize );
-    free ( blocks_to_remove.sectors );
+    adfVectorFree ( (struct AdfVector *) &blocks_to_remove );
 
     // umount volume
     adfVolUnMount ( vol );

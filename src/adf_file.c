@@ -70,7 +70,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
     const uint32_t                   fileSizeNew,
     struct AdfVectorSectors * const  blocksToRemove )
 {
-    blocksToRemove->len     = 0;
+    blocksToRemove->nItems  = 0;
     blocksToRemove->sectors = NULL;
 
     const unsigned fileSizeOld = file->fileHdr->byteSize;
@@ -91,10 +91,11 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
     if ( nBlocksToRemove < 1 )
         return ADF_RC_OK;
 
-    blocksToRemove->sectors = malloc ( nBlocksToRemove * sizeof(ADF_SECTNUM) );
-    if ( blocksToRemove->sectors == NULL )
-        return ADF_RC_MALLOC;
-    blocksToRemove->len = nBlocksToRemove;
+    blocksToRemove->nItems   = nBlocksToRemove;
+    blocksToRemove->itemSize = sizeof(ADF_SECTNUM);
+    ADF_RETCODE rc = adfVectorAllocate ( ( struct AdfVector * const ) blocksToRemove );
+    if ( rc != ADF_RC_OK )
+        return rc;
 
 #ifdef DEBUG_ADF_FILE
 /*    printf (" fileSizeOld %u\n"
@@ -136,8 +137,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
 
         struct AdfFileExtBlock * const extBlock = malloc ( sizeof ( struct AdfFileExtBlock ) );
         if ( extBlock == NULL ) {
-            free ( blocksToRemove->sectors );
-            blocksToRemove->sectors = NULL;
+            adfVectorFree ( ( struct AdfVector * const ) blocksToRemove );
             return ADF_RC_MALLOC;
         }
 
@@ -163,8 +163,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
                 file, (int32_t) newLastExtBlockIndex, extBlock );
             if ( rc != ADF_RC_OK ) {
                 free ( extBlock );
-                free ( blocksToRemove->sectors );
-                blocksToRemove->sectors = NULL;
+                adfVectorFree ( ( struct AdfVector * const ) blocksToRemove );
                 return rc;
             }
 
@@ -212,8 +211,7 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
                 file->volume, (ADF_SECTNUM) nextExt, extBlock );
             if ( rc != ADF_RC_OK ) {
                 free ( extBlock );
-                free ( blocksToRemove->sectors );
-                blocksToRemove->sectors = NULL;
+                adfVectorFree ( ( struct AdfVector * const ) blocksToRemove );
                 return rc;
             }
 
@@ -256,15 +254,14 @@ ADF_RETCODE adfFileTruncateGetBlocksToRemove (
         free ( extBlock );
     }
 
-    if ( blocksCount != blocksToRemove->len ) {
+    if ( blocksCount != blocksToRemove->nItems ) {
 #ifdef DEBUG_ADF_FILE
         fprintf ( stderr,
                   "Error: blocksCount %u != blocksToRemove->len %u, datablocksCount %u\n",
                  blocksCount, blocksToRemove->len, dataBlocksCount );
         fflush ( stderr );
 #endif
-        free ( blocksToRemove->sectors );
-        blocksToRemove->sectors = NULL;
+        adfVectorFree ( ( struct AdfVector * const ) blocksToRemove );
         return ADF_RC_ERROR;
     }
     return ADF_RC_OK;
@@ -324,16 +321,19 @@ ADF_RETCODE adfFileTruncate ( struct AdfFile * const file,
     }
 
     // 1.
-    struct AdfVectorSectors blocksToRemove;
+    struct AdfVectorSectors blocksToRemove = {
+        .itemSize = sizeof (ADF_SECTNUM)
+    };
     ADF_RETCODE rc = adfFileTruncateGetBlocksToRemove ( file, fileSizeNew,
                                                         &blocksToRemove );
+    assert ( blockToRemove.itemSize == sizeof(ADF_SECTNUM) );
     if ( rc != ADF_RC_OK )
         return rc;
 
     // 2. seek to the new EOF
     rc = adfFileSeek ( file, fileSizeNew );
     if ( rc != ADF_RC_OK ) {
-        free ( blocksToRemove.sectors );
+        adfVectorFree ( (struct AdfVector *) &blocksToRemove );
         return rc;
     }
     assert ( file->pos == fileSizeNew );
@@ -409,10 +409,10 @@ ADF_RETCODE adfFileTruncate ( struct AdfFile * const file,
 
     // 4.
     // todo: add sorting blocksToRemove (to optimize disk access)
-    for ( unsigned i = 0 ; i < blocksToRemove.len ; ++i ) {
+    for ( unsigned i = 0 ; i < blocksToRemove.nItems ; ++i ) {
         adfSetBlockFree ( file->volume, blocksToRemove.sectors[i] );
     }
-    free ( blocksToRemove.sectors );
+    adfVectorFree ( (struct AdfVector *) &blocksToRemove );
 
     assert ( file->pos == fileSizeNew );
 

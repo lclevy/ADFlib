@@ -88,7 +88,10 @@ void usage ( void )
 int main ( const int     argc,
            char * const argv[] )
 {
-    CmdlineOptions options;
+    CmdlineOptions options = {
+        .entries.itemSize = sizeof(ADF_SECTNUM)
+    };
+
     if ( ! parse_args ( &argc, argv, &options ) ) {
         fprintf ( stderr, "Usage info:  adf_salvage -h\n" );
         exit ( EXIT_FAILURE );
@@ -179,7 +182,7 @@ clean_up_dev_close:
 clean_up_env:
     adfEnvCleanUp();
 
-    free ( options.entries.sectors );
+    adfVectorFree ( (struct AdfVector *) &options.entries );
 
     return status;
 }
@@ -196,7 +199,7 @@ bool parse_args ( const int * const    argc,
     options->verbose =
     options->help    =
     options->version = false;
-    options->entries.len     = 0;
+    options->entries.nItems  = 0;
     options->entries.sectors = NULL;
 
     const char * valid_options = "p:hvV";
@@ -246,14 +249,14 @@ bool parse_args ( const int * const    argc,
 
     /* (optional) list of files (given as sectors of their file header blocks)
        to undelete */
-    options->entries.len = (unsigned) ( *argc - optind );
-    options->entries.sectors = malloc ( options->entries.len * sizeof (ADF_SECTNUM) );
-    if ( options->entries.sectors == NULL ) {
+    options->entries.nItems = (unsigned) ( *argc - optind );
+    ADF_RETCODE rc = adfVectorAllocate ( (struct AdfVector * const) &options->entries );
+    if ( rc != ADF_RC_OK ) {
         fprintf (stderr, "Memory allocation error.");
         return false;
     }
 
-    for ( unsigned i = 0 ; i < options->entries.len ; i++ ) {
+    for ( unsigned i = 0 ; i < options->entries.nItems ; i++ ) {
         char * endptr = NULL;
         errno = 0;
         //printf ("Adding %s\n", argv[ optind ] );
@@ -335,7 +338,7 @@ ADF_RETCODE checkEntriesToUndelete (
     const struct AdfList * const           deletedEntriesList,
     const struct AdfVectorSectors * const  entriesHeaderBlocks )
 {
-    for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
+    for ( unsigned i = 0 ; i < entriesHeaderBlocks->nItems ; i++ ) {
         const ADF_SECTNUM block = entriesHeaderBlocks->sectors[i];
 
         /* check if block number (index) is valid */
@@ -409,7 +412,7 @@ ADF_RETCODE undeleteFiles (
     struct AdfVolume * const               vol,
     const struct AdfVectorSectors * const  entriesHeaderBlocks )
 {
-    for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
+    for ( unsigned i = 0 ; i < entriesHeaderBlocks->nItems ; i++ ) {
         ADF_RETCODE rc = undeleteFile ( vol, entriesHeaderBlocks->sectors[i] );
         if ( rc != ADF_RC_OK )
             return rc;

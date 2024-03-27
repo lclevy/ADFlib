@@ -28,6 +28,7 @@
 #ifndef ADF_STR_H
 #define ADF_STR_H
 
+#include "adf_err.h"
 #include "adf_prefix.h"
 #include "adf_types.h"
 
@@ -37,14 +38,27 @@ struct AdfList {         /* generic linked tree */
     struct AdfList *next;
 };
 
+/* shorter, less clutter but type-unsafe version:
 struct AdfVector {
     unsigned len;
-    void *   contents;
+    union {
+        void *         contents;
+        ADF_SECTNUM *  sectors;
+        // ...
+    };
+};
+*/
+
+struct AdfVector {
+    unsigned  nItems,
+              itemSize;
+    void *    items;
 };
 
 struct AdfVectorSectors {
-    unsigned      len;
-    ADF_SECTNUM * sectors;
+    unsigned       nItems,
+                   itemSize;
+    ADF_SECTNUM *  sectors;
 };
 
 
@@ -52,5 +66,8 @@ PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
                                          void * const           content );
 
 PREFIX void adfListFree ( struct AdfList * const list );
+
+PREFIX ADF_RETCODE adfVectorAllocate ( struct AdfVector * const vector );
+PREFIX void adfVectorFree ( struct AdfVector * const vector );
 
 #endif  /* ADF_STR_H */
