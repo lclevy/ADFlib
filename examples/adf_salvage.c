@@ -39,7 +39,7 @@
 typedef struct CmdlineOptions {
     char     *adfDevName;
     unsigned  volidx;
-    AdfVectorSectors entries;
+    struct AdfVectorSectors entries;
     bool      verbose,
               help,
               version;
@@ -54,16 +54,18 @@ void showDeletedEntries ( struct AdfVolume * const     vol,
                           const struct AdfList * const list );
 char * getBlockTypeStr ( const int block2ndaryType );
 
-ADF_RETCODE checkEntriesToUndelete ( struct AdfVolume * const       vol,
-                                     const struct AdfList * const   deletedEntriesList,
-                                     const AdfVectorSectors * const entriesHeaderBlocks );
+ADF_RETCODE checkEntriesToUndelete (
+    struct AdfVolume * const              vol,
+    const struct AdfList * const          deletedEntriesList,
+    const struct AdfVectorSectors * const entriesHeaderBlocks );
 
-bool entryIsDeleted ( ADF_SECTNUM entryBlockIdx,
+bool entryIsDeleted ( ADF_SECTNUM  entryBlockIdx,
                       const struct AdfList * const deletedEntriesList );
 
 
-ADF_RETCODE undeleteFiles ( struct AdfVolume * const       vol,
-                            const AdfVectorSectors * const entriesHeaderBlocks );
+ADF_RETCODE undeleteFiles (
+    struct AdfVolume * const               vol,
+    const struct AdfVectorSectors * const  entriesHeaderBlocks );
 
 ADF_RETCODE undeleteFile ( struct AdfVolume * const vol,
                            ADF_SECTNUM              block );
@@ -328,9 +330,10 @@ char * getBlockTypeStr ( const int block2ndaryType )
 }
 
 
-ADF_RETCODE checkEntriesToUndelete ( struct AdfVolume * const       vol,
-                                     const struct AdfList * const   deletedEntriesList,
-                                     const AdfVectorSectors * const entriesHeaderBlocks )
+ADF_RETCODE checkEntriesToUndelete (
+    struct AdfVolume * const               vol,
+    const struct AdfList * const           deletedEntriesList,
+    const struct AdfVectorSectors * const  entriesHeaderBlocks )
 {
     for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
         const ADF_SECTNUM block = entriesHeaderBlocks->sectors[i];
@@ -402,8 +405,9 @@ bool entryIsDeleted ( ADF_SECTNUM entryBlockIdx,
 }
 
 
-ADF_RETCODE undeleteFiles ( struct AdfVolume * const       vol,
-                            const AdfVectorSectors * const entriesHeaderBlocks )
+ADF_RETCODE undeleteFiles (
+    struct AdfVolume * const               vol,
+    const struct AdfVectorSectors * const  entriesHeaderBlocks )
 {
     for ( unsigned i = 0 ; i < entriesHeaderBlocks->len ; i++ ) {
         ADF_RETCODE rc = undeleteFile ( vol, entriesHeaderBlocks->sectors[i] );

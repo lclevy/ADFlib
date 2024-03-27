@@ -65,9 +65,10 @@ static void showAdfFileExtBlock (
 #include <assert.h>
 
 
-ADF_RETCODE adfFileTruncateGetBlocksToRemove ( const struct AdfFile * const file,
-                                               const uint32_t               fileSizeNew,
-                                               AdfVectorSectors * const     blocksToRemove )
+ADF_RETCODE adfFileTruncateGetBlocksToRemove (
+    const struct AdfFile * const     file,
+    const uint32_t                   fileSizeNew,
+    struct AdfVectorSectors * const  blocksToRemove )
 {
     blocksToRemove->len     = 0;
     blocksToRemove->sectors = NULL;
@@ -323,7 +324,7 @@ ADF_RETCODE adfFileTruncate ( struct AdfFile * const file,
     }
 
     // 1.
-    AdfVectorSectors blocksToRemove;
+    struct AdfVectorSectors blocksToRemove;
     ADF_RETCODE rc = adfFileTruncateGetBlocksToRemove ( file, fileSizeNew,
                                                         &blocksToRemove );
     if ( rc != ADF_RC_OK )

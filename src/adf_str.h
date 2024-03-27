@@ -37,17 +37,15 @@ struct AdfList {         /* generic linked tree */
     struct AdfList *next;
 };
 
-/*
-typedef struct AdfVector_s {
+struct AdfVector {
     unsigned len;
     void *   contents;
-} AdfVector;
-*/
+};
 
-typedef struct AdfVectorSectors_s {
+struct AdfVectorSectors {
     unsigned      len;
     ADF_SECTNUM * sectors;
-} AdfVectorSectors;
+};
 
 
 PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
