@@ -43,7 +43,10 @@ TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
 add_executable ( adf_bitmap adf_bitmap.c )
 TARGET_LINK_LIBRARIES ( adf_bitmap adf )
 
-add_executable ( adf_salvage adf_salvage.c )
+add_executable ( adf_salvage
+  adf_salvage.c
+  ${ADFLIB_CUSTOM_GETOPT_SRC}
+)
 TARGET_LINK_LIBRARIES ( adf_salvage adf )
 
 file (
