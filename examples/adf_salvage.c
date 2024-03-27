@@ -295,7 +295,6 @@ void showDeletedEntries (  struct AdfVolume * const     vol,
         ADF_RETCODE rc = adfReadEntryBlock ( vol, block->parent, &parent );
         const char * const parentName =
             ( rc == ADF_RC_OK ) ? parent.name : "error getting entry name";
-
         printf ( "%33s | %9s,%3d | %6d || %6d | %9s,%3d | %s\n",
                  block->name,
                  //block->type,
@@ -391,8 +390,8 @@ bool entryIsDeleted ( ADF_SECTNUM entryBlockIdx,
                       const struct AdfList * const deletedEntriesList )
 {
     for ( const struct AdfList * deletedEntry = deletedEntriesList ;
-              deletedEntry != NULL ;
-              deletedEntry = deletedEntry->next )
+          deletedEntry != NULL ;
+          deletedEntry = deletedEntry->next )
         {
             const struct GenBlock * const block =
                 ( const struct GenBlock * const ) deletedEntry->content;
@@ -422,7 +421,7 @@ ADF_RETCODE undeleteFile ( struct AdfVolume * const vol,
     fflush ( stdout );
 
     struct AdfFileHeaderBlock fhb;
-    ADF_RETCODE rc = adfReadEntryBlock ( vol, (ADF_SECTNUM) block,
+    ADF_RETCODE rc = adfReadEntryBlock ( vol, block,
                                          (struct AdfEntryBlock * const) &fhb );
     if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Error reading entry (file header block) at %d.\n",
