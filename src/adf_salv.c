@@ -284,6 +284,7 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     if ( rc != ADF_RC_OK )
         return rc;
 
+    /* mark file data blocks as used */
     for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ ) {
         if ( ! adfIsBlockFree ( vol, fileBlocks.data.sectors[i] ) ) {
             rc = ADF_RC_ERROR;
@@ -292,6 +293,7 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
             adfSetBlockUsed ( vol, fileBlocks.data.sectors[i] );
     }
 
+    /* mark file extension blocks as used */
     for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ ) {
         if ( ! adfIsBlockFree ( vol, fileBlocks.extens.sectors[i] ) ) {
             rc = ADF_RC_ERROR;
@@ -303,6 +305,9 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
 
     adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
     adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
+
+    /* mark file header block as used */
+    adfSetBlockUsed ( vol, nSect );
 
     struct AdfEntryBlock parent;
     rc = adfReadEntryBlock ( vol, pSect, &parent );
