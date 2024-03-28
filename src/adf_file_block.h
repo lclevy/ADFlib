@@ -33,13 +33,9 @@
 #include "adf_vol.h"
 
 struct AdfFileBlocks {
-    ADF_SECTNUM  header;
-
-    int32_t      nbExtens;
-    ADF_SECTNUM *extens;
-
-    int32_t      nbData;
-    ADF_SECTNUM *data;
+    ADF_SECTNUM              header;
+    struct AdfVectorSectors  data,
+                             extens;
 };
 
 
@@ -52,8 +48,8 @@ ADF_RETCODE adfFreeFileBlocks ( struct AdfVolume * const          vol,
 
 PREFIX uint32_t adfFileRealSize ( const uint32_t  size,
                                   const unsigned  blockSize,
-                                  int32_t * const dataN,
-                                  int32_t * const extN );
+                                  uint32_t * const dataN,
+                                  uint32_t * const extN );
 
 ADF_RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const          vol,
                                    const ADF_SECTNUM                 nSect,

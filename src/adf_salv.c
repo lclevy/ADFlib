@@ -267,7 +267,6 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
                            struct AdfFileHeaderBlock * entry )
 {
     (void) nSect;
-    int32_t i;
     char name[ ADF_MAX_NAME_LEN + 1 ];
     struct AdfFileBlocks fileBlocks;
 
@@ -285,38 +284,50 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     if ( rc != ADF_RC_OK )
         return rc;
 
-    for(i=0; i<fileBlocks.nbData; i++)
-        if ( !adfIsBlockFree(vol,fileBlocks.data[i]) )
-            return ADF_RC_ERROR;
-        else
-            adfSetBlockUsed(vol, fileBlocks.data[i]);
-    for(i=0; i<fileBlocks.nbExtens; i++)
-        if ( !adfIsBlockFree(vol,fileBlocks.extens[i]) )
-            return ADF_RC_ERROR;
-        else
-            adfSetBlockUsed(vol, fileBlocks.extens[i]);
+    for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ ) {
+        if ( ! adfIsBlockFree ( vol, fileBlocks.data.sectors[i] ) ) {
+            rc = ADF_RC_ERROR;
+            goto adfUndelFile_error;
+        } else
+            adfSetBlockUsed ( vol, fileBlocks.data.sectors[i] );
+    }
 
-    free(fileBlocks.data);
-    free(fileBlocks.extens);
+    for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ ) {
+        if ( ! adfIsBlockFree ( vol, fileBlocks.extens.sectors[i] ) ) {
+            rc = ADF_RC_ERROR;
+            goto adfUndelFile_error;
+        }
+        else
+            adfSetBlockUsed ( vol, fileBlocks.extens.sectors[i] );
+    }
+
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
 
     struct AdfEntryBlock parent;
     rc = adfReadEntryBlock ( vol, pSect, &parent );
     if ( rc != ADF_RC_OK )
-        return rc;
+        goto adfUndelFile_error;
 
     strncpy(name, entry->fileName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
     /* insert the entry in the parent hashTable, with the headerKey sector pointer */
-    if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 )
-        return ADF_RC_ERROR;
-
+    if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 ) {
+        rc = ADF_RC_ERROR;
+        goto adfUndelFile_error;
+    }
     if ( adfVolHasDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) entry );
         if ( rc != ADF_RC_OK )
-            return rc;
+            goto adfUndelFile_error;
     }
 
     return adfUpdateBitmap ( vol );
+
+adfUndelFile_error:
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
+    return rc;
 }
 
 
@@ -359,9 +370,8 @@ ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
                            const int                               level )
 {
     (void) nSect, (void) level;
+
     struct AdfFileBlocks fileBlocks;
-    int n;
- 
     ADF_RETCODE rc = adfGetFileBlocks ( vol, file, &fileBlocks );
     if ( rc != ADF_RC_OK )
         return rc;
@@ -370,9 +380,9 @@ ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
     if ( adfVolIsOFS ( vol ) ) {
         /* checks OFS datablocks */
         struct AdfOFSDataBlock dataBlock;
-        for(n=0; n<fileBlocks.nbData; n++) {
+        for ( unsigned n = 0 ; n < fileBlocks.data.nItems ; n++ ) {
 /*printf("%ld\n",fileBlocks.data[n]);*/
-            rc = adfReadDataBlock ( vol, fileBlocks.data[n], &dataBlock );
+            rc = adfReadDataBlock ( vol, fileBlocks.data.sectors[n], &dataBlock );
             if ( rc != ADF_RC_OK )
                 goto adfCheckFile_free;
 
@@ -380,8 +390,8 @@ ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
                 (*adfEnv.wFct)("adfCheckFile : headerKey incorrect");
             if ( dataBlock.seqNum != (unsigned) n + 1 )
                 (*adfEnv.wFct)("adfCheckFile : seqNum incorrect");
-            if (n<fileBlocks.nbData-1) {
-                if (dataBlock.nextData!=fileBlocks.data[n+1])
+            if (n < fileBlocks.data.nItems - 1 ) {
+                if ( dataBlock.nextData != fileBlocks.data.sectors[ n + 1 ] )
                     (*adfEnv.wFct)("adfCheckFile : nextData incorrect");
                 if (dataBlock.dataSize!=vol->datablockSize)
                     (*adfEnv.wFct)("adfCheckFile : dataSize incorrect");
@@ -394,15 +404,15 @@ ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
     }
 
     struct AdfFileExtBlock extBlock;
-    for(n=0; n<fileBlocks.nbExtens; n++) {
-        rc = adfReadFileExtBlock ( vol, fileBlocks.extens[n], &extBlock );
+    for ( unsigned n = 0 ; n < fileBlocks.extens.nItems ; n++ ) {
+        rc = adfReadFileExtBlock ( vol, fileBlocks.extens.sectors[n], &extBlock );
         if ( rc != ADF_RC_OK )
             goto adfCheckFile_free;
 
         if (extBlock.parent!=file->headerKey)
             (*adfEnv.wFct)("adfCheckFile : extBlock parent incorrect");
-        if (n<fileBlocks.nbExtens-1) {
-            if (extBlock.extension!=fileBlocks.extens[n+1])
+        if ( n < fileBlocks.extens.nItems - 1 ) {
+            if ( extBlock.extension != fileBlocks.extens.sectors[ n + 1 ] )
                 (*adfEnv.wFct)("adfCheckFile : nextData incorrect");
         }
         else
@@ -411,8 +421,8 @@ ADF_RETCODE adfCheckFile ( struct AdfVolume * const                vol,
     }
 
 adfCheckFile_free:
-    free(fileBlocks.data);
-    free(fileBlocks.extens);
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
 
     return rc;
 }
