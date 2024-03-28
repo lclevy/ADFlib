@@ -270,10 +270,6 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     char name[ ADF_MAX_NAME_LEN + 1 ];
     struct AdfFileBlocks fileBlocks;
 
-    /* check if given block (as file header block) is marked 'free' */
-    if ( ! adfIsBlockFree ( vol, nSect ) )
-         return ADF_RC_ERROR;
-
     /* check if the headerKey is consistent with file header block number */
     if ( nSect != entry->headerKey ) {
         adfEnv.eFct ( "adfUndelFile: entry block %d != entry->headerKey %d",
@@ -291,31 +287,38 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
         return ADF_RC_ERROR;
     }
 
+    /* check if given block (as file header block) is marked 'free' */
+    if ( ! adfIsBlockFree ( vol, nSect ) )
+         return ADF_RC_ERROR;
+
+    /* get list of all file blocks (block numbers) */
     rc = adfGetFileBlocks ( vol, entry, &fileBlocks );
     if ( rc != ADF_RC_OK )
         return rc;
 
-    /* mark file data blocks as used */
+    /* check if all the data and extension blocks of the 'deleted' file are marked 'free'
+       (if not - cannot undelete, they can already be used by other entries!) */
     for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ ) {
         if ( ! adfIsBlockFree ( vol, fileBlocks.data.sectors[i] ) ) {
             rc = ADF_RC_ERROR;
-            for ( unsigned j = 0 ; j < i ; j++ )
-                adfSetBlockFree ( vol, fileBlocks.data.sectors[j] );
             goto adfUndelFile_error;
-        } else
-            adfSetBlockUsed ( vol, fileBlocks.data.sectors[i] );
+        }
+    }
+    for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ ) {
+        if ( ! adfIsBlockFree ( vol, fileBlocks.extens.sectors[i] ) ) {
+            rc = ADF_RC_ERROR;
+            goto adfUndelFile_error;
+        }
+    }
+
+    /* mark file data blocks as used */
+    for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ ) {
+        adfSetBlockUsed ( vol, fileBlocks.data.sectors[i] );
     }
 
     /* mark file extension blocks as used */
     for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ ) {
-        if ( ! adfIsBlockFree ( vol, fileBlocks.extens.sectors[i] ) ) {
-            rc = ADF_RC_ERROR;
-            for ( unsigned j = 0 ; j < i ; j++ )
-                adfSetBlockFree ( vol, fileBlocks.extens.sectors[j] );
-            goto adfUndelFile_error_set_data_blocks_free;
-        }
-        else
-            adfSetBlockUsed ( vol, fileBlocks.extens.sectors[i] );
+        adfSetBlockUsed ( vol, fileBlocks.extens.sectors[i] );
     }
 
     /* mark file header block as used */
@@ -349,7 +352,6 @@ adfUndelFile_error_set_blocks_free:
     adfSetBlockFree ( vol, nSect );
     for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ )
         adfSetBlockFree ( vol, fileBlocks.extens.sectors[i] );
-adfUndelFile_error_set_data_blocks_free:
     for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ )
         adfSetBlockFree ( vol, fileBlocks.data.sectors[i] );
 
