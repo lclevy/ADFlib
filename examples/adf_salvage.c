@@ -88,10 +88,7 @@ void usage ( void )
 int main ( const int     argc,
            char * const argv[] )
 {
-    CmdlineOptions options = {
-        .entries.itemSize = sizeof(ADF_SECTNUM)
-    };
-
+    CmdlineOptions options;
     if ( ! parse_args ( &argc, argv, &options ) ) {
         fprintf ( stderr, "Usage info:  adf_salvage -h\n" );
         exit ( EXIT_FAILURE );
@@ -195,12 +192,13 @@ bool parse_args ( const int * const    argc,
 {
     // set default options
     memset ( options, 0, sizeof ( CmdlineOptions ) );
-    options->volidx       = 0;
+    options->volidx  = 0;
     options->verbose =
     options->help    =
     options->version = false;
-    options->entries.nItems  = 0;
-    options->entries.sectors = NULL;
+    options->entries.nItems   = 0;
+    options->entries.itemSize = sizeof(ADF_SECTNUM);
+    options->entries.sectors  = NULL;
 
     const char * valid_options = "p:hvV";
     int opt;
