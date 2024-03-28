@@ -265,6 +265,7 @@ bool parse_args ( const int * const    argc,
              blockIdx > 0x7fffffff )          /* overflow / negative */
         {
             fprintf ( stderr, "Invalid file header block number '%s'.\n", blockStr );
+            adfVectorFree ( (struct AdfVector *) &options->entries );
             return false;
         }
         options->entries.sectors[i] = (ADF_SECTNUM) blockIdx;
