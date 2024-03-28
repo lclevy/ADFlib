@@ -299,6 +299,8 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ ) {
         if ( ! adfIsBlockFree ( vol, fileBlocks.data.sectors[i] ) ) {
             rc = ADF_RC_ERROR;
+            for ( unsigned j = 0 ; j < i ; j++ )
+                adfSetBlockFree ( vol, fileBlocks.data.sectors[j] );
             goto adfUndelFile_error;
         } else
             adfSetBlockUsed ( vol, fileBlocks.data.sectors[i] );
@@ -308,14 +310,13 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ ) {
         if ( ! adfIsBlockFree ( vol, fileBlocks.extens.sectors[i] ) ) {
             rc = ADF_RC_ERROR;
-            goto adfUndelFile_error;
+            for ( unsigned j = 0 ; j < i ; j++ )
+                adfSetBlockFree ( vol, fileBlocks.extens.sectors[j] );
+            goto adfUndelFile_error_set_data_blocks_free;
         }
         else
             adfSetBlockUsed ( vol, fileBlocks.extens.sectors[i] );
     }
-
-    adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
-    adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
 
     /* mark file header block as used */
     adfSetBlockUsed ( vol, nSect );
@@ -323,22 +324,34 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     struct AdfEntryBlock parent;
     rc = adfReadEntryBlock ( vol, pSect, &parent );
     if ( rc != ADF_RC_OK )
-        goto adfUndelFile_error;
+        goto adfUndelFile_error_set_blocks_free;
 
     strncpy(name, entry->fileName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
     /* insert the entry in the parent hashTable, with the headerKey sector pointer */
     if ( adfCreateEntry(vol, &parent, name, entry->headerKey) == -1 ) {
         rc = ADF_RC_ERROR;
-        goto adfUndelFile_error;
+        goto adfUndelFile_error_set_blocks_free;
     }
     if ( adfVolHasDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) entry );
         if ( rc != ADF_RC_OK )
-            goto adfUndelFile_error;
+            goto adfUndelFile_error_set_blocks_free;
     }
 
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
+    adfVectorFree ( (struct AdfVector *) &fileBlocks.extens );
+
     return adfUpdateBitmap ( vol );
+
+adfUndelFile_error_set_blocks_free:
+    /* undel failed -> mark all file blocks as free (revert the above changes in bitmap) */
+    adfSetBlockFree ( vol, nSect );
+    for ( unsigned i = 0 ; i < fileBlocks.extens.nItems ; i++ )
+        adfSetBlockFree ( vol, fileBlocks.extens.sectors[i] );
+adfUndelFile_error_set_data_blocks_free:
+    for ( unsigned i = 0 ; i < fileBlocks.data.nItems ; i++ )
+        adfSetBlockFree ( vol, fileBlocks.data.sectors[i] );
 
 adfUndelFile_error:
     adfVectorFree ( (struct AdfVector *) &fileBlocks.data );
