@@ -270,6 +270,17 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     char name[ ADF_MAX_NAME_LEN + 1 ];
     struct AdfFileBlocks fileBlocks;
 
+    /* check if given block (as file header block) is marked 'free' */
+    if ( ! adfIsBlockFree ( vol, nSect ) )
+         return ADF_RC_ERROR;
+
+    /* check if the headerKey is consistent with file header block number */
+    if ( nSect != entry->headerKey ) {
+        adfEnv.eFct ( "adfUndelFile: entry block %d != entry->headerKey %d",
+                      nSect, entry->headerKey );
+        return ADF_RC_ERROR;
+    }
+
     /* check if the given parent sector pointer seems OK */
     ADF_RETCODE rc = adfCheckParent ( vol, pSect );
     if ( rc != ADF_RC_OK )
