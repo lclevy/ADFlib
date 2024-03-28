@@ -266,10 +266,6 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
                            ADF_SECTNUM                 nSect,
                            struct AdfFileHeaderBlock * entry )
 {
-    (void) nSect;
-    char name[ ADF_MAX_NAME_LEN + 1 ];
-    struct AdfFileBlocks fileBlocks;
-
     /* check if the headerKey is consistent with file header block number */
     if ( nSect != entry->headerKey ) {
         adfEnv.eFct ( "adfUndelFile: entry block %d != entry->headerKey %d",
@@ -292,6 +288,7 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
          return ADF_RC_ERROR;
 
     /* get list of all file blocks (block numbers) */
+    struct AdfFileBlocks fileBlocks;
     rc = adfGetFileBlocks ( vol, entry, &fileBlocks );
     if ( rc != ADF_RC_OK )
         return rc;
@@ -329,6 +326,7 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     if ( rc != ADF_RC_OK )
         goto adfUndelFile_error_set_blocks_free;
 
+    char name[ ADF_MAX_NAME_LEN + 1 ];
     strncpy(name, entry->fileName, entry->nameLen);
     name[(int)entry->nameLen] = '\0';
     /* insert the entry in the parent hashTable, with the headerKey sector pointer */
