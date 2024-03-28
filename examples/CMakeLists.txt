@@ -15,16 +15,16 @@ else()
 endif()
 
 add_executable ( unadf unadf.c )
-TARGET_LINK_LIBRARIES ( unadf adf )
+target_link_libraries ( unadf adf )
 
 add_executable ( adf_floppy_create adf_floppy_create.c )
-TARGET_LINK_LIBRARIES ( adf_floppy_create adf )
+target_link_libraries ( adf_floppy_create adf )
 
 add_executable ( adf_format
   adf_format.c
   ${ADFLIB_CUSTOM_GETOPT_SRC}
 )
-TARGET_LINK_LIBRARIES ( adf_format adf )
+target_link_libraries ( adf_format adf )
 
 add_executable ( adf_show_metadata
   adf_show_metadata.c
@@ -38,16 +38,16 @@ add_executable ( adf_show_metadata
   adf_show_metadata_volume.h
 )
 
-TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
+target_link_libraries ( adf_show_metadata adf )
 
 add_executable ( adf_bitmap adf_bitmap.c )
-TARGET_LINK_LIBRARIES ( adf_bitmap adf )
+target_link_libraries ( adf_bitmap adf )
 
 add_executable ( adf_salvage
   adf_salvage.c
   ${ADFLIB_CUSTOM_GETOPT_SRC}
 )
-TARGET_LINK_LIBRARIES ( adf_salvage adf )
+target_link_libraries ( adf_salvage adf )
 
 file (
   COPY ${PROJECT_SOURCE_DIR}/examples/tests
