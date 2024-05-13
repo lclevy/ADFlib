@@ -801,7 +801,6 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
                              const char * const           name,
                              const ADF_SECTNUM            thisSect )
 {
-    struct AdfEntryBlock updEntry;
     ADF_RETCODE rc;
     char name2[ADF_MAX_NAME_LEN+1], name3[ADF_MAX_NAME_LEN+1];
 
@@ -815,6 +814,8 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
     ADF_SECTNUM nSect = dir->hashTable[ hashValue ];
 
     if ( nSect==0 ) {
+        /* the first entry with this hash */
+
         ADF_SECTNUM newSect;
         if (thisSect!=-1)
             newSect = thisSect;
@@ -843,53 +844,64 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
             return -1;
         }
         else
-            return( newSect );
-    }
+            return newSect;
+    } else {
+        /* at least already one entry with this hash */
 
-    do {
-        if (adfReadEntryBlock(vol, nSect, &updEntry)!=ADF_RC_OK)
-			return -1;
-        if (updEntry.nameLen==len) {
-            adfStrToUpper ( (uint8_t *) name3,
-                            (uint8_t *) updEntry.name,
-                            updEntry.nameLen, intl );
-            if (strncmp(name3,name2,len)==0) {
-                (*adfEnv.wFct)("adfCreateEntry : entry already exists");
+        struct AdfEntryBlock updEntry;
+
+        /* find the last on the list */
+        do {
+            if ( adfReadEntryBlock ( vol, nSect, &updEntry ) != ADF_RC_OK )
+                return -1;
+
+            /* check if the entry with the same name is not present */
+            if ( updEntry.nameLen == len ) {
+                adfStrToUpper ( (uint8_t *) name3,
+                                (uint8_t *) updEntry.name,
+                                updEntry.nameLen, intl );
+                if ( strncmp ( name3, name2, len) == 0 ) {
+                    adfEnv.wFct ( "adfCreateEntry : entry already exists" );
+                    return -1;
+                }
+            }
+            nSect = updEntry.nextSameHash;
+        } while ( nSect != 0 );
+
+
+        ADF_SECTNUM newSect2;
+        if ( thisSect != -1 )
+            newSect2 = thisSect;
+        else {
+            newSect2 = adfGet1FreeBlock ( vol );
+            if ( newSect2 == -1 ) {
+                adfEnv.wFct ( "adfCreateEntry : nSect==-1" );
                 return -1;
             }
         }
-        nSect = updEntry.nextSameHash;
-    }while(nSect!=0);
 
-    ADF_SECTNUM newSect2;
-    if (thisSect!=-1)
-        newSect2 = thisSect;
-    else {
-        newSect2 = adfGet1FreeBlock(vol);
-        if (newSect2==-1) {
-            (*adfEnv.wFct)("adfCreateEntry : nSect==-1");
-            return -1;
-        }
-    }
-	 
-    rc = ADF_RC_OK;
-    updEntry.nextSameHash = newSect2;
-    if ( updEntry.secType == ADF_ST_DIR )
-        rc = adfWriteDirBlock ( vol, updEntry.headerKey,
-                                (struct AdfDirBlock *) &updEntry );
-    else if ( updEntry.secType == ADF_ST_FILE )
-        rc = adfWriteFileHdrBlock ( vol, updEntry.headerKey,
-                                    (struct AdfFileHeaderBlock *) &updEntry );
-    else
-        (*adfEnv.wFct)("adfCreateEntry : unknown entry type");
+        /* add the new entry at the end of the list */
+        rc = ADF_RC_OK;
+        updEntry.nextSameHash = newSect2;
+
+        /* write changes */
+        if ( updEntry.secType == ADF_ST_DIR )
+            rc = adfWriteDirBlock ( vol, updEntry.headerKey,
+                                    (struct AdfDirBlock *) &updEntry );
+        else if ( updEntry.secType == ADF_ST_FILE )
+            rc = adfWriteFileHdrBlock ( vol, updEntry.headerKey,
+                                        (struct AdfFileHeaderBlock *) &updEntry );
+        else
+            adfEnv.wFct ( "adfCreateEntry : unknown entry type" );
 
 /*puts("adfCreateEntry out, hash");*/
-    if (rc!=ADF_RC_OK) {
-        adfSetBlockFree(vol, newSect2);    
-        return -1;
+        if ( rc != ADF_RC_OK ) {
+            adfSetBlockFree ( vol, newSect2 );
+            return -1;
+        }
+        else
+            return newSect2;
     }
-    else
-        return(newSect2);
 }
 
 
