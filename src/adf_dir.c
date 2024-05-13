@@ -802,6 +802,7 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
                              const ADF_SECTNUM            thisSect )
 {
     ADF_RETCODE rc;
+    ADF_SECTNUM newSect;
     char name2[ADF_MAX_NAME_LEN+1], name3[ADF_MAX_NAME_LEN+1];
 
 /*puts("adfCreateEntry in");*/
@@ -816,7 +817,6 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
     if ( nSect==0 ) {
         /* the first entry with this hash */
 
-        ADF_SECTNUM newSect;
         if (thisSect!=-1)
             newSect = thisSect;
         else {
@@ -839,12 +839,7 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
             rc = adfWriteDirBlock ( vol, dir->headerKey, (struct AdfDirBlock * ) dir );
         }
 /*puts("adfCreateEntry out, dir");*/
-        if (rc!=ADF_RC_OK) {
-            adfSetBlockFree(vol, newSect);    
-            return -1;
-        }
-        else
-            return newSect;
+
     } else {
         /* at least already one entry with this hash */
 
@@ -868,13 +863,12 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
             nSect = updEntry.nextSameHash;
         } while ( nSect != 0 );
 
-
-        ADF_SECTNUM newSect2;
+        /* set sector of the new entry */
         if ( thisSect != -1 )
-            newSect2 = thisSect;
+            newSect = thisSect;
         else {
-            newSect2 = adfGet1FreeBlock ( vol );
-            if ( newSect2 == -1 ) {
+            newSect = adfGet1FreeBlock ( vol );
+            if ( newSect == -1 ) {
                 adfEnv.wFct ( "adfCreateEntry : nSect==-1" );
                 return -1;
             }
@@ -882,7 +876,7 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
 
         /* add the new entry at the end of the list */
         rc = ADF_RC_OK;
-        updEntry.nextSameHash = newSect2;
+        updEntry.nextSameHash = newSect;
 
         /* write changes */
         if ( updEntry.secType == ADF_ST_DIR )
@@ -895,13 +889,14 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
             adfEnv.wFct ( "adfCreateEntry : unknown entry type" );
 
 /*puts("adfCreateEntry out, hash");*/
-        if ( rc != ADF_RC_OK ) {
-            adfSetBlockFree ( vol, newSect2 );
-            return -1;
-        }
-        else
-            return newSect2;
     }
+
+    if ( rc != ADF_RC_OK ) {
+        adfSetBlockFree ( vol, newSect );
+        return -1;
+    }
+    else
+        return newSect;
 }
 
 
