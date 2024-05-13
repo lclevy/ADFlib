@@ -885,8 +885,11 @@ ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
         else if ( updEntry.secType == ADF_ST_FILE )
             rc = adfWriteFileHdrBlock ( vol, updEntry.headerKey,
                                         (struct AdfFileHeaderBlock *) &updEntry );
-        else
-            adfEnv.wFct ( "adfCreateEntry : unknown entry type" );
+        else {
+            adfEnv.eFct ( "adfCreateEntry : entry '%s' has unknown type %d",
+                          updEntry.name, updEntry.secType );
+            rc = ADF_RC_ERROR;
+        }
 
 /*puts("adfCreateEntry out, hash");*/
     }
