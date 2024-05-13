@@ -337,6 +337,7 @@ ADF_RETCODE adfUndelFile ( struct AdfVolume *          vol,
     if ( adfVolHasDIRCACHE ( vol ) ) {
         rc = adfAddInCache ( vol, &parent, (struct AdfEntryBlock *) entry );
         if ( rc != ADF_RC_OK )
+            /* TODO: add reverting adfCreateEntry ! */
             goto adfUndelFile_error_set_blocks_free;
     }
 
