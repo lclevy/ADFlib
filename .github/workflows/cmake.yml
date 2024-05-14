@@ -195,7 +195,7 @@ jobs:
         name: adflib-macos
         path: .
     - name: extract file from the artifact
-      run: tar xzv -C / -f adflib-macos.tgz
+      run: sudo tar xzv -C / -f adflib-macos.tgz
     - name: list files extracted from the artifact
       run: find /usr/local -name "*adf*"
     - uses: actions/download-artifact@v4
