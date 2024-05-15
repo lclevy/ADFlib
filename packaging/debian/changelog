@@ -1,4 +1,4 @@
-libadf (0.9.0-1) unstable; urgency=medium
+adflib (0.9.0-1) unstable; urgency=medium
 
   * Library license changed to dual license (GPL2 and LGPL2.1).
   * Many changes in the API (refactoring, renaming etc.).
@@ -10,7 +10,7 @@ libadf (0.9.0-1) unstable; urgency=medium
  -- Tomasz Wolak <tomas.wolak@gmail.com>  Wed, 15 May 2024 18:58:20 +0100
 
 
-libadf (0.8.0-1) unstable; urgency=medium
+adflib (0.8.0-1) unstable; urgency=medium
 
   * Initial packaging of version 0.8.0 for Debian.
 
