@@ -3,7 +3,8 @@
  */
 
 #include <stdio.h>
-#include"adflib.h"
+#include <stdlib.h>
+#include "adflib.h"
 
 #define TEST_VERBOSITY 0
 

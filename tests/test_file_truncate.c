@@ -6,7 +6,7 @@
 #endif
 
 #include "adflib.h"
-//#include "adf_util.h"
+#include "adf_util.h"
 #include "adf_file_util.h"
 #include "test_util.h"
 

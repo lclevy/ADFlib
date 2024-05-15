@@ -39,7 +39,7 @@ extern "C" {
 #include "adf_version.h"
 
 /* util */
-#include "adf_util.h"
+//#include "adf_util.h"
 
 /* dir */
 #include "adf_dir.h"
@@ -63,7 +63,7 @@ extern "C" {
 #include "adf_env.h"
 
 /* link */
-#include "adf_link.h"
+//#include "adf_link.h"
 
 /* salv */
 #include "adf_salv.h"
