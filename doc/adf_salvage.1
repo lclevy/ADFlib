@@ -1,19 +1,62 @@
-.TH ADF_SALVAGE 1 "Mar 21 2023"
+.TH ADF_SALVAGE 1 "May 15 2024"
 .SH NAME
-adf_salvage \- show (or, in the future, recover/extract) deleted files from an ADF device.
+adf_salvage \- show or recover (in the future - extract) deleted files from an ADF device.
 
 .SH SYNOPSIS
-.B adf_salvage <\fIadf_device\fR>
+.B adf_salvage
+.RB [ -h ]
+.RB [ -v ]
+.RB [ -V ]
+.RB [ -p ] \fIvol\fP
+.I <\fIadf_device\fR>
+.RB [ \fIsector...\fP ]
 .SH DESCRIPTION
-\fBadf_salvage\fR is a filesystem utility allowing to display
-(or, in the future, to recover/extract) deleted files from a OFS/FFS volume of an ADF device.
+\fBadf_salvage\fR is a filesystem utility allowing to display or to recover
+(possibly, in the future, also to extract) deleted files from an OFS/FFS volume of
+an ADF device.
 .PP
-The program currently implements only listing entries deleted from a volume.
+When called with just the name of an ADF device, it shows the list of deleted files,
+along with the position (as sector/block number) of their file header blocks.
+The undelete can be performed by adding the list of positions of the file header
+blocks of the deleted files to the command.
+.SH WARNING
+PLEASE NOTE THAT THIS IS AN EXPERIMENTAL UTILITY, USE IT ON A COPY NOT
+THE ORIGINAL DEVICE! (ESPECIALLY IF THE FILESYSTEM USES DIRCACHE!).
 .
+.SH OPTIONS
+A summary of the options.
+.TP
+.B \-h
+Show help.
+.TP
+.B \-v
+Be more verbose.
+.TP
+.B \-V
+Show version.
+.TP
+.B \-p \fIvol\fP
+Specify volume/partition number (counting from 0), default: 0
+
+.SH EXAMPLES
+\fBadf_salvage mydisk.adf\fR
+.RS
+Shows list of deleted entries (files, directories) on the volume 0 of mydisk.adf
+.RE
+
+\fBadf_salvage -v -p 1 mydisk.adf 884 1000\fR
+.RS
+Undeletes files which file header blocks are at the specified sectors of
+the second volume/partition (the first is 0), the sectors number should be
+taken listing the deleted entried (running this withouht any sector numbers).
+More verbose during the operation.
+.RE
+
 .SH SEE ALSO
 .BR adf_show_metadata (1), unadf (1), adflib (3)
 .SH NOTES
-Detailed info about Commodore Amiga filesystems: http://lclevy.free.fr/adflib/adf_info.html
+Detailed info about Commodore Amiga filesystems:
+http://lclevy.free.fr/adflib/adf_info.html
 .SH AUTHOR
 \fBadf_salvage\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
 as a part of the ADFlib (https://github.com/lclevy/ADFlib).
