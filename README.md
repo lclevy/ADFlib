@@ -167,9 +167,6 @@ Because of this, it is strongly advised to **UPDATE TO THE LATEST VERSION**.
 
 (See also TODO).
 
-## Possible bugs
-- in dircache updates
-
 
 ## The API documentation in doc/
 ... in major part is outdated. The lib underwent many changes and, possibly,

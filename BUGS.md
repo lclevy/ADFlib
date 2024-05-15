@@ -1,3 +1,8 @@
+
+## Possible bugs
+- in dircache updates
+
+
 ## Past security bugs
 
 Please note that several security issues/bugs has been found in the older (0.7.x)
