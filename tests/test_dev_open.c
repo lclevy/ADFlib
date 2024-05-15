@@ -67,22 +67,22 @@ END_TEST
 START_TEST ( test_dev_open_existent )
 {
     test_data_t test_data[] = {
-        {   .adfname = "anexistent1.adf",
+        {   .adfname = "test_dev_open_anexistent1.adf",
             .volname = "AnExitentVolume",
             .openMode = ADF_ACCESS_MODE_READONLY,
             .ignoreChecksumErrors = false
         },
-        {   .adfname = "anexistent2.adf",
+        {   .adfname = "test_dev_open_anexistent2.adf",
             .volname = "AnExitentVolume",
             .openMode = ADF_ACCESS_MODE_READONLY,
             .ignoreChecksumErrors = true
         },
-        {   .adfname = "anexistent3.adf",
+        {   .adfname = "test_dev_open_anexistent3.adf",
             .volname = "AnExitentVolume",
             .openMode = ADF_ACCESS_MODE_READWRITE,
             .ignoreChecksumErrors = false
         },
-        {   .adfname = "anexistent4.adf",
+        {   .adfname = "test_dev_open_anexistent4.adf",
             .volname = "AnExitentVolume",
             .openMode = ADF_ACCESS_MODE_READWRITE,
             .ignoreChecksumErrors = true
