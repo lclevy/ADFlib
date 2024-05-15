@@ -16,15 +16,25 @@ endif()
 
 add_executable ( unadf unadf.c )
 target_link_libraries ( unadf adf )
+set_target_properties ( unadf PROPERTIES
+  #  INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}"
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_floppy_create adf_floppy_create.c )
 target_link_libraries ( adf_floppy_create adf )
+set_target_properties ( adf_floppy_create PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_format
   adf_format.c
   ${ADFLIB_CUSTOM_GETOPT_SRC}
 )
 target_link_libraries ( adf_format adf )
+set_target_properties ( adf_format PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_show_metadata
   adf_show_metadata.c
@@ -37,17 +47,25 @@ add_executable ( adf_show_metadata
   adf_show_metadata_volume.c
   adf_show_metadata_volume.h
 )
-
 target_link_libraries ( adf_show_metadata adf )
+set_target_properties ( adf_show_metadata PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_bitmap adf_bitmap.c )
 target_link_libraries ( adf_bitmap adf )
+set_target_properties ( adf_bitmap PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_salvage
   adf_salvage.c
   ${ADFLIB_CUSTOM_GETOPT_SRC}
 )
 target_link_libraries ( adf_salvage adf )
+set_target_properties ( adf_salvage PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 file (
   COPY ${PROJECT_SOURCE_DIR}/examples/tests
