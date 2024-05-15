@@ -134,9 +134,9 @@ See INSTALL file.
 
 ## Current status
 Most of the code has certain age (the lib was designed and in large part
-implemented before the year 2000). Some subsystems have improved, but many
-remain untouched for a long time and may not have dedicated tests (meaning:
-are not tested).
+implemented before the year 2000). Some subsystems have improved, but still
+some remain untouched for a long time and may not have dedicated tests
+(meaning: are not tested).
 
 ### Native devices
 The library is mostly tested with ADF disk (ie. floppy) images, not with
@@ -165,7 +165,7 @@ for volumes where it is marked invalid**. In short, this means that if the bitma
 is really incorrect, writing to such volume may lead to data loss/corruption.
 Because of this, it is strongly advised to **UPDATE TO THE LATEST VERSION**.
 
-(See also TODO).
+(See also TODO and BUGS).
 
 
 ## The API documentation in doc/
