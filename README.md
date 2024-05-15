@@ -17,7 +17,7 @@ It supports:
 - use dir cache to get directory contents
 - hard- and softlinks for accessing files and directories
 
-Untested and/or exprerimental support exists for:
+Untested and/or experimental support exists for:
 - WinNT and Linux physical devices (with the 'native driver')
 - multiple partitions harddisk dumps
 - UAE hardfiles
@@ -89,6 +89,11 @@ of Amiga filesystems (for anyone curious...).
 A low-level utility / diagnostic tool for block allocation bitmap of ADF volumes.
 It can display the bitmap or rebuild it (in fact, enforce rebuilding it, even if
 the volume's flag says that the bitmap is valid).
+
+### adf_salvage
+
+An utility allowing to list deleted entries (files, directories) on a volume
+and undelete them (in the future possibly also extract them to local filesystem).
 
 ## Credits:
 
