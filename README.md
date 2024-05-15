@@ -140,29 +140,34 @@ some remain untouched for a long time and may not have dedicated tests
 
 ### Native devices
 The library is mostly tested with ADF disk (ie. floppy) images, not with
-any native devices. If you do not need them - do not compile them (build
-the library with the `generic` (dummy) native device, see INSTALL for details).
+any native/real disk devices. Since version 0.9.0, the native devices
+are not enabled by default, so it is now more safe to keep them compiled.
+However, if they are needed at all, the library still can be build
+without them (with the `generic` (dummy) native device instead, see
+INSTALL for details).
 
-If you want really to use and/or tests them, remember that: **the native device
-support means accessing physical devices(!)**, please _know what you are doing_
-(eg. do not open your `C:\` on windows or `/dev/sda` on Linux and call
-a function for creating an Amiga filesystem on it... unless you really want
-to reinstall your system and restore your data from a backup...).
+Enabling and using the devices remember that **a native device can be
+any physical storage device on your system(!)**. Please _know what you
+are doing_ (eg. do not open your `C:\` on windows or `/dev/sda` on Linux
+and call a function for creating an Amiga filesystem on it... unless
+you really want to reinstall your system and restore your data
+from a backup...).
 
-Since native devices are not much tested - consider them as testing/experimental
-and treat as such (ie. use in a safe environment like a VM).
+Since native devices are not much tested - consider them as
+testing/experimental and treat as such (ie. use in a safe environment,
+like a VM).
 
-**YOU HAVE BEEN WARNED**
+### Write support
+The file read and write support are rather well tested, but still, writing
+is a new and potentially harmul feature so do not experiment on a unique
+copy of an ADF image with your precious data. Do it on a copy (and report
+if any issues are encountered).
 
-### The new (fixed and completed) file write support (but writing still experimental!)
-The (fixed) file read support and the (new) file write support are rather
-well tested, but still, writing is a new feature so do not experiment on
-a unique copy of an ADF image with your precious data. Please do it on a copy
-and report if any issues are encountered.
 Update: The notice above is especially actual that it was discovered that
 the version `0.8.0` and earlier **do not rebuild the block allocation bitmap
 for volumes where it is marked invalid**. In short, this means that if the bitmap
-is really incorrect, writing to such volume may lead to data loss/corruption.
+is really incorrect, writing to such volume may lead to data loss/corruption
+(blocks used by stored data might not be marked as such!).
 Because of this, it is strongly advised to **UPDATE TO THE LATEST VERSION**.
 
 (See also TODO and BUGS).
