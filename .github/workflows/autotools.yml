@@ -148,7 +148,7 @@ jobs:
     - name: make distcheck
       run: make distcheck
     - name: make install
-      run: make install
+      run: sudo make install
     - name: check installation
       run: find /usr/local/ -iname '*adf*'
     - name: test installed command-line utils
