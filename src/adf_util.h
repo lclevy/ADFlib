@@ -104,10 +104,10 @@ void swLong ( uint8_t * const buf,
 void swShort ( uint8_t * const buf,
                const uint16_t  val );
 
-PREFIX void adfDays2Date( int32_t       days,
-                          int * const   yy,
-                          int * const   mm,
-                          int * const   dd );
+void adfDays2Date( int32_t       days,
+                   int * const   yy,
+                   int * const   mm,
+                   int * const   dd );
 
 bool adfIsLeap ( const int y );
 
