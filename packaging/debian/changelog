@@ -7,7 +7,7 @@ adflib (0.9.0-1) unstable; urgency=medium
   * Improved salvage code and added an utility for undeleting files (EXPERIMENTAL!).
   * Bugfixes: bitmap, memory leaks and others (details in ChangeLog and git log).
 
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Wed, 15 May 2024 18:58:20 +0100
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Wed, 16 May 2024 17:19:35 +0100
 
 
 adflib (0.8.0-1) unstable; urgency=medium
