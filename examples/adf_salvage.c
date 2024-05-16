@@ -22,8 +22,6 @@
  */
 
 #include <adflib.h>
-#include "adf_dev.h"
-#include "adf_dev_flop.h"
 #include <errno.h>
 
 #include <stdbool.h>

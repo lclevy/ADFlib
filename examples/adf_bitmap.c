@@ -22,6 +22,7 @@
  *
  */
 
+#include <adflib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,8 +33,6 @@ char* basename(char* path);
 #else
 #include <libgen.h>
 #endif
-
-#include <adflib.h>
 
 
 ADF_RETCODE rebuild_bitmap ( struct AdfVolume * const vol );
