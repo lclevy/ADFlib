@@ -167,9 +167,9 @@ void adfVolInfo ( struct AdfVolume * const vol )
  *
  * 
  */
-PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
-                                        const int                nPart,
-                                        const AdfAccessMode      mode )
+struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
+                                 const int                nPart,
+                                 const AdfAccessMode      mode )
 {
     if ( dev == NULL ) {
         adfEnv.eFct ( "adfVolMount : invalid device (NULL)" );
@@ -279,8 +279,8 @@ PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
  *
  *
  */
-PREFIX ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
-                                   const AdfAccessMode mode )
+ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
+                            const AdfAccessMode mode )
 {
     if ( vol == NULL )
         return ADF_RC_ERROR;
