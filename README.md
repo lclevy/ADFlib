@@ -102,6 +102,7 @@ and undelete them (in the future possibly also extract them to local filesystem)
 - unadf rewrite (in 2019) : Stuart Caie
 - Bug fixes and C++ wrapper : Bjarke Viksoe (adfwrapper.h)
 - WinNT native driver : Dan Sutherland and Gary Harris
+- See also: AUTHORS
 
 New versions and contact e-mail can be found at : https://github.com/lclevy/ADFlib
 
@@ -127,7 +128,9 @@ See INSTALL file.
 - `regtests/Boot/` :	Bootblocks that might by used to put on floppy disks
 - `doc/` :	The library developer's documentation, man pages for utilities
 - `doc/FAQ/` : The Amiga Filesystem explained
-- `examples/` : utilities: `unadf`, `adf_floppy_create/format`, `adf_show_metadata`
+- `examples/` : utilities: `unadf`, `adf_floppy_create/format`, `adf_show_metadata`,
+`adf_bitmap`, `adf_salvage`
+- `packaging` : misc. packaging configurations (so far - deb only)
 - `regtests/` : regression tests
 - `tests/` : unit tests
 
@@ -142,7 +145,7 @@ some remain untouched for a long time and may not have dedicated tests
 The library is mostly tested with ADF disk (ie. floppy) images, not with
 any native/real disk devices. Since version 0.9.0, the native devices
 are not enabled by default, so it is now more safe to keep them compiled.
-However, if they are needed at all, the library still can be build
+However, if they are not needed at all, the library still can be build
 without them (with the `generic` (dummy) native device instead, see
 INSTALL for details).
 
