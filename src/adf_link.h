@@ -34,11 +34,11 @@
 // the code below is not used anywhere and seems unfinished
 // (not clear what it was meant for...)
 // -> disabling it for now
-PREFIX ADF_RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                           ADF_SECTNUM        nSect,
-                                           ADF_SECTNUM        lPar,
-                                           char **            name,
-                                           int32_t *          size );
+ADF_PREFIX ADF_RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
+                                               ADF_SECTNUM        nSect,
+                                               ADF_SECTNUM        lPar,
+                                               char **            name,
+                                               int32_t *          size );
 #endif
 
 #endif  /* ADF_LINK_H */

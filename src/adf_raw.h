@@ -49,27 +49,27 @@
 #define ADF_SWBL_FSHD         10
 #define ADF_SWBL_LSEG         11
 
-PREFIX ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
-                                      const uint32_t              nSect,
-                                      struct AdfRootBlock * const root );
+ADF_PREFIX ADF_RETCODE adfReadRootBlock ( struct AdfVolume * const    vol,
+                                          const uint32_t              nSect,
+                                          struct AdfRootBlock * const root );
 
-PREFIX ADF_RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
-                                       const uint32_t              nSect,
-                                       struct AdfRootBlock * const root );
+ADF_PREFIX ADF_RETCODE adfWriteRootBlock ( struct AdfVolume * const    vol,
+                                           const uint32_t              nSect,
+                                           struct AdfRootBlock * const root );
 
-PREFIX ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
-                                      struct AdfBootBlock * const boot );
+ADF_PREFIX ADF_RETCODE adfReadBootBlock ( struct AdfVolume * const    vol,
+                                          struct AdfBootBlock * const boot );
 
-PREFIX ADF_RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
-                                       struct AdfBootBlock * const boot );
+ADF_PREFIX ADF_RETCODE adfWriteBootBlock ( struct AdfVolume * const    vol,
+                                           struct AdfBootBlock * const boot );
 
-PREFIX uint32_t adfBootSum ( const uint8_t * const buf );
+ADF_PREFIX uint32_t adfBootSum ( const uint8_t * const buf );
 
-PREFIX uint32_t adfNormalSum ( const uint8_t * const buf,
-			       const int offset,
-			       const int bufLen );
+ADF_PREFIX uint32_t adfNormalSum ( const uint8_t * const buf,
+                                   const int offset,
+                                   const int bufLen );
 
-PREFIX void adfSwapEndian ( uint8_t * const buf,
-                            const int       type );
+ADF_PREFIX void adfSwapEndian ( uint8_t * const buf,
+                                const int       type );
 
 #endif  /* ADF_RAW_H */

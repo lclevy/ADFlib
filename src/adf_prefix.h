@@ -38,13 +38,13 @@
    https://learn.microsoft.com/en-us/cpp/build/importing-into-an-application-using-declspec-dllimport?view=msvc-170
 */
 #ifdef _EXPORTING
-   #define PREFIX    __declspec(dllexport)
+   #define ADF_PREFIX    __declspec(dllexport)
 #else
-   #define PREFIX    __declspec(dllimport)
+   #define ADF_PREFIX    __declspec(dllimport)
 #endif
 
 #else
-#define PREFIX 
+#define ADF_PREFIX
 #endif
 
 #endif  /* ADF_PREFIX_H */

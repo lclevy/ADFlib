@@ -44,15 +44,15 @@ ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
                               const ADF_SECTNUM        nSect,
                               struct GenBlock * const  block );
 
-PREFIX ADF_RETCODE adfCheckEntry ( struct AdfVolume * const vol,
-                                   const ADF_SECTNUM        nSect,
-                                   const int                level );
+ADF_PREFIX ADF_RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                                       const ADF_SECTNUM        nSect,
+                                       const int                level );
 
-PREFIX ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
-                                   const ADF_SECTNUM        parent,
-                                   const ADF_SECTNUM        nSect );
+ADF_PREFIX ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                                       const ADF_SECTNUM        parent,
+                                       const ADF_SECTNUM        nSect );
 
-PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
-PREFIX void adfFreeDelList ( struct AdfList * const list );
+ADF_PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
+ADF_PREFIX void adfFreeDelList ( struct AdfList * const list );
 
 #endif  /* ADF_SALV_H */

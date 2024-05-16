@@ -77,22 +77,22 @@ struct AdfEnv {
 };
 
 
-PREFIX void adfEnvInitDefault(void);
-PREFIX void adfEnvCleanUp(void);
+ADF_PREFIX void adfEnvInitDefault ( void );
+ADF_PREFIX void adfEnvCleanUp ( void );
 
-PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
-                           const AdfLogFct    wFct,
-                           const AdfLogFct    vFct,
-                           const AdfNotifyFct notifyFct );
+ADF_PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
+                               const AdfLogFct    wFct,
+                               const AdfLogFct    vFct,
+                               const AdfNotifyFct notifyFct );
 
-PREFIX ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
-                                       const intptr_t         newValue );
+ADF_PREFIX ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
+                                           const intptr_t         newValue );
 
-PREFIX intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property );
+ADF_PREFIX intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property );
 
-PREFIX char* adfGetVersionNumber(void);
-PREFIX char* adfGetVersionDate(void);
+ADF_PREFIX char * adfGetVersionNumber ( void );
+ADF_PREFIX char * adfGetVersionDate ( void );
 
-PREFIX extern struct AdfEnv adfEnv;
+ADF_PREFIX extern struct AdfEnv adfEnv;
 
 #endif  /* ADF_ENV_H */

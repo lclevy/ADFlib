@@ -40,13 +40,14 @@ ADF_RETCODE adfCreateHdHeader ( struct AdfDevice * const               dev,
                                 const int                              n,
                                 const struct Partition * const * const partList );
 
-PREFIX ADF_RETCODE adfCreateHd ( struct AdfDevice * const               dev,
-                                 const unsigned                         n,
-                                 const struct Partition * const * const partList );
+ADF_PREFIX ADF_RETCODE adfCreateHd (
+    struct AdfDevice * const               dev,
+    const unsigned                         n,
+    const struct Partition * const * const partList );
 
-PREFIX ADF_RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
-                                     const char * const       volName,
-                                     const uint8_t            volType );
+ADF_PREFIX ADF_RETCODE adfCreateHdFile ( struct AdfDevice * const dev,
+                                         const char * const       volName,
+                                         const uint8_t            volType );
 
 ADF_RETCODE adfReadRDSKblock ( struct AdfDevice * const    dev,
                                struct AdfRDSKblock * const blk );

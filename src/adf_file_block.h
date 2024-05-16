@@ -46,10 +46,10 @@ ADF_RETCODE adfGetFileBlocks ( struct AdfVolume * const                vol,
 ADF_RETCODE adfFreeFileBlocks ( struct AdfVolume * const          vol,
                                 struct AdfFileHeaderBlock * const entry );
 
-PREFIX uint32_t adfFileRealSize ( const uint32_t  size,
-                                  const unsigned  blockSize,
-                                  uint32_t * const dataN,
-                                  uint32_t * const extN );
+ADF_PREFIX uint32_t adfFileRealSize ( const uint32_t  size,
+                                      const unsigned  blockSize,
+                                      uint32_t * const dataN,
+                                      uint32_t * const extN );
 
 ADF_RETCODE adfWriteFileHdrBlock ( struct AdfVolume * const          vol,
                                    const ADF_SECTNUM                 nSect,
@@ -63,11 +63,11 @@ ADF_RETCODE adfWriteDataBlock ( struct AdfVolume * const vol,
                                 const ADF_SECTNUM        nSect,
                                 void * const             data );
 
-PREFIX ADF_RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
-                                         const ADF_SECTNUM              nSect,
-                                         struct AdfFileExtBlock * const fext );
+ADF_PREFIX ADF_RETCODE adfReadFileExtBlock ( struct AdfVolume * const       vol,
+                                             const ADF_SECTNUM              nSect,
+                                             struct AdfFileExtBlock * const fext );
 
-PREFIX ADF_RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
-                                          const ADF_SECTNUM              nSect,
-                                          struct AdfFileExtBlock * const fext );
+ADF_PREFIX ADF_RETCODE adfWriteFileExtBlock ( struct AdfVolume * const       vol,
+                                              const ADF_SECTNUM              nSect,
+                                              struct AdfFileExtBlock * const fext );
 #endif  /* ADF_FILE_BLOCK_H */

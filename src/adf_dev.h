@@ -61,14 +61,14 @@ struct AdfDevice {
  * the whole device on _device_ block level - and similar.
  */
 
-PREFIX struct AdfDevice * adfDevCreate ( const char * const driverName,
-                                         const char * const name,
-                                         const uint32_t     cylinders,
-                                         const uint32_t     heads,
-                                         const uint32_t     sectors );
+ADF_PREFIX struct AdfDevice * adfDevCreate ( const char * const driverName,
+                                             const char * const name,
+                                             const uint32_t     cylinders,
+                                             const uint32_t     heads,
+                                             const uint32_t     sectors );
 
-PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
-                                       const AdfAccessMode mode );
+ADF_PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
+                                           const AdfAccessMode mode );
 
 /*
  * adfDevOpenWithDriver
@@ -77,18 +77,19 @@ PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
  * opening a file/device with the driver specified by its name
  * (esp. useful for custom, user-implemented device drivers)
  */
-PREFIX struct AdfDevice * adfDevOpenWithDriver ( const char * const  driverName,
-                                                 const char * const  name,
-                                                 const AdfAccessMode mode );
+ADF_PREFIX struct AdfDevice * adfDevOpenWithDriver (
+    const char * const  driverName,
+    const char * const  name,
+    const AdfAccessMode mode );
 
-PREFIX void adfDevClose ( struct AdfDevice * const dev );
+ADF_PREFIX void adfDevClose ( struct AdfDevice * const dev );
 
 
-PREFIX int adfDevType ( const struct AdfDevice * const dev );
-PREFIX void adfDevInfo ( const struct AdfDevice * const dev );
+ADF_PREFIX int adfDevType ( const struct AdfDevice * const dev );
+ADF_PREFIX void adfDevInfo ( const struct AdfDevice * const dev );
 
-PREFIX ADF_RETCODE adfDevMount ( struct AdfDevice * const dev );
-PREFIX void adfDevUnMount ( struct AdfDevice * const dev );
+ADF_PREFIX ADF_RETCODE adfDevMount ( struct AdfDevice * const dev );
+ADF_PREFIX void adfDevUnMount ( struct AdfDevice * const dev );
 
 
 ADF_RETCODE adfDevReadBlock ( struct AdfDevice * const dev,

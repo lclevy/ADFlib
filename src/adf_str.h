@@ -62,12 +62,12 @@ struct AdfVectorSectors {
 };
 
 
-PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
-                                         void * const           content );
+ADF_PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
+                                             void * const           content );
 
-PREFIX void adfListFree ( struct AdfList * const list );
+ADF_PREFIX void adfListFree ( struct AdfList * const list );
 
-PREFIX ADF_RETCODE adfVectorAllocate ( struct AdfVector * const vector );
-PREFIX void adfVectorFree ( struct AdfVector * const vector );
+ADF_PREFIX ADF_RETCODE adfVectorAllocate ( struct AdfVector * const vector );
+ADF_PREFIX void adfVectorFree ( struct AdfVector * const vector );
 
 #endif  /* ADF_STR_H */

@@ -48,53 +48,53 @@ struct AdfEntry {
 };
 
 
-PREFIX ADF_RETCODE adfToRootDir ( struct AdfVolume * const vol );
+ADF_PREFIX ADF_RETCODE adfToRootDir ( struct AdfVolume * const vol );
 bool isDirEmpty ( const struct AdfDirBlock * const dir );
 
-PREFIX ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
-                                    const ADF_SECTNUM        pSect,
-                                    const char * const       name );
+ADF_PREFIX ADF_RETCODE adfRemoveEntry ( struct AdfVolume * const vol,
+                                        const ADF_SECTNUM        pSect,
+                                        const char * const       name );
 
-PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
-                                       const ADF_SECTNUM        nSect );
+ADF_PREFIX struct AdfList * adfGetDirEnt ( struct AdfVolume * const vol,
+                                           const ADF_SECTNUM        nSect );
 
-PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
-                                        const ADF_SECTNUM        nSect,
-                                        const bool               recurs );
+ADF_PREFIX struct AdfList * adfGetRDirEnt ( struct AdfVolume * const vol,
+                                            const ADF_SECTNUM        nSect,
+                                            const bool               recurs );
 
-PREFIX void adfFreeDirList ( struct AdfList * const list );
+ADF_PREFIX void adfFreeDirList ( struct AdfList * const list );
 
-PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
-                                const ADF_SECTNUM        dirPtr );
+ADF_PREFIX int adfDirCountEntries ( struct AdfVolume * const vol,
+                                    const ADF_SECTNUM        dirPtr );
 
 ADF_RETCODE adfEntBlock2Entry ( const struct AdfEntryBlock * const entryBlk,
                                 struct AdfEntry * const            entry );
 
-PREFIX void adfFreeEntry (struct AdfEntry * const entry );
+ADF_PREFIX void adfFreeEntry ( struct AdfEntry * const entry );
 
 ADF_RETCODE adfCreateFile ( struct AdfVolume * const          vol,
                             const ADF_SECTNUM                 parent,
                             const char * const                name,
                             struct AdfFileHeaderBlock * const fhdr );
 
-PREFIX ADF_RETCODE adfCreateDir ( struct AdfVolume * const vol,
-                                  const ADF_SECTNUM        parent,
-                                  const char * const       name );
+ADF_PREFIX ADF_RETCODE adfCreateDir ( struct AdfVolume * const vol,
+                                      const ADF_SECTNUM        parent,
+                                      const char * const       name );
 
 ADF_SECTNUM adfCreateEntry ( struct AdfVolume * const     vol,
                              struct AdfEntryBlock * const dir,
                              const char * const           name,
                              const ADF_SECTNUM            thisSect );
 
-PREFIX ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
-                                    const ADF_SECTNUM        pSect,
-                                    const char * const       oldName,
-                                    const ADF_SECTNUM        nPSect,
-                                    const char * const       newName );
+ADF_PREFIX ADF_RETCODE adfRenameEntry ( struct AdfVolume * const vol,
+                                        const ADF_SECTNUM        pSect,
+                                        const char * const       oldName,
+                                        const ADF_SECTNUM        nPSect,
+                                        const char * const       newName );
 
-PREFIX ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
-                                       const ADF_SECTNUM            nSect,
-                                       struct AdfEntryBlock * const ent );
+ADF_PREFIX ADF_RETCODE adfReadEntryBlock ( struct AdfVolume * const     vol,
+                                           const ADF_SECTNUM            nSect,
+                                           struct AdfEntryBlock * const ent );
 
 ADF_RETCODE adfWriteDirBlock ( struct AdfVolume * const   vol,
                                const ADF_SECTNUM          nSect,
@@ -114,24 +114,24 @@ void adfStrToUpper ( uint8_t * const       nstr,
                      const unsigned        nlen,
                      const bool            intl );
 
-PREFIX ADF_RETCODE adfChangeDir ( struct AdfVolume * const vol,
-                                  const char * const       name );
-PREFIX ADF_RETCODE adfParentDir ( struct AdfVolume * const vol );
+ADF_PREFIX ADF_RETCODE adfChangeDir ( struct AdfVolume * const vol,
+                                      const char * const       name );
+ADF_PREFIX ADF_RETCODE adfParentDir ( struct AdfVolume * const vol );
 
-PREFIX ADF_RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
-                                       const ADF_SECTNUM        parSect,
-                                       const char * const       name,
-                                       const int32_t            newAcc );
+ADF_PREFIX ADF_RETCODE adfSetEntryAccess ( struct AdfVolume * const vol,
+                                           const ADF_SECTNUM        parSect,
+                                           const char * const       name,
+                                           const int32_t            newAcc );
 
-PREFIX ADF_RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
-                                        const ADF_SECTNUM        parSect,
-                                        const char * const       name,
-                                        const char * const       newCmt );
+ADF_PREFIX ADF_RETCODE adfSetEntryComment ( struct AdfVolume * const vol,
+                                            const ADF_SECTNUM        parSect,
+                                            const char * const       name,
+                                            const char * const       newCmt );
 
-PREFIX ADF_SECTNUM adfGetEntryByName ( struct AdfVolume * const     vol,
-                                       const ADF_SECTNUM            dirPtr,
-                                       const char * const           name,
-                                       struct AdfEntryBlock * const entry );
+ADF_PREFIX ADF_SECTNUM adfGetEntryByName ( struct AdfVolume * const     vol,
+                                           const ADF_SECTNUM            dirPtr,
+                                           const char * const           name,
+                                           struct AdfEntryBlock * const entry );
 
 ADF_SECTNUM adfNameToEntryBlk ( struct AdfVolume * const     vol,
                                 const int32_t                ht[],
@@ -139,6 +139,6 @@ ADF_SECTNUM adfNameToEntryBlk ( struct AdfVolume * const     vol,
                                 struct AdfEntryBlock * const entry,
                                 ADF_SECTNUM * const          nUpdSect );
 
-PREFIX void adfEntryPrint ( const struct AdfEntry * const entry );
+ADF_PREFIX void adfEntryPrint ( const struct AdfEntry * const entry );
 
 #endif  /* ADF_DIR_H */
