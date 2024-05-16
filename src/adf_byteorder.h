@@ -1,5 +1,6 @@
-#ifndef _ADF_DEFENDIAN_H
-#define _ADF_DEFENDIAN_H
+
+#ifndef ADF_BYTEORDER_H
+#define ADF_BYTEORDER_H
 
 #ifndef LITT_ENDIAN
  #if defined(__hppa__) || \
@@ -12,4 +13,4 @@
  #endif
 #endif
 
-#endif
+#endif /* ADF_BYTEORDER_H */

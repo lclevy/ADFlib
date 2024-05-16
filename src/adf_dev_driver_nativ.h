@@ -16,16 +16,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
-#ifndef ADF_NATIV_H
-#define ADF_NATIV_H
+#ifndef ADF_DEV_DRIVER_NATIV_H
+#define ADF_DEV_DRIVER_NATIV_H
 
 #include "adf_dev_driver.h"
 
 extern const struct AdfDeviceDriver adfDeviceDriverNative;
 
-#endif
+#endif  /* ADF_DEV_DRIVER_NATIV_H */

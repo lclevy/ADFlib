@@ -1,0 +1,40 @@
+Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
+Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
+         1999/07/30  22:35:01  c/
+  12896  1992/09/02  11:51:33  c/Format
+   6880  1994/02/18   9:56:04  c/Mount
+  72832  1993/09/21  23:03:34  c/Zip
+   1496  1992/09/02  11:51:33  c/Type
+  27960  1992/06/28  18:25:02  c/DMS
+    241  1999/07/30  22:34:59  c/cmd.txt
+  37068  1995/08/23  22:16:56  c/UNLZX
+    584  1992/09/02  11:51:33  c/Relabel
+   1980  1992/09/02  11:51:33  c/Info
+   3652  1992/09/02  11:51:33  c/CPU
+   3220  1992/09/02  11:51:33  c/Assign
+  80764  1999/03/24  19:44:00  c/Deksid
+   5108  1992/09/02  11:51:33  c/List
+  12020  1997/07/08  22:09:41  c/transdisk
+  54600  1978/01/01   1:07:44  c/LhA
+   1136  1992/09/02  11:51:33  c/LoadWB
+  83764  1995/08/23  22:15:52  c/LZX
+         1999/07/30  22:14:46  l/
+    256  1997/12/13  19:37:36  l/LZX.Keyfile
+         1999/07/04  14:24:24  devs/
+         1999/07/04  17:33:11  devs/DOSDrivers/
+    554  1995/01/17  20:10:29  devs/DOSDrivers/SD0.info
+    666  1994/01/29  18:18:36  devs/DOSDrivers/SD0
+   2480  1994/08/31  16:37:28  devs/statram.device
+    232  1992/11/20  12:00:00  devs/SyStEm-CoNfIgUrAtIoN
+         1999/07/30  22:33:56  s/
+     32  1999/07/04  17:37:30  s/.cshrc
+    391  1999/07/30  22:33:29  s/aliases
+     46  1999/03/24  19:57:50  s/.login
+     67  1999/07/04  17:37:56  s/startup-sequence
+         1999/07/04  14:24:31  libs/
+  12436  1993/02/07  19:08:56  libs/arp.library
+  40452  1992/09/02  11:51:33  libs/asl.library
+  15340  1992/09/02  11:51:33  libs/diskfont.library
+ 130156  1996/08/03   0:55:04  CSH
+   1136  1992/09/02  11:51:33  LoadWB
+    232  1992/09/02  11:51:33  system-configuration

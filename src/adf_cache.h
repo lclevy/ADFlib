@@ -1,5 +1,3 @@
-#ifndef _ADF_CACHE_H
-#define _ADF_CACHE_H 1
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -22,11 +20,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
+#ifndef ADF_CACHE_H
+#define ADF_CACHE_H
 
 #include "adf_blk.h"
 #include "adf_err.h"
@@ -43,49 +43,47 @@ struct AdfCacheEntry {
     signed char type;
     uint8_t nLen,
             cLen;
-    char name[MAXNAMELEN+1],
-         comm[MAXCMMTLEN+1];
+    char name[ ADF_MAX_NAME_LEN + 1 ],
+         comm[ ADF_MAX_COMMENT_LEN + 1 ];
 /*    char *name, *comm;*/
 };
 
 
-RETCODE adfGetCacheEntry ( const struct bDirCacheBlock * const dirc,
-                          int * const                   p,
-                          struct AdfCacheEntry * const  cEntry );
+ADF_RETCODE adfGetCacheEntry ( const struct AdfDirCacheBlock * const dirc,
+                               int * const                           p,
+                               struct AdfCacheEntry * const          cEntry );
 
-int adfPutCacheEntry ( struct bDirCacheBlock * const       dirc,
-                       const int * const                   p,
-                       const struct AdfCacheEntry * const  cEntry );
+int adfPutCacheEntry ( struct AdfDirCacheBlock * const    dirc,
+                       const int * const                  p,
+                       const struct AdfCacheEntry * const cEntry );
 
 struct AdfList * adfGetDirEntCache ( struct AdfVolume * const vol,
-                                     const SECTNUM            dir,
-                                     const BOOL               recurs );
+                                     const ADF_SECTNUM        dir,
+                                     const bool               recurs );
 
-RETCODE adfCreateEmptyCache ( struct AdfVolume * const   vol,
-                              struct bEntryBlock * const parent,
-                              const SECTNUM              nSect );
+ADF_RETCODE adfCreateEmptyCache ( struct AdfVolume * const     vol,
+                                  struct AdfEntryBlock * const parent,
+                                  const ADF_SECTNUM            nSect );
 
-RETCODE adfAddInCache ( struct AdfVolume * const  vol,
-                        const struct bEntryBlock * const parent,
-                        const struct bEntryBlock * const entry );
+ADF_RETCODE adfAddInCache ( struct AdfVolume * const           vol,
+                            const struct AdfEntryBlock * const parent,
+                            const struct AdfEntryBlock * const entry );
 
-RETCODE adfUpdateCache ( struct AdfVolume * const   vol,
-                         const struct bEntryBlock * const parent,
-                         const struct bEntryBlock * const entry,
-                         const BOOL                 entryLenChg );
+ADF_RETCODE adfUpdateCache ( struct AdfVolume * const           vol,
+                             const struct AdfEntryBlock * const parent,
+                             const struct AdfEntryBlock * const entry,
+                             const bool                         entryLenChg );
 
-RETCODE adfDelFromCache ( struct AdfVolume * const         vol,
-                          const struct bEntryBlock * const parent,
-                          const SECTNUM                    headerKey );
+ADF_RETCODE adfDelFromCache ( struct AdfVolume * const           vol,
+                              const struct AdfEntryBlock * const parent,
+                              const ADF_SECTNUM                  headerKey );
 
-RETCODE adfReadDirCBlock ( struct AdfVolume * const      vol,
-                           const SECTNUM                 nSect,
-                           struct bDirCacheBlock * const dirc );
+ADF_RETCODE adfReadDirCBlock ( struct AdfVolume * const        vol,
+                               const ADF_SECTNUM               nSect,
+                               struct AdfDirCacheBlock * const dirc );
 
-RETCODE adfWriteDirCBlock ( struct AdfVolume * const      vol,
-                            const int32_t                 nSect,
-                            struct bDirCacheBlock * const dirc );
+ADF_RETCODE adfWriteDirCBlock ( struct AdfVolume * const        vol,
+                                const int32_t                   nSect,
+                                struct AdfDirCacheBlock * const dirc );
 
-#endif /* _ADF_CACHE_H */
-
-/*##########################################################################*/
+#endif  /* ADF_CACHE_H */

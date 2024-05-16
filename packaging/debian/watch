@@ -1,3 +1,2 @@
 version=4
-opts="mode=git,pgpmode=gittag" \
 https://github.com/lclevy/ADFlib.git refs/tags/v([\d\.]+)

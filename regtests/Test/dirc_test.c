@@ -25,11 +25,11 @@ int main(int argc, char *argv[])
     struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
-    SECTNUM nSect;
+    //ADF_SECTNUM nSect;
  
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
     /* mount existing device */
     hd = adfMountDev ( "testdirc.adf", ADF_ACCESS_MODE_READWRITE );
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     putchar('\n');
 
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

@@ -1,0 +1,70 @@
+.TH ADF_FORMAT 1 "Mar 2024"
+.SH NAME
+adf_format \- create a classic AmigaDOS filesystem (OFS/FFS) on an ADF or HDF volume.
+.SH SYNOPSIS
+.B adf_format
+.RB [ -l \fIlabel\fP ]
+.RB [ -p \fIvolume\fP ]
+.RB [ -t \fIfstype\fP ]
+.RB [ -fvhV ]
+.I adf_device
+
+
+.SH DESCRIPTION
+\fBadf_format\fR is a simple utility allowing to create a classic AmigaDos-type
+filesystem (OFS or FFS) on the selected volume of an ADF (Amiga Disk File)
+or HDF (hard disk file) device.
+.SH OPTIONS
+.TP
+.B \-f
+Force formatting, even if the volume already contains a filesystem.
+WARNING: potential data loss - be sure what you are doing!
+.TP
+.B \-l
+Specify the volume's name (label), default: an empty string.
+.TP
+.B \-p
+Specify the index of the volume/partition, default: 0.
+(Currently cannot use other than 0, partitioned, multi-volume devices are not supported (yet...).
+.TP
+.B \-t
+Set AmigaDOS filesystem type, default: 1 (FFS).
+
+The type of the filesystem image can be chosen by specifying
+the \fBfstype\fR parameter, which  can be 0-7 (flags = 3 least significant bits):
+
+         Bit  Set         Clear
+         ------------------------------
+         0    FFS         OFS
+         1    INTL ONLY   NO_INTL ONLY
+         2    DIRC&INTL   NO_DIRC&INTL
+
+(For details about the filesystem types, check the documentation, link in the NOTES below).
+.TP
+.B \-v
+More verbose output.
+.TP
+.B \-h
+Shows help info.
+.TP
+.B \-V
+Shows version.
+
+.SH EXAMPLES
+\fBadf_format -l MyDisk1 -t 3 myamigadisk1.adf\fR
+    - creates:
+      - filesystem:           FFS+INTL (1+2)
+      - with the label:       MyDisk1
+      - on the volume:        0
+      - of the adf device:    myamigadisk1.adf
+.SH LIMITATIONS
+Currently it can only format volumes of unpartitioned devices, so those containing
+a single volume using the whole device (so ADF/floppy disks and HDF/hard disk files).
+.SH SEE ALSO
+.BR adf_floppy_create (1), adf_show_metadata (1), unadf (1)
+.SH NOTES
+Detailed info about Commodore Amiga filesystems: http://lclevy.free.fr/adflib/adf_info.html#p41
+.SH AUTHOR
+\fBadf_format\fR was written by \fBTomasz Wolak\fR <tomas.wolak@gmail.com>,
+as part of the ADFlib (https://github.com/lclevy/ADFlib).
+.PP

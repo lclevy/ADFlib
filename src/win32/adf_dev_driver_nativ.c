@@ -20,12 +20,6 @@
  *
  */
 
-
-/* Modified 29/8/00 by Gary Harris.
-** - Added a third, Boolean argument to Win32InitDevice() to avoid a compilation warning
-**   caused by the mismatch with the number of arguments in ADFLib's adfInitDevice().
-*/
-
 #include <windows.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,8 +35,8 @@ struct AdfNativeDevice {
        void *hDrv;
 };
 
-static BOOL Win32IsDevice ( const char * const devName );
-static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
+static bool Win32IsDevice ( const char * const devName );
+static ADF_RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev );
 
 
 static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
@@ -116,7 +110,7 @@ static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
 	dev->devType = adfDevType ( dev );
 	dev->nVol    = 0;
 	dev->volList = NULL;
-	dev->mounted = FALSE;
+	dev->mounted = false;
 	dev->name    = strdup ( lpstrName );
 	dev->drv     = &adfDeviceDriverNative;
 
@@ -124,58 +118,58 @@ static struct AdfDevice * Win32InitDevice ( const char * const  lpstrName,
 }
 
 
-static RETCODE Win32ReadSector ( struct AdfDevice * const dev,
-                                 const uint32_t           n,
-                                 const unsigned           size,
-                                 uint8_t * const          buf )
+static ADF_RETCODE Win32ReadSector ( struct AdfDevice * const dev,
+                                     const uint32_t           n,
+                                     const unsigned           size,
+                                     uint8_t * const          buf )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
 	if ( ! NT4ReadSector( *hDrv, (long) n, size, buf ) ) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4ReadSector");
-		return RC_ERROR;													/* BV */
+		return ADF_RC_ERROR;													/* BV */
 	}
 
-	return RC_OK;
+	return ADF_RC_OK;
 }
 
 
-static RETCODE Win32WriteSector ( struct AdfDevice * const dev,
-                                  const uint32_t           n,
-                                  const unsigned           size,
-                                  const uint8_t * const    buf )
+static ADF_RETCODE Win32WriteSector ( struct AdfDevice * const dev,
+                                      const uint32_t           n,
+                                      const unsigned           size,
+                                      const uint8_t * const    buf )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
 	if ( ! NT4WriteSector ( *hDrv, (long) n, size, buf) ) {
 		(*adfEnv.eFct)("Win32InitDevice : NT4WriteSector");
-		return RC_ERROR;													/* BV */
+		return ADF_RC_ERROR;													/* BV */
 	}
 
-	return RC_OK;
+	return ADF_RC_OK;
 }
 
 
-static RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
+static ADF_RETCODE Win32ReleaseDevice ( struct AdfDevice * const dev )
 {
 	void ** const hDrv = &( ( (struct AdfNativeDevice *) dev->drvData )->hDrv );
 
 	if ( ! NT4CloseDrive ( *hDrv ) )
-		return RC_ERROR;													/* BV */
+		return ADF_RC_ERROR;													/* BV */
 	free ( dev->name );
 	free ( dev->drvData );
 	free ( dev );
 
-	return RC_OK;
+	return ADF_RC_OK;
 }
 
-static BOOL Win32IsDevNative ( void )
+static bool Win32IsDevNative ( void )
 {
-    return TRUE;
+    return true;
 }
 
 
-static BOOL Win32IsDevice ( const char * const devName )
+static bool Win32IsDevice ( const char * const devName )
 {
         return devName[0] == '|';
 }

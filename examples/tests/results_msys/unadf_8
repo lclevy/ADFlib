@@ -1,0 +1,5 @@
+Device : Floppy DD. Cylinders = 80, Heads = 2, Sectors = 11. Volumes = 1
+Volume : Floppy 880 KBytes, "cshell" between sectors [0-1759]. OFS. Filled at 75.2%.
+x - TEMPDIR/x\csh
+x - TEMPDIR/x\s\startup-sequence
+x - TEMPDIR/x\devs\system-configuration

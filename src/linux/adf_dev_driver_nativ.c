@@ -41,7 +41,7 @@ struct AdfNativeDevice {
     int fd;
 };
 
-static BOOL adfLinuxIsBlockDevice ( const char * const devName );
+static bool adfLinuxIsBlockDevice ( const char * const devName );
 
 /*
  * adfLinuxInitDevice
@@ -74,7 +74,7 @@ static struct AdfDevice * adfLinuxInitDevice ( const char * const  name,
 
     if ( ! dev->readOnly ) {
         *fd = open ( name, O_RDWR );
-        dev->readOnly = ( *fd < 0 ) ? TRUE : FALSE;
+        dev->readOnly = ( *fd < 0 ) ? true : false;
     }
 
     if ( dev->readOnly ) {
@@ -124,11 +124,11 @@ static struct AdfDevice * adfLinuxInitDevice ( const char * const  name,
     dev->devType = adfDevType ( dev );
     dev->nVol    = 0;
     dev->volList = NULL;
-    dev->mounted = FALSE;
+    dev->mounted = false;
     dev->name    = strdup ( name );
     dev->drv     = &adfDeviceDriverNative;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -137,13 +137,13 @@ static struct AdfDevice * adfLinuxInitDevice ( const char * const  name,
  *
  * free native device
  */
-static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
+static ADF_RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
 {
     close ( ( (struct AdfNativeDevice *) dev->drvData )->fd );
     free ( dev->drvData );
     free ( dev->name );
     free ( dev );
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -151,22 +151,22 @@ static RETCODE adfLinuxReleaseDevice ( struct AdfDevice * const dev )
  * adfLinuxReadSector
  *
  */
-static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
-                                    const uint32_t           n,
-                                    const unsigned           size,
-                                    uint8_t * const          buf )
+static ADF_RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
+                                        const uint32_t           n,
+                                        const unsigned           size,
+                                        uint8_t * const          buf )
 {
     const int fd = ( (struct AdfNativeDevice *) dev->drvData )->fd;
 
     off_t offset = n * 512;
     if ( lseek ( fd, offset, SEEK_SET ) != offset ) {
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if ( read ( fd, buf, (size_t) size ) != (ssize_t) size )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
-    return RC_OK;   
+    return ADF_RC_OK;   
 }
 
 
@@ -174,22 +174,22 @@ static RETCODE adfLinuxReadSector ( struct AdfDevice * const dev,
  * adfLinuxWriteSector
  *
  */
-static RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
-                                     const uint32_t           n,
-                                     const unsigned           size,
-                                     const uint8_t * const    buf )
+static ADF_RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
+                                         const uint32_t           n,
+                                         const unsigned           size,
+                                         const uint8_t * const    buf )
 {
     const int fd = ( (struct AdfNativeDevice *) dev->drvData )->fd;
 
     off_t offset = n * 512;
     if ( lseek ( fd, offset, SEEK_SET ) != offset ) {
-        return RC_ERROR;
+        return ADF_RC_ERROR;
     }
 
     if ( write ( fd, (void *) buf, (size_t) size ) != size )
-        return RC_ERROR;
+        return ADF_RC_ERROR;
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
@@ -197,9 +197,9 @@ static RETCODE adfLinuxWriteSector ( struct AdfDevice * const dev,
  * adfLinuxIsDevNative
  *
  */
-static BOOL adfLinuxIsDevNative ( void )
+static bool adfLinuxIsDevNative ( void )
 {
-    return TRUE;
+    return true;
 }
 
 
@@ -207,14 +207,14 @@ static BOOL adfLinuxIsDevNative ( void )
  * adfLinuxIsBlockDevice
  *
  */
-static BOOL adfLinuxIsBlockDevice ( const char * const devName )
+static bool adfLinuxIsBlockDevice ( const char * const devName )
 {
     //return ( strncmp ( devName, "/dev/", 5 ) == 0 );
 
     struct stat sb;
     if ( lstat ( devName, &sb ) == -1 ) {
         adfEnv.eFct ( "adfLinuxIsBlockDevice : lstat '%s' failed", devName );
-        return FALSE;
+        return false;
     }
 
     return ( ( sb.st_mode & S_IFMT ) == S_IFBLK );

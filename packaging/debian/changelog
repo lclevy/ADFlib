@@ -1,0 +1,17 @@
+adflib (0.9.0-1) unstable; urgency=medium
+
+  * Library license changed to dual license (GPL2 and LGPL2.1).
+  * Many changes in the API (refactoring, renaming etc.).
+  * Improved support of block allocation bitmap (checking and reconstruction).
+  * Improved device API (added ramdisk and a possibility to implement others).
+  * Improved salvage, added an utility for undeleting files (EXPERIMENTAL!).
+  * Bugfixes: bitmap, memory leaks and others (more in ChangeLog and git log).
+
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Thu, 16 May 2024 17:19:35 +0100
+
+
+adflib (0.8.0-1) unstable; urgency=medium
+
+  * Initial packaging of version 0.8.0 for Debian.
+
+ -- Tomasz Wolak <tomas.wolak@gmail.com>  Mon, 26 Jun 2023 20:01:05 +0100

@@ -6,7 +6,7 @@
 #endif
 
 #include "adflib.h"
-//#include "adf_util.h"
+#include "adf_util.h"
 #include "adf_file_util.h"
 #include "test_util.h"
 
@@ -49,7 +49,7 @@ void test_file_truncate ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -69,9 +69,9 @@ void test_file_truncate ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     const unsigned file_blocks_used_by_empty_file = 1;
@@ -89,7 +89,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     adfFileClose ( file );
 
 
@@ -105,7 +105,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 0, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     // write data buffer to the file
     const unsigned bufsize = tdata->bufsize;
@@ -115,9 +115,9 @@ void test_file_truncate ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = //tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
 
     // verify free blocks
     //ck_assert_int_eq ( free_blocks_before - file_blocks_used_by_empty_file - 1,
@@ -142,7 +142,7 @@ void test_file_truncate ( test_data_t * const tdata )
     ck_assert_int_eq ( 0, file->posInExtBlk );
     //ck_assert_int_eq ( 0, file->posInDataBlk );
     ck_assert_int_eq ( 1, file->nDataBlock );
-    ck_assert_int_eq ( adfEndOfFile ( file ), FALSE );    
+    ck_assert_int_eq ( adfEndOfFile ( file ), false );
     adfFileClose ( file );
 
     //
@@ -159,8 +159,8 @@ void test_file_truncate ( test_data_t * const tdata )
              bufsize, truncsize, file->volume->datablockSize );
     fflush(stdout);
 #endif
-    //ck_assert_int_eq ( RC_OK, adfFileTruncate ( file, truncsize ) );
-    ck_assert_msg ( adfFileTruncate ( file, truncsize ) == RC_OK,
+    //ck_assert_int_eq ( ADF_RC_OK, adfFileTruncate ( file, truncsize ) );
+    ck_assert_msg ( adfFileTruncate ( file, truncsize ) == ADF_RC_OK,
         "adfFileTruncate failed, bufsize %u, truncsize %u",
         bufsize, truncsize );
 
@@ -173,8 +173,8 @@ void test_file_truncate ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
-    vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+    adfVolUnMount ( vol );
+    vol = adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
     // check volume metadata after truncating
     ck_assert_int_eq ( 1, adfDirCountEntries ( vol, vol->curDirPtr ) );
@@ -211,7 +211,7 @@ void test_file_truncate ( test_data_t * const tdata )
                     "file->nDataBlock %d == expected %d, truncsize %u",
                     file->nDataBlock, expected_nDataBlock, truncsize );
     */
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
 
     //printf ("file->pos %u\n", file->pos);
     //fflush(stdout);
@@ -225,13 +225,13 @@ void test_file_truncate ( test_data_t * const tdata )
 #endif
 
     // make sure we have available current ext. block (if needed)
-    /*ck_assert_int_eq ( adfFileSeek ( file, 0 ), RC_OK );
-    ck_assert_int_eq ( adfFileSeek ( file, truncsize + 1 ), RC_OK );
-    ck_assert_int_eq ( adfEndOfFile ( file ), TRUE );
+    /*ck_assert_int_eq ( adfFileSeek ( file, 0 ), ADF_RC_OK );
+    ck_assert_int_eq ( adfFileSeek ( file, truncsize + 1 ), ADF_RC_OK );
+    ck_assert_int_eq ( adfEndOfFile ( file ), true );
     int32_t * const dataBlocks = ( nExtBlocks < 1 ) ? file->fileHdr->dataBlocks :
                                                       file->currentExt->dataBlocks;
     */
-    struct bFileExtBlock * fext = NULL;
+    struct AdfFileExtBlock * fext = NULL;
     int32_t * dataBlocks = NULL;
     if ( nExtBlocks < 1 ) {
         dataBlocks = file->fileHdr->dataBlocks;
@@ -242,17 +242,17 @@ void test_file_truncate ( test_data_t * const tdata )
             dataBlocks = file->currentExt->dataBlocks;
         } else {
             // for OFS - we must read the current ext.(!)
-            fext =  malloc ( sizeof (struct bFileExtBlock) );
+            fext = (struct AdfFileExtBlock *) malloc ( sizeof (struct AdfFileExtBlock) );
             ck_assert_ptr_nonnull ( fext );
             ck_assert_int_eq ( adfFileReadExtBlockN ( file, (int) nExtBlocks - 1, fext ),
-                               RC_OK );
+                               ADF_RC_OK );
             dataBlocks = fext->dataBlocks;
         }
     }
 
     // check the number of non-zero blocks in the array of the last metadata block (header or ext)
     unsigned nonZeroCount = 0;
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         if ( dataBlocks[i] != 0 ) {
             //printf ("A non-zero block %u: %d\n", i, dataBlocks[i] );
             nonZeroCount++;
@@ -263,9 +263,9 @@ void test_file_truncate ( test_data_t * const tdata )
     if ( file->fileHdr->byteSize == 0 )
         ck_assert_uint_eq ( nonZeroCount, 0 );
     else {
-        unsigned nonZeroExpected = ( nDataBlocks % MAX_DATABLK != 0 ?
-                                     nDataBlocks % MAX_DATABLK :
-                                     MAX_DATABLK );
+        unsigned nonZeroExpected = ( nDataBlocks % ADF_MAX_DATABLK != 0 ?
+                                     nDataBlocks % ADF_MAX_DATABLK :
+                                     ADF_MAX_DATABLK );
         //ck_assert_uint_eq ( nonZeroCount, nonZeroExpected );
         ck_assert_msg ( nonZeroCount == nonZeroExpected,
                         "Incorrect number of non-zero blocks in the last metadata block:"
@@ -312,7 +312,7 @@ void test_file_truncate ( test_data_t * const tdata )
     }
     
     // umount volume
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 }
 
 
@@ -420,13 +420,13 @@ Suite * adflib_suite ( void )
 
     tc = tcase_create ( "adflib test_file_truncate_ofs" );
     tcase_add_test ( tc, test_file_truncate_ofs );
-    tcase_set_timeout ( tc, 300 );
+    tcase_set_timeout ( tc, 120 );
     suite_add_tcase ( s, tc );
 
     tc = tcase_create ( "adflib test_file_truncate_ffs" );
     //tcase_add_checked_fixture ( tc, setup_ffs, teardown_ffs );
     tcase_add_test ( tc, test_file_truncate_ffs );
-    tcase_set_timeout ( tc, 300 );
+    tcase_set_timeout ( tc, 120 );
     suite_add_tcase ( s, tc );
 
     return s;
@@ -457,13 +457,13 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);
@@ -480,7 +480,7 @@ void teardown ( test_data_t * const tdata )
     free ( tdata->buffer );
     tdata->buffer = NULL;
 
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     //if ( unlink ( tdata->adfname ) != 0 )

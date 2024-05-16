@@ -1,8 +1,9 @@
 #doc/adf_bitmap.1
 #doc/adf_floppy_create.1
-#doc/adf_floppy_format.1
+#doc/adf_format.1
 #doc/adf_show_metadata.1
 usr/share/man/man1/adf_bitmap.1
 usr/share/man/man1/adf_floppy_create.1
-usr/share/man/man1/adf_floppy_format.1
+usr/share/man/man1/adf_format.1
+usr/share/man/man1/adf_salvage.1
 usr/share/man/man1/adf_show_metadata.1

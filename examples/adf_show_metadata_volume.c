@@ -1,3 +1,25 @@
+/*
+ * adf_show_metadata
+ *
+ * an utility for displaying Amiga disk images (ADF) metadata
+ *
+ *  This file is part of ADFLib.
+ *
+ *  ADFLib is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ADFLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
 
 #include <adf_raw.h>
 #include <ctype.h>
@@ -10,7 +32,7 @@
 
 
 static void show_bmpages ( struct AdfVolume * const vol,
-                           const struct bRootBlock * const rblock );
+                           const struct AdfRootBlock * const rblock );
 
 static void show_bmpages_array ( const int32_t * const bmpages,
                                  const unsigned        size );
@@ -18,20 +40,19 @@ static void show_bmpages_array ( const int32_t * const bmpages,
 
 void show_volume_metadata ( struct AdfVolume * const vol )
 {
-    adfVolumeInfo ( vol );
+    adfVolInfo ( vol );
 
-    struct bBootBlock bblock;
-    if ( adfReadBootBlock ( vol, &bblock ) != RC_OK ) {
+    struct AdfBootBlock bblock;
+    if ( adfReadBootBlock ( vol, &bblock ) != ADF_RC_OK ) {
         fprintf ( stderr, "Error reading rootblock\n");
         return;
     }
     show_bootblock ( &bblock, false );
 
-    struct bRootBlock rblock;
-    SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
+    ADF_SECTNUM root_block_sector = adfVolCalcRootBlk ( vol );
     printf ("\nRoot block sector:\t%u\n", root_block_sector );
-
-    if ( adfReadRootBlock ( vol, (uint32_t)root_block_sector, &rblock ) != RC_OK ) {
+    struct AdfRootBlock rblock;
+    if ( adfReadRootBlock ( vol, (uint32_t)root_block_sector, &rblock ) != ADF_RC_OK ) {
         fprintf ( stderr, "Error reading rootblock at sector %u.\n", root_block_sector );
         return;
     }
@@ -48,17 +69,17 @@ static inline char printable ( char c )
 }
 
 
-void show_bootblock ( const struct bBootBlock * const bblock,
-                      bool                            show_data )
+void show_bootblock ( const struct AdfBootBlock * const bblock,
+                      bool                              show_data )
 {
     printf ("\nBootblock:\n  dosType:\t");
     for ( unsigned i = 0 ; i < 3 ; i++ )
         putchar ( printable ( bblock->dosType[i] ) );
     printf ( "%c (0x%x)\n", printable ( bblock->dosType[3] ), bblock->dosType[3] );
 
-    uint8_t bblock_copy[sizeof(struct bBootBlock)];
-    memcpy ( bblock_copy, bblock, sizeof (struct bBootBlock) );
-    swapEndian ( bblock_copy, SWBL_BOOT );
+    uint8_t bblock_copy[sizeof(struct AdfBootBlock)];
+    memcpy ( bblock_copy, bblock, sizeof (struct AdfBootBlock) );
+    adfSwapEndian ( bblock_copy, ADF_SWBL_BOOT );
     uint32_t checksum_calculated = adfBootSum ( bblock_copy );
     printf ( "  checkSum:\t0x%x\n"
              "  - calculated:\t0x%x%s\n"
@@ -73,7 +94,7 @@ void show_bootblock ( const struct bBootBlock * const bblock,
 }
 
 
-void show_bootblock_data ( const struct bBootBlock * const bblock )
+void show_bootblock_data ( const struct AdfBootBlock * const bblock )
 {
     puts ( "\nbootblock data / code (non-zero bytes):\n" );
     for ( unsigned i = 0 ; i < 500 + 512 ; ++i ) {
@@ -85,13 +106,13 @@ void show_bootblock_data ( const struct bBootBlock * const bblock )
 }
 
 
-void show_rootblock ( const struct bRootBlock * const rblock )
+void show_rootblock ( const struct AdfRootBlock * const rblock )
 {
     uint8_t rblock_orig_endian[512];
     memcpy ( rblock_orig_endian, rblock, 512 );
-    swapEndian ( rblock_orig_endian, SWBL_ROOT );
+    adfSwapEndian ( rblock_orig_endian, ADF_SWBL_ROOT );
     uint32_t checksum_calculated = adfNormalSum ( rblock_orig_endian, 0x14,
-                                                  sizeof (struct bRootBlock ) );
+                                                  sizeof (struct AdfRootBlock ) );
     printf ( "\nRootblock:\n"
              //"  offset field\t\tvalue\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
@@ -129,9 +150,9 @@ void show_rootblock ( const struct bRootBlock * const rblock )
              rblock->checkSum,
              checksum_calculated,
              rblock->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             HT_SIZE, //rblock->hashTable[HT_SIZE],
+             ADF_HT_SIZE, //rblock->hashTable[ADF_HT_SIZE],
              rblock->bmFlag,
-             BM_PAGES_ROOT_SIZE, //rblock->bmPages[BM_PAGES_ROOT_SIZE],
+             ADF_BM_PAGES_ROOT_SIZE, //rblock->bmPages[ADF_BM_PAGES_ROOT_SIZE],
              rblock->bmExt,
              rblock->cDays, rblock->cDays,
              rblock->cMins, rblock->cMins,
@@ -156,19 +177,19 @@ void show_rootblock ( const struct bRootBlock * const rblock )
 
 
 static void show_bmpages ( struct AdfVolume * const        vol,
-                           const struct bRootBlock * const rblock )
+                           const struct AdfRootBlock * const rblock )
 {
     // show bmpages from the root block
-    show_bmpages_array ( rblock->bmPages, BM_PAGES_ROOT_SIZE );
+    show_bmpages_array ( rblock->bmPages, ADF_BM_PAGES_ROOT_SIZE );
 
     // show bm ext block pages
-    SECTNUM nSect = rblock->bmExt;
+    ADF_SECTNUM nSect = rblock->bmExt;
     while ( nSect != 0 ) {
-        struct bBitmapExtBlock bmExtBlock;
-        RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
-        if ( rc == RC_OK ) {
+        struct AdfBitmapExtBlock bmExtBlock;
+        ADF_RETCODE rc = adfReadBitmapExtBlock ( vol, nSect, &bmExtBlock );
+        if ( rc == ADF_RC_OK ) {
             show_bmpages_array ( (const int32_t * const) &bmExtBlock.bmPages,
-                                 BM_PAGES_EXT_SIZE );
+                                 ADF_BM_PAGES_EXT_SIZE );
         } else {
             fprintf ( stderr, "Error reading bitmap allocation block, sector %u.\n",
                       nSect );

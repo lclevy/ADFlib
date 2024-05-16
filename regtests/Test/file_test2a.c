@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
  
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
     /* mount existing device : FFS */
     hd = adfMountDev ( "hd.adf", ADF_ACCESS_MODE_READWRITE );
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
     adfDeviceInfo(hd);
 
-    vol = adfMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
 
     /* write one file */
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree(list);
 */
 
     /* re read this file */
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
     adfCloseFile(file);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

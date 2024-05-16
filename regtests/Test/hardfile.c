@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( hd );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
@@ -48,14 +48,14 @@ int main(int argc, char *argv[])
     adfDevInfo(hd);
 
     /* mount the 2 partitions */
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     /* unmounts */
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

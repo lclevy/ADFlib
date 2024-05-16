@@ -1,12 +1,12 @@
 
-#ifndef __ADF_DEV_H__
-#define __ADF_DEV_H__
+#ifndef ADF_DEV_H
+#define ADF_DEV_H
 
 #include "adf_types.h"
 #include "adf_err.h"
 #include "adf_dev_driver.h"
+#include "adf_prefix.h"
 #include "adf_vol.h"
-#include "prefix.h"
 
 
 #include <stdio.h>
@@ -20,15 +20,17 @@ struct Partition {
 
 /* ----- DEVICES ----- */
 
-#define DEVTYPE_FLOPDD 		1
-#define DEVTYPE_FLOPHD 		2
-#define DEVTYPE_HARDDISK 	3
-#define DEVTYPE_HARDFILE 	4
+typedef enum {
+    ADF_DEVTYPE_FLOPDD   = 1,
+    ADF_DEVTYPE_FLOPHD   = 2,
+    ADF_DEVTYPE_HARDDISK = 3,
+    ADF_DEVTYPE_HARDFILE = 4
+} AdfDeviceType;
 
 struct AdfDevice {
     char * name;
-    int devType;               /* see below */
-    BOOL readOnly;
+    AdfDeviceType devType;
+    bool readOnly;
     uint32_t size;                /* in bytes */
 
     uint32_t cylinders;            /* geometry */
@@ -38,7 +40,7 @@ struct AdfDevice {
     const struct AdfDeviceDriver * drv;
     void *                   drvData;   /* driver-specific device data,
                                            (private, use only in the driver code!) */
-    BOOL mounted;
+    bool mounted;
 
     // stuff available when mounted
     int nVol;                  /* partitions */
@@ -59,14 +61,14 @@ struct AdfDevice {
  * the whole device on _device_ block level - and similar.
  */
 
-PREFIX struct AdfDevice * adfDevCreate ( const char * const driverName,
-                                         const char * const name,
-                                         const uint32_t     cylinders,
-                                         const uint32_t     heads,
-                                         const uint32_t     sectors );
+ADF_PREFIX struct AdfDevice * adfDevCreate ( const char * const driverName,
+                                             const char * const name,
+                                             const uint32_t     cylinders,
+                                             const uint32_t     heads,
+                                             const uint32_t     sectors );
 
-PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
-                                       const AdfAccessMode mode );
+ADF_PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
+                                           const AdfAccessMode mode );
 
 /*
  * adfDevOpenWithDriver
@@ -75,27 +77,28 @@ PREFIX struct AdfDevice * adfDevOpen ( const char * const  name,
  * opening a file/device with the driver specified by its name
  * (esp. useful for custom, user-implemented device drivers)
  */
-PREFIX struct AdfDevice * adfDevOpenWithDriver ( const char * const  driverName,
-                                                 const char * const  name,
-                                                 const AdfAccessMode mode );
+ADF_PREFIX struct AdfDevice * adfDevOpenWithDriver (
+    const char * const  driverName,
+    const char * const  name,
+    const AdfAccessMode mode );
 
-PREFIX void adfDevClose ( struct AdfDevice * const dev );
-
-
-PREFIX int adfDevType ( const struct AdfDevice * const dev );
-PREFIX void adfDevInfo ( const struct AdfDevice * const dev );
-
-PREFIX RETCODE adfDevMount ( struct AdfDevice * const dev );
-PREFIX void adfDevUnMount ( struct AdfDevice * const dev );
+ADF_PREFIX void adfDevClose ( struct AdfDevice * const dev );
 
 
-RETCODE adfDevReadBlock ( struct AdfDevice * const dev,
-                          const uint32_t           pSect,
-                          const uint32_t           size,
-                          uint8_t * const          buf );
+ADF_PREFIX int adfDevType ( const struct AdfDevice * const dev );
+ADF_PREFIX void adfDevInfo ( const struct AdfDevice * const dev );
 
-RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
-                           const uint32_t           pSect,
-                           const uint32_t           size,
-                           const uint8_t * const    buf );
-#endif
+ADF_PREFIX ADF_RETCODE adfDevMount ( struct AdfDevice * const dev );
+ADF_PREFIX void adfDevUnMount ( struct AdfDevice * const dev );
+
+
+ADF_RETCODE adfDevReadBlock ( struct AdfDevice * const dev,
+                              const uint32_t           pSect,
+                              const uint32_t           size,
+                              uint8_t * const          buf );
+
+ADF_RETCODE adfDevWriteBlock ( struct AdfDevice * const dev,
+                               const uint32_t           pSect,
+                               const uint32_t           size,
+                               const uint8_t * const    buf );
+#endif  /* ADF_DEV_H */

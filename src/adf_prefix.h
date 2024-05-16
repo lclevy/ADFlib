@@ -1,8 +1,5 @@
-#ifndef _PREFIX_H
-#define _PREFIX_H 1
-
 /*
- * prefix.h
+ * adf_prefix.h
  *
  *  $Id$
  *
@@ -22,10 +19,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */ 
+
+#ifndef ADF_PREFIX_H
+#define ADF_PREFIX_H
 
 //#ifdef WIN32DLL
 //#ifdef _WIN32
@@ -38,13 +38,13 @@
    https://learn.microsoft.com/en-us/cpp/build/importing-into-an-application-using-declspec-dllimport?view=msvc-170
 */
 #ifdef _EXPORTING
-   #define PREFIX    __declspec(dllexport)
+   #define ADF_PREFIX    __declspec(dllexport)
 #else
-   #define PREFIX    __declspec(dllimport)
+   #define ADF_PREFIX    __declspec(dllimport)
 #endif
 
 #else
-#define PREFIX 
+#define ADF_PREFIX
 #endif
 
-#endif /* _PREFIX_H */
+#endif  /* ADF_PREFIX_H */

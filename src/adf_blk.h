@@ -20,90 +20,106 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
-
 #ifndef ADF_BLK_H
-#define ADF_BLK_H 1
+#define ADF_BLK_H
 
-#include <stdint.h>
+#include "adf_types.h"
 
 
-#define LOGICAL_BLOCK_SIZE    512
+#define ADF_LOGICAL_BLOCK_SIZE 512
 
 /* ----- FILE SYSTEM ----- */
 
-#define FSMASK_FFS         1
-#define FSMASK_INTL        2
-#define FSMASK_DIRCACHE    4
+/*
+ * Filesystem type, defined in volume's bootblock as "DOSn"
+ * where bitmasked n has the meaning as below.
+ * ( see also: http://lclevy.free.fr/adflib/adf_info.html#p41 )
+ */
+#define ADF_DOSFS_OFS         0   /* 000 */
+#define ADF_DOSFS_FFS         1   /* 001 */
+#define ADF_DOSFS_INTL        2   /* 010 */
+#define ADF_DOSFS_DIRCACHE    4   /* 100 */
 
-#define isFFS(c)           ((c)&FSMASK_FFS)
-#define isOFS(c)           (!((c)&FSMASK_FFS))
-#define isINTL(c)          ((c)&FSMASK_INTL)
-#define isDIRCACHE(c)      ((c)&FSMASK_DIRCACHE)
+static inline bool adfDosFsIsFFS ( const uint8_t c ) {
+    return c & ADF_DOSFS_FFS;
+}
+
+static inline bool adfDosFsIsOFS ( const uint8_t c ) {
+    return ! adfDosFsIsFFS ( c );
+}
+
+static inline bool adfDosFsHasINTL ( const uint8_t c ) {
+    return c & ADF_DOSFS_INTL;
+}
+
+static inline bool adfDosFsHasDIRCACHE ( const uint8_t c ) {
+    return c & ADF_DOSFS_DIRCACHE;
+}
 
 
 /* ----- ENTRIES ----- */
 
 /* access constants */
 
-#define ACCMASK_D	(1<<0)
-#define ACCMASK_E	(1<<1)
-#define ACCMASK_W	(1<<2)
-#define ACCMASK_R	(1<<3)
-#define ACCMASK_A	(1<<4)
-#define ACCMASK_P	(1<<5)
-#define ACCMASK_S	(1<<6)
-#define ACCMASK_H	(1<<7)
+#define ADF_ACCMASK_D	(1<<0)
+#define ADF_ACCMASK_E	(1<<1)
+#define ADF_ACCMASK_W	(1<<2)
+#define ADF_ACCMASK_R	(1<<3)
+#define ADF_ACCMASK_A	(1<<4)
+#define ADF_ACCMASK_P	(1<<5)
+#define ADF_ACCMASK_S	(1<<6)
+#define ADF_ACCMASK_H	(1<<7)
 
-#define hasD(c)    ((c)&ACCMASK_D)
-#define hasE(c)    ((c)&ACCMASK_E)
-#define hasW(c)    ((c)&ACCMASK_W)
-#define hasR(c)    ((c)&ACCMASK_R)
-#define hasA(c)    ((c)&ACCMASK_A)
-#define hasP(c)	   ((c)&ACCMASK_P)
-#define hasS(c)    ((c)&ACCMASK_S)
-#define hasH(c)    ((c)&ACCMASK_H)
+static inline bool adfAccHasD ( const int32_t c )  { return c & ADF_ACCMASK_D; }
+static inline bool adfAccHasE ( const int32_t c )  { return c & ADF_ACCMASK_E; }
+static inline bool adfAccHasW ( const int32_t c )  { return c & ADF_ACCMASK_W; }
+static inline bool adfAccHasR ( const int32_t c )  { return c & ADF_ACCMASK_R; }
+static inline bool adfAccHasA ( const int32_t c )  { return c & ADF_ACCMASK_A; }
+static inline bool adfAccHasP ( const int32_t c )  { return c & ADF_ACCMASK_P; }
+static inline bool adfAccHasS ( const int32_t c )  { return c & ADF_ACCMASK_S; }
+static inline bool adfAccHasH ( const int32_t c )  { return c & ADF_ACCMASK_H; }
 
 
 /* ----- BLOCKS ----- */
 
 /* block constants */
 
-#define BM_VALID	-1
-#define BM_INVALID	0
+#define ADF_BM_VALID	-1
+#define ADF_BM_INVALID	0
 
-#define HT_SIZE		72
-#define BM_PAGES_ROOT_SIZE 25
-#define BM_PAGES_EXT_SIZE  127
-#define BM_MAP_SIZE        127
-#define MAX_DATABLK	72
+#define ADF_HT_SIZE            72
+#define ADF_BM_PAGES_ROOT_SIZE 25
+#define ADF_BM_PAGES_EXT_SIZE  127
+#define ADF_BM_MAP_SIZE        127
+#define ADF_MAX_DATABLK        72
 
-#define MAXNAMELEN	30
-#define MAXCMMTLEN	79
+#define ADF_MAX_NAME_LEN	30
+#define ADF_MAX_COMMENT_LEN	79
 
 
 /* block primary and secondary types */
 
-#define T_HEADER	2
-#define ST_ROOT		1
-#define ST_DIR		2
-#define ST_FILE		-3
-#define ST_LFILE	-4
-#define ST_LDIR		4
-#define ST_LSOFT	3
-#define T_LIST		16
-#define T_DATA		8
-#define T_DIRC		33
+#define ADF_T_HEADER    2
+#define ADF_ST_ROOT     1
+#define ADF_ST_DIR      2
+#define ADF_ST_FILE    -3
+#define ADF_ST_LFILE   -4
+#define ADF_ST_LDIR     4
+#define ADF_ST_LSOFT    3
+#define ADF_T_LIST     16
+#define ADF_T_DATA      8
+#define ADF_T_DIRC     33
 
 
 /*--- blocks structures --- */
 
 
-struct bBootBlock {
+struct AdfBootBlock {
 /*000*/	char	dosType[4];
 /*004*/	uint32_t checkSum;
 /*008*/	int32_t	rootBlock;
@@ -111,22 +127,22 @@ struct bBootBlock {
 };
 
 
-struct bRootBlock {
+struct AdfRootBlock {
 /*000*/	int32_t	type;
         int32_t	headerKey;
         int32_t	highSeq;
 /*00c*/	int32_t	hashTableSize;
         int32_t	firstData;
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
+/*018*/	int32_t	hashTable[ADF_HT_SIZE];		/* hash table */
 /*138*/	int32_t	bmFlag;				/* bitmap flag, -1 means VALID */
-/*13c*/	int32_t	bmPages[BM_PAGES_ROOT_SIZE];
+/*13c*/	int32_t	bmPages[ADF_BM_PAGES_ROOT_SIZE];
 /*1a0*/	int32_t	bmExt;
 /*1a4*/	int32_t	cDays; 	/* creation date FFS and OFS */
 /*1a8*/	int32_t	cMins;
 /*1ac*/	int32_t	cTicks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	diskName[MAXNAMELEN+1];
+/*1b1*/	char 	diskName[ ADF_MAX_NAME_LEN + 1 ];
         char	r2[8];
 /*1d8*/	int32_t	days;		/* last access : days after 1 jan 1978 */
 /*1dc*/	int32_t	mins;		/* hours and minutes in minutes */
@@ -141,23 +157,23 @@ struct bRootBlock {
 };
 
 
-struct bEntryBlock {
-/*000*/	int32_t	 type;		/* T_HEADER == 2 */
+struct AdfEntryBlock {
+/*000*/	int32_t	 type;		/* ADF_T_HEADER == 2 */
 /*004*/	int32_t	 headerKey;	/* current block number */
         int32_t	 r1[3];
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	 hashTable[HT_SIZE];
+/*018*/	int32_t	 hashTable[ADF_HT_SIZE];
         int32_t	 r2[2];
 /*140*/	int32_t	 access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t byteSize;
 /*148*/	uint8_t	 commLen;
-/*149*/	char	 comment[MAXCMMTLEN + 1];
-        char	 r3[91 - ( MAXCMMTLEN + 1 )];
+/*149*/	char	 comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	 r3[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	 days;
 /*1a8*/	int32_t	 mins;
 /*1ac*/	int32_t	 ticks;
 /*1b0*/	uint8_t	 nameLen;
-/*1b1*/	char	 name[MAXNAMELEN + 1];
+/*1b1*/	char	 name[ ADF_MAX_NAME_LEN + 1 ];
         int32_t	 r4;
 /*1d4*/	int32_t	 realEntry;
 /*1d8*/	int32_t	 nextLink;
@@ -169,26 +185,26 @@ struct bEntryBlock {
 };
 
 
-struct bFileHeaderBlock {
+struct AdfFileHeaderBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* current block number */
 /*008*/	int32_t	highSeq;	/* number of data block in this hdr block */
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	dataBlocks[MAX_DATABLK];
+/*018*/	int32_t	dataBlocks[ADF_MAX_DATABLK];
 /*138*/	int32_t	r1;
 /*13c*/	int32_t	r2;
 /*140*/	int32_t	access;	/* bit0=del, 1=modif, 2=write, 3=read */
 /*144*/	uint32_t	byteSize;
 /*148*/	uint8_t	commLen;
-/*149*/	char	comment[MAXCMMTLEN+1];
-        char	r3[91-(MAXCMMTLEN+1)];
+/*149*/	char	comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	r3[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	days;
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char	fileName[MAXNAMELEN+1];
+/*1b1*/	char	fileName[ADF_MAX_NAME_LEN+1];
         int32_t	r4;
 /*1d4*/	int32_t	real;		/* unused == 0 */
 /*1d8*/	int32_t	nextLink;	/* link chain */
@@ -202,14 +218,14 @@ struct bFileHeaderBlock {
 
 /*--- file header extension block structure ---*/
 
-struct bFileExtBlock {
+struct AdfFileExtBlock {
 /*000*/	int32_t	type;		/* == 0x10 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	highSeq;
 /*00c*/	int32_t	dataSize;	/* == 0 */
 /*010*/	int32_t	firstData;	/* == 0 */
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	dataBlocks[MAX_DATABLK];
+/*018*/	int32_t	dataBlocks[ADF_MAX_DATABLK];
         int32_t	r[45];
         int32_t	info;		/* == 0 */
         int32_t	nextSameHash;	/* == 0 */
@@ -220,25 +236,25 @@ struct bFileExtBlock {
 
 
 
-struct bDirBlock {
+struct AdfDirBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	highSeq;	/* == 0 */
 /*00c*/	int32_t	hashTableSize;	/* == 0 */
         int32_t	r1;		/* == 0 */
 /*014*/	uint32_t checkSum;
-/*018*/	int32_t	hashTable[HT_SIZE];		/* hash table */
+/*018*/	int32_t	hashTable[ADF_HT_SIZE];		/* hash table */
         int32_t	r2[2];
 /*140*/	int32_t	access;
         int32_t	r4;		/* == 0 */
 /*148*/	uint8_t	commLen;
-/*149*/	char	comment[MAXCMMTLEN+1];
-        char	r5[91-(MAXCMMTLEN+1)];
+/*149*/	char	comment[ ADF_MAX_COMMENT_LEN + 1 ];
+        char	r5[ 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ];
 /*1a4*/	int32_t	days;		/* last access */
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	dirName[MAXNAMELEN+1];
+/*1b1*/	char 	dirName[ADF_MAX_NAME_LEN+1];
         int32_t	r6;
 /*1d4*/	int32_t	real;		/* ==0 */
 /*1d8*/	int32_t	nextLink;	/* link list */
@@ -251,7 +267,7 @@ struct bDirBlock {
 
 
 
-struct bOFSDataBlock{
+struct AdfOFSDataBlock {
 /*000*/	int32_t	type;		/* == 8 */
 /*004*/	int32_t	headerKey;	/* pointer to file_hdr block */
 /*008*/	uint32_t seqNum;	/* file data block number */
@@ -264,19 +280,19 @@ struct bOFSDataBlock{
 
 /* --- bitmap --- */
 
-struct bBitmapBlock {
+struct AdfBitmapBlock {
 /*000*/	uint32_t checkSum;
-/*004*/	uint32_t map[BM_MAP_SIZE];
+/*004*/	uint32_t map[ADF_BM_MAP_SIZE];
 	};
 
 
-struct bBitmapExtBlock {
-/*000*/	int32_t	bmPages[BM_PAGES_EXT_SIZE];
+struct AdfBitmapExtBlock {
+/*000*/	int32_t	bmPages[ADF_BM_PAGES_EXT_SIZE];
 /*1fc*/	int32_t	nextBlock;
 	};
 
 
-struct bLinkBlock {
+struct AdfLinkBlock {
 /*000*/	int32_t	type;		/* == 2 */
 /*004*/	int32_t	headerKey;	/* self pointer */
         int32_t	r1[3];
@@ -287,7 +303,7 @@ struct bLinkBlock {
 /*1a8*/	int32_t	mins;
 /*1ac*/	int32_t	ticks;
 /*1b0*/	uint8_t	nameLen;
-/*1b1*/	char 	name[MAXNAMELEN+1];
+/*1b1*/	char 	name[ADF_MAX_NAME_LEN+1];
         int32_t	r3;
 /*1d4*/	int32_t	realEntry;
 /*1d8*/	int32_t	nextLink;
@@ -302,7 +318,7 @@ struct bLinkBlock {
 
 /*--- directory cache block structure ---*/
 
-struct bDirCacheBlock {
+struct AdfDirCacheBlock {
 /*000*/	int32_t	type;		/* == 33 */
 /*004*/	int32_t	headerKey;
 /*008*/	int32_t	parent;
@@ -313,5 +329,4 @@ struct bDirCacheBlock {
 	};
 
 
-#endif /* ADF_BLK_H */
-/*##########################################################################*/
+#endif  /* ADF_BLK_H */

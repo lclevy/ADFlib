@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -110,9 +110,9 @@ void adfDays2Date ( int32_t       days,
  *
  * true if a year (y) is leap
  */
-BOOL adfIsLeap ( const int y )
+bool adfIsLeap ( const int y )
 {
-    return( (BOOL) ( !(y%100) ? !(y%400) : !(y%4) ) );
+    return( (bool) ( !(y%100) ? !(y%400) : !(y%4) ) );
 }
 
 
@@ -213,5 +213,18 @@ void dumpBlock ( const uint8_t * const buf )
 }
 
 
+#ifndef HAVE_STRNDUP
+/* strndup() custom implementation (used only where missing) */
+char * strndup ( const char * const s, size_t n )
+{
+    n = min ( strlen(s), n );
+    char * const buf = (char *) malloc ( n + 1 );
+    if ( buf != NULL ) {
+        memcpy ( buf, s, n );
+        buf[n] = '\0';
+    }
+    return buf;
+}
+#endif
 
 /*################################################################################*/

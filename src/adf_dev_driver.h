@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -43,29 +43,25 @@ struct AdfDeviceDriver {
 
     /* required */
 
-    RETCODE (*closeDev)(struct AdfDevice * const dev);
+    ADF_RETCODE (*closeDev)(struct AdfDevice * const dev);
 
-    RETCODE (*readSector)( struct AdfDevice * const dev,
+    ADF_RETCODE (*readSector)( struct AdfDevice * const dev,
                            const uint32_t           n,
                            const unsigned           size,
                            uint8_t * const          buf );
 
-    RETCODE (*writeSector)( struct AdfDevice * const dev,
+    ADF_RETCODE (*writeSector)( struct AdfDevice * const dev,
                             const uint32_t           n,
                             const unsigned           size,
                             const uint8_t * const    buf );
 
-    BOOL (*isNative)( void );   /* should return true only on a native block device driver;
-                                   used only in adfMountDev() to determine which method
-                                   should be used to mount the device
-                                   (check if there is a better way so that this can be removed */
-
+    bool (*isNative)( void );   /* should return true only on a native block device driver,
+                                   ie. such driver which can return real hardware
+                                   geometry information */
 
     /* optional (can be NULL); should help to match device string with the driver */
 
-    BOOL (*isDevice)( const char * const name );
+    bool (*isDevice)( const char * const name );
 };
 
-#endif /* ADF_DEV_DRIVER_H */
-
-/*#######################################################################################*/
+#endif  /* ADF_DEV_DRIVER_H */

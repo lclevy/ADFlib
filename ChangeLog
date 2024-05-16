@@ -1,3 +1,30 @@
+15MAY2024
+ADFlib 0.9.0
+- license
+  - since this version, the library is on dual license: GPL2 and LGPL 2.1
+- api - many changes(!):
+  - renamed many functions, constants etc., with the goal
+    to provide a separated library namespace
+- write support
+  - added checking validity of bitmap allocation
+  - added possibility to rebuild the bitmap
+- command-line utilities:
+  - added adf_bitmap - to view or enforce reconstruction of the block
+                       allocation bitmap
+  - added adf_salvage - to list and recover deleted files
+- devices:
+  - cleaned-up and unified device interface for all existing device types
+    (dump, native), allowing to easily implement and use new types of devices
+    in a safe and controlled way (enabling/disabling types of devices in code)
+  - added ramdisk device (to allow eg. faster testing)
+- numerous refactorings, improvements and bugfixes, among them:
+  - segfault on reading bitmap (rootblock bmpages beyond expected size)
+    - several memory leaks (mosly in uncommon cases) and many other
+      memory-related issues (thanks to Didier Malenfant!)
+  - improved and better tested block allocation bitmap code
+- tests
+  - many added and/or improved
+
 26MAY2023
 ADFlib 0.8.0
 - files:
