@@ -1,4 +1,6 @@
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 AM_CPPFLAGS = -std=c99 -Wall -Wextra -pedantic \
     -Werror-implicit-function-declaration \
     -I$(top_srcdir)/src -I$(top_srcdir)/src/$(NATIVE_DIR)
@@ -30,7 +32,8 @@ test_adfDays2Date_CFLAGS = $(CHECK_CFLAGS)
 test_adfDays2Date_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfDays2Date_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
-test_adfPos2DataBlock_SOURCES = test_adfPos2DataBlock.c
+test_adfPos2DataBlock_SOURCES = test_adfPos2DataBlock.c \
+    $(top_builddir)/src/adf_util.c
 test_adfPos2DataBlock_CFLAGS = $(CHECK_CFLAGS)
 test_adfPos2DataBlock_LDADD = $(ADFLIBS) $(CHECK_LIBS)
 test_adfPos2DataBlock_DEPENDENCIES = $(top_builddir)/src/libadf.la

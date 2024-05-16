@@ -48,7 +48,9 @@ add_executable ( test_adfPos2DataBlock
                  test_adfPos2DataBlock.c )
 
 add_executable ( test_adfDays2Date
-                 test_adfDays2Date.c )
+                 test_adfDays2Date.c
+                  ${PROJECT_SOURCE_DIR}/src/adf_util.c
+                )
 
 add_executable ( test_dev_open
                  test_dev_open.c )
@@ -113,7 +115,7 @@ target_link_libraries ( test_adfPos2DataBlock PUBLIC
 )
 
 target_link_libraries ( test_adfDays2Date PUBLIC
-  adf
+#  adf
   ${CHECK_LIBRARIES}
 )
 
