@@ -1092,6 +1092,12 @@ uint32_t adfFileWrite ( struct AdfFile * const file,
         file->posInDataBlk += size;
         file->currentDataBlockChanged = true;
 
+        if ( adfVolIsOFS ( file->volume ) ) {
+            struct AdfOFSDataBlock *ofsData =
+                (struct AdfOFSDataBlock *) file->currentData;
+            ofsData->dataSize = max ( ofsData->dataSize, file->posInDataBlk );
+        }
+
         // update file size in the header
         file->fileHdr->byteSize = max ( file->fileHdr->byteSize,
                                         file->pos );
