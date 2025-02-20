@@ -1,3 +1,15 @@
+
+## Important notes about the repo(!!!)
+
+1. The development of the project is moved from
+   [the Laurent Clévy's ADFlib repo](https://github.com/lclevy/ADFlib)
+   to [the new one](https://github.com/t-w/ADFlib). So for getting future
+   releases as well as the lastest development code,
+   the new repository should be used.
+
+2. Please read the 'Contributing' section before submitting any PRs.
+
+
 # ADFlib (Amiga Disk File library)
 
 ## Introduction
@@ -43,7 +55,7 @@ Usage info is shown when they are executed without any parameters
 
 ### unADF
 
-`unADF` is an unzip like utility for .ADF files:
+`unADF` is an unzip like utility for `.ADF` files:
 
 ```
 unadf [-lrcsp -v n] dumpname.adf [files-with-path] [-d extractdir]
@@ -97,7 +109,7 @@ and undelete them (in the future possibly also extract them to local filesystem)
 
 ## Credits:
 
-- main design and code : Laurent Clevy
+- main design and code : Laurent Clévy
 - current maintainer, recent core developments (Dec 2022-): Tomasz Wolak
 - unadf rewrite (in 2019) : Stuart Caie
 - Bug fixes and C++ wrapper : Bjarke Viksoe (adfwrapper.h)
