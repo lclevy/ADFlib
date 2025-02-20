@@ -3,7 +3,8 @@
  */
 
 #include <stdio.h>
-#include"adflib.h"
+#include <stdlib.h>
+#include "adflib.h"
 
 #define TEST_VERBOSITY 0
 
@@ -110,7 +111,7 @@ int main ( int argc, char * argv[] )
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     int status = 0;
 
     test_ofs.image_filename = argv[1];
@@ -134,22 +135,33 @@ int run_single_seek_tests ( reading_test_t * test_data )
     fflush ( stdout );
 #endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfDevOpen ( test_data->image_filename,
+                                                ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  test_data->image_filename );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
+        adfDevClose ( dev );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                  test_data->image_filename );
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 #if TEST_VERBOSITY > 0
-    adfVolumeInfo ( vol );
+    adfVolInfo ( vol );
 #endif
 
     int status = 0;
@@ -181,8 +193,9 @@ int run_single_seek_tests ( reading_test_t * test_data )
     adfFileClose ( file );
 
 cleanup:
-    adfUnMount ( vol );
-    adfUnMountDev ( dev );
+    adfVolUnMount ( vol );
+    adfDevUnMount ( dev );
+    adfDevClose ( dev );
 
     return status;
 }
@@ -197,8 +210,8 @@ int test_single_seek ( struct AdfFile *    file,
              offset, offset );
     fflush ( stdout );
 #endif
-    RETCODE rc = adfFileSeek ( file, offset );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfFileSeek ( file, offset );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Seeking to position 0x%x (%d) failed!!!\n",
                   offset, offset );
         return 1;
@@ -237,8 +250,8 @@ int test_seek_eof ( struct AdfFile * file,
 #endif
 
     // seek to end and check EOF
-    RETCODE rc = adfFileSeek ( file, offset );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfFileSeek ( file, offset );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, " -> seeking to 0x%x (%d) failed!!!\n",
                   offset, offset );
         return 1;

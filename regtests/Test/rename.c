@@ -23,7 +23,6 @@ void MyVer(char *msg)
 int main(int argc, char *argv[])
 {
     (void) argc, (void) argv;
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfFile *fic;
     unsigned char buf[1];
@@ -32,46 +31,74 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    hd = adfCreateDumpDevice("rename-newdev", 80, 2, 11);
+    struct AdfDevice * const hd = adfDevCreate ( "dump", "rename-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != ADF_RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
-    if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
+    if (!fic) {
+        adfVolUnMount(vol);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        adfEnvCleanUp();
+        exit(1);
+    }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
     fic = adfFileOpen ( vol, "file_24", ADF_FILE_MODE_WRITE );
-    if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
+    if (!fic) {
+        adfVolUnMount(vol);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        adfEnvCleanUp();
+        exit(1);
+    }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
     fic = adfFileOpen ( vol, "dir_1a", ADF_FILE_MODE_WRITE );
-    if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
+    if (!fic) {
+        adfVolUnMount(vol);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        adfEnvCleanUp();
+        exit(1);
+    }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
     fic = adfFileOpen ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
-    if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
+    if (!fic) {
+        adfVolUnMount(vol);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        adfEnvCleanUp();
+        exit(1);
+    }
     adfFileWrite ( fic, 1, buf );
     adfFileClose ( fic );
 
@@ -113,7 +140,13 @@ int main(int argc, char *argv[])
     puts("Create dir_5u, Rename dir_3 into toto");
 /*
     fic = adfOpenFile ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
-    if (!fic) { adfUnMount(vol); adfUnMountDev(hd); adfEnvCleanUp(); exit(1); }
+    if (!fic) {
+        adfVolUnMount(vol);
+        adfUnMountDev(hd);
+        adfCloseDev(hd);
+        adfEnvCleanUp();
+        exit(1);
+    }
     adfWriteFile(fic,1,buf);
     adfCloseFile(fic);
 */
@@ -135,8 +168,9 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    adfUnMount(vol);
-    adfUnMountDev(hd);
+    adfVolUnMount(vol);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

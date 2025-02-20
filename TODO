@@ -36,15 +36,14 @@ To do and/or consider (no particular order):
   to utility programs - like in case of any repair/recovery tools, where
   algorithms/methods used can differ).
 
-
-* Review devices implementation, better abstract devices
-
-  Currently there are several types of devices (dumps / file images of floppies
-  and hard disks, native (physical) devices), It would be good to provide an
-  interface and a way to implement additional devices that could be used along
-  with the existing ones (like an in-memory device, or any other user-defined /
-  implemented).
-
+  - undelete is partially done with adf_salvage (and src/adf_salv.c)
+    the main things left are:
+    - add extracting files (do not change the filesystem on ADF, but just
+      save files outside, on the local filesystem)
+    - adf_salv / adfUndelFile: add reverting of adfCreateEntry() in case
+      adfAddInCache() fails
+    - consider moving undelete/salvage functionality from the library
+      to utilities (not sure if this is necessary in the library...)
 
 * Test "native" (physical) devices
 

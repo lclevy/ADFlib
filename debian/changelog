@@ -1,5 +1,0 @@
-libadf (0.8.0-1) unstable; urgency=medium
-
-  * Initial packaging of version 0.8.0 for Debian.
-
- -- Tomasz Wolak <tomas.wolak@gmail.com>  Mon, 26 Jun 2023 20:01:05 +0100

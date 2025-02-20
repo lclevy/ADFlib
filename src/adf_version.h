@@ -19,22 +19,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
-
-#ifndef _ADF_VERSION_H
-#define _ADF_VERSION_H 1
+#ifndef ADF_VERSION_H
+#define ADF_VERSION_H
 
 //#include "config.h"
 /* autotools defines this */
 //#ifdef PACKAGE_VERSION
 //#define ADFLIB_VERSION PACKAGE_VERSION
 //#endif
-#define ADFLIB_VERSION "0.8.0"
-#define ADFLIB_DATE "2023-06-26"
+#define ADFLIB_VERSION "0.9.0"
+#define ADFLIB_DATE "2024-05-16"
 
-#endif /* _ADF_VERSION_H */
-/*##########################################################################*/
+#endif /* ADF_VERSION_H */

@@ -2,7 +2,7 @@
  *  undel2.c
  */
 
-
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,53 +20,83 @@ void MyVer(char *msg)
  *
  *
  */
-int main(int argc, char *argv[])
+int main ( const int          argc,
+           const char * const argv[] )
 {
-    (void) argc, (void) argv;
-    struct AdfDevice *hd;
-    struct AdfVolume *vol;
-    struct AdfList *list, *cell;
-    struct GenBlock *block;
-    BOOL true = TRUE;
-    struct AdfFile *file;
-    unsigned char buf[600];
-    FILE *out;
-  
+    int status = 0;
+
+    if ( argc < 4 )
+        exit(1);
+    const char * const adfDevName    = argv[1];
+    const char * const fileToRecover = argv[2]; // "mod.and.distantcall";
+
+    char *endptr;
+    errno = 0;
+    const ADF_SECTNUM fileHeaderSector = (ADF_SECTNUM) strtol ( argv[3], &endptr, 10 );
+    if ( errno != 0 ) {
+        perror("strtol");
+        exit(2);
+    }
+    if ( fileHeaderSector < 2 )
+        exit(3);
+
     adfEnvInitDefault();
 
-    adfChgEnvProp(PR_USEDIRC,&true);
+    adfEnvSetProperty ( ADF_PR_USEDIRC, true );
  
-    hd = adfMountDev(argv[1], FALSE);
-    if (!hd) {
+    struct AdfDevice * const hd = adfDevOpen ( adfDevName, ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  adfDevName );
+        status = 4;
+        goto clean_up_env;
+    }
+
+    if ( (unsigned) fileHeaderSector > hd->cylinders * hd->heads * hd->sectors ) {
+        status = 5;
+        goto clean_up_env;
+    }
+
+    ADF_RETCODE rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
-        adfEnvCleanUp(); exit(1);
+        status = 6;
+        goto clean_up_dev_close;
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo ( hd );
 
-    vol = adfMount(hd, 0, FALSE);
+    struct AdfVolume * const vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
         fprintf(stderr, "can't mount volume\n");
-        adfEnvCleanUp(); exit(1);
+        status = 7;
+        goto clean_up_dev_unmount;
     }
 
+    struct AdfList *list, *cell;
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
         adfEntryPrint ( cell->content );
         cell = cell->next;
     }
     adfFreeDirList(list);
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    puts("\nremove mod.and.distantcall");
-    adfRemoveEntry(vol,vol->curDirPtr,"mod.and.distantcall");
-    adfVolumeInfo(vol);
+    printf ( "\nremove %s", fileToRecover );
+    adfRemoveEntry(vol,vol->curDirPtr, fileToRecover );
+    adfVolInfo(vol);
 
     cell = list = adfGetDelEnt(vol);
+    if (cell)
+        puts ( "Found deleted entries:" );
+    else {
+        fprintf ( stderr, "No deleted entries found! -> ERROR.\n" );
+        status = 8;
+        goto clean_up_volume;
+    }
     while(cell) {
-        block =(struct GenBlock*) cell->content;
-        printf ( "%s %d %d %d\n",
+        struct GenBlock * const block = (struct GenBlock *) cell->content;
+        printf ( "name %s, block type %d, 2nd type %d, sector %d\n",
                  block->name,
                  block->type,
                  block->secType,
@@ -75,10 +105,21 @@ int main(int argc, char *argv[])
     }
     adfFreeDelList(list);
 
-    adfCheckEntry(vol,886,0);
-    adfUndelEntry(vol,vol->curDirPtr,886);
-    puts("\nundel mod.and.distantcall");
-    adfVolumeInfo(vol);
+    printf ( "\nundel %s at %d", fileToRecover, fileHeaderSector );
+    rc = adfCheckEntry ( vol, fileHeaderSector, 0 );
+    if ( rc != ADF_RC_OK ) {
+        fprintf (stderr, "adfCheckEntry error %d\n", rc );
+        status = 9;
+        goto clean_up_volume;
+    }
+    rc = adfUndelEntry ( vol, vol->curDirPtr, fileHeaderSector );
+    if ( rc != ADF_RC_OK ) {
+        fprintf (stderr, "adfUndelEntry error %d\n", rc );
+        status = 10;
+        goto clean_up_volume;
+    }
+
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol, vol->curDirPtr);
     while(cell) {
@@ -87,28 +128,63 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    file = adfFileOpen ( vol, "mod.and.distantcall", ADF_FILE_MODE_READ );
-    if (!file) return 1;
-    out = fopen("mod.distant","wb");
-    if (!out) return 1;
-
-    unsigned len = 600;
-    unsigned n = adfFileRead ( file, len, buf );
-    while(!adfEndOfFile(file)) {
-        fwrite(buf,sizeof(unsigned char),n,out);
-        n = adfFileRead ( file, len, buf );
+    struct AdfFile * const file = adfFileOpen ( vol, fileToRecover,
+                                                ADF_FILE_MODE_READ );
+    if ( file == NULL ) {
+        status = 11;
+        goto clean_up_volume;
     }
-    if (n>0)
-        fwrite(buf,sizeof(unsigned char),n,out);
 
+    FILE * const out = fopen ( fileToRecover, "wb" );
+    if ( out == NULL ) {
+        status = 12;
+        goto clean_up_file_adf;
+    }
+
+    unsigned char buf[600];
+    const unsigned len = sizeof(buf) / sizeof(unsigned char);
+
+    unsigned
+        fileSizeInHeader   = file->fileHdr->byteSize,
+        fileSizeCalculated = 0;
+
+    while(!adfEndOfFile(file)) {
+        unsigned n = adfFileRead ( file, len, buf );
+        if ( n != len && ! adfEndOfFile ( file ) ) {
+            fprintf ( stderr, "adfFileRead: error reading %s at %u (device: %s)\n",
+                      fileToRecover, adfFileGetPos ( file ), adfDevName );
+            status = 13;
+            goto clean_up_file_local;
+        }
+        fwrite(buf,sizeof(unsigned char),n,out);
+        fileSizeCalculated += n;
+    }
+
+    if ( fileSizeInHeader != fileSizeCalculated ) {
+        fprintf ( stderr, "file size error: size in file header block %u != size read %u"
+                  " (device '%s', file '%s')\n",
+                  fileSizeInHeader, fileSizeCalculated, adfDevName,
+                  file->fileHdr->fileName );
+        status = 14;
+    }
+
+clean_up_file_local:
     fclose(out);
 
+clean_up_file_adf:
     adfFileClose ( file );
 
-    adfUnMount(vol);
-    adfUnMountDev(hd);
+clean_up_volume:
+    adfVolUnMount(vol);
 
+clean_up_dev_unmount:
+    adfDevUnMount ( hd );
+
+clean_up_dev_close:
+    adfDevClose ( hd );
+
+clean_up_env:
     adfEnvCleanUp();
 
-    return 0;
+    return status;
 }

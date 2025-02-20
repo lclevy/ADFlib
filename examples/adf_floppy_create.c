@@ -1,3 +1,25 @@
+/*
+ * adf_floppy_create
+ *
+ * an utility for creating an empty Amiga disk image (ADF)
+ *
+ *  This file is part of ADFLib.
+ *
+ *  ADFLib is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ADFLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
 
 #include <adflib.h>
 #include <errno.h>
@@ -57,17 +79,18 @@ int main ( int     argc,
 
     adfEnvInitDefault();
 
-    struct AdfDevice * device = adfCreateDumpDevice ( adfname, tracks, HEADS,
-                                                      sectors_per_track );
+    struct AdfDevice * device = adfDevCreate ( "dump", adfname, tracks, HEADS,
+                                               sectors_per_track );
     if ( ! device ) {
         fprintf ( stderr, "Error creating floppy (%s) disk image %s.\n",
                   floppy_type, adfname );
         return 1;
     }
-    adfDeviceInfo ( device );
+    adfDevInfo ( device );
     printf ( "Done!\n" );
 
-    adfUnMountDev ( device );
+    adfDevUnMount ( device );
+    adfDevClose ( device );
     adfEnvCleanUp();
 
     return 0;

@@ -9,6 +9,8 @@ AM_CFLAGS = -std=c99 -pedantic -Wall -Wextra \
 check_PROGRAMS = \
 	access \
 	bootdisk \
+	bitmap_read_segfault \
+	bitmap_recreate \
 	cache_crash \
 	comment \
 	del_test \
@@ -36,12 +38,13 @@ check_PROGRAMS = \
 	rename \
 	rename2 \
 	undel \
-	undel2 \
-	undel3
+	undel2
 
 dist_check_SCRIPTS = \
 	bigdev.sh \
 	bootdisk.sh \
+	bitmap_read_segfault.sh \
+	bitmap_recreate.sh \
 	cache_crash.sh \
 	common.sh \
 	del_test.sh \
@@ -64,8 +67,7 @@ dist_check_SCRIPTS = \
 	hd_test3.sh \
 	rename.sh \
 	undel.sh \
-	undel2.sh \
-	undel3.sh 
+	undel2.sh
 
 TESTS = floppy.sh bigdev.sh
 
@@ -187,10 +189,14 @@ progbar_SOURCES = progbar.c
 progbar_LDADD = $(ADFLIBS)
 progbar_DEPENDENCIES = $(top_builddir)/src/libadf.la
 
-undel3_SOURCES = undel3.c
-undel3_LDADD = $(ADFLIBS)
-undel3_DEPENDENCIES = $(top_builddir)/src/libadf.la
-
 floppy_overfilling_test_SOURCES = floppy_overfilling_test.c
 floppy_overfilling_test_LDADD = $(ADFLIBS)
 floppy_overfilling_test_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_read_segfault_SOURCES = bitmap_read_segfault.c
+bitmap_read_segfault_LDADD = $(ADFLIBS)
+bitmap_read_segfault_DEPENDENCIES = $(top_builddir)/src/libadf.la
+
+bitmap_recreate_SOURCES = bitmap_recreate.c
+bitmap_recreate_LDADD = $(ADFLIBS)
+bitmap_recreate_DEPENDENCIES = $(top_builddir)/src/libadf.la

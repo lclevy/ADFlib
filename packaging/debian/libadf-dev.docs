@@ -1,0 +1,7 @@
+#AUTHORS
+#ChangeLog
+#README.md
+#doc/*.html
+#doc/*.txt
+#doc/FAQ/*
+usr/share/doc/adflib/*

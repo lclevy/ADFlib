@@ -2,8 +2,8 @@
 cmake_minimum_required ( VERSION 3.11 )
 
 # version details - use utils/bump-version to update it
-set ( ADFLIB_VERSION 0.8.0 )
-set ( ADFLIB_DATE 2023-06-26 )
+set ( ADFLIB_VERSION 0.9.0 )
+set ( ADFLIB_DATE 2024-05-16 )
 
 project ( adflib
     VERSION      ${ADFLIB_VERSION}
@@ -46,6 +46,12 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     )
 endif()
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
+    message ( STATUS "Setting additional clang options/checks" )
+    add_compile_options (
+      -Wno-gnu-statement-expression-from-macro-expansion
+    )
+endif()
 
 option ( ADFLIB_ENABLE_ADDRESS_SANITIZER "Enable address sanitizer" OFF )
 
@@ -83,6 +89,7 @@ else()
     message ( STATUS "Address sanitizer disabled - not configuring" )
 endif()
 
+add_compile_definitions ( BUILDING_WITH_CMAKE=1 )
 
 option ( ADFLIB_BUILD_DLL "Build Windows DLL" OFF )
 if ( ADFLIB_BUILD_DLL )
@@ -102,6 +109,12 @@ check_function_exists ( backtrace_symbols HAVE_BACKTRACE_SYMBOLS )
 if ( ${HAVE_BACKTRACE} )
     message ( STATUS "backtrace_symbols() available")
     add_link_options ( $<$<CONFIG:DEBUG>:-rdynamic> ) # for backtrace_symbols()
+endif()
+
+include ( CheckSymbolExists )
+check_symbol_exists ( strndup "string.h" HAVE_STRNDUP )
+if ( ${HAVE_STRNDUP} )
+  add_compile_definitions ( HAVE_STRNDUP=1 )
 endif()
 
 option ( ADFLIB_ENABLE_NATIVE_DEV "Enable real native devices" OFF )

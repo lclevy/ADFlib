@@ -37,7 +37,7 @@ int main ( int argc, char * argv[] )
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     int status = 0;
 
     // setup
@@ -109,23 +109,34 @@ int test_hlink_read ( reading_test_t * test_data )
              test_data->real_file );
 #endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image_filename, TRUE );
+    struct AdfDevice * const dev = adfDevOpen ( test_data->image_filename,
+                                                ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  test_data->image_filename );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
+        adfDevClose ( dev );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image_filename );
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 
 #if TEST_VERBOSITY > 0
-    //adfVolumeInfo ( vol );
+    //adfVolInfo ( vol );
 #endif
 
     int status = 0;
@@ -136,7 +147,7 @@ int test_hlink_read ( reading_test_t * test_data )
         printf ("Entering directory %s...\n", dir );
 #endif
         int chdir_st = adfChangeDir ( vol, dir );
-        if ( chdir_st != RC_OK ) {
+        if ( chdir_st != ADF_RC_OK ) {
             fprintf ( stderr, " -> Cannot chdir to %s, status %d - aborting...\n",
                       dir, chdir_st );
             adfToRootDir ( vol );
@@ -165,8 +176,9 @@ int test_hlink_read ( reading_test_t * test_data )
     // clean-up
 clean_up:
     //adfToRootDir ( vol );
-    adfUnMount ( vol );
-    adfUnMountDev ( dev );
+    adfVolUnMount ( vol );
+    adfDevUnMount ( dev );
+    adfDevClose ( dev );
 
     return status;
 }

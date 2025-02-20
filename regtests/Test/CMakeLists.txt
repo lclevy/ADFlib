@@ -71,6 +71,9 @@ TARGET_LINK_LIBRARIES ( rename adf )
 add_executable ( hardfile hardfile.c )
 TARGET_LINK_LIBRARIES ( hardfile adf )
 
+add_executable ( hardfile2 hardfile2.c )
+TARGET_LINK_LIBRARIES ( hardfile2 adf )
+
 add_executable ( rename2 rename2.c )
 TARGET_LINK_LIBRARIES ( rename2 adf )
 
@@ -95,16 +98,22 @@ TARGET_LINK_LIBRARIES ( dispsect adf )
 add_executable ( progbar progbar.c )
 TARGET_LINK_LIBRARIES ( progbar adf )
 
-add_executable ( undel3 undel3.c )
-TARGET_LINK_LIBRARIES ( undel3 adf )
-
 add_executable ( floppy_overfilling_test floppy_overfilling_test.c )
 TARGET_LINK_LIBRARIES ( floppy_overfilling_test adf )
+
+add_executable ( bitmap_read_segfault bitmap_read_segfault.c )
+TARGET_LINK_LIBRARIES ( bitmap_read_segfault adf )
+
+add_executable ( bitmap_recreate bitmap_recreate.c )
+TARGET_LINK_LIBRARIES ( bitmap_recreate adf )
+
 
 foreach ( a_file
     floppy.sh
     bigdev.sh
     bootdisk.sh
+    bitmap_read_segfault.sh
+    bitmap_recreate.sh
     cache_crash.sh
     common.sh
     del_test.sh
@@ -128,7 +137,6 @@ foreach ( a_file
     rename2.sh
     rename.sh
     undel2.sh
-    undel3.sh
     undel.sh )
   configure_file ( ${a_file} ${a_file} COPYONLY )
 endforeach ( a_file )

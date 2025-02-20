@@ -19,21 +19,22 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
-#ifndef _ADF_TYPES_H
-#define _ADF_TYPES_H 1
+#ifndef ADF_TYPES_H
+#define ADF_TYPES_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
-typedef int32_t SECTNUM;
+typedef int32_t ADF_SECTNUM;
 
-typedef int      BOOL;
+typedef enum {
+    ADF_ACCESS_MODE_READWRITE = 0,
+    ADF_ACCESS_MODE_READONLY  = 1
+} AdfAccessMode;
 
-#define TRUE    1
-#define FALSE   0
-
-#endif
+#endif  /* ADF_TYPES_H */

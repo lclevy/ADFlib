@@ -2,17 +2,18 @@ name: deb packaging Ubuntu
 
 on:
   push:
-    branches: [ "master", "devel", "citest", "citest-deb" ]
+#    branches: [ "master", "devel", "citest", "citest-deb" ]
+    branches: [ "citest", "citest-deb" ]
     tags:
       - '**'
-  pull_request:
-    branches: [ "master", "devel" ]
+#  pull_request:
+#    branches: [ "master", "devel" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
       run:
         sudo apt-get update &&
@@ -33,7 +34,7 @@ jobs:
       run: |
         echo $ADFLIB_TAG
         echo ${{ env.ADFLIB_TAG }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-deb-ubuntu
@@ -43,7 +44,7 @@ jobs:
       run: |
         mkdir -v artifact-tests
         tar cvzf artifact-tests/examples_tests.tgz examples/tests/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: adflib-examples-tests
         path: |
@@ -53,7 +54,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-deb-ubuntu
@@ -68,7 +69,7 @@ jobs:
         dpkg -l 'libadf*' ;
         dpkg -l 'libadf*' | grep "libadf" |
         cut -d' ' -f 3 | cut -d':' -f 1 | xargs dpkg -L
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-deb-ubuntu
         name: adflib-examples-tests

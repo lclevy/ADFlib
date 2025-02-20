@@ -1,3 +1,25 @@
+/*
+ * adf_show_metadata
+ *
+ * an utility for displaying Amiga disk images (ADF) metadata
+ *
+ *  This file is part of ADFLib.
+ *
+ *  ADFLib is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ADFLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
 
 #include "adf_show_metadata_file.h"
 
@@ -5,16 +27,15 @@
 #include <string.h>
 
 
-static void show_data_blocks_array ( const int32_t datablocks [ MAX_DATABLK ] );
+static void show_data_blocks_array ( const int32_t datablocks [ ADF_MAX_DATABLK ] );
 
 
 void show_file_metadata ( struct AdfVolume * const vol,
-                          SECTNUM                  fheader_sector )
+                          const ADF_SECTNUM        fheader_sector )
 {
-    struct bFileHeaderBlock fheader_block;
-
+    struct AdfFileHeaderBlock fheader_block;
     if ( adfReadEntryBlock ( vol, fheader_sector,
-                             ( struct bEntryBlock * ) &fheader_block ) != RC_OK )
+                             ( struct AdfEntryBlock * ) &fheader_block ) != ADF_RC_OK )
     {
         fprintf ( stderr, "Error reading file header block (sector: %d).\n",
                   fheader_sector );
@@ -26,15 +47,14 @@ void show_file_metadata ( struct AdfVolume * const vol,
 }
 
 
-void show_file_header_block ( const struct bFileHeaderBlock * const block )
+void show_file_header_block ( const struct AdfFileHeaderBlock * const block )
 {
-
     uint8_t file_header_block_orig_endian[512];
     memcpy ( file_header_block_orig_endian, block, 512 );
-    swapEndian ( file_header_block_orig_endian, SWBL_FILE );
+    adfSwapEndian ( file_header_block_orig_endian, ADF_SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_header_block_orig_endian, 0x14,
-                                                  sizeof (struct bFileHeaderBlock ) );
-    printf ( "\nbFileHeaderBlock:\n"
+                                                  sizeof (struct AdfFileHeaderBlock ) );
+    printf ( "\nFile Header Block:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
              "  0x008  highSeq:\t0x%x\t\t%u\n"
@@ -71,14 +91,14 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
              block->checkSum,
              checksum_calculated,
              block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             MAX_DATABLK, //dataBlocks[MAX_DATABLK],
+             ADF_MAX_DATABLK, //dataBlocks[ADF_MAX_DATABLK],
              block->r1,
              block->r2,
              block->access, block->access,
              block->byteSize, block->byteSize,
              block->commLen, block->commLen,
-             MAXCMMTLEN + 1, block->comment,
-             91 - ( MAXCMMTLEN + 1 ), block->r3,
+             ADF_MAX_COMMENT_LEN + 1, block->comment,
+             91 - ( ADF_MAX_COMMENT_LEN + 1 ), block->r3,
              block->days,
              block->mins,
              block->ticks,
@@ -95,7 +115,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
 
     show_data_blocks_array ( block->dataBlocks );
     /*puts ( "\ndatablocks (non-zero):" );
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         uint32_t dblock_sector = block->dataBlocks[i];
         if ( dblock_sector )
             printf ( "  dataBlocks[ %d ]:  0x%x (%d)\n",
@@ -103,7 +123,7 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
                      } */
 
     printf ( "\n  r3 (non-zero):" );
-    for ( unsigned i = 0 ; i < 91 - ( MAXCMMTLEN + 1 ) ; ++i ) {
+    for ( unsigned i = 0 ; i < 91 - ( ADF_MAX_COMMENT_LEN + 1 ) ; ++i ) {
         char r3_i = block->r3[i];
         if ( r3_i )
             printf ( "\n    r3[ %d ]:  0x%x (%d)",
@@ -121,8 +141,8 @@ void show_file_header_block ( const struct bFileHeaderBlock * const block )
 }
 
 
-void show_file_ext_blocks ( struct AdfVolume * const              vol,
-                            const struct bFileHeaderBlock * const fheader_block )
+void show_file_ext_blocks ( struct AdfVolume * const                vol,
+                            const struct AdfFileHeaderBlock * const fheader_block )
 {
     // check if there are any ext blocks
     uint32_t posInExtBlk, posInDataBlk, curDataN;
@@ -134,11 +154,11 @@ void show_file_ext_blocks ( struct AdfVolume * const              vol,
         return;
     }
     
-    struct bFileExtBlock extblock;
+    struct AdfFileExtBlock extblock;
     extblock.extension = fheader_block->extension; // copy initial extension pointer (sector)
     while ( extblock.extension ) {
         int32_t extblock_sector = extblock.extension;
-        if ( adfReadFileExtBlock ( vol, extblock_sector, &extblock ) != RC_OK ) {
+        if ( adfReadFileExtBlock ( vol, extblock_sector, &extblock ) != ADF_RC_OK ) {
             fprintf ( stderr, "Error reading ext block from sector 0x%x (%u).\n",
                       extblock_sector, extblock_sector );
             return;
@@ -148,13 +168,13 @@ void show_file_ext_blocks ( struct AdfVolume * const              vol,
 }
 
 
-void show_ext_block ( const struct bFileExtBlock * const block )
+void show_ext_block ( const struct AdfFileExtBlock * const block )
 {
     uint8_t file_ext_block_orig_endian[512];
     memcpy ( file_ext_block_orig_endian, block, 512 );
-    swapEndian ( file_ext_block_orig_endian, SWBL_FILE );
+    adfSwapEndian ( file_ext_block_orig_endian, ADF_SWBL_FILE );
     uint32_t checksum_calculated = adfNormalSum ( file_ext_block_orig_endian, 0x14,
-                                                  sizeof (struct bFileExtBlock ) );
+                                                  sizeof (struct AdfFileExtBlock ) );
     printf ( "\nFile extension block:\n"
              "  0x000  type:\t\t0x%x\t\t%u\n"
              "  0x004  headerKey:\t0x%x\t\t%u\n"
@@ -178,7 +198,7 @@ void show_ext_block ( const struct bFileExtBlock * const block )
              block->checkSum,
              checksum_calculated,
              block->checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             MAX_DATABLK, //block->dataBlocks[MAX_DATABLK],
+             ADF_MAX_DATABLK, //block->dataBlocks[ADF_MAX_DATABLK],
              //r[45]
              block->info, block->info,
              block->nextSameHash, block->nextSameHash,
@@ -189,10 +209,10 @@ void show_ext_block ( const struct bFileExtBlock * const block )
     show_data_blocks_array ( block->dataBlocks );
 }
 
-static void show_data_blocks_array ( const int32_t datablocks [ MAX_DATABLK ] )
+static void show_data_blocks_array ( const int32_t datablocks [ ADF_MAX_DATABLK ] )
 {
     printf ( "\n  data blocks (non-zero):\n" );
-    for ( unsigned i = 0 ; i < MAX_DATABLK ; ++i ) {
+    for ( unsigned i = 0 ; i < ADF_MAX_DATABLK ; ++i ) {
         int32_t dblock_i = datablocks [ i ];
         if ( dblock_i )
             printf ( "    dataBlocks [ %2d ]:  0x%x\t%d\n",
@@ -208,7 +228,7 @@ static void show_File ( const struct File * const file )
              //"volume:\t0x%x
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              "  nDataBlock:\t0x%x\t\t%u\n"
              "  curDataPtr:\t0x%x\t\t%u\n"
              "  pos:\t\t0x%x\t\t%u\n"
@@ -219,7 +239,7 @@ static void show_File ( const struct File * const file )
              //volume;
              //fileHdr;
              //currentData;
-             //struct bFileExtBlock* currentExt;
+             //struct AdfFileExtBlock* currentExt;
              file->nDataBlock,
              file->nDataBlock,
              file->curDataPtr,

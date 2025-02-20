@@ -28,61 +28,82 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    struct AdfDevice *hd;
     struct AdfVolume *vol, *vol2;
 
     /* initialisation */
     adfEnvInitDefault();
 
     /*** a real harddisk ***/
-    hd = adfMountDev( argv[1],FALSE );
-    if (!hd) {
+    struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[1] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    ADF_RETCODE rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
     /* mount the 2 partitions */
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
-        fprintf(stderr, "can't mount volume\n");
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        fprintf(stderr, "can't mount volume 0\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    vol2 = adfMount(hd, 1, FALSE);
+    vol2 = adfVolMount ( hd, 1, ADF_ACCESS_MODE_READWRITE );
     if (!vol2) {
-        adfUnMountDev(hd);
-        fprintf(stderr, "can't mount volume\n");
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
+        fprintf(stderr, "can't mount volume 1\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol2);
+    adfVolInfo(vol2);
 
     /* unmounts */
-    adfUnMount(vol);
-    adfUnMount(vol2);
-    adfUnMountDev(hd);
-
+    adfVolUnMount(vol);
+    adfVolUnMount(vol2);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     /*** a dump of a zip disk ***/
-    hd = adfMountDev( argv[2],FALSE );
-    if (!hd) {
+    hd = adfDevOpen ( argv[2], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[2] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
-    adfDeviceInfo(hd);
+    adfDevInfo(hd);
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-	adfUnMount(vol);
-	adfUnMountDev(hd);
+    adfVolUnMount(vol);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     /* clean up */
     adfEnvCleanUp();

@@ -15,7 +15,7 @@ jobs:
       matrix:
         build_type: [ shared, debug ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
       run: sudo apt-get update ; sudo apt-get install -y check
     - name: cmake_${{ matrix.build_type }}_configure
@@ -36,7 +36,7 @@ jobs:
   windows_build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
       run: |
         choco install ninja cmake
@@ -94,7 +94,7 @@ jobs:
       run: |
         echo $ADFLIB_TAG
         echo ${{ env.ADFLIB_TAG }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-windows
         name: adflib-windows
@@ -105,9 +105,9 @@ jobs:
       run: |
         mkdir -v artifact-tests
         tar cvzf artifact-tests/examples_tests.tgz examples/tests/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: adflib-examples-tests
+        name: adflib-windows-examples-tests
         path: |
           artifact-tests
 
@@ -115,7 +115,7 @@ jobs:
     runs-on: windows-latest
     needs: windows_build
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-windows
         name: adflib-windows
@@ -123,9 +123,9 @@ jobs:
     - name: list files extracted from the artifact
       shell: bash
       run: find .
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
-        name: adflib-examples-tests
+        name: adflib-windows-examples-tests
         path: .
     - name: extract examples/tests
       shell: bash
@@ -141,7 +141,7 @@ jobs:
   macos_shared:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
       run: |
         brew install cmake ninja coreutils
@@ -154,6 +154,8 @@ jobs:
       run: util/cmake_shared_build
     - name: cmake_shared_test
       run: util/cmake_shared_test
+    - name: show properties of binaries in the build tree (not installed)
+      run: otool -l build/shared/examples/unadf
     - name: cmake_shared_install
       run: sudo bash util/cmake_shared_install
     - name: check installation
@@ -168,7 +170,7 @@ jobs:
             /usr/local/include/*adf*
             /usr/local/lib/*adf*
 #            /usr/local/share/man/man3/*adf*
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
 #        name: adflib-${{ env.ADFLIB_TAG }}-windows
         name: adflib-macos
@@ -178,9 +180,9 @@ jobs:
       run: |
         mkdir -v artifact-tests
         tar cvzf artifact-tests/examples_tests.tgz examples/tests/
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: adflib-examples-tests
+        name: adflib-macos-examples-tests
         path: |
           artifact-tests
 
@@ -189,18 +191,24 @@ jobs:
     needs: macos_shared
     runs-on: macos-latest
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
 #      name: adflib-${{ env.ADFLIB_TAG }}-macos
         name: adflib-macos
         path: .
     - name: extract file from the artifact
-      run: tar xzv -C / -f adflib-macos.tgz
+      run: sudo tar xzv -C / -f adflib-macos.tgz
     - name: list files extracted from the artifact
       run: find /usr/local -name "*adf*"
-    - uses: actions/download-artifact@master
+    - name: list installed library files
+      run: ls -l /usr/local/lib/*adf*
+#    - name: update dyld's shared cache
+#      run: sudo update_dyld_shared_cache -debug
+    - name: show properties of binaries (installed)
+      run: otool -l /usr/local/bin/unadf
+    - uses: actions/download-artifact@v4
       with:
-        name: adflib-examples-tests
+        name: adflib-macos-examples-tests
         path: .
     - name: extract examples/tests
       run: tar xzvf examples_tests.tgz

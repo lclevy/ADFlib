@@ -15,7 +15,7 @@ jobs:
       matrix:
         conf_options: [ "", --enable-native-generic ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
       run: sudo apt-get update ; sudo apt-get install -y check
     - name: autogen
@@ -36,18 +36,34 @@ jobs:
       run: sudo ldconfig
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ubuntu_autotools_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
 
-  cygwin_native_default:
+  cygwin:
     runs-on: windows-latest
     defaults:
       run:
-        shell: C:\tools\cygwin\bin\bash.exe '{0}'
-    env:
-      SHELLOPTS: igncr
+        shell: C:\cygwin\bin\bash.exe '{0}'
+#    env:
+#      SHELLOPTS: igncr
     steps:
-    - uses: actions/checkout@v3
-    - uses: egor-tensin/setup-cygwin@v4
+    - name: setup git (eol)
+#      shell: powershell
+      shell: cmd
+      run: |
+        git config --global core.autocrlf false
+#        git config --global core.eol lf
+    - uses: actions/checkout@v4
+    - uses: cygwin/cygwin-install-action@v4
       with:
+        site: https://sunsite.icm.edu.pl/pub/cygnus/cygwin/
         packages: autoconf automake check diffutils findutils gcc-core grep gzip libtool make sed tar
     - name: autogen
       run: ./autogen.sh
@@ -65,16 +81,26 @@ jobs:
       run: find /tmp/adflib -iname '*adf*'
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cygwin_autotools_native_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
+#          C:\cygwin\var\log\setup.log.full
 
-  msys2_native_default:
-    if: false
+  msys2:
+#    if: false
     runs-on: windows-latest
     defaults:
       run:
         shell: msys2 '{0}'
     steps:
-    - uses: actions/checkout@v3
-    - uses: msys2/setup-msys2@v2
+    - uses: actions/checkout@v4
+    - uses: msys2/setup-msys2@v2.22.0
       with:
         update: true
         install: autotools diffutils mingw-w64-x86_64-check mingw-w64-x86_64-toolchain
@@ -85,7 +111,8 @@ jobs:
     - name: make
       run: make
     - name: make check
-      run: ( make check || grep . examples/*.log examples/tests/*.log )
+      #run: ( make check || grep . examples/*.log examples/tests/*.log )
+      run: make check
     - name: make distcheck
       run: make distcheck
     - name: make install
@@ -94,13 +121,22 @@ jobs:
       run: find /tmp/adflib -iname '*adf*'
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /tmp/adflib/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: msys2_autotools_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log
 
-  macos_native_default:
+  macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: install prereq.
-      run: brew install automake check
+      run: brew install automake check libtool
     - name: autogen
       run: ./autogen.sh
     - name: configure
@@ -112,8 +148,17 @@ jobs:
     - name: make distcheck
       run: make distcheck
     - name: make install
-      run: make install
+      run: sudo make install
     - name: check installation
       run: find /usr/local/ -iname '*adf*'
     - name: test installed command-line utils
       run: ./examples/tests/test-all-examples.sh /usr/local/bin
+    - name: store logs from failed tests
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos_autotools_native_logs_failed_tests
+        path: |
+          examples/tests/*.log
+          regtests/Test/*.log
+          tests/*.log

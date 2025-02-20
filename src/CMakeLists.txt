@@ -5,28 +5,27 @@ if ( ADFLIB_BUILD_DLL )
     add_compile_definitions ( _EXPORTING )
 endif ( ADFLIB_BUILD_DLL )
 
-
 if ( ADFLIB_ENABLE_NATIVE_DEV )
 # Useful info (note that CYGWIN went from WIN32 to UNIX...):
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
-    if ( WIN32 OR CYGWIN OR MINGW OR MSYS )
+    if ( WIN32 OR CYGWIN OR MINGW OR MSYS OR CMAKE_C_PLATFORM_ID STREQUAL "MinGW")
         set ( ADFLIB_NATIVE_DEV_DIR win32 )
         set ( ADFLIB_NATIVE_DEV_SRC
-              win32/adf_nativ.c
+              win32/adf_dev_driver_nativ.c
               win32/nt4_dev.c
               win32/nt4_dev.h )
     else()
         if ( UNIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux" )
 	    set ( ADFLIB_NATIVE_DEV_DIR linux )
-            set ( ADFLIB_NATIVE_DEV_SRC linux/adf_nativ.c )
+            set ( ADFLIB_NATIVE_DEV_SRC linux/adf_dev_driver_nativ.c )
         else()
             set ( ADFLIB_NATIVE_DEV_DIR generic )
-            set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+            set ( ADFLIB_NATIVE_DEV_SRC generic/adf_dev_driver_nativ.c )
         endif()
     endif()
 else()
     set ( ADFLIB_NATIVE_DEV_DIR generic )
-    set ( ADFLIB_NATIVE_DEV_SRC generic/adf_nativ.c )
+    set ( ADFLIB_NATIVE_DEV_SRC generic/adf_dev_driver_nativ.c )
 endif()
 message ( STATUS "Native device directory: ${ADFLIB_NATIVE_DEV_DIR}" )
 message ( STATUS "Native device sources:   ${ADFLIB_NATIVE_DEV_SRC}" )
@@ -48,11 +47,18 @@ add_library ( adf
   adf_bitm.c
   adf_bitm.h
   adf_blk.h
+  adf_blk_hd.h
+  adf_byteorder.h
   adf_cache.c
   adf_cache.h
   adf_dev.c
-  adf_dev_dump.c
-  adf_dev_dump.h
+  adf_dev_driver.h
+  adf_dev_driver_dump.c
+  adf_dev_driver_dump.h
+  adf_dev_driver_ramdisk.c
+  adf_dev_driver_ramdisk.h
+  adf_dev_drivers.c
+  adf_dev_drivers.h
   adf_dev_flop.c
   adf_dev_flop.h
   adf_dev.h
@@ -70,6 +76,7 @@ add_library ( adf
   adf_file_util.h
   adf_link.c
   adf_link.h
+  adf_prefix.h
   adf_raw.c
   adf_raw.h
   adf_salv.c
@@ -82,18 +89,15 @@ add_library ( adf
   adf_version.h
   adf_vol.c
   adf_vol.h
-  defendian.h
-  hd_blk.h
-  prefix.h
-  adf_nativ.h
+  adf_dev_driver_nativ.h
   ${ADFLIB_NATIVE_DEV_SRC}
   ${ADFLIB_DEBUG_MODULES}
 )
 
 set_target_properties ( adf PROPERTIES
     #PUBLIC_HEADER "adflib.h"
-    PUBLIC_HEADER "adf_bitm.h;adf_blk.h;adf_cache.h;adf_dev_dump.h;adf_dev_flop.h;adf_dev.h;adf_dev_hd.h;adf_dir.h;adf_env.h;adf_err.h;adf_file_block.h;adf_file.h;adf_file_util.h;adflib.h;adf_link.h;adf_nativ.h;adf_raw.h;adf_salv.h;adf_str.h;adf_types.h;adf_util.h;adf_version.h;adf_vol.h;debug_util.h;defendian.h;hd_blk.h;prefix.h"
-    #PRIVATE_HEADER ...
+    PUBLIC_HEADER "adflib.h;adf_bitm.h;adf_blk.h;adf_blk_hd.h;adf_cache.h;adf_dev_driver_dump.h;adf_dev_driver_nativ.h;adf_dev_driver_ramdisk.h;adf_dev_flop.h;adf_dev.h;adf_dev_hd.h;adf_dir.h;adf_env.h;adf_err.h;adf_file_block.h;adf_file.h;adf_file_util.h;adf_prefix.h;adf_raw.h;adf_salv.h;adf_str.h;adf_types.h;adf_version.h;adf_vol.h"
+    PRIVATE_HEADER "adf_byteorder.h;adf_link.h;adf_util.h;debug_util.h"
     VERSION ${CMAKE_PROJECT_VERSION}
 #    SOVERSION ${PROJECT_VERSION_MAJOR}
     SOVERSION 1
@@ -123,3 +127,12 @@ install ( TARGETS adf
 #    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/adf"
     DESTINATION FALSE
 )
+
+
+# Cmake debugging - list all defined variables
+# (from: https://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script )
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()

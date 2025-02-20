@@ -37,24 +37,25 @@ int main(int argc, char *argv[])
 
     adfEnvInitDefault();
 
-    hd = adfMountDev(argv[2],FALSE);
+    hd = adfMountDev ( argv[2], ADF_ACCESS_MODE_READWRITE );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 	
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
+        adfCloseDev(hd);
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
 
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount ( vol );
     adfUnMountDev(hd);
 
     adfEnvCleanUp();

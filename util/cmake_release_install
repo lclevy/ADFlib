@@ -6,5 +6,5 @@
 # (otherwise the installation is peformed to the default place).
 #
 
-util/cmake_install_static $@
-util/cmake_install_shared $@
+util/cmake_static_install $@
+util/cmake_shared_install $@

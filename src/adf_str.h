@@ -1,6 +1,3 @@
-#ifndef _ADF_STR_H
-#define _ADF_STR_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -23,13 +20,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  aint32_t with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
+#ifndef ADF_STR_H
+#define ADF_STR_H
+
+#include "adf_err.h"
+#include "adf_prefix.h"
 #include "adf_types.h"
-#include "prefix.h"
 
 struct AdfList {         /* generic linked tree */
     void *content;
@@ -37,23 +38,36 @@ struct AdfList {         /* generic linked tree */
     struct AdfList *next;
 };
 
-/*
-typedef struct AdfVector_s {
+/* shorter, less clutter but type-unsafe version:
+struct AdfVector {
     unsigned len;
-    void *   contents;
-} AdfVector;
+    union {
+        void *         contents;
+        ADF_SECTNUM *  sectors;
+        // ...
+    };
+};
 */
 
-typedef struct AdfVectorSectors_s {
-    unsigned  len;
-    SECTNUM * sectors;
-} AdfVectorSectors;
+struct AdfVector {
+    unsigned  nItems,
+              itemSize;
+    void *    items;
+};
+
+struct AdfVectorSectors {
+    unsigned       nItems,
+                   itemSize;
+    ADF_SECTNUM *  sectors;
+};
 
 
-PREFIX struct AdfList * newCell ( struct AdfList * const list,
-                                  void * const           content );
+ADF_PREFIX struct AdfList * adfListNewCell ( struct AdfList * const list,
+                                             void * const           content );
 
-PREFIX void freeList ( struct AdfList * const list );
+ADF_PREFIX void adfListFree ( struct AdfList * const list );
 
-#endif /* _ADF_STR_H */
-/*##########################################################################*/
+ADF_PREFIX ADF_RETCODE adfVectorAllocate ( struct AdfVector * const vector );
+ADF_PREFIX void adfVectorFree ( struct AdfVector * const vector );
+
+#endif  /* ADF_STR_H */

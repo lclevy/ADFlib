@@ -1,6 +1,3 @@
-#ifndef ADFLIB_H
-#define ADFLIB_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -23,23 +20,26 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADFLIB_H
+#define ADFLIB_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 /* Windows - a DLL-specific function declaration prefix (to import/export library symbols) */
-#include "prefix.h"
+#include "adf_prefix.h"
 
 #include "adf_types.h"
 #include "adf_version.h"
 
 /* util */
-#include "adf_util.h"
+//#include "adf_util.h"
 
 /* dir */
 #include "adf_dir.h"
@@ -56,14 +56,14 @@ extern "C" {
 #include "adf_dev_flop.h"
 #include "adf_dev_hd.h"
 
-/* dump device */
-#include "adf_dev_dump.h"
+/* device drivers */
+#include "adf_dev_drivers.h"
 
 /* env */
 #include "adf_env.h"
 
 /* link */
-#include "adf_link.h"
+//#include "adf_link.h"
 
 /* salv */
 #include "adf_salv.h"
@@ -79,5 +79,4 @@ extern "C" {
 }
 #endif
 
-#endif /* ADFLIB_H */
-/*##########################################################################*/
+#endif  /* ADFLIB_H */

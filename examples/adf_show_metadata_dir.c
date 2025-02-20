@@ -9,12 +9,12 @@
 
 
 void show_directory_metadata ( struct AdfVolume * const vol,
-                               SECTNUM                  dir_sector )
+                               const ADF_SECTNUM        dir_sector )
 {
-    struct bDirBlock //bEntryBlock
+    struct AdfDirBlock //AdfEntryBlock
         dir_block;
     if ( adfReadEntryBlock ( vol, dir_sector,
-                             ( struct bEntryBlock * ) &dir_block ) != RC_OK )
+                             ( struct AdfEntryBlock * ) &dir_block ) != ADF_RC_OK )
     {
         fprintf ( stderr, "Error reading directory entry block (%d)\n",
                   dir_sector );
@@ -23,9 +23,9 @@ void show_directory_metadata ( struct AdfVolume * const vol,
 
     uint8_t dirblock_orig_endian[512];
     memcpy ( dirblock_orig_endian, &dir_block, 512 );
-    swapEndian ( dirblock_orig_endian, SWBL_DIR );
+    adfSwapEndian ( dirblock_orig_endian, ADF_SWBL_DIR );
     uint32_t checksum_calculated = adfNormalSum ( dirblock_orig_endian, 0x14,
-                                                  sizeof (struct bDirBlock ) );
+                                                  sizeof (struct AdfDirBlock ) );
     printf ( "\nDirectory block:\n"
              //"  Offset  field\t\tvalue\n"
              "  0x000  type\t\t0x%x\t\t%u\n"
@@ -63,13 +63,13 @@ void show_directory_metadata ( struct AdfVolume * const vol,
              dir_block.checkSum,
              checksum_calculated,
              dir_block.checkSum == checksum_calculated ? " -> OK" : " -> different(!)",
-             HT_SIZE, //hashTable[HT_SIZE],
+             ADF_HT_SIZE, //hashTable[ADF_HT_SIZE],
              //dir_block.r2[2],
              dir_block.access,
              dir_block.r4,
              dir_block.commLen, dir_block.commLen,
-             MAXCMMTLEN + 1, dir_block.comment,
-             91 - ( MAXCMMTLEN + 1 ), //dir_block.r5[91-(MAXCMMTLEN+1)],
+             ADF_MAX_COMMENT_LEN + 1, dir_block.comment,
+             91 - ( ADF_MAX_COMMENT_LEN + 1 ), //dir_block.r5[ 91 - (ADF_MAX_COMMENT_LEN + 1)],
              dir_block.days, dir_block.days,
              dir_block.mins, dir_block.mins,
              dir_block.ticks, dir_block.ticks,

@@ -58,11 +58,10 @@ Native devices can be selected with configure script switches:
   --enable-native-linux    Enable Linux native devices
   --enable-native-win32    Enable Win32 native devices
 
-WARNING: the native device type selected by default by autotools is the one
-         NATIVE FOR THE HOST OS(!), so using physical storage (disk)
-	 devices(!). At this stage, if you are not testing this functionality
-	 in a safe environment (like a VM), it is strongly advised to build
-	 only a generic/dummy native device.
+Note that since version 0.9.0, native devices (their "driver"),
+even if compiled, is not enabled by default, so if you want
+to experiment with it (with caution!), the driver must be enabled
+in the code.
 
 
 Building with Visual Studio
@@ -103,7 +102,10 @@ Note that:
   to the directories with test binaries (it probably can be fixed and done
   automatically but no time for it now; if sb has good solution for this,
   help welcomed).
-
+  For the x64-Debug-Shared configuration, also the library with the address sanitizer:
+  Microsoft\VisualStudio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\Hostx64\x64\clang_rt.asan_dbg_dynamic-x86_64.dll
+  has to be copied.
+  (see also: https://stackoverflow.com/questions/66531482/application-crashes-when-using-address-sanitizer-with-msvc )
 
 Testing with CMake
 -------------------
@@ -115,7 +117,8 @@ After successful building (see above), automatic tests can be started with:
 
 Testing with Autotools
 -----------------------
-After successful building (see above), automatic tests can be started with:
+After successful building (see above), automatic tests can be build
+and started with:
   $ make check
 
 

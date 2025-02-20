@@ -58,16 +58,16 @@ typedef uint32_t mode_t;
 #define EXTRACT_BUFFER_SIZE 8192
 
 /* command-line arguments */
-BOOL list_mode = FALSE, list_all = FALSE, use_dircache = FALSE,
-     show_sectors = FALSE, show_comments = FALSE, pipe_mode = FALSE,
-     win32_mangle = FALSE;
+bool list_mode = false, list_all = false, use_dircache = false,
+     show_sectors = false, show_comments = false, pipe_mode = false,
+     win32_mangle = false;
 char *adf_file = NULL, *extract_dir = NULL;
 int vol_number = 0;
 struct AdfList *file_list = NULL;
 
 /* prototypes */
 void parse_args(int argc, char *argv[]);
-void help();
+void help(void);
 void print_device(struct AdfDevice *dev);
 void print_volume(struct AdfVolume * vol);
 void print_tree(struct AdfList *node, char *path);
@@ -93,9 +93,15 @@ int main(int argc, char *argv[]) {
     adfEnvInitDefault();
     parse_args(argc, argv);
 
+    /* open device */
+    if (!(dev = adfDevOpen(adf_file, ADF_ACCESS_MODE_READONLY))) {
+        fprintf(stderr, "%s: can't open device\n", adf_file);
+        goto error_handler;
+    }
+
     /* mount device */
-    if (!(dev = adfMountDev(adf_file, TRUE))) {
-        fprintf(stderr, "%s: can't mount as device\n", adf_file);
+    if (adfDevMount(dev) != ADF_RC_OK) {
+        fprintf(stderr, "%s: can't mount device\n", adf_file);
         goto error_handler;
     }
     if (!pipe_mode) {
@@ -108,7 +114,7 @@ int main(int argc, char *argv[]) {
             adf_file, vol_number, dev->nVol);
         goto error_handler;
     }
-    if (!(vol = adfMount(dev, vol_number, TRUE))) {
+    if (!(vol = adfVolMount(dev, vol_number, ADF_ACCESS_MODE_READONLY))) {
         fprintf(stderr, "%s: can't mount volume %d\n",
             adf_file, vol_number);
         goto error_handler;
@@ -124,14 +130,13 @@ int main(int argc, char *argv[]) {
 
     if (list_mode || list_all) {
         /* list files */
-        if (use_dircache && isDIRCACHE(vol->dosType)) {
-            BOOL true = TRUE;
-            adfChgEnvProp(PR_USEDIRC, &true);
+        if (use_dircache && adfVolHasDIRCACHE(vol)) {
+            adfEnvSetProperty(ADF_PR_USEDIRC, true);
             puts("Using dir cache blocks.");
         }
         if (list_all) {
             /* list all files recursively */
-            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            list = adfGetRDirEnt(vol, vol->curDirPtr, true);
             print_tree(list, "");
         }
         else {
@@ -158,16 +163,17 @@ int main(int argc, char *argv[]) {
         }
         else {
             /* extract all files */
-            list = adfGetRDirEnt(vol, vol->curDirPtr, TRUE);
+            list = adfGetRDirEnt(vol, vol->curDirPtr, true);
             extract_tree(vol, list, "");
             adfFreeDirList(list);
         }
     }
 
 error_handler:
-    if (vol) adfUnMount(vol);
-    if (dev) adfUnMountDev(dev);
-    if (file_list) freeList(file_list);
+    if (vol) adfVolUnMount(vol);
+    if (dev && dev->mounted) adfDevUnMount(dev);
+    if (dev) adfDevClose(dev);
+    if (file_list) adfListFree(file_list);
     adfEnvCleanUp();
     return 0;
 }
@@ -180,27 +186,45 @@ void parse_args(int argc, char *argv[]) {
 
     /* parse flags */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
+
+        /* check options with arguments first */
+        char option = argv[i][1];
+        if ( option == 'v' || option == 'd' ) {
+            if ( i + 1 >= argc || argv[i][2] != '\0' ) {
+                help();
+                exit(1);
+            }
+
+            switch (option) {
+            case 'v':
+                vol_number = atoi ( argv[i + 1] );
+                break;
+            case 'd':
+                extract_dir = argv[i + 1];
+                break;
+            //default: /* unknown option - show help and exit */
+            //    help();
+            //    exit(1);
+            }
+
+            i++, j = strlen(argv[i]) - 1; /* skip to next arg */
+            continue;
+        }
+
+        /* check options without arguments (can be given together) */
         for (j = 1; argv[i][j]; j++) {
             switch (argv[i][j]) {
-            case 'l': list_mode     = TRUE; break;
-            case 'r': list_all      = TRUE; break;
-            case 'c': use_dircache  = TRUE; break;
-            case 's': show_sectors  = TRUE; break;
-            case 'm': show_comments = TRUE; break;
-            case 'w': win32_mangle  = TRUE; break;
+            case 'l': list_mode     = true; break;
+            case 'r': list_all      = true; break;
+            case 'c': use_dircache  = true; break;
+            case 's': show_sectors  = true; break;
+            case 'm': show_comments = true; break;
+            case 'w': win32_mangle  = true; break;
             case 'p':
-                pipe_mode = TRUE;
+                pipe_mode = true;
                 fprintf(stderr, list_mode
                     ? "-p option must be used with extraction, ignored\n"
                     : "sending files to pipe\n");
-                break;
-            case 'v':
-                vol_number = atoi((i + 1) < argc ? argv[i + 1] : "0");
-                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
-                break;
-            case 'd':
-                extract_dir = (i + 1) < argc ? argv[i + 1] : NULL;
-                i++, j = strlen(argv[i]) - 1; /* skip to next arg */
                 break;
             default: /* unknown option - show help and exit */
                 help();
@@ -220,14 +244,14 @@ void parse_args(int argc, char *argv[]) {
 
     /* list of files to extract can follow ADF filename */
     for (; i < argc; i++) {
-        list = newCell(list, argv[i]);
+        list = adfListNewCell(list, argv[i]);
         if (!file_list) {
             file_list = list;
         }
     }
 }
 
-void help() {
+void help(void) {
     fprintf(stderr,
         "unadf [-lrcsmpw] [-v n] [-d extractdir] dumpname.adf [files-with-path]\n"
         "    -l : lists root directory contents\n"
@@ -245,29 +269,29 @@ void help() {
 void print_device(struct AdfDevice *dev)
 {
     printf("Device : %s. Cylinders = %d, Heads = %d, Sectors = %d. Volumes = %d\n",
-        dev->devType == DEVTYPE_FLOPDD   ? "Floppy DD" :
-        dev->devType == DEVTYPE_FLOPHD   ? "Floppy HD" :
-        dev->devType == DEVTYPE_HARDDISK ? "Harddisk"  :
-        dev->devType == DEVTYPE_HARDFILE ? "Hardfile"  : "???",
+        dev->devType == ADF_DEVTYPE_FLOPDD   ? "Floppy DD" :
+        dev->devType == ADF_DEVTYPE_FLOPHD   ? "Floppy HD" :
+        dev->devType == ADF_DEVTYPE_HARDDISK ? "Harddisk"  :
+        dev->devType == ADF_DEVTYPE_HARDFILE ? "Hardfile"  : "???",
         dev->cylinders, dev->heads, dev->sectors, dev->nVol);
 }
 
 /* prints one line of information about a volume */
 void print_volume(struct AdfVolume *vol)
 {
-    SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
+    ADF_SECTNUM num_blocks = vol->lastBlock - vol->firstBlock + 1;
 
     switch (vol->dev->devType) {
-    case DEVTYPE_FLOPDD:
+    case ADF_DEVTYPE_FLOPDD:
         printf("Volume : Floppy 880 KBytes,");
         break;
-    case DEVTYPE_FLOPHD:
+    case ADF_DEVTYPE_FLOPHD:
         printf("Volume : Floppy 1760 KBytes,");
         break;
-    case DEVTYPE_HARDDISK:
+    case ADF_DEVTYPE_HARDDISK:
         printf("Volume : HD partition #%d %3.1f KBytes,", vol_number, num_blocks / 2.0);
         break;
-    case DEVTYPE_HARDFILE:
+    case ADF_DEVTYPE_HARDFILE:
         printf("Volume : HardFile %3.1f KBytes,", num_blocks / 2.0);
         break;
     default:
@@ -281,9 +305,9 @@ void print_volume(struct AdfVolume *vol)
     printf(" between sectors [%d-%d]. %s%s%s. Filled at %2.1f%%.\n",
         vol->firstBlock,
         vol->lastBlock,
-        isFFS(vol->dosType) ? "FFS" : "OFS",
-        isINTL(vol->dosType) ? " INTL" : "",
-        isDIRCACHE(vol->dosType) ? " DIRCACHE" : "",
+        adfVolIsFFS(vol) ? "FFS" : "OFS",
+        adfVolHasINTL(vol) ? " INTL" : "",
+        adfVolHasDIRCACHE(vol) ? " DIRCACHE" : "",
         100.0 - ((adfCountFreeBlocks(vol) * 100.0) / num_blocks));
 }
 
@@ -303,11 +327,11 @@ void print_tree(struct AdfList *node, char *path)
 
 /* prints one line of information about a directory/file entry */
 void print_entry(struct AdfEntry *e, char *path) {
-    BOOL is_dir = e->type == ST_DIR;
-    BOOL print_comment = show_comments && e->comment && *e->comment;
+    bool is_dir = e->type == ADF_ST_DIR;
+    bool print_comment = show_comments && e->comment && *e->comment;
 
     /* do not print the links entries, ADFlib do not support them yet properly */
-    if (e->type == ST_LFILE || e->type == ST_LDIR || e->type == ST_LSOFT) {
+    if (e->type == ADF_ST_LFILE || e->type == ADF_ST_LDIR || e->type == ADF_ST_LSOFT) {
         return;
     }
 
@@ -335,13 +359,13 @@ void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
 
         /* extract file or create directory */
         char *out = output_name(path, e->name);
-        if (e->type == ST_DIR) {
+        if (e->type == ADF_ST_DIR) {
             if (!pipe_mode) {
                 printf("x - %s/\n", out);
                 mkdir_if_needed(out, permissions(e));
             }
         }
-        else if (e->type == ST_FILE) {
+        else if (e->type == ADF_ST_FILE) {
             extract_file(vol, e->name, out, permissions(e));
         }
         if (!pipe_mode) {
@@ -352,7 +376,7 @@ void extract_tree(struct AdfVolume *vol, struct AdfList *node, char *path)
         /* recurse into subdirectories */
         if (node->subdir) {
             char *newpath = join_path(path, e->name);
-            if (adfChangeDir(vol, e->name) == RC_OK) {
+            if (adfChangeDir(vol, e->name) == ADF_RC_OK) {
                 extract_tree(vol, node->subdir, newpath);
                 adfParentDir(vol);
             }
@@ -381,7 +405,7 @@ void extract_filepath(struct AdfVolume *vol, char *filepath)
         if (*p == '/') {
             *p = 0;
             if (*element) {
-                if (adfChangeDir(vol, element) != RC_OK) {
+                if (adfChangeDir(vol, element) != ADF_RC_OK) {
                     fprintf(stderr, "%s: can't find directory %s in volume\n",
                         adf_file, filepath);
                     return;
@@ -435,6 +459,12 @@ void extract_file(struct AdfVolume *vol, char *filename, char *out, mode_t perms
     /* copy from volume to local file until EOF */
     while (!adfEndOfFile(f)) {
         unsigned n = adfFileRead ( f, sizeof(buf), buf );
+        if ( n != sizeof(buf) && ! adfEndOfFile(f) ) {
+            fprintf ( stderr, "%s: error reading %s at %u\n",
+                      adf_file, filename, adfFileGetPos(f) );
+            goto error_handler;
+        }
+
         if (write(fd, buf, n) != n) {
             perror(out);
             goto error_handler;
@@ -577,7 +607,7 @@ void mkdir_if_needed(char *path, mode_t perms) {
 mode_t permissions(struct AdfEntry *e) {
     return (mode_t)
         (!(e->access & 4) ? 0600 : 0400) | /* rw for user */
-        (e->type == ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
+        (e->type == ADF_ST_DIR || !(e->access & 2) ? 0100 : 0) | /* x for user */
         ((e->access >> 13) & 0007) | /* rwx for others */
         ((e->access >> 5) & 0070); /* rwx for group */
 }

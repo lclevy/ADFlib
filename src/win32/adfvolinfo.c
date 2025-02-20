@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -31,7 +31,7 @@
 
 void adfVolumeInfoWin ( HWND               hWnd,
                         struct AdfVolume * vol )
-/* Windows version of adfVolumeInfo().
+/* Windows version of adfVolInfo().
 ** Input:  Receives a handle to the window on which to display the dialogue and a pointer
 **         to a ADFLib adfVolume structure.
 ** Output: Nil. Displays a windows dialogue containing the disk file data.
@@ -39,11 +39,11 @@ void adfVolumeInfoWin ( HWND               hWnd,
 {
 	char	szTemp[50], szAdfInfo[500];		/* Info string. */
 	
-	struct	bRootBlock root;
+	struct	AdfRootBlock root;
 	char	diskName[35];
 	int		days,month,year;
 	
-	if (adfReadRootBlock(vol, vol->rootBlock, &root)!=RC_OK)
+	if ( adfReadRootBlock ( vol, vol->rootBlock, &root ) != ADF_RC_OK )
 		return;
 	
 	memset(diskName, 0, 35);
@@ -72,7 +72,7 @@ void adfVolumeInfoWin ( HWND               hWnd,
 			strcat(szAdfInfo, "Unknown devType!\n");
 	}
 	strcat(szAdfInfo, "Filesystem : ");
-	sprintf(szTemp, "%s ",isFFS(vol->dosType) ? "FFS" : "OFS");
+	sprintf ( szTemp, "%s ", adfVolIsFFS ( vol ) ? "FFS" : "OFS" );
 	strcat(szAdfInfo, szTemp);
 	if (isINTL(vol->dosType))
 		strcat(szAdfInfo, "INTL ");

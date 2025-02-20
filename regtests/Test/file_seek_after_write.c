@@ -239,7 +239,7 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
 {
     // create device
     const char * const adfname = test_data->adfname;
-    struct AdfDevice * const device = adfCreateDumpDevice ( adfname, 80, 2, 11 );
+    struct AdfDevice * const device = adfDevCreate ( "dump", adfname, 80, 2, 11 );
     if ( ! device )
         return 1;
     adfCreateFlop ( device, test_data->volname, test_data->fstype );
@@ -247,13 +247,13 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
     unsigned errors = 0;
 
     // mount volume
-    struct AdfVolume * vol = adfMount ( device, 0, FALSE );
+    struct AdfVolume * vol = adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     if ( vol == NULL ) {
         errors += 1;
         goto umount_device;
     }
     const unsigned blocksize =
-        //( isOFS ( vol->dosType ) ? 488u : 512u );
+        //( adfVolIsOFS ( vol ) ? 488u : 512u );
         (unsigned) vol->datablockSize;
     assert ( (unsigned) vol->datablockSize == test_data->dblocksize );
     
@@ -319,8 +319,8 @@ unsigned test_seek_after_write ( const test_data_t * const test_data )
 
     // write chunk being end of a data block + 1 byte (so that the last byte is
     // in the next/following data block) from buffer with random data
-    RETCODE rc = adfFileSeek ( file, offset );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfFileSeek ( file, offset );
+    if ( rc != ADF_RC_OK ) {
         adfFileClose ( file );
         fprintf ( stderr, "seeking to offset 0x%x (0x%u) failed\n",
                 offset, offset );
@@ -374,9 +374,10 @@ cleanup:
 cleanup_0:
     free ( buffer_0 );
 umount_volume:
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 umount_device:
-    adfUnMountDev ( device );
+    adfDevUnMount ( device );
+    adfDevClose ( device );
     if ( unlink ( adfname ) != 0 )
         perror ("error deleting the image");
     return errors;
@@ -399,8 +400,8 @@ unsigned verify_overwritten_data ( struct AdfVolume * const vol,
         malloc ( filesize );
     assert ( rbuf != NULL );
 
-    //RETCODE rc = adfFileSeek ( file, offset );
-    //assert ( rc == RC_OK );
+    //ADF_RETCODE rc = adfFileSeek ( file, offset );
+    //assert ( rc == ADF_RC_OK );
 
     // verify part filled with 0
     unsigned chunk0_size = offset;

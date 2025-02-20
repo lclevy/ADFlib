@@ -43,33 +43,38 @@ int main(int argc, char *argv[])
     adfEnvInitDefault();
 
     /* create and mount one device */
-    hd = adfCreateDumpDevice("bootdisk-newdev", 80, 2, 11);
+    hd = adfDevCreate ( "dump", "bootdisk-newdev", 80, 2, 11 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfDeviceInfo(hd);
+    adfDevInfo ( hd );
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != ADF_RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose (hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
 
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
-    adfUnMountDev(hd);
+    adfVolUnMount(vol);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

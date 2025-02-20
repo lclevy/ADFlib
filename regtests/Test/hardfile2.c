@@ -22,30 +22,32 @@ void MyVer(char *msg)
  */
 int main(int argc, char *argv[])
 {
-    struct AdfDevice *hd;
+    (void) argc, (void) argv;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
 
     adfEnvInitDefault();
 
     /* create and mount one device : 4194304 bytes */
-    hd = adfCreateDumpDevice("hardfile2-newdev", 256, 2, 32);
+    struct AdfDevice * const hd = adfDevCreate ( "dump", "hardfile2-newdev",
+                                                 256, 2, 32 );
     if (!hd) {
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfCreateHdFile( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE );
+    adfCreateHdFile ( hd, "empty", ADF_DOSFS_FFS |
+                                   ADF_DOSFS_DIRCACHE );
+    adfDevInfo ( hd );
 
-    adfDeviceInfo(hd);
-
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -55,9 +57,9 @@ int main(int argc, char *argv[])
     adfFreeDirList(list);
 
     /* unmounts */
-    adfUnMount(vol);
-    adfUnMountDev(hd);
-
+    adfVolUnMount(vol);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 

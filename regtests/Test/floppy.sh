@@ -10,6 +10,8 @@ FAILED=
 
 for A_TEST in \
     bootdisk.sh \
+    bitmap_read_segfault.sh \
+    bitmap_recreate.sh \
     cache_crash.sh \
     del_test.sh \
     dir_test.sh \
@@ -27,7 +29,6 @@ for A_TEST in \
     rename.sh \
     undel.sh \
     undel2.sh \
-    undel3.sh \
     floppy_overfilling_test.sh
 do
     echo "---------------------------------------------------"

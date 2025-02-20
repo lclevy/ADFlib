@@ -33,7 +33,7 @@ int main ( int argc, char * argv[] )
     (void) argc;
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     int status = 0;
 
     // setup
@@ -90,18 +90,29 @@ int run_chdir_tests ( chdir_test_t * test_data )
              test_data->image );
 //#endif
 
-    struct AdfDevice * const dev = adfMountDev ( test_data->image, TRUE );
+    struct AdfDevice * const dev = adfDevOpen ( test_data->image,
+                                                ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  test_data->image );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image );
+        adfDevClose ( dev );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, TRUE );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image );
-        adfUnMountDev ( dev );
+        adfDevUnMount ( dev );
+        adfDevClose ( dev );
         return 1;
     }
 
@@ -120,8 +131,9 @@ int run_chdir_tests ( chdir_test_t * test_data )
     // clean-up
 //clean_up:
     //adfToRootDir ( vol );
-    adfUnMount ( vol );
-    adfUnMountDev ( dev );
+    adfVolUnMount ( vol );
+    adfDevUnMount ( dev );
+    adfDevClose ( dev );
 
     return nerrors;
 }
@@ -144,14 +156,14 @@ int test_chdir ( struct AdfVolume * vol,
 #if TEST_VERBOSITY > 0
         printf ( "\nchdir to %s\n", dir );
 #endif
-        if ( adfChangeDir ( vol, dir ) != RC_OK ) {
+        if ( adfChangeDir ( vol, dir ) != ADF_RC_OK ) {
             fprintf ( stderr, " -> Cannot chdir to %s\n", dir );
             adfToRootDir ( vol );
             return 1;
         }
 
         // add checking the name of the current dir. pointer block
-/*        struct bEntryBlock ...
+/*        struct AdfEntryBlock ...
         if ( strcmp ( dir, ) != 0 ) {
             fprintf ( stderr, "Cannot chdir to %s\n", dir );
             adfToRootDir ( vol );

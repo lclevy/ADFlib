@@ -1,13 +1,10 @@
-#ifndef ADF_ENV_H
-#define ADF_ENV_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
  *  adf_env.h
  *
  *  $Id$
- *  
+ *
  *  This file is part of ADFLib.
  *
  *  ADFLib is free software; you can redistribute it and/or modify
@@ -21,33 +18,41 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
+#ifndef ADF_ENV_H
+#define ADF_ENV_H
+
+#include "adf_err.h"
+#include "adf_prefix.h"
 #include "adf_types.h"
-#include "prefix.h"
 
 /* ----- ENVIRONMENT ----- */
 
-#define PR_VFCT	        1
-#define PR_WFCT	        2
-#define PR_EFCT	        3
-#define PR_NOTFCT       4
-#define PR_USEDIRC      5
-#define PR_USE_NOTFCT   6
-#define PR_PROGBAR      7
-#define PR_USE_PROGBAR  8
-#define PR_RWACCESS     9
-#define PR_USE_RWACCESS 10
+typedef enum {
+    ADF_PR_VFCT                   = 1,
+    ADF_PR_WFCT                   = 2,
+    ADF_PR_EFCT                   = 3,
+    ADF_PR_NOTFCT                 = 4,
+    ADF_PR_USEDIRC                = 5,
+    ADF_PR_USE_NOTFCT             = 6,
+    ADF_PR_PROGBAR                = 7,
+    ADF_PR_USE_PROGBAR            = 8,
+    ADF_PR_RWACCESS               = 9,
+    ADF_PR_USE_RWACCESS           = 10,
+    ADF_PR_IGNORE_CHECKSUM_ERRORS = 11,
+    ADF_PR_QUIET                  = 12
+} ADF_ENV_PROPERTY;
 
 //typedef void (*AdfLogFct)(const char * const txt);
 typedef void (*AdfLogFct)(const char * const format, ...);
 //typedef void (*AdfLogFileFct)(FILE * file, const char * const format, ...);
 
-typedef void (*AdfNotifyFct)(SECTNUM, int);
-typedef void (*AdfRwhAccessFct)(SECTNUM,SECTNUM,BOOL);
+typedef void (*AdfNotifyFct)(ADF_SECTNUM, int);
+typedef void (*AdfRwhAccessFct)(ADF_SECTNUM, ADF_SECTNUM, bool);
 typedef void (*AdfProgressBarFct)(int);
 
 struct AdfEnv {
@@ -56,33 +61,38 @@ struct AdfEnv {
     AdfLogFct eFct;       /* error callback function */
 
     AdfNotifyFct notifyFct;
-    BOOL useNotify;
+    bool useNotify;
 
     AdfRwhAccessFct rwhAccess;
-    BOOL useRWAccess;
+    bool useRWAccess;
 
     AdfProgressBarFct progressBar;
-    BOOL useProgressBar;
+    bool useProgressBar;
 
-    BOOL useDirCache;
+    bool useDirCache;
 
-    void *nativeFct;
+    bool ignoreChecksumErrors;
+
+    bool quiet;          /* true disables warning/error messages */
 };
 
 
-PREFIX void adfEnvInitDefault();
+ADF_PREFIX void adfEnvInitDefault ( void );
+ADF_PREFIX void adfEnvCleanUp ( void );
 
-PREFIX void adfSetEnvFct ( const AdfLogFct    eFct,
-                           const AdfLogFct    wFct,
-                           const AdfLogFct    vFct,
-                           const AdfNotifyFct notifyFct );
+ADF_PREFIX void adfEnvSetFct ( const AdfLogFct    eFct,
+                               const AdfLogFct    wFct,
+                               const AdfLogFct    vFct,
+                               const AdfNotifyFct notifyFct );
 
-PREFIX void adfEnvCleanUp();
-PREFIX void adfChgEnvProp(int prop, void *new);
-PREFIX char* adfGetVersionNumber();
-PREFIX char* adfGetVersionDate();
+ADF_PREFIX ADF_RETCODE adfEnvSetProperty ( const ADF_ENV_PROPERTY property,
+                                           const intptr_t         newValue );
 
-extern struct AdfEnv adfEnv;
+ADF_PREFIX intptr_t adfEnvGetProperty ( const ADF_ENV_PROPERTY property );
 
-#endif /* ADF_ENV_H */
-/*##########################################################################*/
+ADF_PREFIX char * adfGetVersionNumber ( void );
+ADF_PREFIX char * adfGetVersionDate ( void );
+
+ADF_PREFIX extern struct AdfEnv adfEnv;
+
+#endif  /* ADF_ENV_H */

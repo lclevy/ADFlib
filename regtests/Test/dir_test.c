@@ -37,31 +37,39 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    struct AdfDevice *hd;
     struct AdfVolume *vol;
     struct AdfList *list, *cell;
-    SECTNUM nSect;
  
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
 
-    /* mount existing device */
+    /* open and mount existing device */
 /* testffs.adf */
-    hd = adfMountDev( argv[1],FALSE );
-    if (!hd) {
+    struct AdfDevice * hd = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READWRITE );
+    if ( ! hd ) {
+        fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
+                  argv[1] );
+        adfEnvCleanUp();
+        exit(1);
+    }
+
+    ADF_RETCODE rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
+        adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, FALSE);
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
-        adfUnMountDev(hd);
+        adfDevUnMount ( hd );
+        adfDevClose ( hd );
         fprintf(stderr, "can't mount volume\n");
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -73,7 +81,8 @@ int main(int argc, char *argv[])
     putchar('\n');
 
     /* cd dir_2 */
-    nSect = adfChangeDir(vol, "dir_2");
+    //ADF_SECTNUM nSect = adfChangeDir(vol, "dir_2");
+    adfChangeDir(vol, "dir_2");
 
     cell = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(cell) {
@@ -93,7 +102,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(cell->content);
         cell = cell->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
     int status = 0;
 
@@ -106,9 +115,9 @@ int main(int argc, char *argv[])
     /* test getting real name from a softlink */
     status += test_softlink_realname ( vol, "slink_dir1", "dir_1" );
 
-    adfUnMount(vol);
-    adfUnMountDev(hd);
-
+    adfVolUnMount(vol);
+    adfDevUnMount ( hd );
+    adfDevClose ( hd );
 
     adfEnvCleanUp();
 
@@ -125,8 +134,8 @@ int test_chdir_hlink ( struct AdfVolume * vol,
     adfToRootDir ( vol );
 
     printf ("*** Test entering hard link %s\n", hlink );
-    RETCODE rc = adfChangeDir ( vol, hlink );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfChangeDir ( vol, hlink );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "adfChangeDir error entering hard link %s.\n",
                   hlink );
         status++;
@@ -162,14 +171,14 @@ int test_softlink_realname ( struct AdfVolume * vol,
 
     printf ("*** Test getting destination name for soft link %s\n", slink );
 
-    struct bLinkBlock entry;
-    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
-                                          (struct bEntryBlock *) &entry );
+    struct AdfLinkBlock entry;
+    ADF_SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr, slink,
+                                              (struct AdfEntryBlock *) &entry );
     if ( sectNum == -1 ) {
         return 1;
     }
 
-    if ( entry.secType != ST_LSOFT ) {
+    if ( entry.secType != ADF_ST_LSOFT ) {
         return 1;
     }
 
