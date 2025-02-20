@@ -37,7 +37,7 @@ int main ( int argc, char * argv[] )
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEnvSetFct(0,0,MyVer,0);
     int status = 0;
 
     // setup
@@ -118,15 +118,15 @@ int test_hlink_read ( reading_test_t * test_data )
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot mount image %s - aborting the test...\n",
                   test_data->image_filename );
         adfDevClose ( dev );
         return 1;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume 0 from image %s - aborting the test...\n",
                   test_data->image_filename );
@@ -136,7 +136,7 @@ int test_hlink_read ( reading_test_t * test_data )
     }
 
 #if TEST_VERBOSITY > 0
-    //adfVolumeInfo ( vol );
+    //adfVolInfo ( vol );
 #endif
 
     int status = 0;
@@ -147,7 +147,7 @@ int test_hlink_read ( reading_test_t * test_data )
         printf ("Entering directory %s...\n", dir );
 #endif
         int chdir_st = adfChangeDir ( vol, dir );
-        if ( chdir_st != RC_OK ) {
+        if ( chdir_st != ADF_RC_OK ) {
             fprintf ( stderr, " -> Cannot chdir to %s, status %d - aborting...\n",
                       dir, chdir_st );
             adfToRootDir ( vol );
@@ -176,7 +176,7 @@ int test_hlink_read ( reading_test_t * test_data )
     // clean-up
 clean_up:
     //adfToRootDir ( vol );
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( dev );
     adfDevClose ( dev );
 

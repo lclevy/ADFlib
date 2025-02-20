@@ -46,20 +46,20 @@ int main(int argc, char *argv[])
     part1.startCyl = 2;
 	part1.lenCyl = 2889;
 	part1.volName = strdup("zip");
-    part1.volType = FSMASK_FFS|FSMASK_DIRCACHE;
+    part1.volType = ADF_DOSFS_FFS | ADF_DOSFS_DIRCACHE;
 
     partList[0] = &part1;
-    RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
+    ADF_RETCODE rc = adfCreateHd ( hd, 1, (const struct Partition * const * const) partList );
     free(partList);
     free(part1.volName);
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         fprintf ( stderr, "adfCreateHd returned error %d\n", rc );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
-    adfUnMount(vol);
+    adfVolInfo(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     }
 
     rc = adfDevMount ( hd );
-    if ( rc != RC_OK ) {
+    if ( rc != ADF_RC_OK ) {
         adfDevClose ( hd );
         fprintf(stderr, "can't mount device\n");
         adfEnvCleanUp(); exit(1);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
     adfDevInfo(hd);
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

@@ -39,14 +39,16 @@ int main(int argc, char *argv[])
 
     adfDevInfo(hd);
 
-    if (adfCreateFlop( hd, "empty", FSMASK_FFS|FSMASK_DIRCACHE )!=RC_OK) {
+    if ( adfCreateFlop ( hd, "empty", ADF_DOSFS_FFS |
+                                      ADF_DOSFS_DIRCACHE ) != ADF_RC_OK )
+    {
 		fprintf(stderr, "can't create floppy\n");
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -54,11 +56,11 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     fic = adfFileOpen ( vol, "file_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -69,7 +71,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "file_24", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -80,7 +82,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "dir_1a", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -91,7 +93,7 @@ int main(int argc, char *argv[])
 
     fic = adfFileOpen ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfDevUnMount ( hd );
         adfDevClose ( hd );
         adfEnvCleanUp();
@@ -139,7 +141,7 @@ int main(int argc, char *argv[])
 /*
     fic = adfOpenFile ( vol, "dir_5u", ADF_FILE_MODE_WRITE );
     if (!fic) {
-        adfUnMount(vol);
+        adfVolUnMount(vol);
         adfUnMountDev(hd);
         adfCloseDev(hd);
         adfEnvCleanUp();
@@ -166,7 +168,7 @@ int main(int argc, char *argv[])
     }
     adfFreeDirList(list);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

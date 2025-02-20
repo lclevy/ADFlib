@@ -1,6 +1,3 @@
-#ifndef ADF_DEV_DUMP_H
-#define ADF_DEV_DUMP_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -21,14 +18,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
+#ifndef ADF_DEV_DRIVER_DUMP_H
+#define ADF_DEV_DRIVER_DUMP_H
 
 #include "adf_dev_driver.h"
 
 extern const struct AdfDeviceDriver adfDeviceDriverDump;
 
-#endif /* ADF_DUMP_H */
-/*##########################################################################*/
+#endif  /* ADF_DEV_DRIVER_DUMP_H */

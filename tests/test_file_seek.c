@@ -47,7 +47,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
 
     // mount the test volume
     struct AdfVolume * vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     ck_assert_ptr_nonnull ( vol );
 
     // check it is an empty floppy disk
@@ -71,9 +71,9 @@ void test_file_seek_eof ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // reset volume state (remount)
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     vol = // tdata->vol =
-        adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+        adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     
     // reopen the file
     file = adfFileOpen ( vol, filename, ADF_FILE_MODE_READ );
@@ -109,13 +109,13 @@ void test_file_seek_eof ( test_data_t * const tdata )
         // checking: eof pos. - offset
         unsigned offset = file->fileHdr->byteSize >= seek_offsets_from_eof[i] ?
             file->fileHdr->byteSize - seek_offsets_from_eof[i] : 0;
-        ck_assert_int_eq ( adfFileSeek ( file, offset ), RC_OK );
+        ck_assert_int_eq ( adfFileSeek ( file, offset ), ADF_RC_OK );
         ck_assert_uint_eq ( file->fileHdr->byteSize, bufsize );
         ck_assert_uint_eq ( file->pos, offset );
 
         // checking: eof pos. + offset
         offset = file->fileHdr->byteSize + seek_offsets_from_eof[i];
-        ck_assert_int_eq ( adfFileSeek ( file, offset ), RC_OK );
+        ck_assert_int_eq ( adfFileSeek ( file, offset ), ADF_RC_OK );
         ck_assert_uint_eq ( file->fileHdr->byteSize, bufsize );
         ck_assert_uint_eq ( file->pos, file->fileHdr->byteSize );
     }
@@ -123,7 +123,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
     adfFileClose ( file );
 
     // verify file data
-    const BOOL data_valid =
+    const bool data_valid =
         ( verify_file_data ( vol, filename, buffer, bufsize, 10 ) == 0 );
     ck_assert_msg ( data_valid,
                     "Data verification failed: "
@@ -133,7 +133,7 @@ void test_file_seek_eof ( test_data_t * const tdata )
                     vol->datablockSize );
 
     // umount volume
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 }
 
 
@@ -249,13 +249,13 @@ void setup ( test_data_t * const tdata )
         //return;
         exit(1);
     }
-    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != RC_OK ) {
+    if ( adfCreateFlop ( tdata->device, tdata->volname, tdata->fstype ) != ADF_RC_OK ) {
         fprintf ( stderr, "adfCreateFlop error creating volume: %s\n",
                   tdata->volname );
         exit(1);
     }
 
-    //tdata->vol = adfMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
+    //tdata->vol = adfVolMount ( tdata->device, 0, ADF_ACCESS_MODE_READWRITE );
     //if ( ! tdata->vol )
     //    return;
     //    exit(1);
@@ -272,7 +272,7 @@ void teardown ( test_data_t * const tdata )
     free ( tdata->buffer );
     tdata->buffer = NULL;
 
-    //adfUnMount ( tdata->vol );
+    //adfVolUnMount ( tdata->vol );
     adfDevUnMount ( tdata->device );
     adfDevClose ( tdata->device );
     if ( unlink ( tdata->adfname ) != 0 )

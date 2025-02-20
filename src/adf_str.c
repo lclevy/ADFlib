@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  aint32_t with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -30,17 +30,17 @@
 #include <stdlib.h>
 
 /*
- * newCell
+ * adfListNewCell
  *
  * adds a cell at the end the list
  */
-struct AdfList * newCell ( struct AdfList * const list,
-                           void * const           content )
+struct AdfList * adfListNewCell ( struct AdfList * const list,
+                                  void * const           content )
 {
     struct AdfList * const cell = ( struct AdfList * )
         malloc ( sizeof ( struct AdfList ) );
     if (!cell) {
-        (*adfEnv.eFct)("newCell : malloc");
+        adfEnv.eFct ( "adfListNewCell : malloc" );
         return NULL;
     }
     cell->content = content;
@@ -53,15 +53,38 @@ struct AdfList * newCell ( struct AdfList * const list,
 
 
 /*
- * freeList
+ * adfListFree
  *
  */
-void freeList ( struct AdfList * const list )
+void adfListFree ( struct AdfList * const list )
 {
     if (list==NULL) 
         return;
     
     if (list->next)
-        freeList(list->next);
+        adfListFree ( list->next );
     free(list);
+}
+
+
+ADF_RETCODE adfVectorAllocate ( struct AdfVector * const  vector )
+{
+    if ( vector == NULL )
+        return ADF_RC_NULLPTR;
+
+    if ( vector->items != NULL )
+        /* vector already allocated - error */
+        return ADF_RC_ERROR;
+
+    vector->items = ( vector->nItems > 0 ) ?
+        malloc ( vector->nItems * vector->itemSize ) : NULL;
+
+    return ( vector->nItems > 0 &&
+             vector->items == NULL ) ? ADF_RC_MALLOC : ADF_RC_OK;
+}
+
+void adfVectorFree ( struct AdfVector * const vector )
+{
+    free ( vector->items );
+    vector->items = NULL;
 }

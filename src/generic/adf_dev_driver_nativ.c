@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -34,12 +34,11 @@
  *
  * must fill 'dev->size'
  */
-RETCODE myInitDevice ( struct AdfDevice * const dev,
-                       const char * const       name,
-                       const AdfAccessMode      mode )
+static struct AdfDevice * myInitDevice ( const char * const  name,
+                                        const AdfAccessMode mode )
 {
-    (void) dev, (void) name, (void) mode;
-    return RC_ERROR;
+    (void) name, (void) mode;
+    return NULL;
 }
 
 
@@ -47,13 +46,13 @@ RETCODE myInitDevice ( struct AdfDevice * const dev,
  * myReadSector
  *
  */
-RETCODE myReadSector ( struct AdfDevice * const dev,
+ADF_RETCODE myReadSector ( struct AdfDevice * const dev,
                        const uint32_t           n,
                        const unsigned           size,
                        uint8_t * const          buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -61,13 +60,13 @@ RETCODE myReadSector ( struct AdfDevice * const dev,
  * myWriteSector
  *
  */
-RETCODE myWriteSector ( struct AdfDevice * const dev,
+ADF_RETCODE myWriteSector ( struct AdfDevice * const dev,
                         const uint32_t           n,
                         const unsigned           size,
                         const uint8_t * const    buf )
 {
     (void) dev, (void) n, (void) size, (void) buf;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -76,10 +75,10 @@ RETCODE myWriteSector ( struct AdfDevice * const dev,
  *
  * free native device
  */
-RETCODE myReleaseDevice ( struct AdfDevice * const dev )
+ADF_RETCODE myReleaseDevice ( struct AdfDevice * const dev )
 {
     (void) dev;
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -87,16 +86,16 @@ RETCODE myReleaseDevice ( struct AdfDevice * const dev )
  * myIsDevNative
  *
  */
-static BOOL myIsDevNative(void)
+static bool myIsDevNative(void)
 {
-    return FALSE;
+    return false;
 }
 
 
-static BOOL myIsDevice ( const char * const devName )
+static bool myIsDevice ( const char * const devName )
 {
     (void) devName;
-    return FALSE;
+    return false;
 }
 
 

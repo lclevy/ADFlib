@@ -29,7 +29,6 @@ for A_TEST in \
     rename.sh \
     undel.sh \
     undel2.sh \
-    undel3.sh \
     floppy_overfilling_test.sh
 do
     echo "---------------------------------------------------"

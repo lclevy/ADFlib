@@ -55,23 +55,23 @@ HANDLE NT4OpenDrive ( const char * const lpstrDrive )
 	return hDrv;
 }
 
-BOOL NT4CloseDrive ( const HANDLE hDrv )
+bool NT4CloseDrive ( const HANDLE hDrv )
 {
 	DWORD dwRet;
 
-	if( hDrv==NULL ) return TRUE;										/* BV */
+	if( hDrv==NULL ) return true;										/* BV */
 
 	if (! DeviceIoControl(hDrv, FSCTL_UNLOCK_VOLUME, NULL, 0, NULL, 0,
 		&dwRet,	NULL))
-		return FALSE;
+		return false;
 
 	if (! CloseHandle(hDrv))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
-BOOL NT4ReadSector ( const HANDLE hDrv,
+bool NT4ReadSector ( const HANDLE hDrv,
                      const long   iSect,
                      const size_t iSize,
                      void * const lpvoidBuf )
@@ -83,21 +83,21 @@ BOOL NT4ReadSector ( const HANDLE hDrv,
 
 	if (SetFilePointer(hDrv, iSect * 512, NULL, FILE_BEGIN) == 0xFFFFFFFF) {
 		VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
-		return FALSE;
+		return false;
 	}
 
 	if (! ReadFile(hDrv, lpvoidTempBuf, 512, &dwActual, NULL)) {
 		VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
-		return FALSE;
+		return false;
 	}
 
 	memcpy(lpvoidBuf, lpvoidTempBuf, iSize);
 	VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
 
-	return TRUE;
+	return true;
 }
 
-BOOL NT4WriteSector ( const HANDLE       hDrv,
+bool NT4WriteSector ( const HANDLE       hDrv,
                       const long         iSect,
                       const size_t       iSize,
                       const void * const lpvoidBuf )
@@ -106,25 +106,25 @@ BOOL NT4WriteSector ( const HANDLE       hDrv,
 	DWORD dwActual;
 
 	if (iSize != 512)
-		return FALSE;
+		return false;
 
 	lpvoidTempBuf = VirtualAlloc(NULL, 512, MEM_COMMIT, PAGE_READWRITE);
 
 	if (SetFilePointer(hDrv, iSect * 512, NULL, FILE_BEGIN) == 0xFFFFFFFF) {
 		VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
-		return FALSE;
+		return false;
 	}
 
 	memcpy(lpvoidTempBuf, lpvoidBuf, iSize);
 
 	if (! WriteFile(hDrv, lpvoidTempBuf, 512, &dwActual, NULL)) {
 		VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
-		return FALSE;
+		return false;
 	}
 	
 	VirtualFree(lpvoidTempBuf, 0, MEM_RELEASE);
 
-	return TRUE;
+	return true;
 }
 
 ULONG NT4GetDriveSize ( const HANDLE hDrv )
@@ -146,22 +146,22 @@ ULONG NT4GetDriveSize ( const HANDLE hDrv )
 }
 
 
-BOOL NT4GetDriveGeometry ( const HANDLE               hDrv,
+bool NT4GetDriveGeometry ( const HANDLE               hDrv,
                            NT4DriveGeometry_t * const geometry )
 {
     DWORD dwActual;
     DISK_GEOMETRY dgGeom;
 
-    BOOL status = DeviceIoControl (
+    bool status = DeviceIoControl (
         hDrv, IOCTL_DISK_GET_DRIVE_GEOMETRY, NULL, 0,
         &dgGeom, sizeof(DISK_GEOMETRY), &dwActual, NULL );
     if ( ! status )
-        return FALSE;
+        return false;
 
     geometry->cylinders         = dgGeom.Cylinders.LowPart;
     geometry->tracksPerCylinder = dgGeom.TracksPerCylinder;
     geometry->sectorsPerTrack   = dgGeom.SectorsPerTrack;
     geometry->bytesPerSector    = dgGeom.BytesPerSector;
 
-    return TRUE;
+    return true;
 }

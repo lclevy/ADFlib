@@ -16,7 +16,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
@@ -34,12 +34,12 @@ struct AdfDeviceDriverListNode {
 static struct AdfDeviceDriverListNode * adfDeviceDrivers = NULL;
 
 
-RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
+ADF_RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
 {
     struct AdfDeviceDriverListNode * newNode =
         malloc ( sizeof ( struct AdfDeviceDriverListNode ) );
     if ( newNode == NULL )
-        return RC_MALLOC;
+        return ADF_RC_MALLOC;
 
     newNode->next   = NULL;
     newNode->driver = driver;
@@ -54,11 +54,11 @@ RETCODE adfAddDeviceDriver ( const struct AdfDeviceDriver * const driver )
     
     //fprintf (stderr, "Added driver %s\n", newNode->driver->name );
 
-    return RC_OK;
+    return ADF_RC_OK;
 }
 
 
-RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver )
+ADF_RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver )
 {
     struct AdfDeviceDriverListNode
         *node = adfDeviceDrivers,
@@ -72,11 +72,11 @@ RETCODE adfRemoveDeviceDriver ( const struct AdfDeviceDriver * const driver )
                 prev->next = node->next;
             }
             free ( node );
-            return RC_OK;
+            return ADF_RC_OK;
         }
     }
 
-    return RC_ERROR;
+    return ADF_RC_ERROR;
 }
 
 
@@ -91,7 +91,8 @@ void adfRemoveDeviceDrivers ( void )
         //fflush(stderr);
         next = node->next;
         free ( node );
-    }        
+    }
+    adfDeviceDrivers = NULL;
 }
 
 

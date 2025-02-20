@@ -1,6 +1,3 @@
-#ifndef _ADF_VOL_H
-#define _ADF_VOL_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -21,52 +18,66 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
-#include "prefix.h"
+#ifndef ADF_VOL_H
+#define ADF_VOL_H
 
+#include "adf_blk.h"
 #include "adf_types.h"
 #include "adf_err.h"
+#include "adf_prefix.h"
 #include "adf_str.h"
+
+#include <string.h>
 
 /* ----- VOLUME ----- */
 
 struct AdfBitmap {
-    uint32_t               size;         /* in blocks */
-    SECTNUM *              blocks;       /* bitmap blocks pointers */
-    struct bBitmapBlock ** table;
-    BOOL *                 blocksChg;
+    uint32_t                 size;         /* in blocks */
+    ADF_SECTNUM *            blocks;       /* bitmap blocks pointers */
+    struct AdfBitmapBlock ** table;
+    bool *                   blocksChg;
 };
 
 struct AdfVolume {
     struct AdfDevice *dev;
 
-    SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
-    SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
-    SECTNUM rootBlock;      /* root block (from firstBlock) */
+    ADF_SECTNUM firstBlock;     /* first block of data area (from beginning of device) */
+    ADF_SECTNUM lastBlock;      /* last block of data area  (from beginning of device) */
+    ADF_SECTNUM rootBlock;      /* root block (from firstBlock) */
 
-    uint8_t dosType;           /* FFS/OFS, DIRCACHE, INTERNATIONAL */
-    BOOL bootCode;
-    BOOL readOnly;
+    struct fs {
+        char    id[4];          /* "DOS", "PFS", ... */
+        uint8_t type;           /* DOS: FFS/OFS, DIRCACHE, INTERNATIONAL;
+                                   PFS: ... */
+    } fs;
+    bool bootCode;
+    bool readOnly;
     unsigned datablockSize;      /* 488 or 512 */
     unsigned blockSize;			/* 512 */
 
     char *volName;
 
-    BOOL mounted;
+    bool mounted;
 
     struct AdfBitmap bitmap;
 
-    SECTNUM curDirPtr;
+    ADF_SECTNUM curDirPtr;
 };
 
-static inline uint32_t adfVolGetBlockNumWithoutBootblock (
+static inline uint32_t adfVolGetSizeInBlocks ( const struct AdfVolume * const vol )
+{
+    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 );
+}
+
+static inline uint32_t adfVolGetSizeInBlocksWithoutBootblock (
     const struct AdfVolume * const vol )
 {
-    return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 - 2 );
+    return (uint32_t) ( adfVolGetSizeInBlocks ( vol ) - 2 );
 }
 
 static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
@@ -74,43 +85,78 @@ static inline uint32_t adfVolGetBlockNum ( const struct AdfVolume * const vol )
     return (uint32_t) ( vol->lastBlock - vol->firstBlock + 1 );
 }
 
-static inline SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
+static inline ADF_SECTNUM adfVolCalcRootBlk ( const struct AdfVolume * const vol )
 {
     return ( vol->lastBlock - vol->firstBlock + 1 ) / 2;
 }
 
 
-PREFIX RETCODE adfInstallBootBlock ( struct AdfVolume * const vol,
-                                     const uint8_t * const    code );
+static inline bool adfVolIsDosFS ( const struct AdfVolume * const vol ) {
+    return ( strncmp ( vol->fs.id, "DOS", 3 ) == 0 );
+}
 
-PREFIX BOOL isSectNumValid ( const struct AdfVolume * const vol,
-                             const SECTNUM                  nSect );
+static inline bool adfVolIsOFS ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsIsOFS ( vol->fs.type );
+}
 
-PREFIX struct AdfVolume * adfMount ( struct AdfDevice * const dev,
-                                     const int                nPart,
-                                     const AdfAccessMode      mode );
+static inline bool adfVolIsFFS ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsIsFFS ( vol->fs.type );
+}
 
-PREFIX RETCODE adfRemount ( struct AdfVolume *  vol,
-                            const AdfAccessMode mode );
+static inline bool adfVolHasINTL ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsHasINTL ( vol->fs.type );
+}
 
-PREFIX void adfUnMount ( struct AdfVolume * const vol );
+static inline bool adfVolHasDIRCACHE ( const struct AdfVolume * const vol ) {
+    return adfVolIsDosFS ( vol ) && adfDosFsHasDIRCACHE ( vol->fs.type );
+}
 
-PREFIX void adfVolumeInfo ( struct AdfVolume * const vol );
+static inline bool adfVolIsPFS ( const struct AdfVolume * const vol ) {
+    return ( strncmp ( vol->fs.id, "PFS", 3 ) == 0 );
+}
 
-struct AdfVolume * adfCreateVol ( struct AdfDevice * const dev,
-                                  const uint32_t           start,
-                                  const uint32_t           len,
-                                  const char * const       volName,
-                                  const uint8_t            volType );
+static inline bool adfVolIsFsValid (  const struct AdfVolume * const vol )
+{
+    return (
+        ( adfVolIsOFS ( vol ) &&
+          ! adfVolHasINTL ( vol ) &&
+          ! adfVolHasDIRCACHE ( vol ) ) ||
+        adfVolIsFFS ( vol ) ||
+        adfVolIsPFS ( vol ) );
+}
 
-PREFIX RETCODE adfReadBlock ( struct AdfVolume * const vol,
-                              const uint32_t           nSect,
-                              uint8_t * const          buf );
+ADF_PREFIX char * adfVolGetFsStr ( const struct AdfVolume * const vol );
 
-PREFIX RETCODE adfWriteBlock ( struct AdfVolume * const vol,
-                               const uint32_t           nSect,
-                               const uint8_t * const    buf );
 
-#endif /* _ADF_VOL_H */
+ADF_PREFIX ADF_RETCODE adfVolInstallBootBlock ( struct AdfVolume * const vol,
+                                                const uint8_t * const    code );
 
-/*##########################################################################*/
+ADF_PREFIX bool adfVolIsSectNumValid ( const struct AdfVolume * const vol,
+                                       const ADF_SECTNUM              nSect );
+
+ADF_PREFIX struct AdfVolume * adfVolMount ( struct AdfDevice * const dev,
+                                            const int                nPart,
+                                            const AdfAccessMode      mode );
+
+ADF_PREFIX ADF_RETCODE adfVolRemount ( struct AdfVolume *  vol,
+                                       const AdfAccessMode mode );
+
+ADF_PREFIX void adfVolUnMount ( struct AdfVolume * const vol );
+
+ADF_PREFIX void adfVolInfo ( struct AdfVolume * const vol );
+
+ADF_PREFIX struct AdfVolume * adfVolCreate ( struct AdfDevice * const dev,
+                                             const uint32_t           start,
+                                             const uint32_t           len,
+                                             const char * const       volName,
+                                             const uint8_t            volType );
+
+ADF_PREFIX ADF_RETCODE adfVolReadBlock ( struct AdfVolume * const vol,
+                                         const uint32_t           nSect,
+                                         uint8_t * const          buf );
+
+ADF_PREFIX ADF_RETCODE adfVolWriteBlock ( struct AdfVolume * const vol,
+                                          const uint32_t           nSect,
+                                          const uint8_t * const    buf );
+
+#endif  /* ADF_VOL_H */

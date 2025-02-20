@@ -1,18 +1,39 @@
 
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
-  ${PROJECT_SOURCE_DIR}/src/generic
   ${PROJECT_BINARY_DIR}/src
 )
 
+
+if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+  set ( ADFLIB_CUSTOM_GETOPT_SRC
+    getopt.c
+    getopt.h )
+else()
+  set ( ADFLIB_CUSTOM_GETOPT_SRC "")
+endif()
+
 add_executable ( unadf unadf.c )
-TARGET_LINK_LIBRARIES ( unadf adf )
+target_link_libraries ( unadf adf )
+set_target_properties ( unadf PROPERTIES
+  #  INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}"
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_floppy_create adf_floppy_create.c )
-TARGET_LINK_LIBRARIES ( adf_floppy_create adf )
+target_link_libraries ( adf_floppy_create adf )
+set_target_properties ( adf_floppy_create PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
-add_executable ( adf_floppy_format adf_floppy_format.c )
-TARGET_LINK_LIBRARIES ( adf_floppy_format adf )
+add_executable ( adf_format
+  adf_format.c
+  ${ADFLIB_CUSTOM_GETOPT_SRC}
+)
+target_link_libraries ( adf_format adf )
+set_target_properties ( adf_format PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_show_metadata
   adf_show_metadata.c
@@ -25,11 +46,25 @@ add_executable ( adf_show_metadata
   adf_show_metadata_volume.c
   adf_show_metadata_volume.h
 )
-
-TARGET_LINK_LIBRARIES ( adf_show_metadata adf )
+target_link_libraries ( adf_show_metadata adf )
+set_target_properties ( adf_show_metadata PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 add_executable ( adf_bitmap adf_bitmap.c )
-TARGET_LINK_LIBRARIES ( adf_bitmap adf )
+target_link_libraries ( adf_bitmap adf )
+set_target_properties ( adf_bitmap PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
+
+add_executable ( adf_salvage
+  adf_salvage.c
+  ${ADFLIB_CUSTOM_GETOPT_SRC}
+)
+target_link_libraries ( adf_salvage adf )
+set_target_properties ( adf_salvage PROPERTIES
+  INSTALL_RPATH "/usr/local/lib"
+)
 
 file (
   COPY ${PROJECT_SOURCE_DIR}/examples/tests
@@ -51,7 +86,8 @@ endif()
 install ( TARGETS
   unadf
   adf_floppy_create
-  adf_floppy_format
+  adf_format
   adf_show_metadata
   adf_bitmap
+  adf_salvage
 )

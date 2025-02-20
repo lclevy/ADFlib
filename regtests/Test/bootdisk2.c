@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 	
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -51,11 +51,11 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-	adfInstallBootBlock(vol, bootcode);
+    adfVolInstallBootBlock ( vol, bootcode );
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount ( vol );
     adfUnMountDev(hd);
 
     adfEnvCleanUp();

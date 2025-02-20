@@ -1,3 +1,25 @@
+/*
+ * adf_show_metadata
+ *
+ * an utility for displaying Amiga disk images (ADF) metadata
+ *
+ *  This file is part of ADFLib.
+ *
+ *  ADFLib is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ADFLib is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,8 +82,8 @@ int main ( const int                  argc,
         goto env_cleanup;
     }
 
-    RETCODE rc = adfDevMount ( dev );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         fprintf ( stderr, "Cannot get volume info for file/device '%s' - aborting...\n",
                   args.adfname );
         goto dev_cleanup;
@@ -72,7 +94,8 @@ int main ( const int                  argc,
         goto dev_cleanup;
     }
 
-    struct AdfVolume * const vol = adfMount ( dev, args.vol_id, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, args.vol_id,
+                                                 ADF_ACCESS_MODE_READONLY );
     if ( ! vol ) {
         fprintf ( stderr, "Cannot mount volume %d - aborting...\n",
                   args.vol_id );
@@ -88,7 +111,7 @@ int main ( const int                  argc,
         show_volume_metadata ( vol );
     }
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 dev_mount_cleanup:
     adfDevUnMount ( dev );
@@ -158,38 +181,38 @@ void show_dentry_metadata ( struct AdfVolume * const vol,
 
     //printf ( "Directory:\t%s\n", dir_path );
     if ( strcmp ( dir_path, "." ) != 0 ) {
-        if ( adfChangeDir ( vol, dir_path ) != RC_OK ) {
+        if ( adfChangeDir ( vol, dir_path ) != ADF_RC_OK ) {
             fprintf ( stderr, "Invalid dir: '%s'\n", dir_path );
             goto show_entry_cleanup;
         }
     }
 
     // get entry
-    struct bEntryBlock entry;
-    SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr,
-                                          entry_name, &entry );
+    struct AdfEntryBlock entry;
+    ADF_SECTNUM sectNum = adfGetEntryByName ( vol, vol->curDirPtr,
+                                              entry_name, &entry );
     if ( sectNum == -1 ) {
         fprintf (stderr, "'%s' not found.\n", entry_name );
         goto show_entry_cleanup;
     }
 
     switch ( entry.secType ) {
-    case ST_ROOT:
+    case ADF_ST_ROOT:
         fprintf ( stderr, "Querying root directory?\n" );
         break;
-    case ST_DIR:
+    case ADF_ST_DIR:
         show_directory_metadata ( vol, sectNum );
         break;
-    case ST_FILE:
+    case ADF_ST_FILE:
         show_file_metadata ( vol, sectNum );
         break;
-    case ST_LFILE:
+    case ADF_ST_LFILE:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LDIR:
+    case ADF_ST_LDIR:
         //show_hardlink_metadata ( vol, sectNum );
         break;
-    case ST_LSOFT:
+    case ADF_ST_LSOFT:
         break;
     default:
         fprintf ( stderr, "unknown entry type %d\n", entry.secType );

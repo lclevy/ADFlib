@@ -9,6 +9,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "adflib.h"
 
@@ -37,8 +38,8 @@ int main ( const int          argc,
     
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
-    BOOL error_status = FALSE;
+//	adfEnvSetFct(0,0,MyVer,0);
+    bool error_status = false;
     struct AdfDevice * const dev = adfDevOpen ( argv[1], ADF_ACCESS_MODE_READONLY );
     if ( ! dev ) {
         fprintf ( stderr, "Cannot open file/device '%s' - aborting...\n",
@@ -46,25 +47,25 @@ int main ( const int          argc,
         adfEnvCleanUp();
         exit(1);
     }
-    RETCODE rc = adfDevMount ( dev );
-    if ( dev == NULL ) {
+    ADF_RETCODE rc = adfDevMount ( dev );
+    if ( rc != ADF_RC_OK ) {
         log_error ( stderr, "can't mount device %s\n", argv[1] );
-        error_status = TRUE;
+        error_status = true;
         goto close_dev;
     }
 
     /*** crash happens here, on mounting the volume, in adfReadBitmap() ***/
-    struct AdfVolume * const vol = adfMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
+    struct AdfVolume * const vol = adfVolMount ( dev, 0, ADF_ACCESS_MODE_READONLY );
     if ( vol == NULL ) {
         log_error ( stderr, "can't mount volume %d\n", 0 );
-        error_status = TRUE;
+        error_status = true;
         goto umount_dev;
     }
 
-    //adfVolumeInfo(vol);
+    //adfVolInfo(vol);
     //putchar('\n');
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
 
 umount_dev:
     adfDevUnMount ( dev );
@@ -72,7 +73,7 @@ umount_dev:
 close_dev:
     adfDevClose ( dev );
 
-clean_up:
+//clean_up:
     adfEnvCleanUp();
 
     return error_status;

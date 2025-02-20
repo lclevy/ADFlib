@@ -106,7 +106,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
         return 1;
     adfCreateFlop ( device, "OverfillTest", tdata->fstype );
 
-    struct AdfVolume * vol = adfMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
+    struct AdfVolume * vol = adfVolMount ( device, 0, ADF_ACCESS_MODE_READWRITE );
     if ( ! vol )
         return 1;
 
@@ -157,7 +157,7 @@ int test_floppy_overfilling ( test_data_t * const tdata )
     status += verify_file_data ( vol, tdata->filename, tdata->buffer,
                                  bytes_written, tdata->max_errors );
 
-    adfUnMount ( vol );
+    adfVolUnMount ( vol );
     adfDevUnMount ( device );
     adfDevClose ( device );
 

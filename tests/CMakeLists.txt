@@ -48,7 +48,15 @@ add_executable ( test_adfPos2DataBlock
                  test_adfPos2DataBlock.c )
 
 add_executable ( test_adfDays2Date
-                 test_adfDays2Date.c )
+                 test_adfDays2Date.c
+                  ${PROJECT_SOURCE_DIR}/src/adf_util.c
+                )
+
+add_executable ( test_dev_open
+                 test_dev_open.c )
+
+add_executable ( test_dev_mount
+                 test_dev_mount.c )
 
 add_executable ( test_adf_file_util
                  test_adf_file_util.c )
@@ -107,6 +115,16 @@ target_link_libraries ( test_adfPos2DataBlock PUBLIC
 )
 
 target_link_libraries ( test_adfDays2Date PUBLIC
+#  adf
+  ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_dev_open PUBLIC
+  adf
+  ${CHECK_LIBRARIES}
+)
+
+target_link_libraries ( test_dev_mount PUBLIC
   adf
   ${CHECK_LIBRARIES}
 )
@@ -158,6 +176,8 @@ target_link_libraries ( test_file_truncate2 PUBLIC
 add_test ( test_test_util test_test_util )
 add_test ( test_adfPos2DataBlock test_adfPos2DataBlock )
 add_test ( test_adfDays2Date test_adfDays2Date )
+add_test ( test_dev_open test_dev_open )
+add_test ( test_dev_mount test_dev_mount )
 add_test ( test_adf_file_util test_adf_file_util )
 add_test ( test_file_create test_file_create )
 add_test ( test_file_append test_file_append )

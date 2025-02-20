@@ -1,6 +1,3 @@
-#ifndef ADF_LINK_H
-#define ADF_LINK_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -21,22 +18,27 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
+#ifndef ADF_LINK_H
+#define ADF_LINK_H
+
+#include "adf_prefix.h"
 #include "adf_types.h"
 #include "adf_vol.h"
 
-#include "prefix.h"
+#if defined (__ANY_IDEA_WHAT_IS_THIS_FOR__)
+// the code below is not used anywhere and seems unfinished
+// (not clear what it was meant for...)
+// -> disabling it for now
+ADF_PREFIX ADF_RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
+                                               ADF_SECTNUM        nSect,
+                                               ADF_SECTNUM        lPar,
+                                               char **            name,
+                                               int32_t *          size );
+#endif
 
-
-PREFIX RETCODE adfBlockPtr2EntryName ( struct AdfVolume * vol,
-                                       SECTNUM            nSect,
-                                       SECTNUM            lPar,
-                                       char **            name,
-                                       int32_t *          size );
-
-#endif /* ADF_LINK_H */
-/*##########################################################################*/
+#endif  /* ADF_LINK_H */

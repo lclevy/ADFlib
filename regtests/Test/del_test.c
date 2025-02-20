@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 
     struct AdfVolume *vol;
     struct AdfList *list, *head;
-    SECTNUM nSect;
  
     adfEnvInitDefault();
 
@@ -43,14 +42,14 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    RETCODE rc = adfDevMount ( hd );
-    if ( rc != RC_OK ) {
+    ADF_RETCODE rc = adfDevMount ( hd );
+    if ( rc != ADF_RC_OK ) {
         fprintf(stderr, "can't mount device\n");
         adfDevClose ( hd );
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount(hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfDevUnMount ( hd );
         adfDevClose ( hd );
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 	
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
@@ -72,7 +71,8 @@ int main(int argc, char *argv[])
 
 
     /* cd dir_2 */
-    nSect = adfChangeDir(vol, "same_hash");
+    //ADF_SECTNUM nSect =
+    adfChangeDir(vol, "same_hash");
 
     head = list = adfGetDirEnt(vol,vol->curDirPtr);
     while(list) {
@@ -118,9 +118,9 @@ int main(int argc, char *argv[])
 
     putchar('\n');
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfDevUnMount ( hd );
     adfDevClose ( hd );
 

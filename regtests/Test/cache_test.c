@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     adfEnvInitDefault();
 
-//	adfSetEnvFct(0,0,MyVer,0);
+//	adfEndSetFct(0,0,MyVer,0);
 
     /* mount existing device : FFS */
     hd = adfMountDev ( "testffs.bak", ADF_ACCESS_MODE_READWRITE );
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    vol = adfMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
+    vol = adfVolMount ( hd, 0, ADF_ACCESS_MODE_READWRITE );
     if (!vol) {
         adfUnMountDev(hd);
         adfCloseDev(hd);
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         adfEnvCleanUp(); exit(1);
     }
 
-    adfVolumeInfo(vol);
+    adfVolInfo(vol);
 
     list = adfGetDirEnt(vol, vol->curDirPtr);
     while(list) {
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
 //    adfCreateDir(vol,vol->curDirPtr,"dir_1a");
     adfCreateDir(vol,vol->curDirPtr,"dir_1b");
@@ -95,9 +95,9 @@ int main(int argc, char *argv[])
         adfFreeEntry(list->content);
         list = list->next;
     }
-    freeList(list);
+    adfListFree ( list );
 
-    adfUnMount(vol);
+    adfVolUnMount(vol);
     adfUnMountDev(hd);
     adfCloseDev(hd);
 

@@ -1,6 +1,3 @@
-#ifndef _ADF_SALV_H
-#define _ADF_SALV_H 1
-
 /*
  *  ADF Library. (C) 1997-2002 Laurent Clevy
  *
@@ -21,41 +18,41 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar; if not, write to the Free Software
+ *  along with ADFLib; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
+#ifndef ADF_SALV_H
+#define ADF_SALV_H
+
 #include "adf_types.h"
 #include "adf_err.h"
+#include "adf_prefix.h"
 #include "adf_vol.h"
-#include "prefix.h"
 
 struct GenBlock {
-    SECTNUM sect;
-    SECTNUM parent;
+    ADF_SECTNUM sect;
+    ADF_SECTNUM parent;
     int type;
     int secType;
     char *name;	/* if (type == 2 and (secType==2 or secType==-3)) */
 };
 
 
-RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
-                          const SECTNUM            nSect,
-                          struct GenBlock * const  block );
+ADF_RETCODE adfReadGenBlock ( struct AdfVolume * const vol,
+                              const ADF_SECTNUM        nSect,
+                              struct GenBlock * const  block );
 
-PREFIX RETCODE adfCheckEntry ( struct AdfVolume * const vol,
-                               const SECTNUM            nSect,
-                               const int                level );
+ADF_PREFIX ADF_RETCODE adfCheckEntry ( struct AdfVolume * const vol,
+                                       const ADF_SECTNUM        nSect,
+                                       const int                level );
 
-PREFIX RETCODE adfUndelEntry ( struct AdfVolume * const vol,
-                               const SECTNUM            parent,
-                               const SECTNUM            nSect );
+ADF_PREFIX ADF_RETCODE adfUndelEntry ( struct AdfVolume * const vol,
+                                       const ADF_SECTNUM        parent,
+                                       const ADF_SECTNUM        nSect );
 
-PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
-PREFIX void adfFreeDelList ( struct AdfList * const list );
+ADF_PREFIX struct AdfList * adfGetDelEnt ( struct AdfVolume * const vol );
+ADF_PREFIX void adfFreeDelList ( struct AdfList * const list );
 
-
-/*##########################################################################*/
-#endif /* _ADF_SALV_H */
-
+#endif  /* ADF_SALV_H */
