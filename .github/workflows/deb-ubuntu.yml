@@ -2,11 +2,12 @@ name: deb packaging Ubuntu
 
 on:
   push:
-    branches: [ "master", "devel", "citest", "citest-deb" ]
+#    branches: [ "master", "devel", "citest", "citest-deb" ]
+    branches: [ "citest", "citest-deb" ]
     tags:
       - '**'
-  pull_request:
-    branches: [ "master", "devel" ]
+#  pull_request:
+#    branches: [ "master", "devel" ]
 
 jobs:
   build:
