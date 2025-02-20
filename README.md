@@ -116,8 +116,6 @@ and undelete them (in the future possibly also extract them to local filesystem)
 - WinNT native driver : Dan Sutherland and Gary Harris
 - See also: AUTHORS
 
-New versions and contact e-mail can be found at : https://github.com/lclevy/ADFlib
-
 ## Bugs
 See BUGS.md
 
@@ -211,7 +209,7 @@ but only with the released versions.
 If you encountered a problem, please review
 [the existing issues in the old](https://github.com/lclevy/ADFlib/issues) and
 [in the new repo](https://github.com/t-w/ADFlib/issues), and,
-if the problem you have is not already there, open a new one.
+if the problem you have is not already there, open a new one (in the new repo!).
 
 For bugfixes and/or new things - please open a _Pull Request_ to the `devel`
 branch (not the `master`).
