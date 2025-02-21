@@ -1,15 +1,4 @@
 
-## Important notes about the repo(!!!)
-
-1. The development of the project is moved from
-   [the Laurent Clévy's ADFlib repo](https://github.com/lclevy/ADFlib)
-   to [the new one](https://github.com/t-w/ADFlib). So for getting future
-   releases as well as the lastest development code,
-   the new repository should be used.
-
-2. Please read the 'Contributing' section before submitting any PRs.
-
-
 # ADFlib (Amiga Disk File library)
 
 ## Introduction
@@ -201,11 +190,6 @@ Have fun anyway !
 
 
 ## Contributing
-Please note that the code development has moved to
-[the new repo](https://github.com/t-w/ADFlib), while
-[the old one](https://github.com/lclevy/ADFlib) remains updated
-but only with the released versions.
-
 If you encountered a problem, please review
 [the existing issues in the old](https://github.com/lclevy/ADFlib/issues) and
 [in the new repo](https://github.com/t-w/ADFlib/issues), and,
