@@ -191,8 +191,7 @@ Have fun anyway !
 
 ## Contributing
 If you encountered a problem, please review
-[the existing issues in the old](https://github.com/lclevy/ADFlib/issues) and
-[in the new repo](https://github.com/t-w/ADFlib/issues), and,
+[the existing issues](https://github.com/adflib/ADFlib/issues) and,
 if the problem you have is not already there, open a new one (in the new repo!).
 
 For bugfixes and/or new things - please open a _Pull Request_ to the `devel`
